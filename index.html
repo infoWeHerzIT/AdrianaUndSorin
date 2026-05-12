@@ -901,6 +901,119 @@
     nav { padding: 14px 5%; }
   }
 
+  @media (max-width: 760px) {
+    .nav-inner {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+    }
+    .nav-logo { font-size: 17px; }
+    .nav-cta {
+      width: 100%;
+      text-align: center;
+      padding: 12px 0;
+    }
+    .hero-inner {
+      grid-template-columns: 1fr;
+      gap: 36px;
+      padding: 0 20px;
+    }
+    .hero-left { padding: 20px 0 10px; }
+    .hero-right {
+      height: auto;
+      padding: 0 20px 40px;
+    }
+    .hero-photo-frame {
+      max-width: 100%;
+      margin: 0 auto;
+    }
+    .hero-name-badge {
+      position: static;
+      margin: 18px auto 0;
+      left: auto;
+      transform: none;
+      box-shadow: none;
+    }
+    .hero-title {
+      font-size: clamp(28px, 10vw, 42px);
+      margin-bottom: 20px;
+    }
+    .hero-sub { max-width: 100%; }
+    .hero-meta {
+      flex-direction: column;
+      gap: 10px;
+    }
+    .hero-cta-group {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .btn-primary,
+    .btn-cta-big {
+      width: 100%;
+      padding-left: 0;
+      padding-right: 0;
+    }
+    .btn-primary { padding: 14px 0; }
+    .btn-ghost {
+      width: 100%;
+      text-align: center;
+      border-bottom: none;
+    }
+    .hero-limit-note { margin-top: 18px; }
+
+    .content-wrap.padded,
+    .about-intro-inner,
+    .about-together-inner,
+    .pricing-grid,
+    .materials-grid,
+    .eb-pricing-grid,
+    .target .content-wrap {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+    .materials-grid,
+    .pricing-grid,
+    .eb-pricing-grid { gap: 16px; }
+    .about-together-inner { align-items: stretch; }
+    .about-together-text h4 { font-size: 22px; }
+    .about-together-text p { max-width: 100%; }
+    .pillars-grid { gap: 14px; }
+    .pillar { padding: 24px 20px; }
+    .tl-content h4 { font-size: 15px; }
+    .tl-content p { font-size: 15px; }
+    .timeline::before { left: 18px; }
+    .tl-dot {
+      width: 44px;
+      height: 44px;
+      font-size: 14px;
+    }
+    .break-bar { padding-left: 70px; }
+    .target-yes,
+    .target-no { padding: 28px 20px; }
+    .check-list li { font-size: 16px; }
+    .about-intro { padding: 60px 18px 40px; }
+    .coach-split-body { padding: 36px 20px; }
+    .coach-split-photo { height: 280px; }
+    .coach-split-photo-overlay { padding: 20px; }
+    .cta-event-details {
+      flex-direction: column;
+      gap: 18px;
+    }
+    footer {
+      padding: 28px 5%;
+    }
+    .footer-inner {
+      flex-direction: column;
+      align-items: flex-start;
+      text-align: left;
+    }
+    footer p { margin-top: 10px; }
+    .btn-cta-big {
+      min-width: 0;
+    }
+  }
+
   /* ─── FUTURISTIC TRANSITIONS ─── */
 
   /* ─── ORGANIC WAVE TRANSITIONS ─── */
