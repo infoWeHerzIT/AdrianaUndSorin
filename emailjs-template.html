@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { margin: 0; padding: 0; background: #f0f2f5; font-family: Arial, Helvetica, sans-serif; }
+    .wrapper { max-width: 600px; margin: 32px auto; background: #ffffff; border-radius: 4px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+    .header { background: #00224d; padding: 40px 44px 36px; }
+    .header-logo { font-size: 22px; font-weight: 700; color: #ffffff; letter-spacing: -.01em; }
+    .header-logo span { color: #ff6300; }
+    .header-sub { color: rgba(255,255,255,0.5); font-size: 13px; margin-top: 6px; }
+    .ticket-box { margin: 0; background: #f8f9fc; border-left: 4px solid #ff6300; padding: 24px 44px; }
+    .ticket-label { font-size: 10px; text-transform: uppercase; letter-spacing: .14em; color: #aaa; margin-bottom: 8px; }
+    .ticket-name { font-size: 20px; font-weight: 700; color: #00224d; margin-bottom: 4px; }
+    .ticket-price { font-size: 36px; font-weight: 700; color: #ff6300; line-height: 1; margin-bottom: 4px; }
+    .ticket-per { font-size: 13px; color: #888; }
+    .body { padding: 36px 44px; }
+    .body p { color: #2d3748; font-size: 16px; line-height: 1.75; margin: 0 0 18px; }
+    .notice-box { background: #fff8f0; border: 1px solid rgba(255,99,0,0.25); border-radius: 4px; padding: 18px 22px; margin: 28px 0; }
+    .notice-box p { margin: 0; font-size: 14px; color: #5a4020; line-height: 1.65; }
+    .notice-box strong { color: #ff6300; }
+    .details-row { display: flex; gap: 12px; flex-wrap: wrap; margin: 0 0 18px; }
+    .detail-chip { background: rgba(0,34,77,0.06); border-radius: 2px; padding: 6px 14px; font-size: 13px; color: #00224d; font-weight: 500; }
+    .divider { border: none; border-top: 1px solid #eee; margin: 28px 0; }
+    .signature p { color: #2d3748; font-size: 16px; line-height: 1.75; margin: 0 0 6px; }
+    .signature strong { color: #00224d; }
+    .footer { background: #00224d; padding: 24px 44px; }
+    .footer p { color: #ffffff; font-size: 12px; margin: 0; line-height: 1.6; }
+    .footer strong { color: #ff6300; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+
+    <!-- HEADER -->
+    <div class="header">
+      <div class="header-logo">Adriana &amp; <span>Sorin</span></div>
+      <div class="header-sub">Deep Coaching Workshop &nbsp;·&nbsp; Nürnberg &nbsp;·&nbsp; 20. Juni</div>
+    </div>
+
+    <!-- TICKET BOX -->
+    <div class="ticket-box">
+      <div class="ticket-label">Dein gewähltes Ticket</div>
+      <div class="ticket-name">{{ticket_name}}</div>
+      <div class="ticket-price">{{ticket_price}}</div>
+      <div class="ticket-per">{{ticket_per}}</div>
+    </div>
+
+    <!-- BODY -->
+    <div class="body">
+      <p>Liebe/r {{vorname}},</p>
+
+      <p>
+        wir freuen uns wirklich von Herzen, dass du dabei bist!
+        Das ist eine weise Entscheidung – und wir können es kaum erwarten,
+        dich persönlich kennenzulernen und gemeinsam in die Tiefe zu gehen.
+      </p>
+
+      <p>
+        Danke, dass du dir diese Zeit für dich nimmst.
+        Es wird sich lohnen – versprochen.
+      </p>
+
+      <div class="details-row">
+        <span class="detail-chip">📍 Nürnberg</span>
+        <span class="detail-chip">📅 20. Juni</span>
+        <span class="detail-chip">🎫 {{ticket_name}}</span>
+      </div>
+
+      <div class="notice-box">
+        <p>
+          <strong>Weitere Informationen folgen nach der Bezahlung.</strong><br>
+          Du erhältst dann alle Details zur Veranstaltung – genaue Adresse,
+          Uhrzeit, was du mitbringen solltest und vieles mehr.
+        </p>
+      </div>
+
+      <hr class="divider">
+
+      <div class="signature">
+        <p>Bis bald in Nürnberg!</p>
+        <p>Herzliche Grüße,<br><strong>Adriana und Sorin</strong></p>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+      <p>
+        Deep Coaching Workshop &nbsp;·&nbsp; <strong>Nürnberg</strong> &nbsp;·&nbsp; 20. Juni<br>
+        Diese E-Mail wurde automatisch nach deiner Registrierung versandt.
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>
