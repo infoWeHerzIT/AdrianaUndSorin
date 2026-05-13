@@ -21,6 +21,12 @@
     .notice-box strong { color: #ff6300; }
     .details-row { display: flex; gap: 12px; flex-wrap: wrap; margin: 0 0 18px; }
     .detail-chip { background: rgba(0,34,77,0.06); border-radius: 2px; padding: 6px 14px; font-size: 13px; color: #00224d; font-weight: 500; }
+    .summary-box { background: #f8f9fc; border-radius: 4px; padding: 20px 24px; margin: 0 0 24px; }
+    .summary-title { font-size: 10px; text-transform: uppercase; letter-spacing: .14em; color: #aaa; margin-bottom: 14px; }
+    .summary-row { display: flex; justify-content: space-between; font-size: 14px; padding: 7px 0; border-bottom: 1px solid #eee; }
+    .summary-row:last-child { border-bottom: none; }
+    .summary-key { color: #888; }
+    .summary-val { color: #00224d; font-weight: 500; text-align: right; }
     .divider { border: none; border-top: 1px solid #eee; margin: 28px 0; }
     .signature p { color: #2d3748; font-size: 16px; line-height: 1.75; margin: 0 0 6px; }
     .signature strong { color: #00224d; }
@@ -61,10 +67,24 @@
         Es wird sich lohnen – versprochen.
       </p>
 
-      <div class="details-row">
-        <span class="detail-chip">📍 Nürnberg</span>
-        <span class="detail-chip">📅 20. Juni</span>
-        <span class="detail-chip">🎫 {{ticket_name}}</span>
+      <div class="summary-box">
+        <div class="summary-title">Deine Angaben</div>
+        <div class="summary-row">
+          <span class="summary-key">Name</span>
+          <span class="summary-val">{{vorname}} {{nachname}}</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-key">E-Mail</span>
+          <span class="summary-val">{{to_email}}</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-key">Handynummer</span>
+          <span class="summary-val">{{handy}}</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-key">Ticket</span>
+          <span class="summary-val">{{ticket_name}} &nbsp;·&nbsp; {{ticket_price}}</span>
+        </div>
       </div>
 
       <div class="notice-box">
