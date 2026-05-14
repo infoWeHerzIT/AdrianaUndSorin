@@ -41,7 +41,7 @@
     <!-- HEADER -->
     <div class="header">
       <div class="header-logo">Adriana &amp; <span>Sorin</span></div>
-      <div class="header-sub">Deep Coaching Workshop &nbsp;·&nbsp; Nürnberg &nbsp;·&nbsp; 20. Juni</div>
+      <div class="header-sub">Deep Coaching Workshop &nbsp;·&nbsp; {{ort}}</div>
     </div>
 
     <!-- TICKET BOX -->
@@ -85,6 +85,10 @@
           <span class="summary-key">Ticket</span>
           <span class="summary-val">{{ticket_name}} &nbsp;·&nbsp; {{ticket_price}}</span>
         </div>
+        <div class="summary-row">
+          <span class="summary-key">Veranstaltungsort</span>
+          <span class="summary-val">{{ort}}</span>
+        </div>
       </div>
 
       <div class="notice-box">
@@ -98,7 +102,7 @@
       <hr class="divider">
 
       <div class="signature">
-        <p>Bis bald in Nürnberg!</p>
+        <p>Bis bald in {{ort}}!</p>
         <p>Herzliche Grüße,<br><strong>Adriana und Sorin</strong></p>
       </div>
     </div>
@@ -106,7 +110,7 @@
     <!-- FOOTER -->
     <div class="footer">
       <p>
-        Deep Coaching Workshop &nbsp;·&nbsp; <strong>Nürnberg</strong> &nbsp;·&nbsp; 20. Juni<br>
+        Deep Coaching Workshop &nbsp;·&nbsp; <strong>{{ort}}</strong><br>
         Diese E-Mail wurde automatisch nach deiner Registrierung versandt.
       </p>
     </div>

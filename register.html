@@ -252,6 +252,54 @@
   }
   .trust-item svg { color: var(--orange); flex-shrink: 0; }
 
+  /* ─── LOCATION SELECTOR ─── */
+  .location-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .location-option {
+    cursor: pointer;
+    position: relative;
+  }
+  .location-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0; height: 0;
+  }
+  .location-card {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 16px 18px;
+    border: 1px solid rgba(0,34,77,0.18);
+    border-radius: 2px;
+    background: var(--white);
+    cursor: pointer;
+    transition: border-color .2s, box-shadow .2s, background .2s;
+    user-select: none;
+  }
+  .location-option input[type="radio"]:checked + .location-card {
+    border-color: var(--orange);
+    box-shadow: 0 0 0 3px rgba(255,99,0,0.1);
+    background: rgba(255,99,0,0.04);
+  }
+  .location-card:hover {
+    border-color: rgba(255,99,0,0.5);
+  }
+  .location-card.error {
+    border-color: #e53e3e;
+  }
+  .location-city {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 18px; font-weight: 700;
+    color: var(--navy);
+  }
+  .location-date {
+    font-size: 13px;
+    color: rgba(0,34,77,0.55);
+  }
+
   /* ─── RESPONSIVE ─── */
   @media (max-width: 600px) {
     .form-row { grid-template-columns: 1fr; }
@@ -350,6 +398,27 @@
         <span class="field-error" id="err-handy">Bitte Handynummer eingeben</span>
       </div>
 
+      <div class="form-group">
+        <label class="form-label">Veranstaltungsort</label>
+        <div class="location-options" id="location-options">
+          <label class="location-option">
+            <input type="radio" name="ort" value="Nürnberg · 20. Juni 2026">
+            <span class="location-card">
+              <span class="location-city">Nürnberg</span>
+              <span class="location-date">20. Juni 2026</span>
+            </span>
+          </label>
+          <label class="location-option">
+            <input type="radio" name="ort" value="Rodgau · 18. Juli 2026">
+            <span class="location-card">
+              <span class="location-city">Rodgau</span>
+              <span class="location-date">18. Juli 2026</span>
+            </span>
+          </label>
+        </div>
+        <span class="field-error" id="err-ort">Bitte einen Veranstaltungsort auswählen</span>
+      </div>
+
       <hr class="form-divider">
 
       <button type="submit" class="btn-register" id="btn-register">
@@ -438,12 +507,26 @@
         }
       });
 
+      // Standort-Validierung
+      var ortSelected = document.querySelector('input[name="ort"]:checked');
+      var errOrt = document.getElementById('err-ort');
+      var cards  = document.querySelectorAll('.location-card');
+      if (!ortSelected) {
+        errOrt.classList.add('visible');
+        cards.forEach(function(c){ c.classList.add('error'); });
+        valid = false;
+      } else {
+        errOrt.classList.remove('visible');
+        cards.forEach(function(c){ c.classList.remove('error'); });
+      }
+
       if (!valid) return;
 
       var vorname  = document.getElementById('vorname').value.trim();
       var nachname = document.getElementById('nachname').value.trim();
       var email    = document.getElementById('email').value.trim();
       var handy    = document.getElementById('handy').value.trim();
+      var ort      = ortSelected.value;
 
       setLoading(true);
 
@@ -456,6 +539,7 @@
         ticket_name:  ticket,
         ticket_price: price ? '€' + price : '',
         ticket_per:   per,
+        ort:          ort,
       })
       .finally(function () {
         // Immer zur Zahlung weiterleiten – auch wenn E-Mail fehlschlägt
@@ -468,6 +552,14 @@
       document.getElementById(id).addEventListener('input', function() {
         this.classList.remove('error');
         document.getElementById('err-' + id).classList.remove('visible');
+      });
+    });
+
+    // Standort-Fehler ausblenden bei Auswahl
+    document.querySelectorAll('input[name="ort"]').forEach(function(radio) {
+      radio.addEventListener('change', function() {
+        document.getElementById('err-ort').classList.remove('visible');
+        document.querySelectorAll('.location-card').forEach(function(c){ c.classList.remove('error'); });
       });
     });
   })();
