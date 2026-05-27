@@ -5,137 +5,175 @@
   <style>
     body { margin: 0; padding: 0; background: #f0f2f5; font-family: Arial, Helvetica, sans-serif; }
     .wrapper { max-width: 600px; margin: 32px auto; background: #ffffff; border-radius: 4px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+
+    /* Header */
     .header { background: #00224d; padding: 40px 44px 36px; }
     .header-logo { font-size: 22px; font-weight: 700; color: #ffffff; letter-spacing: -.01em; }
     .header-logo span { color: #ff6300; }
     .header-sub { color: rgba(255,255,255,0.5); font-size: 13px; margin-top: 6px; }
-    .ticket-box { margin: 0; background: #f8f9fc; border-left: 4px solid #ff6300; padding: 24px 44px; }
-    .ticket-label { font-size: 10px; text-transform: uppercase; letter-spacing: .14em; color: #aaa; margin-bottom: 8px; }
-    .ticket-name { font-size: 20px; font-weight: 700; color: #00224d; margin-bottom: 4px; }
-    .ticket-price { font-size: 36px; font-weight: 700; color: #ff6300; line-height: 1; margin-bottom: 4px; }
-    .ticket-per { font-size: 13px; color: #888; }
-    .body { padding: 36px 44px; }
-    .body p { color: #2d3748; font-size: 16px; line-height: 1.75; margin: 0 0 18px; }
-    .notice-box { background: #fff8f0; border: 1px solid rgba(255,99,0,0.25); border-radius: 4px; padding: 18px 22px; margin: 28px 0; }
-    .notice-box p { margin: 0; font-size: 14px; color: #5a4020; line-height: 1.65; }
-    .notice-box strong { color: #ff6300; }
-    .meeting-box { background: #f0f8ff; border: 1px solid rgba(0,120,180,0.3); border-radius: 4px; padding: 18px 22px; margin: 28px 0; }
-    .meeting-box p { margin: 0 0 10px; font-size: 14px; color: #1a3a5c; line-height: 1.65; }
-    .meeting-box p:last-child { margin: 0; }
-    .meeting-box strong { color: #0078b4; }
-    .meeting-link { display: inline-block; background: #0078b4; color: #ffffff; text-decoration: none; padding: 10px 20px; border-radius: 3px; font-size: 14px; font-weight: 600; margin-top: 6px; }
-    .payment-warning { background: #fff3cd; border: 1px solid rgba(255,165,0,0.4); border-radius: 4px; padding: 18px 22px; margin: 28px 0; }
-    .payment-warning p { margin: 0; font-size: 14px; color: #664d00; line-height: 1.65; }
-    .details-row { display: flex; gap: 12px; flex-wrap: wrap; margin: 0 0 18px; }
-    .detail-chip { background: rgba(0,34,77,0.06); border-radius: 2px; padding: 6px 14px; font-size: 13px; color: #00224d; font-weight: 500; }
-    .summary-box { background: #f8f9fc; border-radius: 4px; padding: 20px 24px; margin: 0 0 24px; }
+
+    /* Ticket strip */
+    .ticket-box { background: #f8f9fc; border-left: 4px solid #ff6300; padding: 22px 44px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .ticket-label { font-size: 10px; text-transform: uppercase; letter-spacing: .14em; color: #aaa; margin-bottom: 6px; }
+    .ticket-name { font-size: 18px; font-weight: 700; color: #00224d; }
+    .ticket-per { font-size: 12px; color: #999; margin-top: 2px; }
+    .ticket-price { font-size: 32px; font-weight: 700; color: #ff6300; line-height: 1; white-space: nowrap; }
+
+    /* Body */
+    .body { padding: 36px 44px 0; }
+    .body > p { color: #2d3748; font-size: 16px; line-height: 1.75; margin: 0 0 16px; }
+
+    /* Next steps */
+    .steps-title { font-size: 10px; text-transform: uppercase; letter-spacing: .16em; color: #aaa; margin: 28px 0 14px; }
+    .step { display: flex; align-items: flex-start; gap: 16px; padding: 16px 0; border-top: 1px solid #eee; }
+    .step:last-child { border-bottom: 1px solid #eee; }
+    .step-num { width: 28px; height: 28px; border-radius: 50%; background: #00224d; color: #fff; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+    .step-num.orange { background: #ff6300; }
+    .step-body { flex: 1; }
+    .step-label { font-size: 13px; color: #888; margin-bottom: 4px; }
+    .step-text { font-size: 15px; font-weight: 600; color: #00224d; margin-bottom: 10px; }
+    .step-text small { display: block; font-size: 12px; font-weight: 400; color: #999; margin-top: 2px; }
+    .btn-action { display: inline-block; padding: 10px 22px; border-radius: 3px; font-size: 14px; font-weight: 600; text-decoration: none; }
+    .btn-pay    { background: #ff6300; color: #ffffff; }
+    .btn-meet   { background: #0078b4; color: #ffffff; }
+
+    /* Summary */
+    .summary-box { background: #f8f9fc; border-radius: 4px; padding: 20px 24px; margin: 28px 0 0; }
     .summary-title { font-size: 10px; text-transform: uppercase; letter-spacing: .14em; color: #aaa; margin-bottom: 14px; }
     .summary-row { display: flex; justify-content: space-between; font-size: 14px; padding: 7px 0; border-bottom: 1px solid #eee; }
     .summary-row:last-child { border-bottom: none; }
     .summary-key { color: #888; }
-    .summary-val { color: #00224d; font-weight: 500; text-align: right; }
-    .divider { border: none; border-top: 1px solid #eee; margin: 28px 0; }
+    .summary-val { color: #00224d; font-weight: 500; text-align: right; max-width: 65%; word-break: break-word; }
+    .summary-val a { color: #0078b4; word-break: break-all; }
+
+    /* Payment warning */
+    .payment-warning { background: #fff3cd; border: 1px solid rgba(255,165,0,0.45); border-radius: 4px; padding: 16px 20px; margin: 24px 0 0; }
+    .payment-warning p { margin: 0; font-size: 13px; color: #664d00; line-height: 1.65; }
+
+    /* Signature & footer */
+    .signature { padding: 28px 44px 36px; }
     .signature p { color: #2d3748; font-size: 16px; line-height: 1.75; margin: 0 0 6px; }
     .signature strong { color: #00224d; }
-    .footer { background: #00224d; padding: 24px 44px; }
-    .footer p { color: #ffffff; font-size: 12px; margin: 0; line-height: 1.6; }
+    .divider { border: none; border-top: 1px solid #eee; margin: 28px 44px; }
+    .footer { background: #00224d; padding: 22px 44px; }
+    .footer p { color: rgba(255,255,255,0.55); font-size: 12px; margin: 0; line-height: 1.7; }
     .footer strong { color: #ff6300; }
   </style>
 </head>
 <body>
-  <div class="wrapper">
+<div class="wrapper">
 
-    <!-- HEADER -->
-    <div class="header">
-      <div class="header-logo">Adriana &amp; <span>Sorin</span></div>
-      <div class="header-sub">Deep Coaching Workshop &nbsp;·&nbsp; {{ort}}</div>
-    </div>
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-logo">Adriana &amp; <span>Sorin</span></div>
+    <div class="header-sub">Deep Coaching Workshop &nbsp;·&nbsp; {{ort}}</div>
+  </div>
 
-    <!-- TICKET BOX -->
-    <div class="ticket-box">
+  <!-- TICKET STRIP -->
+  <div class="ticket-box">
+    <div>
       <div class="ticket-label">Dein gewähltes Ticket</div>
       <div class="ticket-name">{{ticket_name}}</div>
-      <div class="ticket-price">{{ticket_price}}</div>
       <div class="ticket-per">{{ticket_per}}</div>
     </div>
+    <div class="ticket-price">{{ticket_price}}</div>
+  </div>
 
-    <!-- BODY -->
-    <div class="body">
-      <p>Liebe/r {{vorname}},</p>
+  <!-- BODY -->
+  <div class="body">
+    <p style="margin-top:8px;">Liebe/r <strong>{{vorname}}</strong>,</p>
 
-      <p>
-        wir freuen uns wirklich von Herzen, dass du dabei bist!
-        Das ist eine weise Entscheidung – und wir können es kaum erwarten,
-        dich persönlich kennenzulernen und gemeinsam in die Tiefe zu gehen.
-      </p>
+    <p>
+      wir freuen uns wirklich von Herzen, dass du dabei bist!
+      Das ist eine weise Entscheidung – und wir können es kaum erwarten,
+      dich persönlich kennenzulernen und gemeinsam in die Tiefe zu gehen.
+    </p>
 
-      <p>
-        Danke, dass du dir diese Zeit für dich nimmst.
-        Es wird sich lohnen – versprochen.
-      </p>
+    <!-- NEXT STEPS -->
+    <div class="steps-title">Nächste Schritte</div>
 
-      <div class="summary-box">
-        <div class="summary-title">Deine Angaben</div>
-        <div class="summary-row">
-          <span class="summary-key">Name</span>
-          <span class="summary-val">{{vorname}} {{nachname}}</span>
-        </div>
-        <div class="summary-row">
-          <span class="summary-key">E-Mail</span>
-          <span class="summary-val">{{to_email}}</span>
-        </div>
-        <div class="summary-row">
-          <span class="summary-key">Handynummer</span>
-          <span class="summary-val">{{handy}}</span>
-        </div>
-        <div class="summary-row">
-          <span class="summary-key">Ticket</span>
-          <span class="summary-val">{{ticket_name}} &nbsp;·&nbsp; {{ticket_price}}</span>
-        </div>
-        <div class="summary-row">
-          <span class="summary-key">Veranstaltungsort</span>
-          <span class="summary-val">{{ort}}</span>
-        </div>
+    {{#payment_url}}
+    <div class="step">
+      <div class="step-num orange">1</div>
+      <div class="step-body">
+        <div class="step-label">Schritt 1</div>
+        <div class="step-text">Bezahlung abschließen - wenn du es noch nicht schon erledigt hast!<small>Dein Platz ist erst nach erfolgreicher Zahlung reserviert.</small></div>
+        <a class="btn-action btn-pay" href="{{payment_url}}">Jetzt bezahlen →</a>
       </div>
+    </div>
+    {{/payment_url}}
 
-      {{#video_meeting_url}}
-      <div class="meeting-box">
-        <p><strong>Dein Video-Meeting Link</strong></p>
-        <p>Hier ist dein persönlicher Zugangslink für das Online-Meeting:</p>
-        <p><a class="meeting-link" href="{{video_meeting_url}}">Zum Meeting beitreten →</a></p>
+    {{#video_meeting_url}}
+    <div class="step">
+      <div class="step-num">{{#payment_url}}2{{/payment_url}}{{^payment_url}}1{{/payment_url}}</div>
+      <div class="step-body">
+        <div class="step-label">Video-Meeting</div>
+        <div class="step-text">Zum Online-Meeting beitreten<small>Nutze diesen Link am Tag der Veranstaltung.</small></div>
+        <a class="btn-action btn-meet" href="{{video_meeting_url}}">Meeting beitreten →</a>
       </div>
-      {{/video_meeting_url}}
+    </div>
+    {{/video_meeting_url}}
 
-      <div class="notice-box">
-        <p>
-          <strong>Weitere Informationen folgen nach der Bezahlung.</strong><br>
-          Du erhältst dann alle Details zur Veranstaltung – genaue Adresse,
-          Uhrzeit, was du mitbringen solltest und vieles mehr.
-        </p>
+    {{^payment_url}}{{^video_meeting_url}}
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-label">Schritt 1</div>
+        <div class="step-text">Wir melden uns bei dir<small>Du erhältst alle Details zur Veranstaltung per E-Mail.</small></div>
       </div>
+    </div>
+    {{/video_meeting_url}}{{/payment_url}}
 
-      {{#payment_notice}}
-      <div class="payment-warning">
-        <p>{{payment_notice}}</p>
+    <!-- REGISTRATION SUMMARY -->
+    <div class="summary-box">
+      <div class="summary-title">Deine Registrierung im Überblick</div>
+      <div class="summary-row">
+        <span class="summary-key">Name</span>
+        <span class="summary-val">{{vorname}} {{nachname}}</span>
       </div>
-      {{/payment_notice}}
-
-      <hr class="divider">
-
-      <div class="signature">
-        <p>Bis bald in {{ort}}!</p>
-        <p>Herzliche Grüße,<br><strong>Adriana und Sorin</strong></p>
+      <div class="summary-row">
+        <span class="summary-key">E-Mail</span>
+        <span class="summary-val">{{to_email}}</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-key">Handynummer</span>
+        <span class="summary-val">{{handy}}</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-key">Ticket</span>
+        <span class="summary-val">{{ticket_name}} &nbsp;·&nbsp; {{ticket_price}}</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-key">Veranstaltungsort</span>
+        <span class="summary-val">{{ort}}</span>
       </div>
     </div>
 
-    <!-- FOOTER -->
-    <div class="footer">
-      <p>
-        Deep Coaching Workshop &nbsp;·&nbsp; <strong>{{ort}}</strong><br>
-        Diese E-Mail wurde automatisch nach deiner Registrierung versandt.
-      </p>
+    <!-- PAYMENT WARNING (paid events only) -->
+    {{#payment_notice}}
+    <div class="payment-warning">
+      <p>⚠️ &nbsp;{{payment_notice}}</p>
     </div>
+    {{/payment_notice}}
 
   </div>
+
+  <hr class="divider">
+
+  <!-- SIGNATURE -->
+  <div class="signature">
+    <p>Bis bald{{#ort}} in {{ort}}{{/ort}}!</p>
+    <p>Herzliche Grüße,<br><strong>Adriana und Sorin</strong></p>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <p>
+      Deep Coaching Workshop &nbsp;·&nbsp; <strong>{{ort}}</strong><br>
+      Diese E-Mail wurde automatisch nach deiner Registrierung versandt.
+    </p>
+  </div>
+
+</div>
 </body>
 </html>

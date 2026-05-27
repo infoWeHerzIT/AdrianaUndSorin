@@ -529,6 +529,29 @@
   }
   .event-debug-val { padding: 2px 0; word-break: break-all; }
 
+  /* ─── TEST MEETING LINK ON CARD ─── */
+  .event-card-meeting-link {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; flex-wrap: wrap;
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #e8f4ff;
+    border: 1px solid rgba(0,120,180,0.35);
+    border-radius: 4px;
+  }
+  .event-card-meeting-label {
+    font-size: 13px; font-weight: 600; color: #1a3a5c;
+  }
+  .event-card-meeting-btn {
+    display: inline-block;
+    background: #0078b4; color: #fff;
+    padding: 6px 14px; border-radius: 3px;
+    font-size: 12px; font-weight: 600;
+    text-decoration: none; white-space: nowrap;
+    transition: background .18s;
+  }
+  .event-card-meeting-btn:hover { background: #005f8e; }
+
   /* ─── BUTTONS ─── */
   .btn-primary {
     background: var(--orange);
@@ -891,12 +914,12 @@ const DEFAULT_EVENTS_RAW = [
     timeFrom: '10:00', timeTo: '16:00', location: 'Nürnberg', format: 'Präsenz',
     price: 'ab 48 €', spots: 'max. 15 Plätze',
     description: 'Intensiver Deep-Coaching-Workshop für Führungskräfte & Professionals.',
-    url: 'register.html', paymentUrl: '' },
+    url: 'register.html', paymentUrl: '', videoMeetingUrl: '' },
   { id: 'default_2', name: 'Deep Coaching Workshop', type: 'Workshop', year: 2026, month: 6, day: 18,
     timeFrom: '10:00', timeTo: '16:00', location: 'Rodgau', format: 'Präsenz',
     price: 'ab 48 €', spots: 'max. 15 Plätze',
     description: 'Intensiver Deep-Coaching-Workshop für Führungskräfte & Professionals.',
-    url: 'register.html', paymentUrl: '' }
+    url: 'register.html', paymentUrl: '', videoMeetingUrl: '' }
 ];
 
 const MONTH_NAMES = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
@@ -932,8 +955,9 @@ function normalizeEvent(ev) {
     price:       ev.price       || '',
     spots:       ev.spots       || '',
     description: ev.description || '',
-    url:         ev.url         || 'register.html',
-    paymentUrl:  ev.paymentUrl  || ''
+    url:             ev.url             || 'register.html',
+    paymentUrl:      ev.paymentUrl      || '',
+    videoMeetingUrl: ev.videoMeetingUrl || ''
   };
 }
 
@@ -1092,7 +1116,7 @@ function renderEventList() {
       year: 'Jahr', month: 'Monat', day: 'Tag',
       timeFrom: 'Von', timeTo: 'Bis', location: 'Ort',
       price: 'Preis', spots: 'Plätze', description: 'Beschreibung',
-      url: 'Anmelde-URL', paymentUrl: 'Zahlungslink'
+      url: 'Anmelde-URL', paymentUrl: 'Zahlungslink', videoMeetingUrl: 'Video-Meeting'
     };
     const debugRows = isTestEvent
       ? Object.entries(DEBUG_LABELS).map(([k, lbl]) => {
@@ -1116,6 +1140,11 @@ function renderEventList() {
         </span>
         <a href="${buildRegisterUrl(ev)}" class="btn-register ${fc}" onclick="event.stopPropagation()">Registrieren →</a>
       </div>
+      ${isTestEvent && ev.videoMeetingUrl ? `
+      <div class="event-card-meeting-link" onclick="event.stopPropagation()">
+        <span class="event-card-meeting-label">📹 Video-Meeting</span>
+        <a href="${ev.videoMeetingUrl}" target="_blank" rel="noopener" class="event-card-meeting-btn">Meeting beitreten →</a>
+      </div>` : ''}
       ${isTestEvent ? `<details class="event-card-test-debug" open onclick="event.stopPropagation()">
         <summary>Test · Alle Event-Daten</summary>
         <div class="event-debug-grid">${debugRows}</div>

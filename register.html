@@ -315,6 +315,41 @@
   .location-fixed.loc-praesenz { border-color: rgba(255,99,0,0.3); background: rgba(255,99,0,0.04); }
   .location-fixed.loc-online   { border-color: rgba(0,120,180,0.3); background: rgba(0,120,180,0.04); }
 
+  /* ─── TEST MEETING LINK BOX ─── */
+  .test-meeting-box {
+    background: #e8f4ff;
+    border: 2px solid #0078b4;
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+  .test-meeting-icon { font-size: 28px; flex-shrink: 0; }
+  .test-meeting-info { flex: 1; min-width: 180px; }
+  .test-meeting-label {
+    font-family: 'Orbitron', monospace;
+    font-size: 9px; font-weight: 700; letter-spacing: .16em;
+    text-transform: uppercase; color: #0078b4; margin-bottom: 4px;
+  }
+  .test-meeting-url {
+    font-size: 13px; color: #1a3a5c;
+    word-break: break-all; line-height: 1.5;
+  }
+  .test-meeting-url a { color: #0078b4; font-weight: 600; }
+  .btn-meeting-test {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: #0078b4; color: #fff;
+    border: none; padding: 11px 20px; border-radius: 4px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 600;
+    text-decoration: none; white-space: nowrap;
+    transition: background .2s;
+  }
+  .btn-meeting-test:hover { background: #005f8e; }
+
   /* ─── TEST EVENT DEBUG PANEL ─── */
   .test-debug-panel {
     background: rgba(255,99,0,0.06);
@@ -493,6 +528,19 @@
 <!-- TEST DEBUG PANEL (bottom of page, only visible for test events) -->
 <section class="reg-form-section" id="test-debug-section" style="display:none; padding-top:0;">
   <div class="reg-form-inner">
+
+    <!-- Video meeting link box (visible when URL is set) -->
+    <div class="test-meeting-box" id="test-meeting-box" style="display:none;">
+      <div class="test-meeting-icon">📹</div>
+      <div class="test-meeting-info">
+        <div class="test-meeting-label">Video-Meeting Link</div>
+        <div class="test-meeting-url" id="test-meeting-url"></div>
+      </div>
+      <a class="btn-meeting-test" id="test-meeting-btn" href="#" target="_blank" rel="noopener">
+        Meeting beitreten →
+      </a>
+    </div>
+
     <details class="test-debug-panel" id="test-debug-panel" open>
       <summary>Test-Event · Alle übertragenen Daten</summary>
       <table class="test-debug-table" id="test-debug-table"></table>
@@ -592,6 +640,19 @@
 
         debugTable.innerHTML = rows;
         debugSection.style.display = '';
+      }
+
+      // Show meeting link box if the event has one
+      var meetingUrl = (specificEvent && specificEvent.videoMeetingUrl) ? specificEvent.videoMeetingUrl : '';
+      if (meetingUrl) {
+        var meetBox = document.getElementById('test-meeting-box');
+        var meetUrlEl = document.getElementById('test-meeting-url');
+        var meetBtn   = document.getElementById('test-meeting-btn');
+        if (meetBox && meetUrlEl && meetBtn) {
+          meetUrlEl.innerHTML = '<a href="' + esc(meetingUrl) + '" target="_blank" rel="noopener">' + esc(meetingUrl) + '</a>';
+          meetBtn.href = meetingUrl;
+          meetBox.style.display = 'flex';
+        }
       }
     }
 
