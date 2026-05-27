@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Event-Verwaltung – Adriana und Sorin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange: #ff6300;
+    --navy: #00224d;
+    --white: #ffffff;
+    --orange-dim: rgba(255,99,0,0.12);
+    --navy-dim: rgba(0,34,77,0.06);
+    --green: #16a34a;
+    --red: #dc2626;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    background: #f4f4f2;
+    color: var(--navy);
+    overflow-x: hidden;
+    padding-bottom: 80px;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: center;
+    padding: 16px 5%;
+    background: rgba(0,34,77,0.97);
+    backdrop-filter: blur(8px);
+  }
+  .nav-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between; width: 100%;
+  }
+  .nav-logo {
+    font-family: 'Fredoka', sans-serif;
+    color: var(--white); font-size: 18px; font-weight: 700;
+    text-decoration: none; display: flex; align-items: center; gap: 10px;
+  }
+  .nav-logo span { color: var(--orange); }
+  .nav-admin-badge {
+    font-family: 'Orbitron', monospace;
+    font-size: 9px; font-weight: 700;
+    letter-spacing: .16em; text-transform: uppercase;
+    background: rgba(255,99,0,0.2);
+    border: 1px solid rgba(255,99,0,0.4);
+    color: var(--orange);
+    padding: 3px 8px; border-radius: 2px;
+  }
+  .nav-preview-links { display: flex; gap: 10px; }
+  .nav-preview-link {
+    color: rgba(255,255,255,0.6);
+    font-size: 13px; text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 7px 14px; border-radius: 2px;
+    transition: background .2s, color .2s;
+  }
+  .nav-preview-link:hover {
+    background: rgba(255,255,255,0.08);
+    color: var(--white);
+  }
+
+  /* ─── PAGE HEADER ─── */
+  .admin-header {
+    background: var(--navy);
+    padding: 100px 0 60px;
+    position: relative; overflow: hidden;
+  }
+  .admin-header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: repeating-linear-gradient(90deg, rgba(255,99,0,0.04) 0px, rgba(255,99,0,0.04) 1px, transparent 1px, transparent 80px);
+    pointer-events: none;
+  }
+  .admin-header::after {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 5px; background: var(--orange);
+  }
+  .admin-header-inner {
+    max-width: 1200px; margin: 0 auto;
+    padding: 0 32px;
+    position: relative; z-index: 1;
+  }
+  .admin-page-label {
+    font-family: 'Orbitron', monospace;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: .22em; text-transform: uppercase;
+    color: var(--orange); margin-bottom: 14px; display: block;
+  }
+  .admin-header h1 {
+    font-family: 'Fredoka', sans-serif;
+    font-size: clamp(28px, 3.5vw, 44px);
+    font-weight: 700; color: var(--white);
+    line-height: 1.1; margin-bottom: 12px;
+  }
+  .admin-header h1 em { font-style: normal; color: var(--orange); }
+  .admin-header p {
+    font-size: 15px; color: rgba(255,255,255,0.55);
+    max-width: 560px; line-height: 1.7;
+  }
+  .admin-info-bar {
+    margin-top: 20px;
+    display: inline-flex; align-items: center; gap: 10px;
+    background: rgba(255,99,0,0.1);
+    border: 1px solid rgba(255,99,0,0.25);
+    border-radius: 2px;
+    padding: 10px 16px;
+    font-size: 13px; color: rgba(255,255,255,0.65);
+  }
+  .admin-info-bar svg { color: var(--orange); flex-shrink: 0; }
+
+  /* ─── WAVE ─── */
+  .wave-bottom {
+    position: absolute; bottom: -2px; left: 0; right: 0;
+    line-height: 0; pointer-events: none;
+  }
+  .wave-bottom svg { display: block; width: 100%; }
+
+  /* ─── MAIN LAYOUT ─── */
+  .admin-main {
+    max-width: 1200px; margin: 0 auto;
+    padding: 40px 32px 0;
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    gap: 32px;
+    align-items: start;
+  }
+
+  /* ─── SECTION LABEL ─── */
+  .section-label {
+    font-family: 'Orbitron', monospace;
+    font-size: 9px; font-weight: 700;
+    letter-spacing: .22em; text-transform: uppercase;
+    color: var(--orange); margin-bottom: 10px; display: block;
+  }
+
+  /* ─── EVENT LIST ─── */
+  .list-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px; flex-wrap: wrap; gap: 12px;
+  }
+  .list-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 22px; font-weight: 700; color: var(--navy);
+  }
+  .btn-new-event {
+    background: var(--orange); color: var(--white);
+    border: none; padding: 10px 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 500;
+    cursor: pointer; border-radius: 2px;
+    letter-spacing: .04em;
+    transition: background .2s;
+  }
+  .btn-new-event:hover { background: #e55700; }
+
+  #event-list-admin { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+
+  .event-admin-card {
+    background: var(--white);
+    border: 1px solid rgba(0,34,77,0.1);
+    padding: 18px 18px 18px 24px;
+    position: relative; overflow: hidden;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  .event-admin-card::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 4px; background: var(--orange);
+  }
+  .event-admin-card:hover {
+    border-color: rgba(255,99,0,0.3);
+    box-shadow: 0 4px 16px rgba(0,34,77,0.08);
+  }
+  .event-admin-card.viewing {
+    border: 3px solid var(--navy);
+    box-shadow: 0 4px 20px rgba(0,34,77,0.15);
+    cursor: default;
+  }
+  .event-admin-card.editing {
+    border: 3px solid var(--orange);
+    box-shadow: 0 4px 20px rgba(255,99,0,0.2);
+  }
+
+  .card-top {
+    display: flex; align-items: flex-start; gap: 10px;
+    margin-bottom: 8px; flex-wrap: wrap;
+  }
+  .card-name {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 17px; font-weight: 700; color: var(--navy);
+    flex: 1;
+  }
+  .type-badge {
+    font-family: 'Orbitron', monospace;
+    font-size: 8px; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase;
+    padding: 3px 8px; border-radius: 2px;
+    flex-shrink: 0; margin-top: 2px;
+  }
+  .type-Workshop  { background: rgba(255,99,0,0.12); color: var(--orange); border: 1px solid rgba(255,99,0,0.25); }
+  .type-Seminar   { background: rgba(0,34,77,0.08);  color: var(--navy);   border: 1px solid rgba(0,34,77,0.2); }
+  .type-Vortrag   { background: rgba(100,100,100,0.1); color: #555; border: 1px solid rgba(100,100,100,0.25); }
+  .type-Webinar   { background: rgba(0,120,180,0.1);  color: #0078b4; border: 1px solid rgba(0,120,180,0.25); }
+  .type-Sonstiges { background: rgba(100,100,100,0.08); color: #666; border: 1px solid rgba(100,100,100,0.2); }
+
+  .card-meta {
+    display: flex; flex-wrap: wrap; gap: 12px;
+    font-size: 13px; color: #666; margin-bottom: 12px;
+  }
+  .card-meta-item {
+    display: flex; align-items: center; gap: 5px;
+  }
+  .card-meta-item svg { color: var(--orange); flex-shrink: 0; }
+
+  .format-badge {
+    font-size: 10px; font-weight: 600;
+    letter-spacing: .06em; text-transform: uppercase;
+    padding: 2px 7px; border-radius: 2px;
+  }
+  .fmt-Präsenz { background: rgba(255,99,0,0.1); color: var(--orange); }
+  .fmt-Online  { background: rgba(0,120,180,0.1); color: #0078b4; }
+  .fmt-Hybrid  { background: linear-gradient(to bottom left, rgba(0,120,180,0.1) 50%, rgba(255,99,0,0.1) 50%); color: var(--navy); }
+
+  .card-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .btn-edit, .btn-delete, .btn-confirm-del, .btn-cancel-del {
+    border: none; cursor: pointer; border-radius: 2px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px; font-weight: 500;
+    padding: 6px 14px;
+    transition: background .15s, transform .1s;
+  }
+  .btn-edit {
+    background: rgba(0,34,77,0.07);
+    color: var(--navy); border: 1px solid rgba(0,34,77,0.15);
+  }
+  .btn-edit:hover { background: rgba(0,34,77,0.12); }
+  .btn-delete {
+    background: rgba(220,38,38,0.08);
+    color: var(--red); border: 1px solid rgba(220,38,38,0.2);
+  }
+  .btn-delete:hover { background: rgba(220,38,38,0.15); }
+  .btn-confirm-del {
+    background: var(--red); color: var(--white);
+  }
+  .btn-confirm-del:hover { background: #b91c1c; }
+  .btn-cancel-del {
+    background: transparent; color: #888; border: 1px solid #ccc;
+  }
+  .btn-cancel-del:hover { background: #f0f0f0; }
+
+  .empty-list {
+    text-align: center; padding: 48px 24px;
+    color: rgba(0,34,77,0.3);
+    background: var(--white);
+    border: 2px dashed rgba(0,34,77,0.1);
+    border-radius: 4px;
+  }
+  .empty-list p { font-size: 15px; margin-top: 8px; }
+
+  /* ─── UTILITY ACTIONS ─── */
+  .util-actions {
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .btn-util {
+    background: transparent;
+    border: 1px solid rgba(0,34,77,0.2);
+    color: #666;
+    padding: 7px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px; cursor: pointer; border-radius: 2px;
+    transition: background .15s, border-color .15s;
+  }
+  .btn-util:hover {
+    background: rgba(0,34,77,0.05);
+    border-color: rgba(0,34,77,0.35);
+    color: var(--navy);
+  }
+  .btn-util.danger {
+    border-color: rgba(220,38,38,0.25);
+    color: var(--red);
+  }
+  .btn-util.danger:hover {
+    background: rgba(220,38,38,0.06);
+    border-color: var(--red);
+  }
+
+  /* ─── FORM PANEL ─── */
+  .form-panel {
+    background: var(--white);
+    border: 1px solid rgba(0,34,77,0.1);
+    padding: 28px;
+    position: sticky;
+    top: 88px;
+    box-shadow: 0 8px 32px rgba(0,34,77,0.08);
+  }
+  .form-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 20px; font-weight: 700; color: var(--navy);
+    margin-bottom: 22px;
+  }
+
+  /* Form fields */
+  .field-group {
+    margin-bottom: 16px;
+  }
+  .field-group label {
+    font-family: 'Orbitron', monospace;
+    font-size: 9px; font-weight: 700;
+    letter-spacing: .18em; text-transform: uppercase;
+    color: var(--navy); opacity: .7;
+    display: block; margin-bottom: 6px;
+  }
+  .field-group input,
+  .field-group select,
+  .field-group textarea {
+    width: 100%;
+    background: #f4f4f2;
+    border: 1px solid rgba(0,34,77,0.15);
+    border-radius: 2px;
+    padding: 9px 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--navy);
+    outline: none;
+    transition: border-color .2s, background .2s;
+    -webkit-appearance: none;
+  }
+  .field-group input:focus,
+  .field-group select:focus,
+  .field-group textarea:focus {
+    border-color: var(--orange);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(255,99,0,0.1);
+  }
+  .field-group textarea { resize: vertical; min-height: 72px; }
+  .field-group input.error,
+  .field-group select.error { border-color: var(--red); }
+  .field-error { font-size: 11px; color: var(--red); margin-top: 4px; display: none; }
+  .field-group.has-error .field-error { display: block; }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .field-hint {
+    font-size: 11px; color: #999;
+    margin-top: 4px;
+  }
+  .field-hint.orange { color: var(--orange); font-weight: 500; }
+
+  .form-actions {
+    display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap;
+  }
+  .btn-save {
+    flex: 1;
+    background: var(--orange); color: var(--white);
+    border: none; padding: 12px 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 500;
+    cursor: pointer; border-radius: 2px;
+    letter-spacing: .03em;
+    transition: background .2s;
+    position: relative; overflow: hidden;
+  }
+  .btn-save:hover { background: #e55700; }
+  .btn-form-edit {
+    flex: 1;
+    background: var(--navy); color: var(--white);
+    border: none; padding: 12px 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 500; cursor: pointer; border-radius: 2px;
+    letter-spacing: .03em;
+    transition: background .2s;
+  }
+  .btn-form-edit:hover { background: #003a85; }
+  .btn-cancel-form {
+    background: transparent;
+    border: 1px solid rgba(0,34,77,0.2);
+    color: #888;
+    padding: 12px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; cursor: pointer; border-radius: 2px;
+    transition: background .15s;
+  }
+  .btn-cancel-form:hover { background: rgba(0,34,77,0.04); color: var(--navy); }
+
+  .form-divider {
+    border: none;
+    border-top: 1px solid rgba(0,34,77,0.08);
+    margin: 20px 0;
+  }
+
+  /* View-mode: disabled fields look like read-only content */
+  #event-form input:disabled,
+  #event-form select:disabled,
+  #event-form textarea:disabled {
+    background: rgba(0,34,77,0.03) !important;
+    border-color: rgba(0,34,77,0.08) !important;
+    color: var(--navy) !important;
+    -webkit-text-fill-color: var(--navy) !important;
+    opacity: 1 !important;
+    cursor: default;
+  }
+
+  /* ─── TOAST ─── */
+  #toast {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    z-index: 9999;
+    display: flex; flex-direction: column; gap: 8px;
+    pointer-events: none;
+  }
+  .toast-msg {
+    background: var(--navy);
+    color: var(--white);
+    padding: 12px 18px;
+    border-radius: 2px;
+    font-size: 13px;
+    border-left: 4px solid var(--orange);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    opacity: 0;
+    transform: translateX(20px);
+    transition: opacity .3s, transform .3s;
+    max-width: 300px;
+  }
+  .toast-msg.show { opacity: 1; transform: translateX(0); }
+  .toast-msg.success { border-left-color: var(--green); }
+  .toast-msg.error   { border-left-color: var(--red); }
+
+  /* ─── FILTER BAR ─── */
+  .filter-bar {
+    display: flex; align-items: center; flex-wrap: wrap; gap: 10px;
+    margin-bottom: 16px; padding: 12px 16px;
+    background: var(--white); border: 1px solid rgba(0,34,77,0.1); border-radius: 4px;
+  }
+  .filter-group { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .filter-group-label {
+    font-family: 'Orbitron', monospace; font-size: 8px; font-weight: 700;
+    letter-spacing: .12em; text-transform: uppercase;
+    color: rgba(0,34,77,0.38); white-space: nowrap; margin-right: 2px;
+  }
+  .filter-sep { width: 1px; height: 22px; background: rgba(0,34,77,0.1); margin: 0 4px; }
+  .filter-chip {
+    display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 2px;
+    border: 1px solid rgba(0,34,77,0.18); background: transparent; color: rgba(0,34,77,0.45);
+    font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500;
+    cursor: pointer; transition: all .15s; user-select: none;
+  }
+  .filter-chip:hover { border-color: rgba(0,34,77,0.35); color: var(--navy); }
+  .filter-chip.active { background: var(--navy); border-color: var(--navy); color: var(--white); }
+  .filter-chip[data-fmt="Präsenz"].active { background: var(--orange); border-color: var(--orange); }
+  .filter-chip[data-fmt="Online"].active  { background: #0078b4; border-color: #0078b4; }
+  .filter-chip[data-fmt="Hybrid"].active  { background: linear-gradient(to bottom left, #0078b4 50%, #ff6300 50%); border-color: transparent; }
+
+  /* Type chips: inactive = badge look, active = solid */
+  .filter-chip[data-typ="Workshop"]           { background: rgba(255,99,0,0.1);     color: var(--orange); border-color: rgba(255,99,0,0.3); }
+  .filter-chip[data-typ="Seminar"]            { background: rgba(0,34,77,0.07);     color: var(--navy);   border-color: rgba(0,34,77,0.2); }
+  .filter-chip[data-typ="Vortrag"]            { background: rgba(100,100,100,0.09); color: #555;          border-color: rgba(100,100,100,0.25); }
+  .filter-chip[data-typ="Webinar"]            { background: rgba(0,120,180,0.1);    color: #0078b4;       border-color: rgba(0,120,180,0.3); }
+  .filter-chip[data-typ="Sonstiges"]          { background: rgba(100,100,100,0.07); color: #666;          border-color: rgba(100,100,100,0.2); }
+  .filter-chip[data-typ="Workshop"].active    { background: var(--orange); border-color: var(--orange); color: var(--white); }
+  .filter-chip[data-typ="Seminar"].active     { background: var(--navy);   border-color: var(--navy);   color: var(--white); }
+  .filter-chip[data-typ="Vortrag"].active     { background: #555;          border-color: #555;          color: var(--white); }
+  .filter-chip[data-typ="Webinar"].active     { background: #0078b4;       border-color: #0078b4;       color: var(--white); }
+  .filter-chip[data-typ="Sonstiges"].active   { background: #666;          border-color: #666;          color: var(--white); }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    .admin-main { grid-template-columns: 1fr; padding: 24px 20px 0; }
+    .form-panel { position: static; }
+  }
+  @media (max-width: 600px) {
+    .admin-header-inner { padding: 0 20px; }
+    .nav-preview-links { display: none; }
+    .field-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      Adriana &amp; <span>Sorin</span>
+      <span class="nav-admin-badge">Admin</span>
+    </a>
+    <div class="nav-preview-links">
+      <a href="kalender.html" target="_blank" class="nav-preview-link">Kalender ↗</a>
+      <a href="index.html"    target="_blank" class="nav-preview-link">Startseite ↗</a>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="admin-header">
+  <div class="admin-header-inner">
+    <span class="admin-page-label">Verwaltung</span>
+    <h1>Event-<em>Verwaltung</em></h1>
+    <p>Termine hinzufügen, bearbeiten und löschen. Workshop-Events erscheinen automatisch auf Startseite und Kalender.</p>
+    <div class="admin-info-bar">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      Daten werden im Browser-Speicher (localStorage) gesichert. Änderungen gelten sofort nach Seiten-Reload.
+    </div>
+  </div>
+  <div class="wave-bottom">
+    <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,40 C200,80 400,10 600,45 C800,80 1000,15 1200,48 C1320,65 1380,28 1440,40 L1440,80 L0,80 Z" fill="#f4f4f2"/>
+    </svg>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="admin-main">
+
+  <!-- ── LEFT: Event list ── -->
+  <div>
+    <div class="list-header">
+      <div>
+        <span class="section-label">Alle Events</span>
+        <div class="list-title" id="event-count">0 Events</div>
+      </div>
+      <button class="btn-new-event" id="btn-new-event">+ Neuer Event</button>
+    </div>
+
+    <div id="admin-filter-bar" class="filter-bar" style="display:none;"><!-- JS --></div>
+    <div id="event-list-admin">
+      <!-- JS generated -->
+    </div>
+
+    <div style="margin-top:8px;">
+      <span class="section-label">Aktionen</span>
+      <div class="util-actions">
+        <button class="btn-util" id="btn-reset">↺ Standard-Events wiederherstellen</button>
+        <button class="btn-util" id="btn-export">⬇ JSON exportieren</button>
+        <label class="btn-util" style="cursor:pointer;">
+          ⬆ JSON importieren
+          <input type="file" id="import-file" accept=".json" style="display:none">
+        </label>
+        <button class="btn-util danger" id="btn-clear-all">✕ Alle löschen</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── RIGHT: Form panel ── -->
+  <div>
+    <div class="form-panel" id="form-panel">
+      <span class="section-label" id="form-mode-label">Neuer Event</span>
+      <div class="form-title" id="form-title">Event hinzufügen</div>
+
+      <form id="event-form" novalidate>
+        <input type="hidden" id="field-id">
+
+        <div class="field-group" id="fg-name">
+          <label for="field-name">Name *</label>
+          <input type="text" id="field-name" placeholder="z. B. Deep Coaching Workshop" maxlength="100">
+          <div class="field-error">Bitte einen Namen eingeben.</div>
+        </div>
+
+        <div class="field-row">
+          <div class="field-group" id="fg-type">
+            <label for="field-type">Typ *</label>
+            <select id="field-type">
+              <option value="Workshop">Workshop</option>
+              <option value="Seminar">Seminar</option>
+              <option value="Vortrag">Vortrag</option>
+              <option value="Webinar">Webinar</option>
+              <option value="Sonstiges">Sonstiges</option>
+            </select>
+            <div class="field-hint orange" id="type-hint">✓ Erscheint auch auf der Startseite</div>
+          </div>
+          <div class="field-group" id="fg-format">
+            <label for="field-format">Format *</label>
+            <select id="field-format">
+              <option value="Präsenz">Präsenz</option>
+              <option value="Online">Online</option>
+              <option value="Hybrid">Hybrid</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field-group" id="fg-date">
+            <label for="field-date">Datum *</label>
+            <input type="date" id="field-date">
+            <div class="field-error">Bitte ein Datum wählen.</div>
+          </div>
+          <div class="field-group">
+            <label>Uhrzeit</label>
+            <div style="display:flex;gap:6px;align-items:center;">
+              <input type="time" id="field-time-from" value="10:00" style="flex:1;">
+              <span style="color:#999;font-size:12px;">–</span>
+              <input type="time" id="field-time-to"   value="16:00" style="flex:1;">
+            </div>
+          </div>
+        </div>
+
+        <div class="field-group" id="fg-location">
+          <label for="field-location">Ort</label>
+          <input type="text" id="field-location" placeholder="z. B. Nürnberg" maxlength="100">
+        </div>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label for="field-price">Preis</label>
+            <input type="text" id="field-price" placeholder="z. B. ab 48 €" maxlength="40">
+          </div>
+          <div class="field-group">
+            <label for="field-spots">Plätze</label>
+            <input type="text" id="field-spots" placeholder="z. B. max. 12" maxlength="40">
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label for="field-description">Beschreibung</label>
+          <textarea id="field-description" placeholder="Kurze Beschreibung des Events…" maxlength="500"></textarea>
+        </div>
+
+        <div class="field-group" id="fg-url">
+          <label for="field-url">Anmelde-URL *</label>
+          <input type="url" id="field-url" placeholder="register.html" value="register.html">
+          <div class="field-error">Anmelde-URL ist erforderlich.</div>
+        </div>
+
+        <div class="field-group" id="fg-payment-url">
+          <label for="field-payment-url">Zahlungslink <span id="url-req-badge" style="display:none;font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.1em;color:var(--orange);margin-left:6px;">PFLICHTFELD</span></label>
+          <input type="url" id="field-payment-url" placeholder="https://…">
+          <div class="field-error">Zahlungslink ist bei kostenpflichtigen Events erforderlich.</div>
+          <div class="field-hint" id="url-hint" style="display:none;">Wird nach der Registrierung aufgerufen und in der Bestätigungs-E-Mail verlinkt.</div>
+        </div>
+
+        <hr class="form-divider">
+
+        <div class="form-actions">
+          <button type="submit" class="btn-save" id="btn-save">Event speichern</button>
+          <button type="button" class="btn-cancel-form" id="btn-cancel-form" style="display:none;">Abbrechen</button>
+          <button type="button" class="btn-form-edit" id="btn-form-edit" style="display:none;">✎ Bearbeiten</button>
+          <button type="button" class="btn-cancel-form" id="btn-form-close" style="display:none;">Schließen</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+const STORAGE_KEY = 'dc_events';
+
+const DEFAULT_EVENTS = [
+  {
+    id: 'default_1',
+    name: 'Deep Coaching Workshop',
+    type: 'Workshop',
+    year: 2026, month: 5, day: 20,
+    timeFrom: '10:00', timeTo: '16:00',
+    location: 'Nürnberg',
+    format: 'Präsenz',
+    price: 'ab 48 €',
+    spots: 'max. 15 Plätze',
+    description: 'Intensiver Deep-Coaching-Workshop für Führungskräfte & Professionals.',
+    url: 'register.html', paymentUrl: ''
+  },
+  {
+    id: 'default_2',
+    name: 'Deep Coaching Workshop',
+    type: 'Workshop',
+    year: 2026, month: 6, day: 18,
+    timeFrom: '10:00', timeTo: '16:00',
+    location: 'Rodgau',
+    format: 'Präsenz',
+    price: 'ab 48 €',
+    spots: 'max. 15 Plätze',
+    description: 'Intensiver Deep-Coaching-Workshop für Führungskräfte & Professionals.',
+    url: 'register.html', paymentUrl: ''
+  }
+];
+
+const MONTH_NAMES = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+const MONTH_SHORT = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+
+// ── Storage ──────────────────────────────────────────────────
+function loadEvents() {
+  try {
+    const s = localStorage.getItem(STORAGE_KEY);
+    if (s) {
+      const parsed = JSON.parse(s);
+      if (Array.isArray(parsed)) return parsed;
+    }
+  } catch(e) {}
+  const copy = structuredClone ? structuredClone(DEFAULT_EVENTS) : JSON.parse(JSON.stringify(DEFAULT_EVENTS));
+  saveEvents(copy);
+  return copy;
+}
+function saveEvents(arr) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+}
+function genId() {
+  return 'evt_' + Date.now() + '_' + Math.floor(Math.random()*9999);
+}
+
+let events = loadEvents();
+
+// ── Filter state ──────────────────────────────────────────────
+let adminActiveFormats = new Set();
+let adminActiveTypes   = new Set();
+
+function initAdminFilters() {
+  adminActiveFormats.clear(); adminActiveTypes.clear();
+  events.forEach(ev => {
+    adminActiveFormats.add(ev.format || 'Präsenz');
+    adminActiveTypes.add(ev.type || 'Sonstiges');
+  });
+}
+
+function getAdminFilteredEvents() {
+  return events.filter(ev => {
+    const fmt = ev.format || 'Präsenz';
+    const typ = ev.type   || 'Sonstiges';
+    if (adminActiveFormats.size > 0 && !adminActiveFormats.has(fmt)) return false;
+    if (adminActiveTypes.size > 0   && !adminActiveTypes.has(typ))   return false;
+    return true;
+  });
+}
+
+function renderAdminFilterBar() {
+  const bar = document.getElementById('admin-filter-bar');
+  if (!bar) return;
+  bar.style.display = '';
+  bar.innerHTML = '';
+
+  const allFormats = [...new Set(events.map(e => e.format || 'Präsenz'))];
+  const allTypes   = [...new Set(events.map(e => e.type   || 'Sonstiges'))];
+
+  if (allFormats.length > 0) {
+    const g = document.createElement('div');
+    g.className = 'filter-group';
+    const lbl = document.createElement('span');
+    lbl.className = 'filter-group-label'; lbl.textContent = 'Format';
+    g.appendChild(lbl);
+    allFormats.forEach(fmt => {
+      const chip = document.createElement('button');
+      chip.className = 'filter-chip' + (adminActiveFormats.has(fmt) ? ' active' : '');
+      chip.dataset.fmt = fmt; chip.textContent = fmt;
+      chip.addEventListener('click', () => {
+        if (adminActiveFormats.has(fmt)) adminActiveFormats.delete(fmt);
+        else adminActiveFormats.add(fmt);
+        chip.classList.toggle('active');
+        renderList();
+      });
+      g.appendChild(chip);
+    });
+    bar.appendChild(g);
+  }
+
+  if (allFormats.length > 0 && allTypes.length > 0) {
+    const sep = document.createElement('div'); sep.className = 'filter-sep';
+    bar.appendChild(sep);
+  }
+
+  if (allTypes.length > 0) {
+    const g = document.createElement('div');
+    g.className = 'filter-group';
+    const lbl = document.createElement('span');
+    lbl.className = 'filter-group-label'; lbl.textContent = 'Typ';
+    g.appendChild(lbl);
+    allTypes.forEach(typ => {
+      const chip = document.createElement('button');
+      chip.className = 'filter-chip' + (adminActiveTypes.has(typ) ? ' active' : '');
+      chip.dataset.typ = typ;
+      chip.textContent = typ;
+      chip.addEventListener('click', () => {
+        if (adminActiveTypes.has(typ)) adminActiveTypes.delete(typ);
+        else adminActiveTypes.add(typ);
+        chip.classList.toggle('active');
+        renderList();
+      });
+      g.appendChild(chip);
+    });
+    bar.appendChild(g);
+  }
+}
+
+// ── Render list ───────────────────────────────────────────────
+function renderList() {
+  const container = document.getElementById('event-list-admin');
+  const filtered = getAdminFilteredEvents();
+  const sorted = [...filtered].sort((a, b) => new Date(a.year, a.month, a.day) - new Date(b.year, b.month, b.day));
+
+  const total = events.length;
+  const shown = filtered.length;
+  document.getElementById('event-count').textContent = (shown < total ? shown + ' von ' : '') + total + ' Event' + (total !== 1 ? 's' : '');
+
+  if (sorted.length === 0) {
+    container.innerHTML = events.length === 0
+      ? '<div class="empty-list"><div style="font-size:32px;">📭</div><p>Noch keine Events. Füge deinen ersten Termin hinzu.</p></div>'
+      : '<div class="empty-list"><p style="font-style:italic;color:rgba(0,34,77,0.4);">Keine Events für die gewählten Filter.</p></div>';
+    return;
+  }
+
+  container.innerHTML = '';
+  sorted.forEach(ev => {
+    const card = document.createElement('div');
+    card.className = 'event-admin-card';
+    card.id = 'admin-card-' + ev.id;
+
+    const dateObj = new Date(ev.year, ev.month, ev.day);
+    const days = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+    const dateLabel = days[dateObj.getDay()] + '., ' + ev.day + '. ' + MONTH_NAMES[ev.month] + ' ' + ev.year;
+    const timeLabel = ev.timeFrom && ev.timeTo ? ev.timeFrom + ' – ' + ev.timeTo + ' Uhr' : (ev.timeFrom || '');
+
+    card.innerHTML = `
+      <div class="card-top">
+        <div class="card-name">${esc(ev.name)}</div>
+        <span class="type-badge type-${ev.type}">${esc(ev.type)}</span>
+      </div>
+      <div class="card-meta">
+        <div class="card-meta-item">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          ${dateLabel}
+        </div>
+        ${timeLabel ? `<div class="card-meta-item"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${esc(timeLabel)}</div>` : ''}
+        ${ev.location ? `<div class="card-meta-item"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${esc(ev.location)}</div>` : ''}
+        ${ev.price ? `<div class="card-meta-item">💶 ${esc(ev.price)}</div>` : ''}
+        <span class="format-badge fmt-${ev.format}">${esc(ev.format)}</span>
+      </div>
+      <div class="card-actions">
+        <button class="btn-delete" data-id="${ev.id}">🗑 Löschen</button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+
+  // Attach handlers
+  container.querySelectorAll('.btn-delete').forEach(btn => {
+    btn.addEventListener('click', e => { e.stopPropagation(); confirmDelete(btn, btn.dataset.id); });
+  });
+  container.querySelectorAll('.event-admin-card').forEach(card => {
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', e => {
+      if (e.target.closest('button')) return;
+      const id = card.id.replace('admin-card-', '');
+      viewEvent(id);
+    });
+  });
+}
+
+// ── Delete confirmation ────────────────────────────────────────
+function confirmDelete(btn, id) {
+  // Reset any other pending confirmations
+  document.querySelectorAll('.btn-confirm-del').forEach(b => {
+    const orig = b.closest('.card-actions').querySelector('.btn-delete-orig');
+    if (orig) { orig.style.display = ''; b.remove(); }
+    const cancel = b.closest('.card-actions').querySelector('.btn-cancel-del');
+    if (cancel) cancel.remove();
+  });
+
+  btn.classList.add('btn-confirm-del');
+  btn.classList.remove('btn-delete');
+  btn.textContent = 'Sicher löschen?';
+
+  const cancelBtn = document.createElement('button');
+  cancelBtn.className = 'btn-cancel-del';
+  cancelBtn.textContent = 'Abbrechen';
+  btn.after(cancelBtn);
+
+  btn.onclick = () => {
+    deleteEvent(id);
+  };
+  cancelBtn.onclick = () => {
+    btn.classList.remove('btn-confirm-del');
+    btn.classList.add('btn-delete');
+    btn.textContent = '🗑 Löschen';
+    btn.onclick = () => confirmDelete(btn, id);
+    cancelBtn.remove();
+  };
+}
+
+function deleteEvent(id) {
+  events = events.filter(e => e.id !== id);
+  saveEvents(events);
+  initAdminFilters(); renderAdminFilterBar();
+  renderList();
+  // If we were editing this event, reset form
+  if (document.getElementById('field-id').value === id) resetForm();
+  showToast('Event gelöscht.', 'success');
+}
+
+// ── Form helpers ─────────────────────────────────────────────
+function setFormDisabled(yes) {
+  document.querySelectorAll('#event-form input:not(#field-id), #event-form select, #event-form textarea').forEach(el => {
+    el.disabled = yes;
+  });
+}
+
+// ── Form: new ────────────────────────────────────────────────
+function resetForm() {
+  document.getElementById('field-id').value = '';
+  document.getElementById('field-name').value = '';
+  document.getElementById('field-type').value = 'Workshop';
+  document.getElementById('field-format').value = 'Präsenz';
+  document.getElementById('field-date').value = '';
+  document.getElementById('field-time-from').value = '10:00';
+  document.getElementById('field-time-to').value = '16:00';
+  document.getElementById('field-location').value = '';
+  document.getElementById('field-price').value = '';
+  document.getElementById('field-spots').value = '';
+  document.getElementById('field-description').value = '';
+  document.getElementById('field-url').value = 'register.html';
+  document.getElementById('field-payment-url').value = '';
+
+  setFormDisabled(false);
+
+  document.getElementById('form-mode-label').textContent = 'Neuer Event';
+  document.getElementById('form-title').textContent = 'Event hinzufügen';
+  document.getElementById('btn-save').textContent = 'Event speichern';
+  document.getElementById('btn-save').style.display = '';
+  document.getElementById('btn-cancel-form').style.display = 'none';
+  document.getElementById('btn-form-edit').style.display = 'none';
+  document.getElementById('btn-form-close').style.display = 'none';
+
+  document.querySelectorAll('.field-group.has-error').forEach(fg => fg.classList.remove('has-error'));
+  document.querySelectorAll('.event-admin-card.editing, .event-admin-card.viewing').forEach(c => c.classList.remove('editing','viewing'));
+  updateTypeHint();
+}
+
+// ── Form: view (read-only) ────────────────────────────────────
+function viewEvent(id) {
+  const ev = events.find(e => e.id === id);
+  if (!ev) return;
+
+  document.getElementById('field-id').value = ev.id;
+  document.getElementById('field-name').value = ev.name;
+  document.getElementById('field-type').value = ev.type;
+  document.getElementById('field-format').value = ev.format;
+  const m = String(ev.month + 1).padStart(2,'0');
+  const d = String(ev.day).padStart(2,'0');
+  document.getElementById('field-date').value = ev.year + '-' + m + '-' + d;
+  document.getElementById('field-time-from').value = ev.timeFrom || '10:00';
+  document.getElementById('field-time-to').value   = ev.timeTo   || '16:00';
+  document.getElementById('field-location').value  = ev.location || '';
+  document.getElementById('field-price').value     = ev.price    || '';
+  document.getElementById('field-spots').value     = ev.spots    || '';
+  document.getElementById('field-description').value = ev.description || '';
+  document.getElementById('field-url').value         = ev.url         || 'register.html';
+  document.getElementById('field-payment-url').value = ev.paymentUrl  || '';
+
+  setFormDisabled(true);
+
+  document.getElementById('form-mode-label').textContent = 'Event ansehen';
+  document.getElementById('form-title').textContent = ev.name;
+  document.getElementById('btn-save').style.display = 'none';
+  document.getElementById('btn-cancel-form').style.display = 'none';
+  document.getElementById('btn-form-edit').style.display = '';
+  document.getElementById('btn-form-edit').dataset.id = id;
+  document.getElementById('btn-form-close').style.display = '';
+
+  document.querySelectorAll('.field-group.has-error').forEach(fg => fg.classList.remove('has-error'));
+  document.querySelectorAll('.event-admin-card.editing, .event-admin-card.viewing').forEach(c => c.classList.remove('editing','viewing'));
+  const card = document.getElementById('admin-card-' + id);
+  if (card) {
+    card.classList.add('viewing');
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  document.getElementById('form-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  updateTypeHint();
+}
+
+// ── Form: edit ────────────────────────────────────────────────
+function startEdit(id) {
+  viewEvent(id); // fill form in view mode first
+
+  // Switch to edit mode
+  setFormDisabled(false);
+
+  document.getElementById('form-mode-label').textContent = 'Event bearbeiten';
+  document.getElementById('form-title').textContent = 'Event bearbeiten';
+  document.getElementById('btn-save').textContent = 'Änderungen speichern';
+  document.getElementById('btn-save').style.display = '';
+  document.getElementById('btn-cancel-form').style.display = '';
+  document.getElementById('btn-form-edit').style.display = 'none';
+  document.getElementById('btn-form-close').style.display = 'none';
+
+  const card = document.getElementById('admin-card-' + id);
+  if (card) {
+    card.classList.remove('viewing');
+    card.classList.add('editing');
+  }
+}
+
+// ── Form: save ────────────────────────────────────────────────
+document.getElementById('event-form').addEventListener('submit', e => {
+  e.preventDefault();
+  if (!validateForm()) return;
+
+  const dateVal = document.getElementById('field-date').value; // YYYY-MM-DD
+  const parts = dateVal.split('-');
+  const year  = parseInt(parts[0]);
+  const month = parseInt(parts[1]) - 1; // 0-indexed
+  const day   = parseInt(parts[2]);
+
+  const editId = document.getElementById('field-id').value;
+  const isEdit = editId !== '';
+
+  const eventData = {
+    id:          isEdit ? editId : genId(),
+    name:        document.getElementById('field-name').value.trim(),
+    type:        document.getElementById('field-type').value,
+    year, month, day,
+    timeFrom:    document.getElementById('field-time-from').value,
+    timeTo:      document.getElementById('field-time-to').value,
+    location:    document.getElementById('field-location').value.trim(),
+    format:      document.getElementById('field-format').value,
+    price:       document.getElementById('field-price').value.trim(),
+    spots:       document.getElementById('field-spots').value.trim(),
+    description: document.getElementById('field-description').value.trim(),
+    url:         document.getElementById('field-url').value.trim() || 'register.html',
+    paymentUrl:  document.getElementById('field-payment-url').value.trim()
+  };
+
+  if (isEdit) {
+    const idx = events.findIndex(e => e.id === editId);
+    if (idx !== -1) events[idx] = eventData;
+    showToast('Event aktualisiert ✓', 'success');
+  } else {
+    events.push(eventData);
+    showToast('Event gespeichert ✓', 'success');
+  }
+
+  saveEvents(events);
+  initAdminFilters(); renderAdminFilterBar();
+  renderList();
+  viewEvent(eventData.id);
+});
+
+document.getElementById('btn-cancel-form').addEventListener('click', resetForm);
+document.getElementById('btn-form-close').addEventListener('click', resetForm);
+document.getElementById('btn-form-edit').addEventListener('click', function() {
+  startEdit(this.dataset.id);
+});
+document.getElementById('btn-new-event').addEventListener('click', resetForm);
+
+// ── Validation ────────────────────────────────────────────────
+function validateForm() {
+  let valid = true;
+
+  function checkField(groupId, inputId, condition) {
+    const fg = document.getElementById(groupId);
+    const inp = document.getElementById(inputId);
+    if (!condition) { fg.classList.add('has-error'); inp.classList.add('error'); valid = false; }
+    else { fg.classList.remove('has-error'); inp.classList.remove('error'); }
+  }
+
+  checkField('fg-name', 'field-name', document.getElementById('field-name').value.trim() !== '');
+  checkField('fg-date', 'field-date', document.getElementById('field-date').value !== '');
+  checkField('fg-url',  'field-url',  document.getElementById('field-url').value.trim() !== '');
+
+  // Require payment URL when price > 0
+  const priceRaw = document.getElementById('field-price').value;
+  const priceNum = parseFloat((priceRaw.match(/\d+(\.\d+)?/) || [])[0]) || 0;
+  if (priceNum > 0) {
+    checkField('fg-payment-url', 'field-payment-url', document.getElementById('field-payment-url').value.trim() !== '');
+  }
+
+  return valid;
+}
+
+// ── Type hint ─────────────────────────────────────────────────
+function updateTypeHint() {
+  const hint = document.getElementById('type-hint');
+  hint.style.display = document.getElementById('field-type').value === 'Workshop' ? '' : 'none';
+}
+document.getElementById('field-type').addEventListener('change', updateTypeHint);
+updateTypeHint();
+
+// ── Payment URL hint (shown when price > 0) ────────────────────
+function updateUrlHint() {
+  const raw  = document.getElementById('field-price').value;
+  const num  = parseFloat((raw.match(/\d+(\.\d+)?/) || [])[0]) || 0;
+  const show = num > 0;
+  const hint  = document.getElementById('url-hint');
+  const badge = document.getElementById('url-req-badge');
+  const fg    = document.getElementById('fg-payment-url');
+  if (hint)  hint.style.display  = show ? '' : 'none';
+  if (badge) badge.style.display = show ? '' : 'none';
+  // Clear payment URL validation error when no longer required
+  if (!show && fg) { fg.classList.remove('has-error'); const inp = document.getElementById('field-payment-url'); if (inp) inp.classList.remove('error'); }
+}
+document.getElementById('field-price').addEventListener('input', updateUrlHint);
+updateUrlHint();
+
+// ── Reset / Export / Import / Clear ───────────────────────────
+document.getElementById('btn-reset').addEventListener('click', () => {
+  if (!confirm('Alle Events durch die Standard-Events ersetzen?')) return;
+  events = JSON.parse(JSON.stringify(DEFAULT_EVENTS));
+  saveEvents(events);
+  initAdminFilters(); renderAdminFilterBar();
+  renderList();
+  resetForm();
+  showToast('Standard-Events wiederhergestellt.', 'success');
+});
+
+document.getElementById('btn-export').addEventListener('click', () => {
+  const json = JSON.stringify(events, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'events_' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  showToast('JSON exportiert.', 'success');
+});
+
+document.getElementById('import-file').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const imported = JSON.parse(ev.target.result);
+      if (!Array.isArray(imported)) throw new Error('Kein Array');
+      if (!confirm('Importierte Events ersetzen alle bestehenden Events. Fortfahren?')) return;
+      events = imported;
+      saveEvents(events);
+      initAdminFilters(); renderAdminFilterBar();
+      renderList();
+      resetForm();
+      showToast(imported.length + ' Events importiert ✓', 'success');
+    } catch(err) {
+      showToast('Fehler beim Import: Ungültiges JSON.', 'error');
+    }
+    e.target.value = '';
+  };
+  reader.readAsText(file);
+});
+
+document.getElementById('btn-clear-all').addEventListener('click', () => {
+  if (!confirm('Alle Events unwiderruflich löschen?')) return;
+  events = [];
+  saveEvents(events);
+  initAdminFilters(); renderAdminFilterBar();
+  renderList();
+  resetForm();
+  showToast('Alle Events gelöscht.', 'success');
+});
+
+// ── Toast ─────────────────────────────────────────────────────
+function showToast(msg, type) {
+  const toast = document.getElementById('toast');
+  const el = document.createElement('div');
+  el.className = 'toast-msg' + (type ? ' ' + type : '');
+  el.textContent = msg;
+  toast.appendChild(el);
+  requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('show')));
+  setTimeout(() => {
+    el.classList.remove('show');
+    setTimeout(() => el.remove(), 350);
+  }, 3000);
+}
+
+// ── Escape HTML ───────────────────────────────────────────────
+function esc(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Init ──────────────────────────────────────────────────────
+initAdminFilters();
+renderAdminFilterBar();
+renderList();
+</script>
+</body>
+</html>

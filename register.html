@@ -300,6 +300,61 @@
     color: rgba(0,34,77,0.55);
   }
 
+  /* ─── FIXED LOCATION DISPLAY (online / single events) ─── */
+  .location-fixed {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    border: 1px solid rgba(0,34,77,0.12);
+    border-radius: 2px;
+    background: var(--navy-dim);
+  }
+  .location-fixed-icon { font-size: 22px; flex-shrink: 0; line-height: 1; }
+  .location-fixed-wrap { display: flex; flex-direction: column; gap: 8px; }
+  .location-fixed.loc-praesenz { border-color: rgba(255,99,0,0.3); background: rgba(255,99,0,0.04); }
+  .location-fixed.loc-online   { border-color: rgba(0,120,180,0.3); background: rgba(0,120,180,0.04); }
+
+  /* ─── TEST EVENT DEBUG PANEL ─── */
+  .test-debug-panel {
+    background: rgba(255,99,0,0.06);
+    border: 1px dashed rgba(255,99,0,0.4);
+    border-radius: 12px;
+    padding: 16px 20px;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .test-debug-panel summary {
+    font-family: 'Orbitron', monospace;
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: #ff6300;
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+  }
+  .test-debug-panel summary::-webkit-details-marker { display: none; }
+  .test-debug-panel summary::before { content: '▶ '; font-size: 10px; }
+  .test-debug-panel[open] summary::before { content: '▼ '; }
+  .test-debug-table {
+    margin-top: 12px;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    color: #111;
+  }
+  .test-debug-table tr + tr td { border-top: 1px solid rgba(0,0,0,0.08); }
+  .test-debug-table td { padding: 4px 8px; vertical-align: top; }
+  .test-debug-table td:first-child {
+    font-family: 'Orbitron', monospace;
+    font-size: 10px;
+    letter-spacing: .05em;
+    color: #cc4400;
+    white-space: nowrap;
+    padding-right: 16px;
+    opacity: .8;
+  }
+
   /* ─── RESPONSIVE ─── */
   @media (max-width: 600px) {
     .form-row { grid-template-columns: 1fr; }
@@ -307,6 +362,7 @@
     .ticket-price-wrap { text-align: left; }
     .reg-form-section { padding: 48px 5% 72px; }
     .reg-hero { padding: 100px 5% 48px; }
+    .location-options { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -426,51 +482,238 @@
         <span class="btn-label" id="btn-label">Jetzt Registrieren &amp; zur Zahlung →</span>
       </button>
 
-      <p class="form-note">
+      <p class="form-note" id="form-note">
         Nach der Registrierung wirst du zur sicheren Zahlungsseite weitergeleitet.<br>
-        Nürnberg · 20. Juni · und · Rodgau 18. Juli <br> Begrenzte Plätze
+        Begrenzte Plätze!
       </p>
     </form>
   </div>
 </section>
 
+<!-- TEST DEBUG PANEL (bottom of page, only visible for test events) -->
+<section class="reg-form-section" id="test-debug-section" style="display:none; padding-top:0;">
+  <div class="reg-form-inner">
+    <details class="test-debug-panel" id="test-debug-panel" open>
+      <summary>Test-Event · Alle übertragenen Daten</summary>
+      <table class="test-debug-table" id="test-debug-table"></table>
+    </details>
+  </div>
+</section>
+
 <script>
-  // ─────────────────────────────────────────────────────────────
-  //  EMAILJS KONFIGURATION – einmalig auf emailjs.com einrichten
-  //  1. Konto erstellen auf https://emailjs.com
-  //  2. Gmail verbinden (sorin.ratiu@gmail.com) → Service-ID kopieren
-  //  3. Template erstellen (Vorlage: emailjs-template.html) → Template-ID kopieren
-  //     Im Template BCC auf sorin.ratiu@weherzit.de setzen
-  //  4. Public Key aus Account → Settings kopieren
-  // ─────────────────────────────────────────────────────────────
+  // ── EmailJS (unchanged) ──
   var EMAILJS_PUBLIC_KEY  = '61HDtV0fSnuRzKNd4';
   var EMAILJS_SERVICE_ID  = 'service_6jnlzxd';
   var EMAILJS_TEMPLATE_ID = 'template_e42axd9';
-
   emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+
+  // ── Shared storage key ──
+  var STORAGE_KEY = 'dc_events';
+  var MONTH_NAMES = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+  var DAY_NAMES   = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+
+  var FALLBACK_EVENTS = [
+    { id: 'default_1', name: 'Deep Coaching Workshop', type: 'Workshop', year: 2026, month: 5, day: 20,
+      timeFrom: '10:00', timeTo: '16:00', location: 'Nürnberg', format: 'Präsenz', price: 'ab 48 €' },
+    { id: 'default_2', name: 'Deep Coaching Workshop', type: 'Workshop', year: 2026, month: 6, day: 18,
+      timeFrom: '10:00', timeTo: '16:00', location: 'Rodgau', format: 'Präsenz', price: 'ab 48 €' }
+  ];
+
+  function loadAllEvents() {
+    try {
+      var s = localStorage.getItem(STORAGE_KEY);
+      if (s) { var p = JSON.parse(s); if (Array.isArray(p) && p.length) return p; }
+    } catch(e) {}
+    return FALLBACK_EVENTS;
+  }
+
+  function fmtDateLong(ev) {
+    var d = new Date(ev.year, ev.month, ev.day);
+    var t = (ev.timeFrom || '') + (ev.timeTo ? ' – ' + ev.timeTo : '');
+    return DAY_NAMES[d.getDay()] + '., ' + ev.day + '. ' + MONTH_NAMES[ev.month] + ' ' + ev.year + (t ? ' · ' + t : '');
+  }
+  function fmtDateShort(ev) {
+    return ev.day + '. ' + MONTH_NAMES[ev.month] + ' ' + ev.year;
+  }
 
   (function () {
     var params   = new URLSearchParams(window.location.search);
-    var ticket   = params.get('ticket')  || 'Ticket';
-    var price    = params.get('price')   || '';
-    var per      = params.get('per')     || '';
-    var desc     = params.get('desc')    || '';
-    var vividUrl = params.get('url')     || 'index.html#investment';
+    var ticket   = params.get('ticket')   || 'Ticket';
+    var price    = params.get('price')    || '';
+    var per      = params.get('per')      || '';
+    var desc     = params.get('desc')     || '';
+    var rawUrl   = params.get('url')      || '';
+    var vividUrl = rawUrl || 'index.html#investment';
+    var eventId  = params.get('event_id') || '';
     var isEB     = ticket.toLowerCase().indexOf('early bird') !== -1;
+    var priceNum = parseFloat(price) || 0;
 
-    // Ticket-Karte befüllen
-    document.getElementById('ticket-name').textContent = ticket;
-    document.getElementById('ticket-per').textContent  = per;
-    document.getElementById('ticket-desc').textContent = desc;
-    document.getElementById('ticket-price').innerHTML  = price ? '<sup>€</sup>' + price : '–';
-
-    var badge = document.getElementById('ticket-badge');
-    badge.textContent = isEB ? '⚡ Early Bird' : 'Ticket';
-    if (isEB) {
-      badge.style.background = 'linear-gradient(135deg, #FFE040, #FF8C00)';
-      badge.style.color      = '#00224d';
+    var allEvents      = loadAllEvents();
+    var specificEvent  = null;
+    var eventDataParam = params.get('event_data') || '';
+    if (eventDataParam) {
+      try { specificEvent = JSON.parse(eventDataParam); } catch(e) {}
+    }
+    if (!specificEvent && eventId) {
+      specificEvent = allEvents.find(function(e){ return e.id === eventId; }) || null;
     }
 
+    // Auto-fill and debug panel for test events
+    if (ticket.trim().toLowerCase().startsWith('test')) {
+      document.getElementById('vorname').value  = 'Test';
+      document.getElementById('nachname').value = 'Tester';
+      document.getElementById('email').value    = 'email@test.tester';
+      document.getElementById('handy').value    = '0157333114499';
+
+      // Show all transmitted data in debug panel
+      var debugSection = document.getElementById('test-debug-section');
+      var debugTable   = document.getElementById('test-debug-table');
+      if (debugSection && debugTable) {
+        var rows = '';
+        var esc = function(v) { return String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;'); };
+
+        // ── Section 1: raw URL params (excluding event_data blob) ──
+        rows += '<tr><td colspan="2" style="padding:6px 8px 2px;color:#555;font-size:10px;letter-spacing:.08em;">URL-PARAMETER</td></tr>';
+        params.forEach(function(val, key) {
+          if (key === 'event_data') return;
+          rows += '<tr><td>' + esc(key) + '</td><td>' + (val !== '' ? esc(val) : '–') + '</td></tr>';
+        });
+
+        // ── Section 2: parsed event_data fields ──
+        var evSrc = specificEvent || {};
+        var evKeys = ['id','name','type','format','year','month','day','timeFrom','timeTo','time',
+                      'location','price','spots','description','url','paymentUrl'];
+        rows += '<tr><td colspan="2" style="padding:10px 8px 2px;color:#555;font-size:10px;letter-spacing:.08em;">EVENT-DATEN (event_data)</td></tr>';
+        evKeys.forEach(function(k) {
+          var val = evSrc[k];
+          var display = (val !== undefined && val !== null && val !== '') ? esc(val) : '–';
+          rows += '<tr><td>' + esc(k) + '</td><td>' + display + '</td></tr>';
+        });
+
+        debugTable.innerHTML = rows;
+        debugSection.style.display = '';
+      }
+    }
+
+    // "Online mode" = a specific event that is NOT Präsenz Workshop
+    var isOnlineMode = specificEvent &&
+      (specificEvent.format !== 'Präsenz' || specificEvent.type !== 'Workshop');
+
+    // ── Ticket Card ──────────────────────────────────────────────
+    var ticketCard = document.getElementById('ticket-card');
+    if (isOnlineMode && priceNum <= 0) {
+      // Free online event → hide entire ticket card
+      ticketCard.style.display = 'none';
+    } else {
+      document.getElementById('ticket-name').textContent = ticket;
+      document.getElementById('ticket-per').textContent  = per;
+      document.getElementById('ticket-desc').textContent = desc;
+      document.getElementById('ticket-price').innerHTML  = price ? '<sup>€</sup>' + price : '–';
+      var badge = document.getElementById('ticket-badge');
+      badge.textContent = isEB ? '⚡ Early Bird' : 'Ticket';
+      if (isEB) {
+        badge.style.background = 'linear-gradient(135deg, #FFE040, #FF8C00)';
+        badge.style.color      = '#00224d';
+      }
+    }
+
+    // ── Location / Veranstaltungsort ─────────────────────────────
+    var locContainer = document.getElementById('location-options');
+    var locGroup     = locContainer ? locContainer.closest('.form-group') : null;
+
+    if (isOnlineMode) {
+      var loc = specificEvent.location || '';
+      if (locGroup) {
+        var lbl = locGroup.querySelector('.form-label');
+        if (lbl) lbl.textContent = 'Veranstaltungsort';
+      }
+
+      if (specificEvent.format === 'Hybrid') {
+        // Hybrid: show physical location AND online side by side
+        var ortVal = (loc ? loc + ' + ' : '') + 'Online · ' + fmtDateShort(specificEvent);
+        locContainer.innerHTML =
+          '<div class="location-fixed-wrap">'
+          + (loc
+            ? '<div class="location-fixed loc-praesenz">'
+              + '<div class="location-fixed-icon">📍</div>'
+              + '<div><div class="location-city">' + loc + '</div>'
+              + '<div class="location-date">' + fmtDateLong(specificEvent) + '</div></div></div>'
+            : '')
+          + '<div class="location-fixed loc-online">'
+          + '<div class="location-fixed-icon">💻</div>'
+          + '<div><div class="location-city">Online</div>'
+          + '<div class="location-date">' + fmtDateLong(specificEvent) + '</div></div></div>'
+          + '</div>'
+          + '<input type="hidden" name="ort" id="ort-fixed" value="' + ortVal + '">';
+
+      } else {
+        // Online or other non-Präsenz: single row
+        var isOnl  = specificEvent.format === 'Online';
+        var icon   = isOnl ? '💻' : '📍';
+        var locDisplay = loc || 'Online';
+        var ortVal = locDisplay + ' · ' + fmtDateShort(specificEvent);
+        locContainer.innerHTML =
+          '<div class="location-fixed">'
+          + '<div class="location-fixed-icon">' + icon + '</div>'
+          + '<div>'
+          + '<div class="location-city">' + locDisplay + '</div>'
+          + '<div class="location-date">' + fmtDateLong(specificEvent) + '</div>'
+          + '</div></div>'
+          + '<input type="hidden" name="ort" id="ort-fixed" value="' + ortVal + '">';
+      }
+
+    } else {
+      // Load all Präsenz Workshop events → radio selector
+      var workshops = allEvents
+        .filter(function(e){ return e.type === 'Workshop' && e.format === 'Präsenz'; })
+        .sort(function(a,b){ return new Date(a.year,a.month,a.day) - new Date(b.year,b.month,b.day); });
+
+      if (workshops.length === 0) workshops = FALLBACK_EVENTS;
+
+      if (workshops.length === 1) {
+        // Single workshop – show as fixed, no selector needed
+        var w = workshops[0];
+        locContainer.innerHTML =
+          '<div class="location-fixed">'
+          + '<div class="location-fixed-icon">📍</div>'
+          + '<div>'
+          + '<div class="location-city">' + w.location + '</div>'
+          + '<div class="location-date">' + fmtDateLong(w) + '</div>'
+          + '</div></div>'
+          + '<input type="hidden" name="ort" id="ort-fixed" value="' + w.location + ' · ' + fmtDateShort(w) + '">';
+      } else {
+        // Multiple – radio buttons
+        locContainer.innerHTML = workshops.map(function(w) {
+          var checked = (specificEvent && specificEvent.id === w.id) ? 'checked' : '';
+          return '<label class="location-option">'
+            + '<input type="radio" name="ort" value="' + w.location + ' · ' + fmtDateShort(w) + '" ' + checked + '>'
+            + '<span class="location-card">'
+            + '<span class="location-city">' + w.location + '</span>'
+            + '<span class="location-date">' + fmtDateLong(w) + '</span>'
+            + '</span></label>';
+        }).join('');
+
+        // Re-attach radio error clearing
+        locContainer.querySelectorAll('input[name="ort"]').forEach(function(r) {
+          r.addEventListener('change', function() {
+            document.getElementById('err-ort').classList.remove('visible');
+            locContainer.querySelectorAll('.location-card').forEach(function(c){ c.classList.remove('error'); });
+          });
+        });
+      }
+
+      // Update form note
+      var noteEl = document.getElementById('form-note');
+      if (noteEl && workshops.length > 0) {
+        var dateList = workshops.map(function(w){
+          return w.location + ' · ' + w.day + '. ' + MONTH_NAMES[w.month].substring(0,3) + '.';
+        }).join(' · und · ');
+        noteEl.innerHTML = 'Nach der Registrierung wirst du zur sicheren Zahlungsseite weitergeleitet.<br>'
+          + dateList + '<br>Begrenzte Plätze';
+      }
+    }
+
+    // ── Form submission ──────────────────────────────────────────
     var btn      = document.getElementById('btn-register');
     var spinner  = document.getElementById('btn-spinner');
     var btnLabel = document.getElementById('btn-label');
@@ -482,7 +725,6 @@
       btnLabel.textContent  = on ? 'E-Mail wird gesendet …' : 'Jetzt Registrieren & zur Zahlung →';
     }
 
-    // Formular
     document.getElementById('reg-form').addEventListener('submit', function (e) {
       e.preventDefault();
       var valid = true;
@@ -494,30 +736,28 @@
         { id: 'handy',    errId: 'err-handy',    validate: function(v){ return v.trim().length >= 6; } },
       ];
 
-      fields.forEach(function (f) {
+      fields.forEach(function(f) {
         var input = document.getElementById(f.id);
         var err   = document.getElementById(f.errId);
         if (!f.validate(input.value)) {
-          input.classList.add('error');
-          err.classList.add('visible');
-          valid = false;
+          input.classList.add('error'); err.classList.add('visible'); valid = false;
         } else {
-          input.classList.remove('error');
-          err.classList.remove('visible');
+          input.classList.remove('error'); err.classList.remove('visible');
         }
       });
 
-      // Standort-Validierung
+      // Location validation – only for radio buttons
+      var ortFixed    = document.getElementById('ort-fixed');
       var ortSelected = document.querySelector('input[name="ort"]:checked');
-      var errOrt = document.getElementById('err-ort');
-      var cards  = document.querySelectorAll('.location-card');
-      if (!ortSelected) {
+      var errOrt      = document.getElementById('err-ort');
+
+      if (!ortFixed && !ortSelected) {
         errOrt.classList.add('visible');
-        cards.forEach(function(c){ c.classList.add('error'); });
+        document.querySelectorAll('.location-card').forEach(function(c){ c.classList.add('error'); });
         valid = false;
       } else {
         errOrt.classList.remove('visible');
-        cards.forEach(function(c){ c.classList.remove('error'); });
+        document.querySelectorAll('.location-card').forEach(function(c){ c.classList.remove('error'); });
       }
 
       if (!valid) return;
@@ -526,40 +766,37 @@
       var nachname = document.getElementById('nachname').value.trim();
       var email    = document.getElementById('email').value.trim();
       var handy    = document.getElementById('handy').value.trim();
-      var ort      = ortSelected.value;
+      var ort      = ortFixed ? ortFixed.value : (ortSelected ? ortSelected.value : '');
 
       setLoading(true);
 
-      emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-        to_name:      vorname + ' ' + nachname,
-        to_email:     email,
-        vorname:      vorname,
-        nachname:     nachname,
-        handy:        handy,
-        ticket_name:  ticket,
-        ticket_price: price ? '€' + price : '',
-        ticket_per:   per,
-        ort:          ort,
-      })
-      .finally(function () {
-        // Immer zur Zahlung weiterleiten – auch wenn E-Mail fehlschlägt
-        window.location.href = vividUrl;
-      });
+      var isTestEvent = ticket.trim().toLowerCase().startsWith('test');
+
+      if (isTestEvent) {
+        window.location.href = (priceNum > 0 && rawUrl) ? rawUrl : 'index.html';
+      } else {
+        emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+          to_name:      vorname + ' ' + nachname,
+          to_email:     email,
+          vorname:      vorname,
+          nachname:     nachname,
+          handy:        handy,
+          ticket_name:  ticket,
+          ticket_price: price ? '€' + price : 'kostenlos',
+          ticket_per:   per,
+          ort:          ort,
+          payment_url:  priceNum > 0 ? rawUrl : '',
+        }).finally(function () {
+          window.location.href = (priceNum > 0 && rawUrl) ? rawUrl : 'index.html';
+        });
+      }
     });
 
-    // Fehler beim Tippen sofort ausblenden
+    // Clear field errors on input
     ['vorname','nachname','email','handy'].forEach(function(id) {
       document.getElementById(id).addEventListener('input', function() {
         this.classList.remove('error');
         document.getElementById('err-' + id).classList.remove('visible');
-      });
-    });
-
-    // Standort-Fehler ausblenden bei Auswahl
-    document.querySelectorAll('input[name="ort"]').forEach(function(radio) {
-      radio.addEventListener('change', function() {
-        document.getElementById('err-ort').classList.remove('visible');
-        document.querySelectorAll('.location-card').forEach(function(c){ c.classList.remove('error'); });
       });
     });
   })();
