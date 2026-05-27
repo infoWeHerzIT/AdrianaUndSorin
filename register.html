@@ -662,10 +662,7 @@
 
     // ── Ticket Card ──────────────────────────────────────────────
     var ticketCard = document.getElementById('ticket-card');
-    if (isOnlineMode && priceNum <= 0) {
-      // Free online event → hide entire ticket card
-      ticketCard.style.display = 'none';
-    } else {
+    {
       document.getElementById('ticket-name').textContent = ticket;
       document.getElementById('ticket-per').textContent  = per;
       document.getElementById('ticket-desc').textContent = desc;
