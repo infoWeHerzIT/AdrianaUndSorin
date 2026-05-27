@@ -19,6 +19,13 @@
     .notice-box { background: #fff8f0; border: 1px solid rgba(255,99,0,0.25); border-radius: 4px; padding: 18px 22px; margin: 28px 0; }
     .notice-box p { margin: 0; font-size: 14px; color: #5a4020; line-height: 1.65; }
     .notice-box strong { color: #ff6300; }
+    .meeting-box { background: #f0f8ff; border: 1px solid rgba(0,120,180,0.3); border-radius: 4px; padding: 18px 22px; margin: 28px 0; }
+    .meeting-box p { margin: 0 0 10px; font-size: 14px; color: #1a3a5c; line-height: 1.65; }
+    .meeting-box p:last-child { margin: 0; }
+    .meeting-box strong { color: #0078b4; }
+    .meeting-link { display: inline-block; background: #0078b4; color: #ffffff; text-decoration: none; padding: 10px 20px; border-radius: 3px; font-size: 14px; font-weight: 600; margin-top: 6px; }
+    .payment-warning { background: #fff3cd; border: 1px solid rgba(255,165,0,0.4); border-radius: 4px; padding: 18px 22px; margin: 28px 0; }
+    .payment-warning p { margin: 0; font-size: 14px; color: #664d00; line-height: 1.65; }
     .details-row { display: flex; gap: 12px; flex-wrap: wrap; margin: 0 0 18px; }
     .detail-chip { background: rgba(0,34,77,0.06); border-radius: 2px; padding: 6px 14px; font-size: 13px; color: #00224d; font-weight: 500; }
     .summary-box { background: #f8f9fc; border-radius: 4px; padding: 20px 24px; margin: 0 0 24px; }
@@ -91,6 +98,14 @@
         </div>
       </div>
 
+      {{#video_meeting_url}}
+      <div class="meeting-box">
+        <p><strong>Dein Video-Meeting Link</strong></p>
+        <p>Hier ist dein persönlicher Zugangslink für das Online-Meeting:</p>
+        <p><a class="meeting-link" href="{{video_meeting_url}}">Zum Meeting beitreten →</a></p>
+      </div>
+      {{/video_meeting_url}}
+
       <div class="notice-box">
         <p>
           <strong>Weitere Informationen folgen nach der Bezahlung.</strong><br>
@@ -98,6 +113,12 @@
           Uhrzeit, was du mitbringen solltest und vieles mehr.
         </p>
       </div>
+
+      {{#payment_notice}}
+      <div class="payment-warning">
+        <p>{{payment_notice}}</p>
+      </div>
+      {{/payment_notice}}
 
       <hr class="divider">
 

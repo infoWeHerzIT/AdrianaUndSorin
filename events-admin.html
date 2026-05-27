@@ -641,6 +641,12 @@
           <div class="field-hint" id="url-hint" style="display:none;">Wird nach der Registrierung aufgerufen und in der Bestätigungs-E-Mail verlinkt.</div>
         </div>
 
+        <div class="field-group" id="fg-video-url">
+          <label for="field-video-url">Video-Meeting Link</label>
+          <input type="url" id="field-video-url" placeholder="https://zoom.us/j/…">
+          <div class="field-hint">Wird in der Bestätigungs-E-Mail verlinkt. Bei Test-Events auch auf der Anmeldeseite angezeigt.</div>
+        </div>
+
         <hr class="form-divider">
 
         <div class="form-actions">
@@ -673,7 +679,7 @@ const DEFAULT_EVENTS = [
     price: 'ab 48 €',
     spots: 'max. 15 Plätze',
     description: 'Intensiver Deep-Coaching-Workshop für Führungskräfte & Professionals.',
-    url: 'register.html', paymentUrl: ''
+    url: 'register.html', paymentUrl: '', videoMeetingUrl: ''
   },
   {
     id: 'default_2',
@@ -686,7 +692,7 @@ const DEFAULT_EVENTS = [
     price: 'ab 48 €',
     spots: 'max. 15 Plätze',
     description: 'Intensiver Deep-Coaching-Workshop für Führungskräfte & Professionals.',
-    url: 'register.html', paymentUrl: ''
+    url: 'register.html', paymentUrl: '', videoMeetingUrl: ''
   }
 ];
 
@@ -922,6 +928,7 @@ function resetForm() {
   document.getElementById('field-description').value = '';
   document.getElementById('field-url').value = 'register.html';
   document.getElementById('field-payment-url').value = '';
+  document.getElementById('field-video-url').value = '';
 
   setFormDisabled(false);
 
@@ -956,8 +963,9 @@ function viewEvent(id) {
   document.getElementById('field-price').value     = ev.price    || '';
   document.getElementById('field-spots').value     = ev.spots    || '';
   document.getElementById('field-description').value = ev.description || '';
-  document.getElementById('field-url').value         = ev.url         || 'register.html';
-  document.getElementById('field-payment-url').value = ev.paymentUrl  || '';
+  document.getElementById('field-url').value           = ev.url            || 'register.html';
+  document.getElementById('field-payment-url').value  = ev.paymentUrl     || '';
+  document.getElementById('field-video-url').value    = ev.videoMeetingUrl || '';
 
   setFormDisabled(true);
 
@@ -1029,8 +1037,9 @@ document.getElementById('event-form').addEventListener('submit', e => {
     price:       document.getElementById('field-price').value.trim(),
     spots:       document.getElementById('field-spots').value.trim(),
     description: document.getElementById('field-description').value.trim(),
-    url:         document.getElementById('field-url').value.trim() || 'register.html',
-    paymentUrl:  document.getElementById('field-payment-url').value.trim()
+    url:             document.getElementById('field-url').value.trim() || 'register.html',
+    paymentUrl:      document.getElementById('field-payment-url').value.trim(),
+    videoMeetingUrl: document.getElementById('field-video-url').value.trim()
   };
 
   if (isEdit) {

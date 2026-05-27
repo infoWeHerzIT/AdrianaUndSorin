@@ -94,6 +94,16 @@
   }
   .nav-cta:hover { background: #e55700; }
   .nav-cta:hover::after { left: 120%; }
+  .nav-ghost {
+    color: rgba(255,255,255,0.65);
+    font-size: 13px; font-weight: 500;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 9px 16px; border-radius: 2px;
+    letter-spacing: .04em;
+    transition: background .2s, color .2s, border-color .2s;
+  }
+  .nav-ghost:hover { background: rgba(255,255,255,0.08); color: var(--white); border-color: rgba(255,255,255,0.35); }
 
   /* ─── PAGE HERO ─── */
   #page-hero {
@@ -776,6 +786,7 @@
 <nav>
   <div class="nav-inner">
     <a href="index.html" class="nav-logo">Adriana &amp; <span>Sorin</span></a>
+    <a href="index.html#investment" class="nav-ghost">Angebote ↗</a>
   </div>
 </nav>
 

@@ -582,7 +582,7 @@
         // ── Section 2: parsed event_data fields ──
         var evSrc = specificEvent || {};
         var evKeys = ['id','name','type','format','year','month','day','timeFrom','timeTo','time',
-                      'location','price','spots','description','url','paymentUrl'];
+                      'location','price','spots','description','url','paymentUrl','videoMeetingUrl'];
         rows += '<tr><td colspan="2" style="padding:10px 8px 2px;color:#555;font-size:10px;letter-spacing:.08em;">EVENT-DATEN (event_data)</td></tr>';
         evKeys.forEach(function(k) {
           var val = evSrc[k];
@@ -776,16 +776,18 @@
         window.location.href = (priceNum > 0 && rawUrl) ? rawUrl : 'index.html';
       } else {
         emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-          to_name:      vorname + ' ' + nachname,
-          to_email:     email,
-          vorname:      vorname,
-          nachname:     nachname,
-          handy:        handy,
-          ticket_name:  ticket,
-          ticket_price: price ? '€' + price : 'kostenlos',
-          ticket_per:   per,
-          ort:          ort,
-          payment_url:  priceNum > 0 ? rawUrl : '',
+          to_name:          vorname + ' ' + nachname,
+          to_email:         email,
+          vorname:          vorname,
+          nachname:         nachname,
+          handy:            handy,
+          ticket_name:      ticket,
+          ticket_price:     price ? '€' + price : 'kostenlos',
+          ticket_per:       per,
+          ort:              ort,
+          payment_url:      priceNum > 0 ? rawUrl : '',
+          video_meeting_url: specificEvent ? (specificEvent.videoMeetingUrl || '') : '',
+          payment_notice:   priceNum > 0 ? 'Beachten Sie, dass Sie an Event nur teilnehmen können, wenn die Bezahlung von uns bestätigt wurde und sie eine Bestätigungs E-Mail dafür bekommen.' : '',
         }).finally(function () {
           window.location.href = (priceNum > 0 && rawUrl) ? rawUrl : 'index.html';
         });

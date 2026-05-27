@@ -81,6 +81,16 @@
     transition: background .2s;
   }
   .nav-cta:hover { background: #e55700; }
+  .nav-kalender {
+    color: rgba(255,255,255,0.65);
+    font-size: 13px; font-weight: 500;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 9px 16px; border-radius: 2px;
+    letter-spacing: .04em;
+    transition: background .2s, color .2s, border-color .2s;
+  }
+  .nav-kalender:hover { background: rgba(255,255,255,0.08); color: var(--white); border-color: rgba(255,255,255,0.35); }
 
   /* ─── HERO ─── */
   #hero {
@@ -914,6 +924,7 @@
       gap: 12px;
     }
     .nav-logo { font-size: 17px; }
+    .nav-kalender { display: none; }
     .nav-cta {
       width: 100%;
       text-align: center;
@@ -1548,7 +1559,10 @@
 <nav>
   <div class="nav-inner">
     <div class="nav-logo">Adriana &amp; <span>Sorin</span></div>
-    <a href="#investment" class="nav-cta" rel="noopener">Platz sichern →</a>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <a href="kalender.html" class="nav-kalender">Kalender ↗</a>
+      <a href="#investment" class="nav-cta" rel="noopener">Platz sichern →</a>
+    </div>
   </div>
 </nav>
 
