@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
 <style>
   :root {
     --orange: #ff6300;
@@ -136,6 +138,39 @@
     font-size: 13px; color: rgba(255,255,255,0.45);
     margin-top: 4px; max-width: 340px;
   }
+
+  /* ─── EVENT INFO STRIP (inside ticket card) ─── */
+  .event-info-strip {
+    width: 100%; flex-basis: 100%;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 4px;
+    display: none;
+  }
+  .event-info-name {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 20px; font-weight: 700;
+    color: var(--white); line-height: 1.2;
+    margin-bottom: 10px;
+  }
+  .event-info-meta {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+    font-size: 13px; color: rgba(255,255,255,0.6);
+  }
+  .event-info-tag {
+    font-family: 'Orbitron', monospace;
+    font-size: 8px; font-weight: 700; letter-spacing: .14em;
+    text-transform: uppercase;
+    padding: 3px 8px; border-radius: 2px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.7);
+  }
+  .event-info-date {
+    display: flex; align-items: center; gap: 6px;
+    color: rgba(255,255,255,0.75);
+  }
+  .event-info-date svg { opacity: .6; flex-shrink: 0; }
 
   /* ─── FORM SECTION ─── */
   .reg-form-section {
@@ -426,6 +461,10 @@
     <p class="reg-hero-sub">Füll das Formular aus und sichere deinen Platz beim Deep Coaching Workshop.</p>
 
     <div class="ticket-card" id="ticket-card">
+      <div class="event-info-strip" id="event-info-strip">
+        <div class="event-info-name" id="event-info-name"></div>
+        <div class="event-info-meta" id="event-info-meta"></div>
+      </div>
       <div>
         <span class="ticket-badge" id="ticket-badge">Ticket</span>
       </div>
@@ -584,6 +623,8 @@
     return ev.day + '. ' + MONTH_NAMES[ev.month] + ' ' + ev.year;
   }
 
+  function esc(v) { return String(v||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
   (function () {
     var params   = new URLSearchParams(window.location.search);
     var ticket   = params.get('ticket')   || 'Ticket';
@@ -618,7 +659,6 @@
       var debugTable   = document.getElementById('test-debug-table');
       if (debugSection && debugTable) {
         var rows = '';
-        var esc = function(v) { return String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;'); };
 
         // ── Section 1: raw URL params (excluding event_data blob) ──
         rows += '<tr><td colspan="2" style="padding:6px 8px 2px;color:#555;font-size:10px;letter-spacing:.08em;">URL-PARAMETER</td></tr>';
@@ -673,6 +713,43 @@
         badge.style.background = 'linear-gradient(135deg, #FFE040, #FF8C00)';
         badge.style.color      = '#00224d';
       }
+    }
+
+    // ── Event Info Strip ─────────────────────────────────────────
+    if (specificEvent) {
+      var strip    = document.getElementById('event-info-strip');
+      var infoName = document.getElementById('event-info-name');
+      var infoMeta = document.getElementById('event-info-meta');
+
+      infoName.textContent = specificEvent.name || '';
+
+      var MONTH_FULL = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+      var dateStr = '';
+      if (specificEvent.year && specificEvent.month !== undefined && specificEvent.day) {
+        var d = new Date(specificEvent.year, specificEvent.month, specificEvent.day);
+        var dayNames = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+        dateStr = dayNames[d.getDay()] + '., ' + specificEvent.day + '. ' + MONTH_FULL[specificEvent.month] + ' ' + specificEvent.year;
+        if (specificEvent.timeFrom) {
+          dateStr += ' · ' + specificEvent.timeFrom;
+          if (specificEvent.timeTo) dateStr += ' – ' + specificEvent.timeTo + ' Uhr';
+        }
+      }
+
+      var metaHtml = '';
+      if (specificEvent.type)   metaHtml += '<span class="event-info-tag">' + esc(specificEvent.type)   + '</span>';
+      if (specificEvent.format) metaHtml += '<span class="event-info-tag">' + esc(specificEvent.format) + '</span>';
+      if (specificEvent.location) {
+        metaHtml += '<span class="event-info-date">'
+          + '<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>'
+          + esc(specificEvent.location) + '</span>';
+      }
+      if (dateStr) {
+        metaHtml += '<span class="event-info-date">'
+          + '<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>'
+          + esc(dateStr) + '</span>';
+      }
+      infoMeta.innerHTML = metaHtml;
+      strip.style.display = 'block';
     }
 
     // ── Location / Veranstaltungsort ─────────────────────────────
@@ -783,7 +860,7 @@
       btnLabel.textContent  = on ? 'E-Mail wird gesendet …' : 'Jetzt Registrieren & zur Zahlung →';
     }
 
-    document.getElementById('reg-form').addEventListener('submit', function (e) {
+    document.getElementById('reg-form').addEventListener('submit', async function (e) {
       e.preventDefault();
       var valid = true;
 
@@ -828,27 +905,65 @@
 
       setLoading(true);
 
-      var isTestEvent = ticket.trim().toLowerCase().startsWith('test');
+      var eventName   = specificEvent ? (specificEvent.name || '') : '';
+      var isTestEvent = eventName.trim().toLowerCase().startsWith('test')
+                     || ticket.trim().toLowerCase().startsWith('test');
 
-      if (isTestEvent) {
-        window.location.href = (priceNum > 0 && rawUrl) ? rawUrl : 'index.html';
+      // Teilnehmer in Supabase speichern (immer, auch bei Test-Events)
+      const resolvedEventId = eventId || (specificEvent ? specificEvent.id : null);
+      const { error: dbError } = await db.from('participants').insert({
+        event_id:       resolvedEventId,
+        vorname:        vorname,
+        nachname:       nachname,
+        email:          email,
+        handy:          handy,
+        ort:            ort,
+        ticket_name:    ticket,
+        ticket_price:   price ? '€' + price : 'kostenlos',
+        payment_status: 'pending'
+      });
+      if (dbError) console.error('Supabase insert error:', dbError.message);
+
+      var videoMeetingUrl = specificEvent ? (specificEvent.videoMeetingUrl || '') : '';
+      var paymentUrlFinal = priceNum > 0 ? rawUrl : '';
+      var thankyouParams  = new URLSearchParams({
+        vorname:           vorname,
+        nachname:          nachname,
+        email:             email,
+        handy:             handy,
+        ort:               ort,
+        ticket:            ticket,
+        price:             price,
+        per:               per,
+        payment_url:       paymentUrlFinal,
+        video_meeting_url: videoMeetingUrl
+      });
+      if (isTestEvent) thankyouParams.set('is_test', '1');
+      var thankyouUrl = 'danke.html?' + thankyouParams.toString();
+
+      function goToDanke() { window.location.href = thankyouUrl; }
+
+      if (!isTestEvent) {
+        try {
+          emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+            to_name:           vorname + ' ' + nachname,
+            to_email:          email,
+            vorname:           vorname,
+            nachname:          nachname,
+            handy:             handy,
+            ticket_name:       ticket,
+            ticket_price:      price ? '€' + price : 'kostenlos',
+            ticket_per:        per,
+            ort:               ort,
+            payment_url:       paymentUrlFinal,
+            video_meeting_url: videoMeetingUrl,
+            payment_notice:    priceNum > 0 ? 'Beachten Sie, dass Sie an Event nur teilnehmen können, wenn die Bezahlung von uns bestätigt wurde und sie eine Bestätigungs E-Mail dafür bekommen.' : '',
+          }).then(goToDanke).catch(goToDanke);
+        } catch(e) {
+          goToDanke();
+        }
       } else {
-        emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-          to_name:          vorname + ' ' + nachname,
-          to_email:         email,
-          vorname:          vorname,
-          nachname:         nachname,
-          handy:            handy,
-          ticket_name:      ticket,
-          ticket_price:     price ? '€' + price : 'kostenlos',
-          ticket_per:       per,
-          ort:              ort,
-          payment_url:      priceNum > 0 ? rawUrl : '',
-          video_meeting_url: specificEvent ? (specificEvent.videoMeetingUrl || '') : '',
-          payment_notice:   priceNum > 0 ? 'Beachten Sie, dass Sie an Event nur teilnehmen können, wenn die Bezahlung von uns bestätigt wurde und sie eine Bestätigungs E-Mail dafür bekommen.' : '',
-        }).finally(function () {
-          window.location.href = (priceNum > 0 && rawUrl) ? rawUrl : 'index.html';
-        });
+        goToDanke();
       }
     });
 

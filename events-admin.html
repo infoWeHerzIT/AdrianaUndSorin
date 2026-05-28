@@ -485,6 +485,8 @@
     .field-row { grid-template-columns: 1fr; }
   }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
 </head>
 <body>
 
@@ -496,8 +498,10 @@
       <span class="nav-admin-badge">Admin</span>
     </a>
     <div class="nav-preview-links">
+      <a href="teilnehmer-admin.html" class="nav-preview-link">Teilnehmer</a>
       <a href="kalender.html" target="_blank" class="nav-preview-link">Kalender ↗</a>
       <a href="index.html"    target="_blank" class="nav-preview-link">Startseite ↗</a>
+      <button id="btn-logout" class="nav-preview-link" style="cursor:pointer;border:1px solid rgba(220,38,38,0.4);color:#f87171;background:transparent;">Ausloggen</button>
     </div>
   </div>
 </nav>
@@ -608,8 +612,9 @@
         </div>
 
         <div class="field-group" id="fg-location">
-          <label for="field-location">Ort</label>
+          <label for="field-location">Ort <span id="loc-req-badge" style="display:none;font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.1em;color:var(--orange);margin-left:4px;">*</span></label>
           <input type="text" id="field-location" placeholder="z. B. Nürnberg" maxlength="100">
+          <div class="field-error">Ort ist bei Präsenz-Events erforderlich.</div>
         </div>
 
         <div class="field-row">
@@ -665,6 +670,17 @@
 <div id="toast"></div>
 
 <script>
+// ── Auth guard ────────────────────────────────────────────────
+db.auth.getSession().then(({ data }) => {
+  if (!data.session) window.location.href = 'admin-login.html';
+});
+
+// Logout-Button
+document.getElementById('btn-logout').addEventListener('click', async () => {
+  await db.auth.signOut();
+  window.location.href = 'admin-login.html';
+});
+
 const STORAGE_KEY = 'dc_events';
 
 const DEFAULT_EVENTS = [
@@ -699,27 +715,58 @@ const DEFAULT_EVENTS = [
 const MONTH_NAMES = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
 const MONTH_SHORT = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
 
-// ── Storage ──────────────────────────────────────────────────
-function loadEvents() {
-  try {
-    const s = localStorage.getItem(STORAGE_KEY);
-    if (s) {
-      const parsed = JSON.parse(s);
-      if (Array.isArray(parsed)) return parsed;
-    }
-  } catch(e) {}
-  const copy = structuredClone ? structuredClone(DEFAULT_EVENTS) : JSON.parse(JSON.stringify(DEFAULT_EVENTS));
-  saveEvents(copy);
-  return copy;
-}
-function saveEvents(arr) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
-}
+// ── Helpers ───────────────────────────────────────────────────
 function genId() {
   return 'evt_' + Date.now() + '_' + Math.floor(Math.random()*9999);
 }
 
-let events = loadEvents();
+// Supabase row ↔ local object
+function rowToEvent(r) {
+  return {
+    id: r.id, name: r.name, type: r.type,
+    year: r.year, month: r.month, day: r.day,
+    timeFrom: r.time_from || '', timeTo: r.time_to || '',
+    location: r.location || '', format: r.format,
+    price: r.price || '', spots: r.spots || '',
+    description: r.description || '',
+    url: r.url || 'register.html',
+    paymentUrl: r.payment_url || '',
+    videoMeetingUrl: r.video_meeting_url || ''
+  };
+}
+function eventToRow(ev) {
+  return {
+    id: ev.id, name: ev.name, type: ev.type,
+    year: ev.year, month: ev.month, day: ev.day,
+    time_from: ev.timeFrom, time_to: ev.timeTo,
+    location: ev.location, format: ev.format,
+    price: ev.price, spots: ev.spots,
+    description: ev.description,
+    url: ev.url || 'register.html',
+    payment_url: ev.paymentUrl || null,
+    video_meeting_url: ev.videoMeetingUrl || null
+  };
+}
+
+// ── Supabase CRUD ─────────────────────────────────────────────
+async function loadEventsFromDB() {
+  const { data, error } = await db.from('events').select('*').order('year').order('month').order('day');
+  if (error) { showToast('Fehler beim Laden: ' + error.message, 'error'); return []; }
+  return (data || []).map(rowToEvent);
+}
+
+async function saveEventToDB(ev) {
+  const row = eventToRow(ev);
+  const { error } = await db.from('events').upsert(row);
+  if (error) throw error;
+}
+
+async function deleteEventFromDB(id) {
+  const { error } = await db.from('events').delete().eq('id', id);
+  if (error) throw error;
+}
+
+let events = [];
 
 // ── Filter state ──────────────────────────────────────────────
 let adminActiveFormats = new Set();
@@ -896,12 +943,15 @@ function confirmDelete(btn, id) {
   };
 }
 
-function deleteEvent(id) {
-  events = events.filter(e => e.id !== id);
-  saveEvents(events);
+async function deleteEvent(id) {
+  try {
+    await deleteEventFromDB(id);
+    events = await loadEventsFromDB();
+  } catch(err) {
+    showToast('Fehler beim Löschen: ' + err.message, 'error'); return;
+  }
   initAdminFilters(); renderAdminFilterBar();
   renderList();
-  // If we were editing this event, reset form
   if (document.getElementById('field-id').value === id) resetForm();
   showToast('Event gelöscht.', 'success');
 }
@@ -1012,7 +1062,7 @@ function startEdit(id) {
 }
 
 // ── Form: save ────────────────────────────────────────────────
-document.getElementById('event-form').addEventListener('submit', e => {
+document.getElementById('event-form').addEventListener('submit', async e => {
   e.preventDefault();
   if (!validateForm()) return;
 
@@ -1042,16 +1092,14 @@ document.getElementById('event-form').addEventListener('submit', e => {
     videoMeetingUrl: document.getElementById('field-video-url').value.trim()
   };
 
-  if (isEdit) {
-    const idx = events.findIndex(e => e.id === editId);
-    if (idx !== -1) events[idx] = eventData;
-    showToast('Event aktualisiert ✓', 'success');
-  } else {
-    events.push(eventData);
-    showToast('Event gespeichert ✓', 'success');
+  try {
+    await saveEventToDB(eventData);
+    events = await loadEventsFromDB();
+    showToast(isEdit ? 'Event aktualisiert ✓' : 'Event gespeichert ✓', 'success');
+  } catch(err) {
+    showToast('Fehler beim Speichern: ' + err.message, 'error'); return;
   }
 
-  saveEvents(events);
   initAdminFilters(); renderAdminFilterBar();
   renderList();
   viewEvent(eventData.id);
@@ -1079,6 +1127,12 @@ function validateForm() {
   checkField('fg-date', 'field-date', document.getElementById('field-date').value !== '');
   checkField('fg-url',  'field-url',  document.getElementById('field-url').value.trim() !== '');
 
+  // Require location for Präsenz
+  const fmtVal = document.getElementById('field-format').value;
+  if (fmtVal === 'Präsenz' || fmtVal === 'Hybrid') {
+    checkField('fg-location', 'field-location', document.getElementById('field-location').value.trim() !== '');
+  }
+
   // Require payment URL when price > 0
   const priceRaw = document.getElementById('field-price').value;
   const priceNum = parseFloat((priceRaw.match(/\d+(\.\d+)?/) || [])[0]) || 0;
@@ -1097,6 +1151,18 @@ function updateTypeHint() {
 document.getElementById('field-type').addEventListener('change', updateTypeHint);
 updateTypeHint();
 
+// ── Location required for Präsenz ─────────────────────────────
+function updateLocationRequired() {
+  const fmt = document.getElementById('field-format').value;
+  const isPraesenz = fmt === 'Präsenz' || fmt === 'Hybrid';
+  const badge = document.getElementById('loc-req-badge');
+  const fg    = document.getElementById('fg-location');
+  if (badge) badge.style.display = isPraesenz ? '' : 'none';
+  if (!isPraesenz && fg) { fg.classList.remove('has-error'); const inp = document.getElementById('field-location'); if (inp) inp.classList.remove('error'); }
+}
+document.getElementById('field-format').addEventListener('change', updateLocationRequired);
+updateLocationRequired();
+
 // ── Payment URL hint (shown when price > 0) ────────────────────
 function updateUrlHint() {
   const raw  = document.getElementById('field-price').value;
@@ -1114,14 +1180,17 @@ document.getElementById('field-price').addEventListener('input', updateUrlHint);
 updateUrlHint();
 
 // ── Reset / Export / Import / Clear ───────────────────────────
-document.getElementById('btn-reset').addEventListener('click', () => {
+document.getElementById('btn-reset').addEventListener('click', async () => {
   if (!confirm('Alle Events durch die Standard-Events ersetzen?')) return;
-  events = JSON.parse(JSON.stringify(DEFAULT_EVENTS));
-  saveEvents(events);
-  initAdminFilters(); renderAdminFilterBar();
-  renderList();
-  resetForm();
-  showToast('Standard-Events wiederhergestellt.', 'success');
+  try {
+    for (const ev of DEFAULT_EVENTS) await saveEventToDB(ev);
+    events = await loadEventsFromDB();
+    initAdminFilters(); renderAdminFilterBar();
+    renderList(); resetForm();
+    showToast('Standard-Events wiederhergestellt.', 'success');
+  } catch(err) {
+    showToast('Fehler: ' + err.message, 'error');
+  }
 });
 
 document.getElementById('btn-export').addEventListener('click', () => {
@@ -1138,33 +1207,36 @@ document.getElementById('import-file').addEventListener('change', e => {
   const file = e.target.files[0];
   if (!file) return;
   const reader = new FileReader();
-  reader.onload = ev => {
+  reader.onload = async ev => {
     try {
       const imported = JSON.parse(ev.target.result);
       if (!Array.isArray(imported)) throw new Error('Kein Array');
-      if (!confirm('Importierte Events ersetzen alle bestehenden Events. Fortfahren?')) return;
-      events = imported;
-      saveEvents(events);
+      if (!confirm('Importierte Events werden in die Datenbank übernommen. Fortfahren?')) return;
+      for (const ev of imported) await saveEventToDB(ev);
+      events = await loadEventsFromDB();
       initAdminFilters(); renderAdminFilterBar();
-      renderList();
-      resetForm();
+      renderList(); resetForm();
       showToast(imported.length + ' Events importiert ✓', 'success');
     } catch(err) {
-      showToast('Fehler beim Import: Ungültiges JSON.', 'error');
+      showToast('Fehler beim Import: ' + err.message, 'error');
     }
     e.target.value = '';
   };
   reader.readAsText(file);
 });
 
-document.getElementById('btn-clear-all').addEventListener('click', () => {
+document.getElementById('btn-clear-all').addEventListener('click', async () => {
   if (!confirm('Alle Events unwiderruflich löschen?')) return;
-  events = [];
-  saveEvents(events);
-  initAdminFilters(); renderAdminFilterBar();
-  renderList();
-  resetForm();
-  showToast('Alle Events gelöscht.', 'success');
+  try {
+    const ids = events.map(e => e.id);
+    if (ids.length) await db.from('events').delete().in('id', ids);
+    events = [];
+    initAdminFilters(); renderAdminFilterBar();
+    renderList(); resetForm();
+    showToast('Alle Events gelöscht.', 'success');
+  } catch(err) {
+    showToast('Fehler: ' + err.message, 'error');
+  }
 });
 
 // ── Toast ─────────────────────────────────────────────────────
@@ -1187,9 +1259,12 @@ function esc(str) {
 }
 
 // ── Init ──────────────────────────────────────────────────────
-initAdminFilters();
-renderAdminFilterBar();
-renderList();
+(async () => {
+  events = await loadEventsFromDB();
+  initAdminFilters();
+  renderAdminFilterBar();
+  renderList();
+})();
 </script>
 </body>
 </html>

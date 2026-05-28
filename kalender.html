@@ -802,6 +802,8 @@
     .footer-inner { flex-direction: column; align-items: flex-start; }
   }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
 </head>
 <body>
 
@@ -906,36 +908,22 @@
 </footer>
 
 <script>
-// ── Shared storage key ──
-const STORAGE_KEY = 'dc_events';
-
-const DEFAULT_EVENTS_RAW = [
-  { id: 'default_1', name: 'Deep Coaching Workshop', type: 'Workshop', year: 2026, month: 5, day: 20,
-    timeFrom: '10:00', timeTo: '16:00', location: 'Nürnberg', format: 'Präsenz',
-    price: 'ab 48 €', spots: 'max. 15 Plätze',
-    description: 'Intensiver Deep-Coaching-Workshop für Führungskräfte & Professionals.',
-    url: 'register.html', paymentUrl: '', videoMeetingUrl: '' },
-  { id: 'default_2', name: 'Deep Coaching Workshop', type: 'Workshop', year: 2026, month: 6, day: 18,
-    timeFrom: '10:00', timeTo: '16:00', location: 'Rodgau', format: 'Präsenz',
-    price: 'ab 48 €', spots: 'max. 15 Plätze',
-    description: 'Intensiver Deep-Coaching-Workshop für Führungskräfte & Professionals.',
-    url: 'register.html', paymentUrl: '', videoMeetingUrl: '' }
-];
-
 const MONTH_NAMES = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
 const MONTH_SHORT = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
 const DAY_NAMES   = ['So','Mo','Di','Mi','Do','Fr','Sa'];
 const TODAY = new Date();
 
-function loadEvents() {
-  try {
-    const s = localStorage.getItem(STORAGE_KEY);
-    if (s) {
-      const parsed = JSON.parse(s);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed.map(normalizeEvent);
-    }
-  } catch(e) {}
-  return DEFAULT_EVENTS_RAW.map(normalizeEvent);
+async function loadEvents() {
+  const { data, error } = await db.from('events').select('*').order('year').order('month').order('day');
+  if (error || !data || data.length === 0) return [];
+  return data.map(r => normalizeEvent({
+    id: r.id, name: r.name, type: r.type,
+    year: r.year, month: r.month, day: r.day,
+    timeFrom: r.time_from, timeTo: r.time_to,
+    location: r.location, format: r.format,
+    price: r.price, spots: r.spots, description: r.description,
+    url: r.url, paymentUrl: r.payment_url, videoMeetingUrl: r.video_meeting_url
+  }));
 }
 
 function normalizeEvent(ev) {
@@ -986,7 +974,7 @@ function buildRegisterUrl(ev) {
   return 'register.html?' + p.toString();
 }
 
-let EVENTS = loadEvents();
+let EVENTS = [];
 
 // ── Filter state (all active by default) ──
 let activeFormats = new Set();
@@ -1240,10 +1228,13 @@ document.getElementById('next-month').addEventListener('click', () => {
 });
 
 // Init
-initFilters();
-renderFilterBar();
-renderCalendar();
-renderEventList();
+(async () => {
+  EVENTS = await loadEvents();
+  initFilters();
+  renderFilterBar();
+  renderCalendar();
+  renderEventList();
+})();
 
 // Observe static reveal elements (event cards already observed individually)
 document.querySelectorAll('.reveal:not(.event-card)').forEach(r => revealObserver.observe(r));

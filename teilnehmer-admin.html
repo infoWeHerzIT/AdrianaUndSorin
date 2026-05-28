@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teilnehmer – Adriana und Sorin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<style>
+  :root {
+    --orange: #ff6300;
+    --navy: #00224d;
+    --white: #ffffff;
+    --orange-dim: rgba(255,99,0,0.12);
+    --navy-dim: rgba(0,34,77,0.06);
+    --green: #16a34a;
+    --yellow: #d97706;
+    --red: #dc2626;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    background: #f4f4f2;
+    color: var(--navy);
+    overflow-x: hidden;
+    padding-bottom: 80px;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: center;
+    padding: 16px 5%;
+    background: rgba(0,34,77,0.97);
+    backdrop-filter: blur(8px);
+  }
+  .nav-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between; width: 100%;
+  }
+  .nav-logo {
+    font-family: 'Fredoka', sans-serif;
+    color: var(--white); font-size: 18px; font-weight: 700;
+    text-decoration: none; display: flex; align-items: center; gap: 10px;
+  }
+  .nav-logo span { color: var(--orange); }
+  .nav-admin-badge {
+    font-family: 'Orbitron', monospace;
+    font-size: 9px; font-weight: 700;
+    letter-spacing: .16em; text-transform: uppercase;
+    background: rgba(255,99,0,0.2);
+    border: 1px solid rgba(255,99,0,0.4);
+    color: var(--orange);
+    padding: 3px 8px; border-radius: 2px;
+  }
+  .nav-links { display: flex; gap: 10px; }
+  .nav-link {
+    color: rgba(255,255,255,0.6);
+    font-size: 13px; text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 7px 14px; border-radius: 2px;
+    transition: background .2s, color .2s; background: transparent;
+    cursor: pointer; font-family: 'DM Sans', sans-serif;
+  }
+  .nav-link:hover { background: rgba(255,255,255,0.08); color: var(--white); }
+  .nav-link.active { background: rgba(255,99,0,0.15); border-color: rgba(255,99,0,0.4); color: var(--orange); }
+
+  /* ─── PAGE HEADER ─── */
+  .admin-header {
+    background: var(--navy);
+    padding: 100px 0 60px;
+    position: relative; overflow: hidden;
+  }
+  .admin-header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: repeating-linear-gradient(90deg, rgba(255,99,0,0.04) 0px, rgba(255,99,0,0.04) 1px, transparent 1px, transparent 80px);
+    pointer-events: none;
+  }
+  .admin-header::after {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 5px; background: var(--orange);
+  }
+  .admin-header-inner {
+    max-width: 1200px; margin: 0 auto;
+    padding: 0 32px;
+    position: relative; z-index: 1;
+  }
+  .admin-page-label {
+    font-family: 'Orbitron', monospace;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: .22em; text-transform: uppercase;
+    color: var(--orange); margin-bottom: 14px; display: block;
+  }
+  .admin-header h1 {
+    font-family: 'Fredoka', sans-serif;
+    font-size: clamp(28px, 3.5vw, 44px);
+    font-weight: 700; color: var(--white);
+    line-height: 1.1; margin-bottom: 12px;
+  }
+  .admin-header h1 em { font-style: normal; color: var(--orange); }
+  .admin-header p {
+    font-size: 15px; color: rgba(255,255,255,0.55);
+    max-width: 560px; line-height: 1.7;
+  }
+  .wave-bottom {
+    position: absolute; bottom: -2px; left: 0; right: 0;
+    line-height: 0; pointer-events: none;
+  }
+  .wave-bottom svg { display: block; width: 100%; }
+
+  /* ─── MAIN ─── */
+  .admin-main {
+    max-width: 1200px; margin: 0 auto;
+    padding: 40px 32px 0;
+  }
+
+  /* ─── STATS BAR ─── */
+  .stats-bar {
+    display: flex; gap: 14px; flex-wrap: wrap;
+    margin-bottom: 28px;
+  }
+  .stat-chip {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 18px;
+    background: var(--white);
+    border: 1px solid rgba(0,34,77,0.1);
+    border-radius: 2px;
+    font-size: 13px;
+  }
+  .stat-chip .stat-num {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 22px; font-weight: 700; line-height: 1;
+  }
+  .stat-chip .stat-label { color: rgba(0,34,77,0.55); }
+  .stat-chip.total .stat-num { color: var(--navy); }
+  .stat-chip.pending .stat-num { color: var(--yellow); }
+  .stat-chip.confirmed .stat-num { color: var(--green); }
+  .stat-chip.cancelled .stat-num { color: var(--red); }
+
+  /* ─── CONTROLS ─── */
+  .controls-row {
+    display: flex; align-items: center; gap: 14px;
+    flex-wrap: wrap; margin-bottom: 20px;
+  }
+  .controls-row select, .controls-row input[type=search] {
+    padding: 9px 14px;
+    border: 1px solid rgba(0,34,77,0.18); border-radius: 2px;
+    font-family: 'DM Sans', sans-serif; font-size: 14px;
+    color: var(--navy); background: var(--white);
+    outline: none; transition: border-color .2s;
+  }
+  .controls-row select:focus, .controls-row input[type=search]:focus {
+    border-color: var(--orange);
+  }
+  .controls-row select { min-width: 220px; }
+  .controls-row input[type=search] { flex: 1; min-width: 200px; }
+
+  /* ─── TABLE ─── */
+  .table-wrap {
+    background: var(--white);
+    border: 1px solid rgba(0,34,77,0.1);
+    border-radius: 2px;
+    overflow-x: auto;
+  }
+  table {
+    width: 100%; border-collapse: collapse;
+    font-size: 14px;
+  }
+  thead th {
+    text-align: left;
+    font-family: 'Orbitron', monospace;
+    font-size: 8px; font-weight: 700; letter-spacing: .18em;
+    text-transform: uppercase; color: rgba(0,34,77,0.45);
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(0,34,77,0.1);
+    white-space: nowrap;
+    background: #fafaf9;
+  }
+  tbody tr { border-bottom: 1px solid rgba(0,34,77,0.07); }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(0,34,77,0.025); }
+  tbody td {
+    padding: 13px 16px;
+    vertical-align: middle;
+    color: var(--navy);
+  }
+  td.name-col { font-weight: 500; }
+  td.email-col { color: rgba(0,34,77,0.65); font-size: 13px; }
+  td.event-col { font-size: 13px; max-width: 200px; }
+  td.ticket-col { font-size: 13px; }
+  td.price-col { font-size: 13px; white-space: nowrap; }
+  td.date-col { font-size: 12px; color: rgba(0,34,77,0.5); white-space: nowrap; }
+
+  /* ─── STATUS BADGE ─── */
+  .status-select {
+    padding: 5px 10px;
+    border-radius: 2px; border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px; font-weight: 500;
+    cursor: pointer; outline: none;
+    transition: opacity .2s;
+  }
+  .status-select:hover { opacity: .85; }
+  .status-select.pending {
+    background: rgba(217,119,6,0.12); color: var(--yellow);
+    border: 1px solid rgba(217,119,6,0.3);
+  }
+  .status-select.confirmed {
+    background: rgba(22,163,74,0.1); color: var(--green);
+    border: 1px solid rgba(22,163,74,0.3);
+  }
+  .status-select.cancelled {
+    background: rgba(220,38,38,0.08); color: var(--red);
+    border: 1px solid rgba(220,38,38,0.25);
+  }
+  .status-select option { background: var(--white); color: var(--navy); font-weight: 400; }
+
+  /* ─── EMPTY STATE ─── */
+  .empty-state {
+    text-align: center; padding: 60px 20px;
+    color: rgba(0,34,77,0.4);
+  }
+  .empty-state .empty-icon { font-size: 40px; margin-bottom: 12px; }
+  .empty-state p { font-size: 15px; }
+
+  /* ─── LOADING ─── */
+  .loading-row td {
+    text-align: center; padding: 40px;
+    color: rgba(0,34,77,0.4); font-size: 14px;
+  }
+
+  /* ─── TOAST ─── */
+  #toast {
+    position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+    background: var(--navy); color: var(--white);
+    font-size: 14px; padding: 12px 24px;
+    border-radius: 2px; white-space: nowrap;
+    opacity: 0; pointer-events: none;
+    transition: opacity .25s; z-index: 999;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  }
+  #toast.show { opacity: 1; }
+  #toast.error { background: #b91c1c; }
+  #toast.success { background: var(--green); }
+
+  /* ─── MOBILE ─── */
+  @media (max-width: 640px) {
+    .admin-header-inner { padding: 0 20px; }
+    .admin-main { padding: 24px 16px 0; }
+    .nav-links { display: none; }
+    td.event-col, td.ticket-col, td.date-col { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="admin-login.html" class="nav-logo">
+      Adriana &amp; <span>Sorin</span>
+      <span class="nav-admin-badge">Admin</span>
+    </a>
+    <div class="nav-links">
+      <a href="events-admin.html" class="nav-link">Events</a>
+      <a href="teilnehmer-admin.html" class="nav-link active">Teilnehmer</a>
+      <a href="kalender.html" target="_blank" class="nav-link">Kalender ↗</a>
+      <button id="btn-logout" class="nav-link" style="border-color:rgba(220,38,38,0.4);color:#f87171;">Ausloggen</button>
+    </div>
+  </div>
+</nav>
+
+<div class="admin-header">
+  <div class="admin-header-inner">
+    <span class="admin-page-label">Teilnehmerverwaltung</span>
+    <h1>Alle <em>Anmeldungen</em></h1>
+    <p>Übersicht aller Registrierungen. Zahlungsstatus direkt hier ändern.</p>
+  </div>
+  <div class="wave-bottom">
+    <svg viewBox="0 0 1440 40" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+      <path d="M0 40 C360 0 1080 0 1440 40 L1440 40 L0 40 Z" fill="#f4f4f2"/>
+    </svg>
+  </div>
+</div>
+
+<div class="admin-main">
+
+  <div class="stats-bar" id="stats-bar">
+    <div class="stat-chip total"><span class="stat-num" id="stat-total">–</span><span class="stat-label">Gesamt</span></div>
+    <div class="stat-chip pending"><span class="stat-num" id="stat-pending">–</span><span class="stat-label">Ausstehend</span></div>
+    <div class="stat-chip confirmed"><span class="stat-num" id="stat-confirmed">–</span><span class="stat-label">Bestätigt</span></div>
+    <div class="stat-chip cancelled"><span class="stat-num" id="stat-cancelled">–</span><span class="stat-label">Storniert</span></div>
+  </div>
+
+  <div class="controls-row">
+    <select id="filter-event">
+      <option value="">Alle Events</option>
+    </select>
+    <input type="search" id="filter-search" placeholder="Name oder E-Mail suchen…">
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>E-Mail</th>
+          <th class="event-col">Event</th>
+          <th class="ticket-col">Ticket</th>
+          <th class="price-col">Preis</th>
+          <th>Status</th>
+          <th class="date-col">Angemeldet</th>
+        </tr>
+      </thead>
+      <tbody id="participants-tbody">
+        <tr class="loading-row"><td colspan="7">Wird geladen…</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ── Auth guard ────────────────────────────────────────────────
+db.auth.getSession().then(({ data }) => {
+  if (!data.session) window.location.href = 'admin-login.html';
+});
+
+document.getElementById('btn-logout').addEventListener('click', async () => {
+  await db.auth.signOut();
+  window.location.href = 'admin-login.html';
+});
+
+// ── Toast ─────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'show' + (type ? ' ' + type : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.className = '', 2800);
+}
+
+// ── State ─────────────────────────────────────────────────────
+let allParticipants = [];
+let eventsMap = {};
+
+// ── Load ──────────────────────────────────────────────────────
+async function loadData() {
+  const [evRes, parRes] = await Promise.all([
+    db.from('events').select('id, name, year, month, day').order('year').order('month').order('day'),
+    db.from('participants').select('*').order('registered_at', { ascending: false })
+  ]);
+
+  if (evRes.error) { showToast('Events konnten nicht geladen werden: ' + evRes.error.message, 'error'); }
+  if (parRes.error) { showToast('Teilnehmer konnten nicht geladen werden: ' + parRes.error.message, 'error'); }
+
+  eventsMap = {};
+  (evRes.data || []).forEach(ev => { eventsMap[ev.id] = ev; });
+
+  allParticipants = parRes.data || [];
+
+  populateEventFilter();
+  updateStats();
+  renderTable();
+}
+
+function populateEventFilter() {
+  const sel = document.getElementById('filter-event');
+  // keep "Alle Events" option, remove old ones
+  while (sel.options.length > 1) sel.remove(1);
+  Object.values(eventsMap).forEach(ev => {
+    const opt = document.createElement('option');
+    opt.value = ev.id;
+    opt.textContent = ev.name + ' – ' + ev.day + '.' + String(ev.month).padStart(2,'0') + '.' + ev.year;
+    sel.appendChild(opt);
+  });
+}
+
+function filteredParticipants() {
+  const eventId = document.getElementById('filter-event').value;
+  const search  = document.getElementById('filter-search').value.trim().toLowerCase();
+  return allParticipants.filter(p => {
+    if (eventId && p.event_id !== eventId) return false;
+    if (search) {
+      const haystack = ((p.vorname || '') + ' ' + (p.nachname || '') + ' ' + (p.email || '')).toLowerCase();
+      if (!haystack.includes(search)) return false;
+    }
+    return true;
+  });
+}
+
+function updateStats() {
+  const list = filteredParticipants();
+  document.getElementById('stat-total').textContent     = list.length;
+  document.getElementById('stat-pending').textContent   = list.filter(p => p.payment_status === 'pending').length;
+  document.getElementById('stat-confirmed').textContent = list.filter(p => p.payment_status === 'confirmed').length;
+  document.getElementById('stat-cancelled').textContent = list.filter(p => p.payment_status === 'cancelled').length;
+}
+
+function formatDate(isoStr) {
+  if (!isoStr) return '–';
+  const d = new Date(isoStr);
+  return d.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' })
+       + ' ' + d.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+}
+
+function renderTable() {
+  const tbody = document.getElementById('participants-tbody');
+  const list  = filteredParticipants();
+
+  if (list.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">📋</div><p>Keine Anmeldungen gefunden.</p></div></td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = list.map(p => {
+    const ev = eventsMap[p.event_id] || null;
+    const evLabel = ev
+      ? ev.name + '<br><small>' + ev.day + '.' + String(ev.month).padStart(2,'0') + '.' + ev.year + '</small>'
+      : (p.event_id ? '<small style="color:rgba(0,34,77,0.4)">' + p.event_id + '</small>' : '–');
+
+    const status = p.payment_status || 'pending';
+    return `<tr>
+      <td class="name-col">${esc(p.vorname || '')} ${esc(p.nachname || '')}</td>
+      <td class="email-col">${esc(p.email || '–')}</td>
+      <td class="event-col">${evLabel}</td>
+      <td class="ticket-col">${esc(p.ticket_name || '–')}</td>
+      <td class="price-col">${esc(p.ticket_price || '–')}</td>
+      <td>
+        <select class="status-select ${status}" data-id="${p.id}" onchange="changeStatus(this)">
+          <option value="pending"   ${status==='pending'   ? 'selected' : ''}>Ausstehend</option>
+          <option value="confirmed" ${status==='confirmed' ? 'selected' : ''}>Bestätigt</option>
+          <option value="cancelled" ${status==='cancelled' ? 'selected' : ''}>Storniert</option>
+        </select>
+      </td>
+      <td class="date-col">${formatDate(p.registered_at)}</td>
+    </tr>`;
+  }).join('');
+}
+
+function esc(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+async function changeStatus(selectEl) {
+  const id        = selectEl.dataset.id;
+  const newStatus = selectEl.value;
+
+  // Update class for styling
+  selectEl.className = 'status-select ' + newStatus;
+
+  const { error } = await db.from('participants').update({ payment_status: newStatus }).eq('id', id);
+  if (error) {
+    showToast('Fehler: ' + error.message, 'error');
+    // Revert local state
+    const p = allParticipants.find(x => x.id === id);
+    if (p) {
+      selectEl.value = p.payment_status;
+      selectEl.className = 'status-select ' + p.payment_status;
+    }
+    return;
+  }
+
+  // Update local cache
+  const p = allParticipants.find(x => x.id === id);
+  if (p) p.payment_status = newStatus;
+  updateStats();
+  showToast('Status gespeichert', 'success');
+}
+
+// ── Filter listeners ──────────────────────────────────────────
+document.getElementById('filter-event').addEventListener('change', () => { updateStats(); renderTable(); });
+document.getElementById('filter-search').addEventListener('input',  () => { updateStats(); renderTable(); });
+
+// ── Init ──────────────────────────────────────────────────────
+loadData();
+</script>
+</body>
+</html>
