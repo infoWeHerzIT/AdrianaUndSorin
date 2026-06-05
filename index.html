@@ -2382,7 +2382,8 @@
     if(!dEl) return;
 
     if(diff <= 0){
-      dEl.textContent = hEl.textContent = mEl.textContent = sEl.textContent = '00';
+      var ebSection = document.getElementById('early-bird');
+      if(ebSection) ebSection.style.display = 'none';
       return;
     }
 
