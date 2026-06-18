@@ -2,7 +2,12 @@
   "permissions": {
     "allow": [
       "Bash(Get-Item \"d:\\\\GitHub\\\\AdrianaUndSorin\\\\kalender.html\")",
-      "Bash(Select-Object Name, Length, LastWriteTime)"
+      "Bash(Select-Object Name, Length, LastWriteTime)",
+      "Bash(mkdir -p \"d:/GitHub/DADL/AdrianaUndSorin/admin\")",
+      "Bash(git mv *)",
+      "Bash(gh api *)",
+      "Bash(curl -s -o /tmp/reg.html -w \"%{http_code}\\\\n\" localhost:8791/register.html)",
+      "Read(//tmp/**)"
     ]
   }
 }

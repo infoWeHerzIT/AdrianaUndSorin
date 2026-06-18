@@ -1213,7 +1213,7 @@ function renderEventList() {
   const sorted = [...getFilteredEvents()].sort((a,b) => new Date(a.year,a.month,a.day) - new Date(b.year,b.month,b.day));
 
   if (sorted.length === 0) {
-    container.innerHTML = '<p style="color:rgba(0,34,77,0.35);font-size:14px;font-style:italic;padding:16px 0;">Keine Events für die gewählten Filter. <a href="events-admin.html" style="color:var(--orange);">→ Events verwalten</a></p>';
+    container.innerHTML = '<p style="color:rgba(0,34,77,0.35);font-size:14px;font-style:italic;padding:16px 0;">Keine Events für die gewählten Filter. <a href="admin/admin-events.html" style="color:var(--orange);">→ Events verwalten</a></p>';
     return;
   }
 

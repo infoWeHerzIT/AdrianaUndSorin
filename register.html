@@ -264,10 +264,17 @@
   .btn-register.loading .btn-label { opacity: .85; }
 
   .form-note {
-    font-size: 12px; color: rgba(0,34,77,0.4);
-    text-align: center; margin-top: 16px;
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 14px; color: var(--navy);
+    text-align: left; margin-top: 16px;
     line-height: 1.6;
+    background: rgba(255,99,0,0.07);
+    border: 1px solid rgba(255,99,0,0.2);
+    border-radius: 4px;
+    padding: 14px 16px;
   }
+  .form-note svg { color: var(--orange); flex-shrink: 0; margin-top: 1px; }
+  .form-note strong { font-weight: 600; }
 
   /* ─── DIVIDER ─── */
   .form-divider {
@@ -557,8 +564,9 @@
       </button>
 
       <p class="form-note" id="form-note">
-        Nach der Registrierung wirst du zur sicheren Zahlungsseite weitergeleitet.<br>
-        Begrenzte Plätze!
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <span><strong>Nach der Registrierung wirst du zur sicheren Zahlungsseite weitergeleitet.</strong><br>
+        Begrenzte Plätze!</span>
       </p>
     </form>
   </div>
@@ -843,8 +851,9 @@
         var dateList = workshops.map(function(w){
           return w.location + ' · ' + w.day + '. ' + MONTH_NAMES[w.month].substring(0,3) + '.';
         }).join(' · und · ');
-        noteEl.innerHTML = 'Nach der Registrierung wirst du zur sicheren Zahlungsseite weitergeleitet.<br>'
-          + dateList + '<br>Begrenzte Plätze';
+        noteEl.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>'
+          + '<span><strong>Nach der Registrierung wirst du zur sicheren Zahlungsseite weitergeleitet.</strong><br>'
+          + dateList + '<br>Begrenzte Plätze</span>';
       }
     }
 

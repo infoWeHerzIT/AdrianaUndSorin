@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin – Adriana und Sorin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root { --orange: #ff6300; --navy: #00224d; --white: #ffffff; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--navy);
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .menu-card {
+    background: var(--white);
+    border-radius: 4px;
+    padding: 48px 44px;
+    width: 100%; max-width: 420px;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.35);
+    position: relative; overflow: hidden;
+  }
+  .menu-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 4px; background: var(--orange);
+  }
+  .menu-logo {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 22px; font-weight: 700;
+    color: var(--navy); margin-bottom: 6px;
+  }
+  .menu-logo span { color: var(--orange); }
+  .menu-badge {
+    font-family: 'Orbitron', monospace;
+    font-size: 9px; font-weight: 700; letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--orange);
+    background: rgba(255,99,0,0.1);
+    border: 1px solid rgba(255,99,0,0.25);
+    padding: 3px 8px; border-radius: 2px;
+    display: inline-block; margin-bottom: 32px;
+  }
+  h1 {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 26px; font-weight: 700;
+    color: var(--navy); margin-bottom: 24px;
+  }
+  .menu-links { display: flex; flex-direction: column; gap: 12px; }
+  .menu-links a {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px;
+    border: 1px solid rgba(0,34,77,0.18); border-radius: 2px;
+    font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500;
+    color: var(--navy); text-decoration: none;
+    background: #f8f8f7;
+    transition: border-color .2s, background .2s, color .2s;
+  }
+  .menu-links a:hover {
+    border-color: var(--orange);
+    background: rgba(255,99,0,0.06);
+    color: var(--orange);
+  }
+  .menu-links a span.arrow { transition: transform .2s; }
+  .menu-links a:hover span.arrow { transform: translateX(3px); }
+</style>
+</head>
+<body>
+
+<div class="menu-card">
+  <div class="menu-logo">Adriana &amp; <span>Sorin</span></div>
+  <span class="menu-badge">Admin</span>
+  <h1>Adminbereich</h1>
+
+  <div class="menu-links">
+    <a href="admin-login.html">Login <span class="arrow">→</span></a>
+    <a href="admin-events.html">Events <span class="arrow">→</span></a>
+    <a href="admin-teilnehmer.html">Teilnehmer <span class="arrow">→</span></a>
+  </div>
+</div>
+
+</body>
+</html>
