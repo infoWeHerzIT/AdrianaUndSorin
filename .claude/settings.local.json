@@ -7,7 +7,8 @@
       "Bash(git mv *)",
       "Bash(gh api *)",
       "Bash(curl -s -o /tmp/reg.html -w \"%{http_code}\\\\n\" localhost:8791/register.html)",
-      "Read(//tmp/**)"
+      "Read(//tmp/**)",
+      "Bash(node -e \"console.log\\(require\\('child_process'\\).execSync\\('npm ls -g --depth=0 2>nul'\\).toString\\(\\)\\)\")"
     ]
   }
 }
