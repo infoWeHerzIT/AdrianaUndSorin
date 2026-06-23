@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { margin: 0; padding: 0; background: #f0f2f5; font-family: Arial, Helvetica, sans-serif; }
+    .wrapper { max-width: 600px; margin: 32px auto; background: #ffffff; border-radius: 4px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+
+    /* Header */
+    .header { background: #00224d; padding: 40px 44px 36px; }
+    .header-logo { font-size: 22px; font-weight: 700; color: #ffffff; letter-spacing: -.01em; }
+    .header-logo span { color: #ff6300; }
+    .header-sub { color: rgba(255,255,255,0.5); font-size: 13px; margin-top: 6px; }
+    .header-badge { display: inline-block; margin-top: 18px; background: rgba(255,99,0,0.18); border: 1px solid rgba(255,99,0,0.4); color: #ff6300; font-size: 14px; font-weight: 700; padding: 6px 16px; border-radius: 3px; }
+
+    /* Body */
+    .body { padding: 36px 44px 0; }
+    .body > p { color: #2d3748; font-size: 16px; line-height: 1.75; margin: 0 0 16px; }
+
+    /* Highlight boxes */
+    .box { border-radius: 4px; padding: 24px 28px; margin: 28px 0; }
+    .box-title { font-size: 11px; text-transform: uppercase; letter-spacing: .14em; color: #aaa; margin-bottom: 10px; }
+    .box-title.on-dark { color: rgba(255,255,255,0.5); }
+
+    .box-trance { background: #f8f9fc; border-left: 4px solid #ff6300; }
+    .box-trance .box-text { color: #2d3748; font-size: 15px; line-height: 1.7; margin: 0; }
+
+    .box-webinar { background: #00224d; }
+    .box-webinar h3 { color: #ffffff; font-size: 20px; font-weight: 700; margin: 0 0 14px; line-height: 1.3; }
+    .box-webinar .meta-row { display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 18px; }
+    .box-webinar .meta-item { color: rgba(255,255,255,0.85); font-size: 14px; font-weight: 600; }
+    .box-webinar ul { margin: 0 0 22px; padding: 0; list-style: none; }
+    .box-webinar li { color: rgba(255,255,255,0.78); font-size: 14px; line-height: 1.8; padding-left: 0; }
+    .btn-action { display: inline-block; padding: 12px 26px; border-radius: 3px; font-size: 14px; font-weight: 700; text-decoration: none; }
+    .btn-webinar { background: #ff6300; color: #ffffff; }
+
+    .box-feedback { background: #fff8f0; border: 1px dashed rgba(255,99,0,0.45); text-align: center; }
+    .box-feedback p { color: #2d3748; font-size: 15px; line-height: 1.7; margin: 0 0 18px; }
+    .btn-feedback { background: #00224d; color: #ffffff; }
+    .btn-trance { background: #ff6300; color: #ffffff; margin-top: 18px; }
+
+    /* Signature & footer */
+    .signature { padding: 28px 44px 36px; }
+    .signature p { color: #2d3748; font-size: 16px; line-height: 1.75; margin: 0 0 6px; }
+    .signature strong { color: #00224d; }
+    .divider { border: none; border-top: 1px solid #eee; margin: 28px 44px; }
+    .footer { background: #00224d; padding: 22px 44px; }
+    .footer p { color: rgba(255,255,255,0.55); font-size: 12px; margin: 0; line-height: 1.7; }
+    .footer strong { color: #ff6300; }
+    .footer a { color: rgba(255,255,255,0.55); }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-logo">Adriana &amp; <span>Sorin</span></div>
+    <div class="header-sub">{{event_name}} </br> {{event_ort}}, {{event_datum}}</div>
+    <span class="header-badge">Danke, dass du dabei warst 💛</span>
+  </div>
+
+  <!-- BODY -->
+  <div class="body">
+    <p style="margin-top:8px;">Liebe/r <strong>{{vorname}}</strong>,</p>
+
+    <p>
+      von Herzen möchten wir uns bei dir bedanken, dass du am Samstag bei unserem
+      <strong>ersten Präsenzseminar in Nürnberg</strong> dabei warst. 💛
+    </p>
+
+    <p>
+      Es war für uns ein ganz besonderer Tag – und wir haben uns sehr über deine Offenheit,
+      die Gespräche und das gemeinsame Erleben gefreut. Momente wie diese sind genau der Grund,
+      warum wir diese Arbeit mit so viel Herz machen.
+    </p>
+    <!-- FEEDBACK -->
+    <div class="box box-feedback">
+      <div class="box-title">Deine Meinung zählt</div>
+      <p>
+        Magst du uns kurz erzählen, wie der Workshop für dich war? Dein ehrliches Feedback
+        hilft uns wirklich sehr – und dauert keine zwei Minuten.
+      </p>
+      <a class="btn-action btn-feedback" href="{{feedback_url}}">Jetzt Feedback geben →</a>
+    </div>
+
+    <p>
+      Wir hoffen, dass du viele wertvolle Impulse zu <strong>Stressmanagement, innerer Balance und mentaler Stärke</strong>
+      für deinen Alltag mitnehmen konntest – und dass sich davon schon etwas in dir gesetzt hat.
+    </p>
+
+    <!-- TRANCE ATTACHMENT -->
+    <div class="box box-trance">
+      <div class="box-title">🎧 Deine Bonus Ressourcen</div>
+      <p class="box-text">
+        Wie versprochen findest du <strong>unten deine Trance</strong> – damit du sie jederzeit nutzen
+        und die Entspannung ganz für dich vertiefen kannst.
+      </p>
+      <a class="btn-action btn-trance" href="{{ressourcen_url}}">Jetzt Ressourcen herunterladen →</a>
+    </div>
+
+    <!-- WEBINAR INVITE -->
+    <div class="box box-webinar">
+      <div class="box-title on-dark">Kostenfreies Online-Webinar</div>
+      <h3>Dauerstress – Die unterschätzte Stressfalle</h3>
+      <div class="meta-row">
+        <span class="meta-item">📅&nbsp; 23.06.</span>
+        <span class="meta-item">🕖&nbsp; 19:00 Uhr</span>
+      </div>
+      <ul>
+        <li>✨ Wie Dauerstress entsteht</li>
+        <li>✨ Was Dauerstress im Gehirn und Körper bewirkt</li>
+        <li>✨ Warum viele Menschen unbewusst im Funktionsmodus feststecken</li>
+        <li>✨ Welche einfachen Werkzeuge dir helfen können, mehr Ruhe, Klarheit und Gelassenheit in deinen Alltag zu bringen</li>
+      </ul>
+      <a class="btn-action btn-webinar" href="https://infoweherzit.github.io/AdrianaUndSorin/kalender.html">Jetzt zum Webinar anmelden →</a>
+    </div>
+
+    <p>
+      Wir werden dir wieder praktische Impulse und direkt umsetzbare Tools an die Hand geben –
+      wir würden uns sehr freuen, dich wieder begrüßen zu dürfen.
+    </p>
+
+  </div>
+
+  <hr class="divider">
+
+  <!-- SIGNATURE -->
+  <div class="signature">
+    <p>Vielen Dank für dein Vertrauen und deine Teilnahme.</p>
+    <p>Ganz liebe Grüße,<br><strong>Adriana &amp; Sorin</strong> 💛</p>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <p>
+      {{event_name}} &nbsp;·&nbsp; <strong>{{event_ort}}</strong><br>
+      Diese E-Mail wurde dir nach deiner Teilnahme am Präsenzseminar vom {{event_datum}} gesendet.
+    </p>
+  </div>
+
+</div>
+</body>
+</html>

@@ -21,8 +21,12 @@ create table if not exists events (
   url              text default 'register.html',
   payment_url      text,
   video_meeting_url text,
+  ressourcen_url   text,
   created_at       timestamptz default now()
 );
+
+-- Spalte nachträglich auf bereits bestehender Tabelle ergänzen:
+-- alter table events add column if not exists ressourcen_url text;
 
 -- ── 2. PARTICIPANTS ──────────────────────────────────────────────
 create table if not exists participants (
@@ -39,9 +43,25 @@ create table if not exists participants (
   registered_at   timestamptz default now()
 );
 
--- ── 3. ROW LEVEL SECURITY ────────────────────────────────────────
+-- ── 3. FEEDBACK ──────────────────────────────────────────────────
+create table if not exists feedback (
+  id              uuid default gen_random_uuid() primary key,
+  event_id        text references events(id) on delete set null,
+  ort             text,
+  vorname         text,
+  email           text,
+  rating          integer not null check (rating between 1 and 5),
+  recommend       text,
+  highlight       text,
+  improvement     text,
+  testimonial_ok  boolean default false,
+  created_at      timestamptz default now()
+);
+
+-- ── 4. ROW LEVEL SECURITY ────────────────────────────────────────
 alter table events       enable row level security;
 alter table participants enable row level security;
+alter table feedback     enable row level security;
 
 -- Events: jeder kann lesen (Kalender & Startseite)
 create policy "events_public_read"
@@ -65,4 +85,14 @@ create policy "participants_admin_read" on participants for select
 create policy "participants_admin_update" on participants for update
   using (auth.role() = 'authenticated');
 create policy "participants_admin_delete" on participants for delete
+  using (auth.role() = 'authenticated');
+
+-- Feedback: jeder darf Feedback abgeben
+create policy "feedback_public_insert"
+  on feedback for insert with check (true);
+
+-- Feedback: nur eingeloggte Admins dürfen lesen/bearbeiten
+create policy "feedback_admin_read" on feedback for select
+  using (auth.role() = 'authenticated');
+create policy "feedback_admin_delete" on feedback for delete
   using (auth.role() = 'authenticated');

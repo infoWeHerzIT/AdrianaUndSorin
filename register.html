@@ -9,6 +9,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
+<script src="Templates/emailjs-config.js"></script>
 <style>
   :root {
     --orange: #ff6300;
@@ -596,12 +597,6 @@
 </section>
 
 <script>
-  // ── EmailJS (unchanged) ──
-  var EMAILJS_PUBLIC_KEY  = '61HDtV0fSnuRzKNd4';
-  var EMAILJS_SERVICE_ID  = 'service_6jnlzxd';
-  var EMAILJS_TEMPLATE_ID = 'template_e42axd9';
-  emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
-
   // ── Shared storage key ──
   var STORAGE_KEY = 'dc_events';
   var MONTH_NAMES = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
@@ -948,13 +943,13 @@
         video_meeting_url: videoMeetingUrl
       });
       if (isTestEvent) thankyouParams.set('is_test', '1');
-      var thankyouUrl = 'danke.html?' + thankyouParams.toString();
+      var thankyouUrl = 'Templates/danke.html?' + thankyouParams.toString();
 
       function goToDanke() { window.location.href = thankyouUrl; }
 
       if (!isTestEvent) {
         try {
-          emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+          emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID_Erfolgreiche_Registrierung_fur_Nutzer, {
             to_name:           vorname + ' ' + nachname,
             to_email:          email,
             vorname:           vorname,
