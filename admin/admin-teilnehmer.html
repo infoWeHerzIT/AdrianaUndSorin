@@ -543,7 +543,7 @@ let selectedParticipantId = null;
 async function loadData() {
   const [evRes, parRes] = await Promise.all([
     db.from('events').select('id, name, year, month, day').order('year').order('month').order('day'),
-    db.from('participants').select('*').order('registered_at', { ascending: false })
+    db.from('event_participations').select('*, participants(vorname, nachname, email, handy, ort)').order('registered_at', { ascending: false })
   ]);
 
   if (evRes.error) { showToast('Events konnten nicht geladen werden: ' + evRes.error.message, 'error'); }
@@ -552,7 +552,20 @@ async function loadData() {
   eventsMap = {};
   (evRes.data || []).forEach(ev => { eventsMap[ev.id] = ev; });
 
-  allParticipants = parRes.data || [];
+  allParticipants = (parRes.data || []).map(ep => ({
+    id:             ep.id,
+    event_id:       ep.event_id,
+    participant_id: ep.participant_id,
+    vorname:        ep.participants?.vorname || '',
+    nachname:       ep.participants?.nachname || '',
+    email:          ep.participants?.email || '',
+    handy:          ep.participants?.handy || '',
+    ort:            ep.participants?.ort || '',
+    ticket_name:    ep.ticket_name,
+    ticket_price:   ep.ticket_price,
+    payment_status: ep.payment_status,
+    registered_at:  ep.registered_at
+  }));
 
   populateEventFilter();
   populateParticipantEventSelect();
@@ -663,7 +676,7 @@ async function changeStatus(selectEl) {
   // Update class for styling
   selectEl.className = 'status-select ' + newStatus;
 
-  const { error } = await db.from('participants').update({ payment_status: newStatus }).eq('id', id);
+  const { error } = await db.from('event_participations').update({ payment_status: newStatus }).eq('id', id);
   if (error) {
     showToast('Fehler: ' + error.message, 'error');
     // Revert local state
@@ -691,7 +704,7 @@ async function deleteParticipant(btn) {
 
   btn.disabled = true;
 
-  const { error } = await db.from('participants').delete().eq('id', id);
+  const { error } = await db.from('event_participations').delete().eq('id', id);
   if (error) {
     showToast('Fehler beim Löschen: ' + error.message, 'error');
     btn.disabled = false;
@@ -787,33 +800,38 @@ document.getElementById('participant-form').addEventListener('submit', async e =
     return;
   }
 
-  const fields = {
-    vorname, nachname, email,
-    event_id:       document.getElementById('pf-event').value || null,
-    handy:          document.getElementById('pf-handy').value.trim(),
-    ort:            document.getElementById('pf-ort').value.trim(),
-    ticket_name:    document.getElementById('pf-ticket').value.trim(),
-    ticket_price:   document.getElementById('pf-price').value.trim(),
-    payment_status: document.getElementById('pf-status').value
-  };
+  const handy      = document.getElementById('pf-handy').value.trim();
+  const event_id   = document.getElementById('pf-event').value || null;
+  const epFields   = { event_id, ticket_name: document.getElementById('pf-ticket').value.trim(), ticket_price: document.getElementById('pf-price').value.trim(), payment_status: document.getElementById('pf-status').value };
+  const partFields = { vorname, nachname, email, handy, ort: document.getElementById('pf-ort').value.trim() };
 
   if (selectedParticipantId) {
-    const { error } = await db.from('participants').update(fields).eq('id', selectedParticipantId);
-    if (error) { showToast('Fehler beim Speichern: ' + error.message, 'error'); return; }
-
     const p = allParticipants.find(x => x.id === selectedParticipantId);
-    if (p) Object.assign(p, fields);
+    const { error: epErr } = await db.from('event_participations').update(epFields).eq('id', selectedParticipantId);
+    if (epErr) { showToast('Fehler beim Speichern: ' + epErr.message, 'error'); return; }
+    if (p?.participant_id) {
+      const { error: partErr } = await db.from('participants').update(partFields).eq('id', p.participant_id);
+      if (partErr) { showToast('Fehler beim Speichern: ' + partErr.message, 'error'); return; }
+    }
 
+    if (p) Object.assign(p, { ...epFields, ...partFields });
     updateStats();
     renderTable();
     showToast('Teilnehmer aktualisiert ✓', 'success');
   } else {
-    const { data, error } = await db.from('participants').insert(fields).select().single();
-    if (error) { showToast('Fehler beim Anlegen: ' + error.message, 'error'); return; }
+    // Neuer Teilnehmer: participant anlegen/finden, dann event_participation
+    const { data: partData, error: partErr } = handy
+      ? await db.from('participants').upsert({ ...partFields }, { onConflict: 'handy' }).select('id').single()
+      : await db.from('participants').insert(partFields).select('id').single();
+    if (partErr) { showToast('Fehler beim Anlegen: ' + partErr.message, 'error'); return; }
 
-    allParticipants.unshift(data);
-    selectedParticipantId = data.id;
-    document.getElementById('pf-registered').value = formatDate(data.registered_at);
+    const { data: epData, error: epErr } = await db.from('event_participations').insert({ ...epFields, participant_id: partData.id }).select().single();
+    if (epErr) { showToast('Fehler beim Anlegen: ' + epErr.message, 'error'); return; }
+
+    const newEntry = { id: epData.id, participant_id: partData.id, ...epFields, ...partFields, registered_at: epData.registered_at };
+    allParticipants.unshift(newEntry);
+    selectedParticipantId = epData.id;
+    document.getElementById('pf-registered').value = formatDate(epData.registered_at);
     document.getElementById('participant-form-title').textContent = 'Daten bearbeiten';
     document.getElementById('pf-save').textContent = 'Speichern';
 
@@ -821,7 +839,7 @@ document.getElementById('participant-form').addEventListener('submit', async e =
     renderTable();
     showToast('Teilnehmer angelegt ✓', 'success');
 
-    const row = document.querySelector('#participants-tbody tr[data-id="' + data.id + '"]');
+    const row = document.querySelector('#participants-tbody tr[data-id="' + epData.id + '"]');
     if (row) row.classList.add('selected-row');
   }
 });

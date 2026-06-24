@@ -418,14 +418,33 @@
     opacity: .9;
   }
 
+  .event-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
   .event-card-name {
     font-family: 'Fredoka', sans-serif;
     font-size: 17px;
     font-weight: 700;
     color: var(--navy);
-    margin-bottom: 10px;
+    margin-bottom: 0;
     line-height: 1.2;
   }
+  .btn-reg-top {
+    display: inline-flex; align-items: center;
+    padding: 4px 12px; border-radius: 2px;
+    background: var(--orange); color: var(--white);
+    font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500;
+    text-decoration: none; white-space: nowrap; flex-shrink: 0;
+    transition: background .18s; position: relative; z-index: 2;
+  }
+  .btn-reg-top:hover { background: #e55700; }
+  .btn-reg-top.fmt-online { background: #0078b4; }
+  .btn-reg-top.fmt-online:hover { background: #005f8e; }
+  .btn-reg-top.fmt-hybrid { background: linear-gradient(to bottom left, #0078b4 50%, #ff6300 50%); }
 
   .event-meta-rows {
     display: flex;
@@ -491,6 +510,18 @@
     background-clip: text;
   }
   .event-card-footer .btn-register { margin-top: 0; margin-left: auto; width: fit-content; }
+  .event-card-footer .btn-goto-event { margin-left: auto; }
+  .btn-goto-event {
+    display: inline-flex; align-items: center;
+    padding: 7px 14px; border-radius: 2px;
+    background: rgba(22,163,74,0.1);
+    color: #16a34a; border: 1px solid rgba(22,163,74,0.3);
+    font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500;
+    text-decoration: none; white-space: nowrap;
+    transition: background .18s;
+    position: relative; z-index: 2;
+  }
+  .btn-goto-event:hover { background: rgba(22,163,74,0.18); color: #15803d; }
 
   /* ─── TEST DEBUG ─── */
   .event-card-test-debug {
@@ -1144,6 +1175,11 @@ function renderCalendar() {
   }
 }
 
+function buildGoToEventUrl(ev) {
+  const page = ev.type === 'Webinar' ? 'event-webinar.html' : ev.type === 'Workshop' ? 'event-workshop.html' : 'register.html';
+  return page + '?event_id=' + encodeURIComponent(ev.id);
+}
+
 function buildEventCard(ev, isPast) {
   const fc = fmtClass(ev.format);
   const card = document.createElement('div');
@@ -1166,7 +1202,10 @@ function buildEventCard(ev, isPast) {
     : '';
 
   card.innerHTML = `
-    <div class="event-card-name">${ev.name}</div>
+    <div class="event-card-header">
+      <div class="event-card-name">${ev.name}</div>
+      ${!isPast ? `<a href="${buildRegisterUrl(ev)}" class="btn-reg-top ${fc}" onclick="event.stopPropagation()">Registrieren →</a>` : ''}
+    </div>
     <div class="event-meta-rows">
       ${ev.time ? `<div class="event-meta-row"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${ev.time}</div>` : ''}
       ${ev.location ? `<div class="event-meta-row"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${ev.location}</div>` : ''}
@@ -1178,7 +1217,7 @@ function buildEventCard(ev, isPast) {
         <svg width="10" height="10" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
         ${ev.format || ev.type || 'Präsenz'}
       </span>
-      ${!isPast ? `<a href="${buildRegisterUrl(ev)}" class="btn-register ${fc}" onclick="event.stopPropagation()">Registrieren →</a>` : ''}
+      <a href="${buildGoToEventUrl(ev)}" target="_blank" rel="noopener" class="btn-goto-event" onclick="event.stopPropagation()">Go To Event →</a>
     </div>
     ${isTestEvent && ev.videoMeetingUrl ? `
     <div class="event-card-meeting-link" onclick="event.stopPropagation()">

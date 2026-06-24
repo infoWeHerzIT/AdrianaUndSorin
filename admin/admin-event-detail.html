@@ -240,9 +240,12 @@
   .form-divider { border: none; border-top: 1px solid rgba(0,34,77,0.08); margin: 20px 0; }
 
   /* ─── THANK YOU EMAIL ─── */
-  .thankyou-actions { margin-bottom: 16px; }
+  .thankyou-actions {
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
   .btn-thankyou {
-    width: 100%;
+    flex: 1;
     background: var(--navy); color: var(--white);
     border: none; padding: 12px 20px;
     font-family: 'DM Sans', sans-serif;
@@ -251,8 +254,21 @@
     letter-spacing: .03em;
     transition: background .2s;
   }
-  .btn-thankyou:hover { background: #001733; }
-  .btn-thankyou:disabled { opacity: .6; cursor: default; }
+  .btn-thankyou:hover:not(:disabled) { background: #001733; }
+  .btn-thankyou:disabled { opacity: .45; cursor: not-allowed; }
+  .btn-goto-event {
+    background: rgba(22,163,74,0.1);
+    color: var(--green); border: 1px solid rgba(22,163,74,0.3);
+    padding: 12px 16px; border-radius: 2px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 500;
+    text-decoration: none; white-space: nowrap;
+    transition: background .15s;
+  }
+  .btn-goto-event:hover { background: rgba(22,163,74,0.18); }
+  .btn-goto-event.disabled {
+    opacity: .45; pointer-events: none; cursor: not-allowed;
+  }
 
   /* ─── EARLY BIRD ─── */
   .eb-form-section {
@@ -416,7 +432,8 @@
 
   <div class="event-form-wrap">
   <div class="thankyou-actions" id="thankyou-actions">
-    <button type="button" class="btn-thankyou" id="btn-send-thankyou">💛 Danke für Teilnahme</button>
+    <button type="button" class="btn-thankyou" id="btn-send-thankyou" disabled>💛 Danke für Teilnahme</button>
+    <a class="btn-goto-event" id="btn-goto-event" href="#" target="_blank" rel="noopener">Go To Event →</a>
   </div>
   <div class="form-panel">
     <span class="section-label">Event-Daten</span>
@@ -486,7 +503,7 @@
 
       <div class="field-group">
         <label for="field-description">Beschreibung</label>
-        <textarea id="field-description" placeholder="Kurze Beschreibung des Events…" maxlength="500"></textarea>
+        <textarea id="field-description" placeholder="Kurze Beschreibung des Events…" maxlength="1500"></textarea>
       </div>
 
       <div class="field-group" id="fg-url">
@@ -749,7 +766,13 @@ function setupNewEventMode() {
   document.getElementById('form-title').textContent = 'Event anlegen';
   document.getElementById('btn-save').textContent = 'Event speichern';
   document.getElementById('participants-section').style.display = 'none';
-  document.getElementById('thankyou-actions').style.display = 'none';
+  const tooltip = 'Event muss zuerst gespeichert werden';
+  const thankBtn = document.getElementById('btn-send-thankyou');
+  thankBtn.disabled = true;
+  thankBtn.title = tooltip;
+  const gotoBtn = document.getElementById('btn-goto-event');
+  gotoBtn.classList.add('disabled');
+  gotoBtn.title = tooltip;
   updateTypeHint();
   updateLocationRequired();
   updateUrlHint();
@@ -786,6 +809,26 @@ function fillForm(ev) {
   updateTypeHint();
   updateLocationRequired();
   updateUrlHint();
+  updateEventButtons(ev);
+}
+
+function updateEventButtons(ev) {
+  // "Go To Event" URL
+  const gotoBtn = document.getElementById('btn-goto-event');
+  if (gotoBtn) {
+    const page = ev.type === 'Webinar' ? '../event-webinar.html' : ev.type === 'Workshop' ? '../event-workshop.html' : '../register.html';
+    gotoBtn.href = page + '?event_id=' + encodeURIComponent(ev.id);
+  }
+
+  // "Danke für Teilnahme" nur nach dem Event freischalten
+  const thankBtn = document.getElementById('btn-send-thankyou');
+  if (thankBtn) {
+    const today     = new Date(); today.setHours(0,0,0,0);
+    const eventDate = new Date(ev.year, ev.month, ev.day);
+    const isPast    = eventDate < today;
+    thankBtn.disabled = !isPast;
+    thankBtn.title    = isPast ? '' : 'Wird freigeschaltet sobald das Event vorbei ist (' + ev.day + '.' + String(ev.month + 1).padStart(2,'0') + '.' + ev.year + ')';
+  }
 }
 
 // ── Save ──────────────────────────────────────────────────────
@@ -1013,12 +1056,25 @@ document.getElementById('btn-send-thankyou').addEventListener('click', sendThank
 async function loadParticipants() {
   const [evRes, parRes] = await Promise.all([
     db.from('events').select('id, name, year, month, day').order('year').order('month').order('day'),
-    db.from('participants').select('*').eq('event_id', eventId).order('registered_at', { ascending: false })
+    db.from('event_participations').select('*, participants(vorname, nachname, email, handy, ort)').eq('event_id', eventId).order('registered_at', { ascending: false })
   ]);
   if (evRes.error) { showToast('Events konnten nicht geladen werden: ' + evRes.error.message, 'error'); }
   if (parRes.error) { showToast('Teilnehmer konnten nicht geladen werden: ' + parRes.error.message, 'error'); return; }
   allEventsList = evRes.data || [];
-  allParticipants = parRes.data || [];
+  allParticipants = (parRes.data || []).map(ep => ({
+    id:             ep.id,
+    event_id:       ep.event_id,
+    participant_id: ep.participant_id,
+    vorname:        ep.participants?.vorname || '',
+    nachname:       ep.participants?.nachname || '',
+    email:          ep.participants?.email || '',
+    handy:          ep.participants?.handy || '',
+    ort:            ep.participants?.ort || '',
+    ticket_name:    ep.ticket_name,
+    ticket_price:   ep.ticket_price,
+    payment_status: ep.payment_status,
+    registered_at:  ep.registered_at
+  }));
   populateParticipantEventSelect();
   renderParticipants();
 }
@@ -1074,7 +1130,7 @@ async function changeStatus(selectEl) {
   const newStatus = selectEl.value;
   selectEl.className = 'status-select ' + newStatus;
 
-  const { error } = await db.from('participants').update({ payment_status: newStatus }).eq('id', id);
+  const { error } = await db.from('event_participations').update({ payment_status: newStatus }).eq('id', id);
   if (error) {
     showToast('Fehler: ' + error.message, 'error');
     const p = allParticipants.find(x => x.id === id);
@@ -1097,7 +1153,7 @@ async function deleteParticipant(btn) {
   if (!confirm('"' + name + '" wirklich unwiderruflich löschen?')) return;
 
   btn.disabled = true;
-  const { error } = await db.from('participants').delete().eq('id', id);
+  const { error } = await db.from('event_participations').delete().eq('id', id);
   if (error) {
     showToast('Fehler beim Löschen: ' + error.message, 'error');
     btn.disabled = false;
@@ -1164,26 +1220,24 @@ document.getElementById('participant-form').addEventListener('submit', async e =
   }
 
   const newEventId = document.getElementById('pf-event').value;
-  const updates = {
-    vorname, nachname, email,
-    event_id:       newEventId,
-    handy:          document.getElementById('pf-handy').value.trim(),
-    ort:            document.getElementById('pf-ort').value.trim(),
-    ticket_name:    document.getElementById('pf-ticket').value.trim(),
-    ticket_price:   document.getElementById('pf-price').value.trim(),
-    payment_status: document.getElementById('pf-status').value
-  };
+  const epFields   = { event_id: newEventId, ticket_name: document.getElementById('pf-ticket').value.trim(), ticket_price: document.getElementById('pf-price').value.trim(), payment_status: document.getElementById('pf-status').value };
+  const partFields = { vorname, nachname, email, handy: document.getElementById('pf-handy').value.trim(), ort: document.getElementById('pf-ort').value.trim() };
 
-  const { error } = await db.from('participants').update(updates).eq('id', selectedParticipantId);
-  if (error) { showToast('Fehler beim Speichern: ' + error.message, 'error'); return; }
+  const { error: epErr } = await db.from('event_participations').update(epFields).eq('id', selectedParticipantId);
+  if (epErr) { showToast('Fehler beim Speichern: ' + epErr.message, 'error'); return; }
+
+  const p = allParticipants.find(x => x.id === selectedParticipantId);
+  if (p?.participant_id) {
+    const { error: partErr } = await db.from('participants').update(partFields).eq('id', p.participant_id);
+    if (partErr) { showToast('Fehler beim Speichern: ' + partErr.message, 'error'); return; }
+  }
 
   if (newEventId !== eventId) {
     // Teilnehmer wurde einem anderen Event zugeordnet – verschwindet aus dieser Liste
     allParticipants = allParticipants.filter(x => x.id !== selectedParticipantId);
     closeParticipantForm();
   } else {
-    const p = allParticipants.find(x => x.id === selectedParticipantId);
-    if (p) Object.assign(p, updates);
+    if (p) Object.assign(p, { ...epFields, ...partFields });
   }
 
   renderParticipants();

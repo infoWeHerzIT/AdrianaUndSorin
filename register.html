@@ -526,7 +526,7 @@
 
       <div class="form-group">
         <label class="form-label" for="email">E-Mail-Adresse</label>
-        <input class="form-input" type="email" id="email" name="email" placeholder="max@beispiel.de" autocomplete="email">
+        <input class="form-input" type="email" id="email" name="email" placeholder="max@beispiel.de" autocomplete="email" required>
         <span class="field-error" id="err-email">Bitte gültige E-Mail-Adresse eingeben</span>
       </div>
 
@@ -709,7 +709,7 @@
       document.getElementById('ticket-name').textContent = ticket;
       document.getElementById('ticket-per').textContent  = per;
       document.getElementById('ticket-desc').textContent = desc;
-      document.getElementById('ticket-price').innerHTML  = price ? '<sup>€</sup>' + price : '–';
+      document.getElementById('ticket-price').innerHTML  = price ? '<sup>€</sup>' + price : '<sup>€</sup>0';
       var badge = document.getElementById('ticket-badge');
       badge.textContent = isEB ? '⚡ Early Bird' : 'Ticket';
       if (isEB) {
@@ -915,17 +915,26 @@
 
       // Teilnehmer in Supabase speichern (immer, auch bei Test-Events)
       const resolvedEventId = eventId || (specificEvent ? specificEvent.id : null);
-      const { error: dbError } = await db.from('participants').insert({
-        event_id:       resolvedEventId,
-        vorname:        vorname,
-        nachname:       nachname,
-        email:          email,
-        handy:          handy,
-        ort:            ort,
-        ticket_name:    ticket,
-        ticket_price:   price ? '€' + price : 'kostenlos',
-        payment_status: 'pending'
-      });
+
+      // 1. Participant anlegen oder per Handynummer aktualisieren
+      const participantFields = { vorname, nachname, email, ort };
+      if (handy) participantFields.handy = handy;
+      const { data: partData, error: partError } = handy
+        ? await db.from('participants').upsert(participantFields, { onConflict: 'handy' }).select('id').single()
+        : await db.from('participants').insert(participantFields).select('id').single();
+
+      // 2. Event-Teilnahme anlegen
+      let dbError = partError;
+      if (!partError && partData) {
+        const { error: epError } = await db.from('event_participations').insert({
+          event_id:       resolvedEventId,
+          participant_id: partData.id,
+          ticket_name:    ticket,
+          ticket_price:   price ? '€' + price : 'kostenlos',
+          payment_status: 'pending'
+        });
+        dbError = epError;
+      }
       if (dbError) console.error('Supabase insert error:', dbError.message);
 
       var videoMeetingUrl = specificEvent ? (specificEvent.videoMeetingUrl || '') : '';

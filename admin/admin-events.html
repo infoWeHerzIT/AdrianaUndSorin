@@ -250,6 +250,18 @@
     background: transparent; color: #888; border: 1px solid #ccc;
   }
   .btn-cancel-del:hover { background: #f0f0f0; }
+  .btn-goto {
+    background: rgba(22,163,74,0.1);
+    color: var(--green); border: 1px solid rgba(22,163,74,0.3);
+    text-decoration: none; display: inline-block;
+    margin-left: auto;
+    cursor: pointer; border-radius: 2px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px; font-weight: 500;
+    padding: 6px 14px;
+    transition: background .15s, transform .1s;
+  }
+  .btn-goto:hover { background: rgba(22,163,74,0.18); }
 
   .empty-list {
     text-align: center; padding: 48px 24px;
@@ -668,6 +680,7 @@ function renderList() {
           <div class="card-actions">
             <button class="btn-edit" data-id="${ev.id}">✎ Bearbeiten</button>
             <button class="btn-delete" data-id="${ev.id}">🗑 Löschen</button>
+            <a class="btn-goto" href="${ev.type === 'Webinar' ? '../event-webinar.html' : ev.type === 'Workshop' ? '../event-workshop.html' : '../register.html'}?event_id=${encodeURIComponent(ev.id)}" target="_blank" rel="noopener">Go To Event →</a>
           </div>
         </div>
         <div class="card-badges">

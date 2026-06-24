@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="page-title">Webinar – Adriana &amp; Sorin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<style>
+  :root {
+    --orange: #ff6300;
+    --navy:   #00224d;
+    --white:  #ffffff;
+    --orange-dim: rgba(255,99,0,0.12);
+    --navy-dim:   rgba(0,34,77,0.06);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 17px;
+    background: var(--white);
+    color: var(--navy);
+    overflow-x: hidden;
+  }
+
+  .orange { color: var(--orange); }
+  .section-label {
+    font-family: 'Orbitron', monospace;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: .22em; text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 14px; display: block;
+  }
+  .tag {
+    display: inline-block;
+    background: var(--orange); color: var(--white);
+    font-size: 11px; font-weight: 500;
+    letter-spacing: .12em; text-transform: uppercase;
+    padding: 5px 14px; border-radius: 2px;
+    box-shadow: 0 0 12px rgba(255,99,0,.35);
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(0,34,77,0.97);
+    backdrop-filter: blur(8px);
+    padding: 18px 5%;
+  }
+  .nav-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo {
+    font-family: 'Fredoka', sans-serif;
+    color: var(--white); font-size: 18px; font-weight: 700;
+  }
+  .nav-logo span { color: var(--orange); }
+  .nav-cta {
+    background: var(--orange); color: var(--white);
+    border: none; padding: 10px 22px;
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+    cursor: pointer; border-radius: 2px; letter-spacing: .04em;
+    text-decoration: none; transition: background .2s;
+    position: relative; overflow: hidden;
+  }
+  .nav-cta:hover { background: #e55700; }
+  .nav-cta::after {
+    content: ''; position: absolute; top: -50%; left: -60%;
+    width: 40%; height: 200%; background: rgba(255,255,255,.2);
+    transform: skewX(-20deg); transition: left .5s ease;
+  }
+  .nav-cta:hover::after { left: 120%; }
+
+  /* ── LOADING ── */
+  #loading-screen {
+    position: fixed; inset: 0; z-index: 9999;
+    background: var(--navy);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 20px;
+    transition: opacity .5s ease;
+  }
+  #loading-screen.hidden { opacity: 0; pointer-events: none; }
+  .loader-ring {
+    width: 52px; height: 52px;
+    border: 3px solid rgba(255,99,0,.2);
+    border-top-color: var(--orange);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #loading-screen p {
+    font-size: 13px; letter-spacing: .1em; text-transform: uppercase;
+    color: rgba(255,255,255,.4);
+  }
+
+  /* ── ERROR STATE ── */
+  #error-screen {
+    display: none; min-height: 100vh; padding-top: 100px;
+    background: var(--navy);
+    align-items: center; justify-content: center; flex-direction: column;
+    text-align: center; gap: 16px;
+  }
+  #error-screen h2 { font-family: 'Fredoka', sans-serif; color: var(--white); font-size: 28px; }
+  #error-screen p { color: rgba(255,255,255,.55); font-size: 16px; }
+  #error-screen a { color: var(--orange); text-decoration: underline; }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    background: var(--navy);
+    position: relative; overflow: hidden;
+    padding-top: 80px;
+    z-index: 8;
+    margin-bottom: -80px; padding-bottom: 160px;
+  }
+  .hero-bg-lines {
+    position: absolute; inset: 0; pointer-events: none;
+    background-image: repeating-linear-gradient(90deg, rgba(255,99,0,.04) 0px, rgba(255,99,0,.04) 1px, transparent 1px, transparent 80px);
+  }
+  #hero::after {
+    content: '';
+    position: absolute; top: 0; right: 0; bottom: 0; width: 50%;
+    background-image:
+      radial-gradient(circle, rgba(255,99,0,.15) 1px, transparent 1px),
+      radial-gradient(circle, rgba(255,255,255,.04) 1px, transparent 1px);
+    background-size: 40px 40px, 80px 80px;
+    background-position: 0 0, 20px 20px;
+    pointer-events: none; z-index: 1;
+  }
+  .hero-accent-bar {
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 5px; background: var(--orange);
+  }
+  .hero-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr;
+    align-items: start; padding: 0 32px;
+    position: relative; z-index: 2;
+  }
+  .hero-left { padding: 40px 0 30px; }
+
+  /* Webinar live badge */
+  .webinar-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,99,0,.15);
+    border: 1px solid rgba(255,99,0,.35);
+    padding: 7px 16px; border-radius: 2px;
+    margin-bottom: 28px;
+  }
+  .webinar-badge-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--orange);
+    animation: ring 2s infinite;
+  }
+  @keyframes ring {
+    0%   { box-shadow: 0 0 0 0 rgba(255,99,0,.6); }
+    70%  { box-shadow: 0 0 0 10px rgba(255,99,0,0); }
+    100% { box-shadow: 0 0 0 0 rgba(255,99,0,0); }
+  }
+  .webinar-badge-text {
+    font-family: 'Orbitron', monospace;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: .18em; text-transform: uppercase;
+    color: var(--orange);
+  }
+
+  .hero-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: clamp(34px, 4vw, 58px); font-weight: 900;
+    line-height: 1.1; color: var(--white);
+    margin-bottom: 20px;
+  }
+  .hero-title em { font-style: normal; color: var(--orange); }
+
+  .hero-desc {
+    font-size: 17px; font-weight: 300; line-height: 1.75;
+    color: rgba(255,255,255,.65);
+    max-width: 480px; margin-bottom: 32px;
+    display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .hero-meta { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 36px; }
+  .hero-meta-item {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; color: rgba(255,255,255,.6);
+  }
+  .hero-meta-item svg { color: var(--orange); flex-shrink: 0; }
+
+  .btn-primary {
+    background: var(--orange); color: var(--white);
+    border: none; padding: 16px 36px;
+    font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500;
+    cursor: pointer; border-radius: 2px; text-decoration: none;
+    display: inline-block; transition: background .2s, transform .15s;
+    letter-spacing: .02em; position: relative; overflow: hidden;
+  }
+  .btn-primary:hover { background: #e55700; transform: translateY(-1px); }
+  .btn-primary::after {
+    content: ''; position: absolute; top: -50%; left: -60%;
+    width: 40%; height: 200%; background: rgba(255,255,255,.2);
+    transform: skewX(-20deg); transition: left .5s ease;
+  }
+  .btn-primary:hover::after { left: 120%; }
+
+  .hero-limit-note {
+    margin-top: 20px; font-size: 12px;
+    color: rgba(255,255,255,.35);
+    letter-spacing: .08em; text-transform: uppercase;
+  }
+  .hero-limit-note span { color: var(--orange); }
+
+  /* Hero photo */
+  .hero-right {
+    position: relative; height: 100vh;
+    display: flex; align-items: flex-end; padding-right: 5%;
+  }
+  .hero-photo-frame { position: relative; width: 100%; max-width: 500px; margin-left: auto; }
+  .hero-photo-frame img {
+    width: 100%; height: auto; display: block; object-fit: cover;
+  }
+  .hero-corner-decor {
+    position: absolute; top: -1px; right: -1px;
+    width: 60px; height: 60px;
+    border-top: 4px solid var(--orange);
+    border-right: 4px solid var(--orange);
+  }
+  .hero-name-badge {
+    position: absolute; bottom: 160px; left: -20px;
+    background: var(--white); padding: 14px 20px;
+    border-left: 4px solid var(--orange);
+    box-shadow: 0 20px 60px rgba(0,0,0,.3);
+    animation: fadeSlideUp .9s cubic-bezier(.16,1,.3,1) forwards;
+  }
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .hero-name-badge .name {
+    font-family: 'Fredoka', sans-serif; font-size: 18px; font-weight: 700; color: var(--navy);
+  }
+  .hero-name-badge .role {
+    font-size: 12px; color: #888; letter-spacing: .08em; margin-top: 3px;
+  }
+
+  /* Wave */
+  .wave-bottom {
+    position: absolute; bottom: -2px; left: 0; right: 0;
+    line-height: 0; z-index: 5; pointer-events: none;
+  }
+  .wave-bottom svg { display: block; width: 100%; }
+
+  /* ── BESCHREIBUNG ── */
+  #beschreibung {
+    background: var(--white);
+    padding: 170px 0 140px; position: relative; z-index: 7;
+    margin-top: -90px;
+  }
+  #beschreibung .content-wrap {
+    max-width: 1200px; margin: 0 auto; padding: 0 32px;
+    display: grid; grid-template-columns: 1.1fr 0.9fr;
+    gap: 72px; align-items: start;
+  }
+  .beschreibung-text h2 {
+    font-family: 'Fredoka', sans-serif;
+    font-size: clamp(26px, 3vw, 42px); font-weight: 700;
+    color: var(--navy); line-height: 1.15; margin-bottom: 24px;
+  }
+  .beschreibung-text p {
+    font-size: 17px; line-height: 1.85; color: #4a5568;
+    white-space: pre-line;
+  }
+
+  /* Facts sidebar */
+  .facts-card {
+    border: 1px solid rgba(0,34,77,.1);
+    padding: 32px 28px;
+    position: sticky; top: 100px;
+  }
+  .facts-card h3 {
+    font-family: 'Fredoka', sans-serif; font-size: 18px; font-weight: 700;
+    color: var(--navy); margin-bottom: 24px;
+    padding-bottom: 16px; border-bottom: 1px solid rgba(0,34,77,.08);
+  }
+  .fact-row {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(0,34,77,.06);
+    font-size: 15px;
+  }
+  .fact-row:last-child { border-bottom: none; }
+  .fact-icon { color: var(--orange); flex-shrink: 0; margin-top: 2px; }
+  .fact-label { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: #999; }
+  .fact-value { color: var(--navy); font-weight: 500; margin-top: 2px; }
+  .fact-price {
+    font-family: 'Fredoka', sans-serif; font-size: 36px; font-weight: 900;
+    color: var(--navy); line-height: 1;
+  }
+  .fact-price span { font-size: 18px; color: var(--orange); vertical-align: super; margin-right: 2px; }
+  .facts-cta {
+    margin-top: 24px; display: block;
+    background: var(--orange); color: var(--white);
+    padding: 14px 24px; text-align: center;
+    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+    text-decoration: none; border-radius: 2px;
+    transition: background .2s, transform .15s;
+    letter-spacing: .03em; position: relative; overflow: hidden;
+  }
+  .facts-cta:hover { background: #e55700; transform: translateY(-1px); }
+  .facts-cta::after {
+    content: ''; position: absolute; top: -50%; left: -60%;
+    width: 40%; height: 200%; background: rgba(255,255,255,.2);
+    transform: skewX(-20deg); transition: left .5s ease;
+  }
+  .facts-cta:hover::after { left: 120%; }
+
+  /* ── VORTEILE ── */
+  #vorteile {
+    background: var(--navy);
+    padding: 170px 0 140px; position: relative; z-index: 6;
+    margin-top: -80px;
+  }
+  #vorteile::after {
+    content: ''; position: absolute; inset: 0;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(255,99,0,.025) 0px, rgba(255,99,0,.025) 1px, transparent 1px, transparent 40px),
+      repeating-linear-gradient(90deg, rgba(255,99,0,.025) 0px, rgba(255,99,0,.025) 1px, transparent 1px, transparent 80px);
+    pointer-events: none; z-index: 0;
+  }
+  #vorteile > * { position: relative; z-index: 2; }
+  #vorteile .content-wrap {
+    max-width: 1200px; margin: 0 auto; padding: 0 32px;
+  }
+  #vorteile h2 {
+    font-family: 'Fredoka', sans-serif;
+    font-size: clamp(26px, 3.5vw, 44px); font-weight: 700;
+    color: var(--white); margin-bottom: 14px; line-height: 1.15;
+  }
+  #vorteile .subtitle {
+    font-size: 17px; color: rgba(255,255,255,.55);
+    margin-bottom: 56px; max-width: 560px;
+  }
+  .vorteile-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+  }
+  .vorteil {
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.07);
+    padding: 32px 28px;
+    transition: background .2s;
+    position: relative; overflow: hidden;
+  }
+  .vorteil:hover { background: rgba(255,99,0,.08); }
+  .vorteil::before {
+    content: ''; position: absolute; bottom: 0; left: 0;
+    width: 0; height: 2px; background: var(--orange);
+    transition: width .35s ease;
+  }
+  .vorteil:hover::before { width: 100%; }
+  .vorteil-num {
+    font-family: 'Fredoka', sans-serif; font-size: 42px; font-weight: 900;
+    color: var(--orange); line-height: 1; margin-bottom: 16px;
+  }
+  .vorteil h3 { font-size: 15px; font-weight: 500; color: var(--white); margin-bottom: 8px; }
+  .vorteil p { font-size: 13px; line-height: 1.6; color: rgba(255,255,255,.5); }
+
+  /* ── ÜBER UNS ── */
+  #about {
+    background: #f9f8f6;
+    padding: 170px 0 140px; position: relative; z-index: 5;
+    margin-top: -75px;
+  }
+  .about-header {
+    max-width: 1200px; margin: 0 auto 56px; padding: 0 32px;
+    text-align: center;
+  }
+  .about-header h2 {
+    font-family: 'Fredoka', sans-serif;
+    font-size: clamp(28px, 3.5vw, 48px); font-weight: 700;
+    color: var(--navy); line-height: 1.1; margin-bottom: 14px;
+  }
+  .about-header p {
+    font-size: 17px; color: #666; max-width: 540px; margin: 0 auto; line-height: 1.7;
+  }
+
+  .about-split {
+    max-width: 1200px; margin: 0 auto;
+    display: grid; grid-template-columns: 440px 1fr; gap: 0;
+    min-height: 520px;
+  }
+  .about-photo {
+    position: relative; overflow: hidden; background: var(--navy);
+    border-radius: 48px 0 32px 0;
+  }
+  .about-photo img {
+    width: 100%; height: 100%; object-fit: cover; object-position: center top;
+    display: block; filter: grayscale(10%);
+    transition: filter .5s ease, transform .6s ease;
+  }
+  .about-split:hover .about-photo img { filter: grayscale(0%); transform: scale(1.02); }
+  .about-photo-overlay {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 28px 32px;
+    background: linear-gradient(to top, rgba(0,34,77,.9) 0%, transparent 100%);
+  }
+  .about-photo-overlay .csn {
+    font-family: 'Fredoka', sans-serif; font-size: 26px; font-weight: 700;
+    color: var(--white); line-height: 1.1;
+  }
+  .about-photo-overlay .csr {
+    font-size: 12px; font-weight: 500;
+    letter-spacing: .12em; text-transform: uppercase;
+    color: var(--orange); margin-top: 5px;
+  }
+  .about-body {
+    padding: 56px 60px; background: var(--white);
+    display: flex; flex-direction: column; justify-content: center;
+    position: relative;
+  }
+  .about-body::before {
+    content: ''; position: absolute; top: 56px; left: 0;
+    width: 4px; height: 60px; background: var(--orange);
+  }
+  .about-body .tag { margin-bottom: 20px; }
+  .about-body .bio {
+    font-size: 16px; line-height: 1.85; color: #444; margin-bottom: 14px;
+  }
+  .about-body .bio strong { color: var(--navy); }
+  .about-pills { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 20px; }
+  .about-pills span {
+    background: rgba(255,99,0,.08); color: var(--orange);
+    font-size: 11px; font-weight: 500; letter-spacing: .06em;
+    padding: 5px 12px; border-radius: 2px; border: 1px solid rgba(255,99,0,.2);
+  }
+
+  /* ── ANMELDUNG ── */
+  #anmeldung {
+    background: var(--white);
+    padding: 170px 0 120px; position: relative; z-index: 4;
+    margin-top: -80px; text-align: center;
+  }
+  #anmeldung::before {
+    content: ''; position: absolute; inset: 0; z-index: 0;
+    background-image: radial-gradient(circle at 50% 30%, rgba(255,99,0,.06) 0%, transparent 65%);
+  }
+  #anmeldung > * { position: relative; z-index: 2; }
+  #anmeldung .content-wrap {
+    max-width: 1200px; margin: 0 auto; padding: 0 32px;
+  }
+  #anmeldung h2 {
+    font-family: 'Fredoka', sans-serif;
+    font-size: clamp(30px, 4vw, 54px); font-weight: 900;
+    color: var(--navy); line-height: 1.1; margin-bottom: 14px;
+  }
+  #anmeldung h2 em { color: var(--orange); font-style: normal; }
+  #anmeldung .subtitle {
+    font-size: 17px; color: #666;
+    max-width: 500px; margin: 0 auto 52px; line-height: 1.7;
+  }
+
+  .anmeldung-details {
+    display: flex; justify-content: center; flex-wrap: wrap; gap: 36px;
+    margin-bottom: 44px;
+  }
+  .anmeldung-detail { text-align: center; }
+  .anmeldung-detail .d-label {
+    font-size: 11px; font-weight: 500; letter-spacing: .14em;
+    text-transform: uppercase; color: #aaa; margin-bottom: 5px;
+  }
+  .anmeldung-detail .d-value {
+    font-size: 18px; font-weight: 500; color: var(--navy);
+  }
+  .anmeldung-detail .d-price {
+    font-family: 'Fredoka', sans-serif; font-size: 40px; font-weight: 900;
+    color: var(--navy); line-height: 1;
+  }
+  .anmeldung-detail .d-price sup { font-size: 20px; color: var(--orange); vertical-align: super; margin-right: 2px; }
+
+  .btn-cta-big {
+    display: inline-block; background: var(--orange); color: var(--white);
+    padding: 20px 64px; font-family: 'DM Sans', sans-serif;
+    font-size: 16px; font-weight: 500; text-decoration: none;
+    border-radius: 2px; letter-spacing: .04em;
+    transition: background .2s, transform .15s;
+    position: relative; overflow: hidden;
+  }
+  .btn-cta-big:hover { background: #e55700; transform: translateY(-2px); }
+  .btn-cta-big::after {
+    content: ''; position: absolute; top: -50%; left: -60%;
+    width: 40%; height: 200%; background: rgba(255,255,255,.2);
+    transform: skewX(-20deg); transition: left .5s ease;
+  }
+  .btn-cta-big:hover::after { left: 120%; }
+  .cta-sub { margin-top: 18px; font-size: 14px; color: #aaa; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #000d1f; padding: 36px 8%;
+  }
+  .footer-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: flex; justify-content: space-between;
+    align-items: center; flex-wrap: wrap; gap: 16px;
+  }
+  footer .f-logo { font-family: 'Fredoka', sans-serif; font-size: 16px; color: rgba(255,255,255,.5); }
+  footer .f-logo span { color: var(--orange); }
+  footer p { font-size: 12px; color: rgba(255,255,255,.25); letter-spacing: .04em; }
+
+  /* ── STAR CANVAS ── */
+  #star-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 99999; }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal { opacity: 0; transform: translateY(40px); transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1); }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 860px) {
+    .hero-inner { grid-template-columns: 1fr; }
+    .hero-right { height: 65vw; max-height: 380px; padding: 0 5% 20px; }
+    .hero-photo-frame { max-width: 100%; }
+    #beschreibung .content-wrap { grid-template-columns: 1fr; gap: 36px; }
+    .facts-card { position: static; }
+    .vorteile-grid { grid-template-columns: 1fr; gap: 2px; }
+    .about-split { grid-template-columns: 1fr; min-height: auto; }
+    .about-photo { height: 320px; border-radius: 40px 0 28px 0 !important; }
+    .about-body { padding: 36px 24px; }
+    .about-body::before { top: 36px; }
+  }
+  @media (max-width: 640px) {
+    .hero-name-badge { left: 10px; }
+    .hero-right { height: auto; }
+    .anmeldung-details { flex-direction: column; gap: 20px; }
+    .btn-cta-big { width: 100%; padding-left: 0; padding-right: 0; }
+    nav { padding: 14px 5%; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="star-canvas"></canvas>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">Adriana &amp; <span>Sorin</span></div>
+    <a href="#anmeldung" class="nav-cta" id="nav-cta-btn">Jetzt anmelden →</a>
+  </div>
+</nav>
+
+<!-- LOADING -->
+<div id="loading-screen">
+  <div class="loader-ring"></div>
+  <p>Webinar wird geladen…</p>
+</div>
+
+<!-- ERROR -->
+<div id="error-screen" style="display:none; min-height:100vh; padding-top:120px; background:var(--navy); flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:16px;">
+  <h2 style="font-family:'Fredoka',sans-serif;color:var(--white);font-size:28px;">Webinar nicht gefunden</h2>
+  <p style="color:rgba(255,255,255,.55);font-size:16px;">Es konnte kein passendes Webinar geladen werden.</p>
+  <a href="kalender.html" style="color:var(--orange);text-decoration:underline;font-size:15px;">← Zum Kalender</a>
+</div>
+
+<!-- MAIN (wird nach Laden sichtbar) -->
+<main id="main-content" style="display:none;">
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg-lines"></div>
+  <div class="hero-accent-bar"></div>
+  <div class="hero-inner">
+
+    <div class="hero-left reveal">
+      <div class="webinar-badge">
+        <div class="webinar-badge-dot"></div>
+        <span class="webinar-badge-text">Live Webinar · Online</span>
+      </div>
+
+      <h1 class="hero-title" id="hero-title">
+        Dein nächstes<br><em>Live-Webinar</em>
+      </h1>
+
+      <p class="hero-desc" id="hero-desc"></p>
+
+      <div class="hero-meta" id="hero-meta">
+        <!-- populated by JS -->
+      </div>
+
+      <a href="#anmeldung" class="btn-primary" id="hero-cta-btn">Jetzt anmelden →</a>
+      <p class="hero-limit-note" id="hero-spots"><span>●</span>&nbsp; Nur begrenzte Plätze</p>
+    </div>
+
+    <div class="hero-right">
+      <div class="hero-photo-frame">
+        <img src="Workshops/Bilder/Adriana%20und%20Sorin_hoch.png" alt="Adriana und Sorin">
+        <div class="hero-corner-decor"></div>
+        <div class="hero-name-badge">
+          <div class="name">Adriana Vukin &amp; Sorin Ratiu</div>
+          <div class="role">MENTAL COACH · NLP MASTER · DEEP COACHING</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="wave-bottom" style="bottom:-1px;">
+    <svg viewBox="0 0 1440 110" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,60 C180,110 320,20 520,75 C680,120 800,30 1000,65 C1160,95 1320,25 1440,55 L1440,110 L0,110 Z" fill="#ffffff"/>
+    </svg>
+  </div>
+</section>
+
+<!-- BESCHREIBUNG -->
+<section id="beschreibung">
+  <div class="content-wrap">
+    <div class="beschreibung-text reveal">
+      <span class="section-label">Das Webinar</span>
+      <h2 id="desc-title">Worum es geht</h2>
+      <p id="desc-text" style="font-size:17px;line-height:1.85;color:#4a5568;white-space:pre-line;"></p>
+    </div>
+
+    <div class="facts-card reveal">
+      <h3>Auf einen Blick</h3>
+
+      <div class="fact-row">
+        <svg class="fact-icon" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <div>
+          <div class="fact-label">Datum</div>
+          <div class="fact-value" id="fact-datum">–</div>
+        </div>
+      </div>
+
+      <div class="fact-row">
+        <svg class="fact-icon" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <div>
+          <div class="fact-label">Uhrzeit</div>
+          <div class="fact-value" id="fact-uhrzeit">–</div>
+        </div>
+      </div>
+
+      <div class="fact-row">
+        <svg class="fact-icon" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 10l4.553-2.069A1 1 0 0 1 21 8.82v6.362a1 1 0 0 1-1.447.894L15 14M3 8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z"/></svg>
+        <div>
+          <div class="fact-label">Format</div>
+          <div class="fact-value">Live-Webinar · Online</div>
+        </div>
+      </div>
+
+      <div class="fact-row" id="fact-spots-row" style="display:none;">
+        <svg class="fact-icon" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <div>
+          <div class="fact-label">Plätze</div>
+          <div class="fact-value" id="fact-spots">–</div>
+        </div>
+      </div>
+
+      <div class="fact-row">
+        <svg class="fact-icon" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 5a8 8 0 1 0 0 14"/><line x1="2" y1="9" x2="15" y2="9"/><line x1="2" y1="15" x2="15" y2="15"/></svg>
+        <div>
+          <div class="fact-label">Investment</div>
+          <div class="fact-price" id="fact-price">–</div>
+        </div>
+      </div>
+
+      <a href="#anmeldung" class="facts-cta" id="facts-cta-btn">Jetzt anmelden →</a>
+    </div>
+  </div>
+  <div class="wave-bottom" style="bottom:-1px;">
+    <svg viewBox="0 0 1440 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,40 C100,0 280,80 480,45 C640,15 780,70 960,35 C1120,5 1280,60 1440,30 L1440,100 L0,100 Z" fill="#00224d"/>
+    </svg>
+  </div>
+</section>
+
+<!-- VORTEILE -->
+<section id="vorteile">
+  <div class="content-wrap">
+    <span class="section-label">Warum dieses Webinar</span>
+    <h2 class="reveal">Kein Konsum. Echte Wirkung.</h2>
+    <p class="subtitle reveal">Adriana und Sorin arbeiten live mit dir – kein aufgezeichneter Kurs, kein PowerPoint-Marathon.</p>
+
+    <div class="vorteile-grid">
+      <div class="vorteil reveal">
+        <div class="vorteil-num">01</div>
+        <h3>Live-Interaktion</h3>
+        <p>Direkte Fragen, sofortiges Feedback – du bist kein Zuschauer, sondern Teil des Prozesses.</p>
+      </div>
+      <div class="vorteil reveal">
+        <div class="vorteil-num">02</div>
+        <h3>Tiefe statt Oberfläche</h3>
+        <p>Wir arbeiten an Systemen, nicht an Symptomen. Deep Coaching und NLP live erlebt.</p>
+      </div>
+      <div class="vorteil reveal">
+        <div class="vorteil-num">03</div>
+        <h3>Von zuhause wirksam</h3>
+        <p>Bequem online, trotzdem mit echter Präsenz und Coaching-Qualität auf höchstem Niveau.</p>
+      </div>
+    </div>
+  </div>
+  <div class="wave-bottom" style="bottom:-1px;">
+    <svg viewBox="0 0 1440 90" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,50 C200,90 380,10 600,55 C780,90 920,15 1100,50 C1240,75 1360,20 1440,45 L1440,90 L0,90 Z" fill="#f9f8f6"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ÜBER UNS -->
+<section id="about">
+  <div class="about-header reveal">
+    <span class="section-label">Deine Coaches</span>
+    <h2>Adriana &amp; Sorin</h2>
+    <p>Zwei Coaches. Eine gemeinsame Mission: echte Veränderung, die bleibt.</p>
+  </div>
+
+  <div class="about-split">
+    <div class="about-photo">
+      <img src="Workshops/Bilder/Adriana%20und%20Sorin_hoch.png" alt="Adriana Vukin und Sorin Ratiu">
+      <div class="about-photo-overlay">
+        <div class="csn">Adriana &amp; Sorin</div>
+        <div class="csr">Mental Coach · NLP Master · Deep Coaching</div>
+      </div>
+    </div>
+    <div class="about-body reveal">
+      <span class="tag">Über uns</span>
+      <p class="bio">
+        <strong>Adriana Vukin</strong> ist zertifizierter Mental Coach und NLP Master mit über einem Jahrzehnt Erfahrung in tiefenwirksamer Persönlichkeitsentwicklung. Ihre Stärke liegt in der Verbindung von somatischer Arbeit, Trauma-sensitiver Begleitung und strukturiertem Deep Coaching.
+      </p>
+      <p class="bio">
+        <strong>Sorin Ratiu</strong> bringt seine Expertise als NLP Practitioner und Business Coach ein. Mit klarem System-Denken und praktischem Alltags-Transfer schließt er die Lücke zwischen Innenarbeit und messbaren Ergebnissen im echten Leben.
+      </p>
+      <p class="bio" style="color:#777;font-size:15px;">
+        Zusammen haben sie hunderte Menschen begleitet – in Präsenz-Workshops und Webinaren – dabei ist ein Ding konstant: <em>Tiefe statt Theorie.</em>
+      </p>
+      <div class="about-pills">
+        <span>NLP Master</span>
+        <span>Deep Coaching</span>
+        <span>Somatische Arbeit</span>
+        <span>Stress-Regulation</span>
+        <span>Business Coaching</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="wave-bottom" style="bottom:-1px;">
+    <svg viewBox="0 0 1440 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,45 C200,5 380,80 580,40 C740,5 880,70 1080,38 C1240,10 1360,65 1440,30 L1440,100 L0,100 Z" fill="#ffffff"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ANMELDUNG -->
+<section id="anmeldung">
+  <div class="content-wrap">
+    <span class="section-label reveal">Anmeldung</span>
+    <h2 class="reveal">Sichere dir deinen<br>Platz im <em id="cta-event-name">Webinar</em>.</h2>
+    <p class="subtitle reveal" id="cta-subtitle">Live dabei sein – von zuhause aus wirksam arbeiten.</p>
+
+    <div class="anmeldung-details reveal">
+      <div class="anmeldung-detail">
+        <div class="d-label">Datum</div>
+        <div class="d-value" id="cta-datum">–</div>
+      </div>
+      <div class="anmeldung-detail">
+        <div class="d-label">Uhrzeit</div>
+        <div class="d-value" id="cta-uhrzeit">–</div>
+      </div>
+      <div class="anmeldung-detail">
+        <div class="d-label">Format</div>
+        <div class="d-value">Online · Live</div>
+      </div>
+      <div class="anmeldung-detail">
+        <div class="d-label">Investment</div>
+        <div class="d-price" id="cta-price"><sup>€</sup>–</div>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <a href="#" id="cta-btn" class="btn-cta-big">Jetzt anmelden →</a>
+      <p class="cta-sub" id="cta-sub-note">Nach der Anmeldung erhältst du den Zoom-Link per E-Mail.</p>
+    </div>
+  </div>
+</section>
+
+</main><!-- /main-content -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="f-logo">Adriana &amp; <span>Sorin</span></div>
+    <p>© <span id="footer-year">2026</span> Adriana Vukin &amp; Sorin Ratiu · Alle Rechte vorbehalten</p>
+  </div>
+</footer>
+
+<script>
+/* ── Shooting stars ── */
+(function(){
+  var cv  = document.getElementById('star-canvas');
+  var ctx = cv ? cv.getContext('2d') : null;
+  function resize(){ if(cv){ cv.width=window.innerWidth; cv.height=window.innerHeight; } }
+  resize(); window.addEventListener('resize', resize);
+  var shooters = [];
+  function spawnShooter(){
+    shooters.push({x:Math.random()*window.innerWidth*.75,y:Math.random()*window.innerHeight*.4,
+      vx:8+Math.random()*10,vy:3+Math.random()*5,len:100+Math.random()*140,alpha:1});
+  }
+  spawnShooter(); spawnShooter(); spawnShooter();
+  setInterval(spawnShooter, 1100);
+  function loop(){
+    if(ctx){
+      ctx.clearRect(0,0,cv.width,cv.height);
+      for(var i=shooters.length-1;i>=0;i--){
+        var s=shooters[i];
+        var angle=Math.atan2(s.vy,s.vx);
+        var ex=s.x-Math.cos(angle)*s.len,ey=s.y-Math.sin(angle)*s.len;
+        var g=ctx.createLinearGradient(ex,ey,s.x,s.y);
+        g.addColorStop(0,'rgba(255,255,255,0)');
+        g.addColorStop(0.5,'rgba(255,220,80,'+(s.alpha*.6)+')');
+        g.addColorStop(1,'rgba(255,255,200,'+s.alpha+')');
+        ctx.beginPath(); ctx.moveTo(ex,ey); ctx.lineTo(s.x,s.y);
+        ctx.strokeStyle=g; ctx.lineWidth=2; ctx.shadowBlur=10; ctx.shadowColor='rgba(255,200,50,.9)';
+        ctx.stroke(); ctx.shadowBlur=0;
+        ctx.beginPath(); ctx.arc(s.x,s.y,2.5,0,Math.PI*2);
+        ctx.fillStyle='rgba(255,250,200,'+s.alpha+')'; ctx.fill();
+        s.x+=s.vx; s.y+=s.vy; s.alpha-=0.009;
+        if(s.alpha<=0||s.x>cv.width+300) shooters.splice(i,1);
+      }
+    }
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+})();
+
+/* ── Scroll reveal ── */
+(function(){
+  var els = document.querySelectorAll('.reveal');
+  if(!window.IntersectionObserver){ els.forEach(function(el){ el.classList.add('visible'); }); return; }
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  els.forEach(function(el){ obs.observe(el); });
+})();
+
+/* ── Footer year ── */
+document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+/* ── Load event from Supabase ── */
+(async function(){
+  var MONTH_NAMES = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+  var WEEK_DAYS   = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+
+  function hide(id){ var el=document.getElementById(id); if(el) el.style.display='none'; }
+  function text(id,val){ var el=document.getElementById(id); if(el) el.textContent=val; }
+  function html(id,val){ var el=document.getElementById(id); if(el) el.innerHTML=val; }
+
+  function showError(){
+    hide('loading-screen');
+    document.getElementById('error-screen').style.display='flex';
+  }
+
+  function formatDate(ev){
+    var d = new Date(ev.year, ev.month, ev.day);
+    return WEEK_DAYS[d.getDay()] + '., ' + ev.day + '. ' + MONTH_NAMES[ev.month] + ' ' + ev.year;
+  }
+  function formatTime(ev){
+    var t = '';
+    if(ev.time_from) t += ev.time_from;
+    if(ev.time_to)   t += ' – ' + ev.time_to;
+    return t ? t + ' Uhr' : '';
+  }
+  function formatPrice(raw){
+    if(!raw || raw.trim() === '' || raw.toLowerCase() === 'kostenlos') return { display: 'Kostenlos', priceVal: null };
+    // Strip leading non-digit except € for display in fact-price
+    return { display: raw, priceVal: raw };
+  }
+
+  try {
+    // 1. Determine event_id from URL or find next upcoming webinar
+    var params  = new URLSearchParams(window.location.search);
+    var eventId = params.get('event_id') || params.get('id');
+
+    var event;
+
+    if(eventId){
+      var res = await db.from('events').select('*').eq('id', eventId).single();
+      if(res.error || !res.data){ showError(); return; }
+      event = res.data;
+    } else {
+      // Auto: find next upcoming Webinar
+      var today = new Date();
+      var res = await db.from('events').select('*')
+        .eq('type', 'Webinar')
+        .order('year').order('month').order('day');
+      if(res.error || !res.data || res.data.length === 0){ showError(); return; }
+      // Pick first event that is today or in the future
+      var future = res.data.filter(function(e){
+        return new Date(e.year, e.month, e.day) >= new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      });
+      event = future.length ? future[0] : res.data[res.data.length - 1];
+    }
+
+    // 2. Populate page
+    var dateStr  = formatDate(event);
+    var timeStr  = formatTime(event);
+    var priceObj = formatPrice(event.price);
+
+    // Page title
+    document.title = (event.name || 'Webinar') + ' – Adriana & Sorin';
+    document.getElementById('page-title').textContent = (event.name || 'Webinar') + ' – Adriana & Sorin';
+
+    // Hero
+    if(event.name){
+      document.getElementById('hero-title').innerHTML = event.name.replace(/([–—:])/, '<br>$1');
+    }
+    if(event.description){
+      // Show first 200 chars as teaser in hero
+      var teaser = event.description.length > 220 ? event.description.substring(0, 220).replace(/\s+\S*$/, '') + ' …' : event.description;
+      text('hero-desc', teaser);
+    }
+
+    // Hero meta
+    var metaHtml = '';
+    metaHtml += '<div class="hero-meta-item"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>' + dateStr + '</div>';
+    if(timeStr) metaHtml += '<div class="hero-meta-item"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>' + timeStr + '</div>';
+    metaHtml += '<div class="hero-meta-item"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 10l4.553-2.069A1 1 0 0 1 21 8.82v6.362a1 1 0 0 1-1.447.894L15 14M3 8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z"/></svg>Online · Live</div>';
+    if(event.spots) metaHtml += '<div class="hero-meta-item"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>' + event.spots + '</div>';
+    html('hero-meta', metaHtml);
+
+    if(event.spots){
+      text('hero-spots', '● ' + event.spots);
+    } else {
+      hide('hero-spots');
+    }
+
+    // Beschreibung section
+    text('desc-title', event.name || 'Über das Webinar');
+    if(event.description){
+      text('desc-text', event.description);
+    } else {
+      document.getElementById('desc-text').parentElement.style.display='none';
+    }
+    text('fact-datum', dateStr);
+    text('fact-uhrzeit', timeStr || '–');
+    if(event.spots){
+      text('fact-spots', event.spots);
+      document.getElementById('fact-spots-row').style.display='flex';
+    }
+
+    // Price display
+    if(priceObj.priceVal){
+      html('fact-price', priceObj.display);
+    } else {
+      html('fact-price', '<span style="font-size:18px;color:var(--orange);vertical-align:super;margin-right:2px;">€</span>0');
+    }
+
+    // CTA section
+    text('cta-event-name', event.name || 'Webinar');
+    text('cta-datum', dateStr);
+    text('cta-uhrzeit', timeStr || '–');
+    if(priceObj.priceVal){
+      html('cta-price', '<sup>€</sup>' + priceObj.display.replace(/[€\s]/g,''));
+    } else {
+      html('cta-price', '<sup>€</sup>0');
+    }
+
+    // Build event_data in camelCase format that register.html expects
+    var eventData = {
+      id:              event.id,
+      name:            event.name            || '',
+      type:            event.type            || '',
+      format:          event.format          || '',
+      year:            event.year,
+      month:           event.month,
+      day:             event.day,
+      timeFrom:        event.time_from       || '',
+      timeTo:          event.time_to         || '',
+      location:        event.location        || '',
+      price:           event.price           || '',
+      spots:           event.spots           || '',
+      description:     event.description     || '',
+      url:             event.url             || 'register.html',
+      paymentUrl:      event.payment_url     || '',
+      videoMeetingUrl: event.video_meeting_url || ''
+    };
+
+    // Extract numeric price value for the ticket card
+    var priceRaw   = event.price || '';
+    var priceMatch = priceRaw.match(/(\d+([.,]\d+)?)/);
+    var priceVal   = priceMatch ? priceMatch[1].replace(',', '.') : '';
+    var isFree     = !priceVal || /kostenlos/i.test(priceRaw);
+
+    // Build register URL with all params
+    var p = new URLSearchParams();
+    p.set('event_id',   event.id);
+    p.set('ticket',     event.name || 'Webinar-Ticket');
+    if (!isFree) { p.set('price', priceVal); p.set('per', 'Person'); }
+    if (event.payment_url) p.set('url', event.payment_url);
+    p.set('event_data', JSON.stringify(eventData));
+    var registerUrl = 'register.html?' + p.toString();
+
+    document.getElementById('cta-btn').href      = registerUrl;
+    document.getElementById('facts-cta-btn').href = registerUrl;
+    document.getElementById('hero-cta-btn').href  = registerUrl;
+    document.getElementById('nav-cta-btn').href   = registerUrl;
+
+    // Note about video meeting
+    if(event.video_meeting_url){
+      text('cta-sub-note', 'Nach der Anmeldung erhältst du den Meeting-Link per E-Mail.');
+    }
+
+    // Show page, hide loading
+    document.getElementById('main-content').style.display = 'block';
+    var ls = document.getElementById('loading-screen');
+    ls.classList.add('hidden');
+    setTimeout(function(){ ls.style.display='none'; }, 600);
+
+  } catch(err){
+    console.error('Event load error:', err);
+    showError();
+  }
+})();
+</script>
+
+</body>
+</html>
