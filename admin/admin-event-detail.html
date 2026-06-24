@@ -1044,7 +1044,6 @@ async function sendThankYouEmails() {
   btn.textContent = 'Wird gesendet…';
 
   const eventDatum = currentEvent.day + '. ' + MONTH_NAMES[currentEvent.month] + ' ' + currentEvent.year;
-  const feedbackUrl = 'https://infoweherzit.github.io/AdrianaUndSorin/Templates/feedback.html?event_id=' + encodeURIComponent(eventId);
 
   let success = 0, failed = 0;
   for (const p of confirmed) {
@@ -1061,7 +1060,7 @@ async function sendThankYouEmails() {
             event_name:     currentEvent.name,
             event_ort:      currentEvent.location || '',
             event_datum:    eventDatum,
-            feedback_url:   feedbackUrl,
+            event_id:       eventId,
           }
         }
       });
