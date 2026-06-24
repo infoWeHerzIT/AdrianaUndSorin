@@ -361,6 +361,10 @@
   .filter-chip[data-typ="Webinar"].active     { background: #0078b4;       border-color: #0078b4;       color: var(--white); }
   .filter-chip[data-typ="Sonstiges"].active   { background: #666;          border-color: #666;          color: var(--white); }
 
+  /* ─── PAST EVENT CARD ─── */
+  .event-admin-card.past { opacity: 0.55; }
+  .event-admin-card.past:hover { opacity: 1; }
+
   /* ─── EARLY BIRD CARD BADGE ─── */
   .eb-card-badge {
     display: inline-flex; align-items: center; gap: 4px;
@@ -425,7 +429,7 @@
 
   <div class="list-header">
     <div>
-      <span class="section-label">Alle Events</span>
+      <span class="section-label" id="event-section-label">Aktuelle Events</span>
       <div class="list-title" id="event-count">0 Events</div>
     </div>
     <button class="btn-new-event" id="btn-new-event">+ Neuer Event</button>
@@ -556,6 +560,12 @@ let events = [];
 // ── Filter state ──────────────────────────────────────────────
 let adminActiveFormats = new Set();
 let adminActiveTypes   = new Set();
+let adminTimeFilter    = 'aktuelle'; // 'alle' | 'aktuelle' | 'vergangene'
+
+function isUpcoming(ev) {
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  return new Date(ev.year, ev.month, ev.day) >= today;
+}
 
 function initAdminFilters() {
   adminActiveFormats.clear(); adminActiveTypes.clear();
@@ -567,6 +577,8 @@ function initAdminFilters() {
 
 function getAdminFilteredEvents() {
   return events.filter(ev => {
+    if (adminTimeFilter === 'aktuelle'   && !isUpcoming(ev)) return false;
+    if (adminTimeFilter === 'vergangene' &&  isUpcoming(ev)) return false;
     const fmt = ev.format || 'Präsenz';
     const typ = ev.type   || 'Sonstiges';
     if (adminActiveFormats.size > 0 && !adminActiveFormats.has(fmt)) return false;
@@ -581,8 +593,34 @@ function renderAdminFilterBar() {
   bar.style.display = '';
   bar.innerHTML = '';
 
+  // ── Zeit-Filter ──
+  const timeGroup = document.createElement('div');
+  timeGroup.className = 'filter-group';
+  const timeLbl = document.createElement('span');
+  timeLbl.className = 'filter-group-label'; timeLbl.textContent = 'Zeitraum';
+  timeGroup.appendChild(timeLbl);
+  [['aktuelle', 'Aktuelle'], ['vergangene', 'Vergangene'], ['alle', 'Alle']].forEach(([val, label]) => {
+    const chip = document.createElement('button');
+    chip.className = 'filter-chip' + (adminTimeFilter === val ? ' active' : '');
+    chip.textContent = label;
+    chip.addEventListener('click', () => {
+      adminTimeFilter = val;
+      const labels = { aktuelle: 'Aktuelle Events', vergangene: 'Vergangene Events', alle: 'Alle Events' };
+      document.getElementById('event-section-label').textContent = labels[val];
+      renderAdminFilterBar();
+      renderList();
+    });
+    timeGroup.appendChild(chip);
+  });
+  bar.appendChild(timeGroup);
+
   const allFormats = [...new Set(events.map(e => e.format || 'Präsenz'))];
   const allTypes   = [...new Set(events.map(e => e.type   || 'Sonstiges'))];
+
+  if (allFormats.length > 0 || allTypes.length > 0) {
+    const sep0 = document.createElement('div'); sep0.className = 'filter-sep';
+    bar.appendChild(sep0);
+  }
 
   if (allFormats.length > 0) {
     const g = document.createElement('div');
@@ -653,7 +691,7 @@ function renderList() {
   container.innerHTML = '';
   sorted.forEach(ev => {
     const card = document.createElement('div');
-    card.className = 'event-admin-card';
+    card.className = 'event-admin-card' + (isUpcoming(ev) ? '' : ' past');
     card.id = 'admin-card-' + ev.id;
 
     const dateObj = new Date(ev.year, ev.month, ev.day);

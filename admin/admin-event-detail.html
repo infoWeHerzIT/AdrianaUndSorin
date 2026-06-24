@@ -392,8 +392,6 @@
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../supabase-config.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-<script src="../Templates/emailjs-config.js"></script>
 </head>
 <body>
 
@@ -1051,17 +1049,21 @@ async function sendThankYouEmails() {
   let success = 0, failed = 0;
   for (const p of confirmed) {
     try {
-      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID_Dankeschön_und_Bonus, {
-        title:           'Dankeschön + BONUS',
-        to_email:        p.email,
-        to_name:         (p.vorname || '') + ' ' + (p.nachname || ''),
-        vorname:         p.vorname || '',
-        ressourcen_url:  currentEvent.ressourcenUrl || '',
-        event_name:      currentEvent.name,
-        event_ort:       currentEvent.location || '',
-        event_datum:     eventDatum,
-        feedback_url:    feedbackUrl,
-        bcc_email:       EMAILJS_EVENT_DETAILS_CHANGE_BCC,
+      await db.functions.invoke('send-email', {
+        body: {
+          action: 'danke',
+          params: {
+            title:          'Dankeschön + BONUS',
+            to_email:       p.email,
+            to_name:        (p.vorname || '') + ' ' + (p.nachname || ''),
+            vorname:        p.vorname || '',
+            ressourcen_url: currentEvent.ressourcenUrl || '',
+            event_name:     currentEvent.name,
+            event_ort:      currentEvent.location || '',
+            event_datum:    eventDatum,
+            feedback_url:   feedbackUrl,
+          }
+        }
       });
       success++;
     } catch (e) {

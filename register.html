@@ -6,10 +6,8 @@
 <title>Registrierung – Deep Coaching Workshop | Adriana &amp; Sorin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
-<script src="Templates/emailjs-config.js"></script>
 <style>
   :root {
     --orange: #ff6300;
@@ -964,20 +962,24 @@
 
     if (!isTestTicket) {
       try {
-        emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID_Erfolgreiche_Registrierung_fur_Nutzer, {
-          to_name:           vorname + ' ' + nachname,
-          to_email:          email,
-          vorname:           vorname,
-          nachname:          nachname,
-          handy:             handy,
-          ticket_name:       ticketName,
-          ticket_price:      priceNum > 0 ? '€' + priceNum : 'kostenlos',
-          ticket_per:        ticketPer,
-          ort:               ort,
-          payment_url:       paymentUrlFinal,
-          video_meeting_url: videoMeetingUrl,
-          payment_notice:    priceNum > 0 ? 'Beachten Sie, dass Sie an Event nur teilnehmen können, wenn die Bezahlung von uns bestätigt wurde und sie eine Bestätigungs E-Mail dafür bekommen.' : '',
-          bcc_email:         EMAILJS_REGISTRIERUNG_BCC,
+        db.functions.invoke('send-email', {
+          body: {
+            action: 'registration',
+            params: {
+              to_name:           vorname + ' ' + nachname,
+              to_email:          email,
+              vorname:           vorname,
+              nachname:          nachname,
+              handy:             handy,
+              ticket_name:       ticketName,
+              ticket_price:      priceNum > 0 ? '€' + priceNum : 'kostenlos',
+              ticket_per:        ticketPer,
+              ort:               ort,
+              payment_url:       paymentUrlFinal,
+              video_meeting_url: videoMeetingUrl,
+              payment_notice:    priceNum > 0 ? 'Beachten Sie, dass Sie an Event nur teilnehmen können, wenn die Bezahlung von uns bestätigt wurde und sie eine Bestätigungs E-Mail dafür bekommen.' : '',
+            }
+          }
         }).then(goToDanke).catch(goToDanke);
       } catch(e) { goToDanke(); }
     } else {
