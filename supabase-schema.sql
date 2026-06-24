@@ -19,7 +19,6 @@ create table if not exists events (
   spots            text,
   description      text,
   url              text default 'register.html',
-  payment_url      text,
   video_meeting_url text,
   ressourcen_url   text,
   created_at       timestamptz default now()

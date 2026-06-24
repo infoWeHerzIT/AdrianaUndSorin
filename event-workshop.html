@@ -1338,8 +1338,8 @@ document.getElementById('footer-year').textContent = new Date().getFullYear();
     var priceNum     = parsePriceNumber(priceRaw);
     var isFree       = !priceNum || /kostenlos/i.test(priceRaw);
     var priceDisplay = isFree ? 'Kostenlos' : priceRaw;
-    // Duo-Rabatt aus DB (z. B. 30 → 0.70); null = 30% Default
-    var duoFactor = (ev.duo_discount != null) ? (1 - ev.duo_discount / 100) : 0.70;
+    // Duo-Preis pro Person aus DB; null = kein Duo-Ticket anzeigen
+    var duoPrice = (ev.duo_discount != null) ? ev.duo_discount : null;
 
     /* ── Early Bird ── */
     var ebActive    = false;
@@ -1351,11 +1351,7 @@ document.getElementById('footer-year').textContent = new Date().getFullYear();
         ebDeadline.setHours(23, 59, 59, 999);
         if (eb.enabled && eb.deadline && ebDeadline >= new Date()) {
           var ebVal = parseFloat(String(eb.priceValue || '0').replace(',', '.')) || 0;
-          if (eb.priceMode === 'percent' && ebVal > 0 && priceNum) {
-            ebSoloPrice = Math.round(priceNum * (1 - ebVal / 100));
-          } else if (eb.priceMode === 'fixed' && ebVal > 0) {
-            ebSoloPrice = Math.round(ebVal);
-          }
+          if (ebVal > 0) ebSoloPrice = ebVal;
           if (ebSoloPrice) { ebActive = true; priceDisplay = 'ab €' + ebSoloPrice + ' (Early Bird)'; }
         }
       } catch(e) {}
@@ -1382,8 +1378,8 @@ document.getElementById('footer-year').textContent = new Date().getFullYear();
         ev.name.replace(/([–—:\-])/, '<br>$1') + '<br>mit <em>Adriana &amp; Sorin</em>';
     }
     if(ev.description){
-      var teaser = ev.description.length > 1200
-        ? ev.description.substring(0, 1200).replace(/\s+\S*$/, '') + ' …'
+      var teaser = ev.description.length > 800
+        ? ev.description.substring(0, 800).replace(/\s+\S*$/, '') + ' …'
         : ev.description;
       var descHtml = teaser
         .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
@@ -1417,7 +1413,7 @@ document.getElementById('footer-year').textContent = new Date().getFullYear();
     }
 
     /* ── INVESTMENT price cards ── */
-    var hasDuo = duoFactor > 0;
+    var hasDuo = duoPrice != null;
     if(!isFree && priceNum){
       var soloEl = document.getElementById('ticket-solo');
       var duoEl  = document.getElementById('ticket-duo');
@@ -1425,9 +1421,8 @@ document.getElementById('footer-year').textContent = new Date().getFullYear();
       if (!hasDuo) duoEl.style.display = 'none';
 
       if(ebActive && ebSoloPrice){
-        var ebDuoDiscount  = (eb.duoDiscount != null && eb.duoDiscount !== '') ? parseFloat(eb.duoDiscount) : 0;
-        var ebDuoPerPerson = ebDuoDiscount > 0 ? Math.round(ebSoloPrice * (1 - ebDuoDiscount / 100)) : ebSoloPrice;
-        var regDuoPerPerson = Math.round(priceNum * duoFactor);
+        var ebDuoPrice = (eb.duoDiscount != null && eb.duoDiscount !== '') ? parseFloat(eb.duoDiscount) : 0;
+        var ebDuoTotal = ebDuoPrice > 0 ? ebDuoPrice : duoPrice;
 
         soloEl.querySelector('.price-label').innerHTML = '<span class="eb-tag">⚡ Early Bird</span>Einzelticket';
         soloEl.querySelector('.price-amount').innerHTML =
@@ -1438,7 +1433,7 @@ document.getElementById('footer-year').textContent = new Date().getFullYear();
         if(hasDuo){
           duoEl.querySelector('.price-label').innerHTML  = '<span class="eb-tag">⚡ Early Bird</span>Duo-Ticket';
           duoEl.querySelector('.price-amount').innerHTML =
-            '<span>€</span>' + ebDuoPerPerson + '<del class="price-original">€' + regDuoPerPerson + '</del>';
+            '<span>€</span>' + ebDuoTotal + '<del class="price-original">€' + duoPrice + '</del>';
           duoEl.querySelector('.price-per').textContent = 'pro Person · Early Bird';
           duoEl.href = fullRegisterUrl + '&ticket=Duo-Ticket+Early+Bird';
           duoEl.removeAttribute('onclick');
@@ -1455,7 +1450,8 @@ document.getElementById('footer-year').textContent = new Date().getFullYear();
 
         if(hasDuo){
           duoRegEl.style.display = '';
-          duoRegEl.querySelector('.price-amount').innerHTML = '<span>€</span>' + Math.round(priceNum * duoFactor);
+          duoRegEl.querySelector('.price-per') && (duoRegEl.querySelector('.price-per').textContent = 'pro Person');
+          duoRegEl.querySelector('.price-amount').innerHTML = '<span>€</span>' + duoPrice;
           duoRegEl.href = fullRegisterUrl + '&ticket=Duo-Ticket';
           duoRegEl.removeAttribute('onclick');
         }
@@ -1466,7 +1462,8 @@ document.getElementById('footer-year').textContent = new Date().getFullYear();
         soloEl.removeAttribute('onclick');
 
         if(hasDuo){
-          duoEl.querySelector('.price-amount').innerHTML = '<span>€</span>' + Math.round(priceNum * duoFactor);
+          duoEl.querySelector('.price-per') && (duoEl.querySelector('.price-per').textContent = 'pro Person');
+          duoEl.querySelector('.price-amount').innerHTML = '<span>€</span>' + duoPrice;
           duoEl.href = fullRegisterUrl + '&ticket=Duo-Ticket';
           duoEl.removeAttribute('onclick');
         }
@@ -1496,6 +1493,14 @@ document.getElementById('footer-year').textContent = new Date().getFullYear();
     var ls = document.getElementById('loading-screen');
     ls.classList.add('hidden');
     setTimeout(function(){ ls.style.display='none'; }, 600);
+
+    /* ── Scroll to hash after page is rendered ── */
+    if (window.location.hash) {
+      setTimeout(function(){
+        var target = document.querySelector(window.location.hash);
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
+      }, 650);
+    }
 
   } catch(err){
     console.error('Event load error:', err);

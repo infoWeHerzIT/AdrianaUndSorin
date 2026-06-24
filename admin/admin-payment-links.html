@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zahlungslinks – Adriana und Sorin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root { --orange:#ff6300; --navy:#00224d; --white:#ffffff; --green:#16a34a; --red:#dc2626; }
+  *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'DM Sans',sans-serif; font-size:16px; background:#f4f4f2; color:var(--navy); padding-bottom:80px; }
+
+  nav { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:center; padding:16px 5%; background:rgba(0,34,77,0.97); backdrop-filter:blur(8px); }
+  .nav-inner { max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; width:100%; }
+  .nav-logo { font-family:'Fredoka',sans-serif; color:var(--white); font-size:18px; font-weight:700; text-decoration:none; display:flex; align-items:center; gap:10px; }
+  .nav-logo span { color:var(--orange); }
+  .nav-admin-badge { font-family:'Orbitron',monospace; font-size:9px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; background:rgba(255,99,0,0.2); border:1px solid rgba(255,99,0,0.4); color:var(--orange); padding:3px 8px; border-radius:2px; }
+  .nav-links { display:flex; gap:10px; align-items:center; }
+  .nav-link { color:rgba(255,255,255,0.6); font-size:13px; text-decoration:none; border:1px solid rgba(255,255,255,0.15); padding:7px 14px; border-radius:2px; background:transparent; cursor:pointer; transition:background .2s,color .2s; font-family:'DM Sans',sans-serif; }
+  .nav-link:hover { background:rgba(255,255,255,0.08); color:var(--white); }
+  .nav-link.active { border-color:rgba(255,99,0,0.5); color:var(--orange); }
+
+  .admin-header { background:var(--navy); padding:100px 0 60px; position:relative; overflow:hidden; }
+  .admin-header::before { content:''; position:absolute; inset:0; background-image:repeating-linear-gradient(90deg,rgba(255,99,0,0.04) 0px,rgba(255,99,0,0.04) 1px,transparent 1px,transparent 80px); pointer-events:none; }
+  .admin-header::after { content:''; position:absolute; left:0; top:0; bottom:0; width:5px; background:var(--orange); }
+  .admin-header-inner { max-width:900px; margin:0 auto; padding:0 32px; position:relative; z-index:1; }
+  .admin-page-label { font-family:'Orbitron',monospace; font-size:10px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--orange); margin-bottom:14px; display:block; }
+  .admin-header h1 { font-family:'Fredoka',sans-serif; font-size:clamp(28px,3.5vw,44px); color:var(--white); line-height:1.1; margin-bottom:12px; }
+  .admin-header h1 em { font-style:normal; color:var(--orange); }
+  .admin-header p { font-size:15px; color:rgba(255,255,255,0.55); max-width:560px; line-height:1.7; }
+
+  .admin-main { max-width:900px; margin:0 auto; padding:40px 32px 0; }
+  .list-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+  .list-title { font-family:'Fredoka',sans-serif; font-size:22px; }
+  .btn-new { display:inline-flex; align-items:center; gap:6px; background:var(--orange); color:var(--white); border:none; border-radius:4px; padding:10px 20px; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600; cursor:pointer; transition:background .2s; }
+  .btn-new:hover { background:#e05700; }
+  .btn-new:disabled { opacity:.4; cursor:default; pointer-events:none; }
+
+  .table-wrap { background:var(--white); border:1px solid rgba(0,34,77,0.1); border-radius:8px; overflow:hidden; }
+  table { width:100%; border-collapse:collapse; }
+  thead { background:rgba(0,34,77,0.04); }
+  th { padding:12px 16px; text-align:left; font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:rgba(0,34,77,0.5); }
+  td { padding:13px 16px; border-top:1px solid rgba(0,34,77,0.06); font-size:14px; vertical-align:middle; }
+  tr.view-row:hover td { background:rgba(255,99,0,0.03); }
+  tr.edit-row td { background:rgba(255,99,0,0.04); padding-top:9px; padding-bottom:9px; }
+
+  .td-name { font-weight:600; max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .td-url  { color:rgba(0,34,77,0.55); font-size:13px; max-width:400px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .td-url a { color:rgba(0,34,77,0.6); text-decoration:none; }
+  .td-url a:hover { color:var(--orange); }
+  .td-actions { white-space:nowrap; text-align:right; }
+
+  .inp-inline { width:100%; padding:7px 10px; border:1px solid rgba(0,34,77,0.2); border-radius:4px; font-family:'DM Sans',sans-serif; font-size:14px; color:var(--navy); background:var(--white); outline:none; transition:border-color .15s, box-shadow .15s; }
+  .inp-inline:focus { border-color:var(--orange); box-shadow:0 0 0 3px rgba(255,99,0,0.12); }
+  .inp-inline.error { border-color:var(--red); }
+
+  .btn-row { border:none; border-radius:3px; padding:5px 11px; font-size:12px; cursor:pointer; font-family:'DM Sans',sans-serif; font-weight:500; transition:background .15s; }
+  .btn-edit-row   { background:rgba(0,34,77,0.08); color:var(--navy); margin-right:5px; }
+  .btn-edit-row:hover { background:rgba(0,34,77,0.16); }
+  .btn-del-row    { background:rgba(220,38,38,0.1); color:var(--red); }
+  .btn-del-row:hover  { background:rgba(220,38,38,0.2); }
+  .btn-save-row   { background:var(--orange); color:var(--white); margin-right:5px; }
+  .btn-save-row:hover { background:#e05700; }
+  .btn-cancel-row { background:rgba(0,34,77,0.08); color:var(--navy); }
+  .btn-cancel-row:hover { background:rgba(0,34,77,0.15); }
+
+  #empty-row td { padding:48px; text-align:center; color:rgba(0,34,77,0.4); font-size:14px; }
+
+  #toast { position:fixed; bottom:32px; right:32px; z-index:999; padding:12px 20px; border-radius:4px; font-size:14px; font-weight:500; color:var(--white); display:none; }
+  #toast.success { background:var(--green); }
+  #toast.error   { background:var(--red); }
+
+  @media(max-width:600px) {
+    .admin-header-inner,.admin-main { padding-left:20px; padding-right:20px; }
+  }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase-config.js"></script>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">Adriana &amp; <span>Sorin</span><span class="nav-admin-badge">Admin</span></a>
+    <div class="nav-links">
+      <a href="admin-events.html" class="nav-link">Events</a>
+      <a href="admin-teilnehmer.html" class="nav-link">Teilnehmer</a>
+      <a href="admin-payment-links.html" class="nav-link active">Zahlungslinks</a>
+      <button id="btn-logout" class="nav-link" style="border-color:rgba(220,38,38,0.4);color:#f87171;">Ausloggen</button>
+    </div>
+  </div>
+</nav>
+
+<div class="admin-header">
+  <div class="admin-header-inner">
+    <span class="admin-page-label">Verwaltung</span>
+    <h1>Zahlungs<em>links</em></h1>
+    <p>Verwalte Zahlungslinks und weise sie Events zu.</p>
+  </div>
+</div>
+
+<div class="admin-main">
+  <div class="list-header">
+    <div class="list-title">Alle Zahlungslinks</div>
+    <button class="btn-new" id="btn-new">+ Neuer Link</button>
+  </div>
+  <div class="table-wrap">
+    <table id="links-table">
+      <thead><tr><th style="width:28%">Name</th><th>URL</th><th style="width:170px"></th></tr></thead>
+      <tbody id="links-tbody">
+        <tr id="empty-row"><td colspan="3">Wird geladen…</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+db.auth.getSession().then(({ data }) => {
+  if (!data.session) window.location.href = 'admin-login.html';
+});
+document.getElementById('btn-logout').addEventListener('click', async () => {
+  await db.auth.signOut();
+  window.location.href = 'admin-login.html';
+});
+
+// ── Helpers ───────────────────────────────────────────────────
+function esc(s) {
+  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = type; t.style.display = 'block';
+  clearTimeout(t._t); t._t = setTimeout(() => t.style.display = 'none', 3000);
+}
+
+// ── State ─────────────────────────────────────────────────────
+let links = [];
+
+function setNewBtnEnabled(on) {
+  document.getElementById('btn-new').disabled = !on;
+}
+
+// ── Empty-state row ───────────────────────────────────────────
+function showEmptyState(msg) {
+  let row = document.getElementById('empty-row');
+  if (!row) {
+    row = document.createElement('tr');
+    row.id = 'empty-row';
+    document.getElementById('links-tbody').appendChild(row);
+  }
+  row.innerHTML = '<td colspan="3">' + msg + '</td>';
+  row.style.display = '';
+}
+function hideEmptyState() {
+  const row = document.getElementById('empty-row');
+  if (row) row.style.display = 'none';
+}
+
+// ── Build a view row ──────────────────────────────────────────
+function createViewRow(link) {
+  const tr = document.createElement('tr');
+  tr.className = 'view-row';
+  tr.dataset.id = link.id;
+  tr.innerHTML = `
+    <td class="td-name" title="${esc(link.name)}">${esc(link.name)}</td>
+    <td class="td-url"  title="${esc(link.url)}"><a href="${esc(link.url)}" target="_blank" rel="noopener">${esc(link.url)}</a></td>
+    <td class="td-actions">
+      <button class="btn-row btn-edit-row">Bearbeiten</button>
+      <button class="btn-row btn-del-row">Löschen</button>
+    </td>`;
+  tr.querySelector('.btn-edit-row').addEventListener('click', () => startEdit(tr, link));
+  tr.querySelector('.btn-del-row').addEventListener('click',  () => deleteLink(link.id, tr));
+  return tr;
+}
+
+// ── Build an edit row ─────────────────────────────────────────
+function createEditRow(link, onSave, onCancel) {
+  const tr = document.createElement('tr');
+  tr.className = 'edit-row';
+  tr.innerHTML = `
+    <td><input class="inp-inline inp-name" value="${link ? esc(link.name) : ''}" placeholder="Name" autocomplete="off"></td>
+    <td><input class="inp-inline inp-url"  value="${link ? esc(link.url)  : ''}" placeholder="https://..." autocomplete="off"></td>
+    <td class="td-actions">
+      <button class="btn-row btn-save-row">Speichern</button>
+      <button class="btn-row btn-cancel-row">Abbrechen</button>
+    </td>`;
+  const nameInp = tr.querySelector('.inp-name');
+  const urlInp  = tr.querySelector('.inp-url');
+
+  function validate() {
+    let ok = true;
+    if (!nameInp.value.trim()) { nameInp.classList.add('error'); ok = false; } else nameInp.classList.remove('error');
+    if (!/^https?:\/\/.+/.test(urlInp.value.trim())) { urlInp.classList.add('error'); ok = false; } else urlInp.classList.remove('error');
+    return ok;
+  }
+
+  tr.querySelector('.btn-save-row').addEventListener('click', () => {
+    if (validate()) onSave(nameInp.value.trim(), urlInp.value.trim());
+  });
+  tr.querySelector('.btn-cancel-row').addEventListener('click', onCancel);
+  [nameInp, urlInp].forEach(inp => inp.addEventListener('keydown', e => {
+    if (e.key === 'Enter')  { e.preventDefault(); if (validate()) onSave(nameInp.value.trim(), urlInp.value.trim()); }
+    if (e.key === 'Escape') { e.preventDefault(); onCancel(); }
+  }));
+
+  setTimeout(() => nameInp.focus(), 0);
+  return tr;
+}
+
+// ── Load & render ─────────────────────────────────────────────
+async function loadLinks() {
+  const tbody = document.getElementById('links-tbody');
+  const { data, error } = await db.from('payment_links').select('*').order('name');
+  if (error) { showToast('Fehler beim Laden: ' + error.message, 'error'); return; }
+  links = data || [];
+
+  // Clear all rows except empty-row
+  Array.from(tbody.querySelectorAll('tr:not(#empty-row)')).forEach(r => r.remove());
+
+  if (links.length === 0) {
+    showEmptyState('Noch keine Zahlungslinks vorhanden. Klicke auf "+ Neuer Link".');
+  } else {
+    hideEmptyState();
+    links.forEach(link => tbody.appendChild(createViewRow(link)));
+  }
+  setNewBtnEnabled(true);
+}
+
+// ── Add new ───────────────────────────────────────────────────
+document.getElementById('btn-new').addEventListener('click', () => {
+  setNewBtnEnabled(false);
+  hideEmptyState();
+
+  const tbody = document.getElementById('links-tbody');
+  const editRow = createEditRow(null,
+    async (name, url) => {
+      const { error } = await db.from('payment_links').insert({ name, url });
+      if (error) { showToast('Fehler: ' + error.message, 'error'); return; }
+      showToast('Link gespeichert ✓', 'success');
+      editRow.remove();
+      await loadLinks();
+    },
+    () => {
+      editRow.remove();
+      if (links.length === 0) showEmptyState('Noch keine Zahlungslinks vorhanden. Klicke auf "+ Neuer Link".');
+      setNewBtnEnabled(true);
+    }
+  );
+  tbody.insertBefore(editRow, tbody.firstChild);
+});
+
+// ── Edit existing ─────────────────────────────────────────────
+function startEdit(viewRow, link) {
+  setNewBtnEnabled(false);
+  const editRow = createEditRow(link,
+    async (name, url) => {
+      const { error } = await db.from('payment_links').update({ name, url }).eq('id', link.id);
+      if (error) { showToast('Fehler: ' + error.message, 'error'); return; }
+      showToast('Link aktualisiert ✓', 'success');
+      editRow.replaceWith(createViewRow({ ...link, name, url }));
+      links = links.map(l => l.id === link.id ? { ...l, name, url } : l);
+      setNewBtnEnabled(true);
+    },
+    () => {
+      editRow.replaceWith(viewRow);
+      setNewBtnEnabled(true);
+    }
+  );
+  viewRow.replaceWith(editRow);
+}
+
+// ── Delete ────────────────────────────────────────────────────
+async function deleteLink(id, row) {
+  const link = links.find(l => l.id === id);
+  if (!confirm('Zahlungslink "' + (link ? link.name : '') + '" löschen?')) return;
+  const { error } = await db.from('payment_links').delete().eq('id', id);
+  if (error) { showToast('Fehler: ' + error.message, 'error'); return; }
+  showToast('Link gelöscht.', 'success');
+  row.remove();
+  links = links.filter(l => l.id !== id);
+  if (links.length === 0) showEmptyState('Noch keine Zahlungslinks vorhanden. Klicke auf "+ Neuer Link".');
+}
+
+// ── Init ──────────────────────────────────────────────────────
+loadLinks();
+</script>
+</body>
+</html>

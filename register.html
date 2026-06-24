@@ -448,7 +448,7 @@
 <nav>
   <div class="nav-inner">
     <a href="index.html" class="nav-logo">Adriana &amp; <span>Sorin</span></a>
-    <a href="index.html#investment" class="nav-back">
+    <a href="#" onclick="history.back(); return false;" class="nav-back">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="15 18 9 12 15 6"/>
       </svg>
@@ -559,7 +559,7 @@
 
       <button type="submit" class="btn-register" id="btn-register">
         <span class="spinner" id="btn-spinner"></span>
-        <span class="btn-label" id="btn-label">Jetzt Registrieren &amp; zur Zahlung →</span>
+        <span class="btn-label" id="btn-label">Jetzt Registrieren →</span>
       </button>
 
       <p class="form-note" id="form-note">
@@ -584,6 +584,19 @@
       </div>
       <a class="btn-meeting-test" id="test-meeting-btn" href="#" target="_blank" rel="noopener">
         Meeting beitreten →
+      </a>
+    </div>
+
+    <!-- Payment link box (visible in test mode when payment link is set) -->
+    <div class="test-meeting-box" id="test-payment-box" style="display:none; border-color:rgba(255,99,0,0.6); background:rgba(255,99,0,0.06);">
+      <div class="test-meeting-icon">💳</div>
+      <div class="test-meeting-info">
+        <div class="test-meeting-label" style="color:var(--orange);">Zahlungslink – aktiv für dieses Ticket</div>
+        <div style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:3px;" id="test-payment-name"></div>
+        <div class="test-meeting-url" id="test-payment-url"></div>
+      </div>
+      <a class="btn-meeting-test" id="test-payment-btn" href="#" target="_blank" rel="noopener" style="background:var(--orange);">
+        Link öffnen →
       </a>
     </div>
 
@@ -626,7 +639,7 @@
 
   try {
     if (eventId) {
-      var r1 = await db.from('events').select('*').eq('id', eventId).single();
+      var r1 = await db.from('events').select('*, payment_link:payment_link_id(name,url), duo_payment_link:duo_payment_link_id(name,url), eb_payment_link:eb_payment_link_id(name,url), eb_duo_payment_link:eb_duo_payment_link_id(name,url)').eq('id', eventId).single();
       if (!r1.error && r1.data) ev = r1.data;
     }
 
@@ -650,52 +663,53 @@
   }
 
   // ── Build ticket data from DB (URL params only as last-resort fallback) ──
-  var priceRaw, priceNum, paymentUrl, videoMeetingUrl, ticketName, ticketPer, ticketDesc;
+  var priceRaw, priceNum, paymentUrl, paymentLinkObj, videoMeetingUrl, ticketName, ticketPer, ticketDesc;
 
   if (ev) {
-    // Primary: Supabase
-    var rawPriceStr  = ev.price || '';
-    var priceMatch   = rawPriceStr.match(/(\d+([.,]\d+)?)/);
-    var basePriceNum = priceMatch ? parseFloat(priceMatch[1].replace(',', '.')) : 0;
+    // Primary: Supabase – all prices stored as direct numbers, no calculations
+    var basePriceNum = parseFloat(ev.price) || 0;
 
     // ── Early Bird check ─────────────────────────────────────────────────
-    // isEB comes from the ticket label – only apply EB pricing if user chose an EB ticket
     var eb = null;
     if (ev.eb_data) {
       try {
         var ebParsed = JSON.parse(ev.eb_data);
         if (ebParsed.enabled && ebParsed.deadline) {
           var ebDeadline = new Date(ebParsed.deadline);
-          ebDeadline.setHours(23, 59, 59, 999); // inclusive: whole deadline day counts
+          ebDeadline.setHours(23, 59, 59, 999);
           if (ebDeadline >= new Date()) {
             eb = ebParsed;
             if (isEB) {
               var ebVal = parseFloat(String(eb.priceValue || '0').replace(',', '.')) || 0;
-              if (eb.priceMode === 'percent' && ebVal > 0) {
-                basePriceNum = Math.round(basePriceNum * (1 - ebVal / 100));
-              } else if (eb.priceMode === 'fixed' && ebVal > 0) {
-                basePriceNum = Math.round(ebVal);
-              }
+              if (ebVal > 0) basePriceNum = ebVal;
             }
           }
         }
       } catch(e) {}
     }
 
-    // Duo: Gesamtpreis für 2 Personen. EB-Duo-Rabatt optional auf EB-Preis.
-    var duoFactor = (ev.duo_discount != null) ? (1 - ev.duo_discount / 100) : 0.70;
-    if (isDuo && basePriceNum > 0) {
+    var duoPrice = ev.duo_discount != null ? ev.duo_discount : null;
+    if (isDuo) {
       if (isEB) {
-        var ebDuoDiscount = (eb && eb.duoDiscount != null && eb.duoDiscount !== '') ? parseFloat(eb.duoDiscount) : 0;
-        priceNum = ebDuoDiscount > 0 ? Math.round(basePriceNum * (1 - ebDuoDiscount / 100)) * 2 : basePriceNum * 2;
+        var ebDuoPrice = (eb && eb.duoDiscount != null && eb.duoDiscount !== '') ? parseFloat(eb.duoDiscount) : 0;
+        priceNum = ebDuoPrice > 0 ? ebDuoPrice * 2 : (duoPrice != null ? duoPrice * 2 : basePriceNum * 2);
       } else {
-        priceNum = Math.round(basePriceNum * duoFactor) * 2;
+        priceNum = duoPrice != null ? duoPrice * 2 : basePriceNum * 2;
       }
     } else {
       priceNum = basePriceNum;
     }
-    priceRaw        = priceNum > 0 ? String(priceNum) : rawPriceStr;
-    paymentUrl      = ev.payment_url       || '';
+    priceRaw = priceNum > 0 ? String(priceNum) : (ev.price || '');
+    if (isEB && isDuo) {
+      paymentLinkObj = ev.eb_duo_payment_link;
+    } else if (isEB) {
+      paymentLinkObj = ev.eb_payment_link;
+    } else if (isDuo) {
+      paymentLinkObj = ev.duo_payment_link;
+    } else {
+      paymentLinkObj = ev.payment_link;
+    }
+    paymentUrl = (paymentLinkObj && paymentLinkObj.url) || '';
     videoMeetingUrl = ev.video_meeting_url || '';
     ticketName      = ticketLabel || ev.name || 'Workshop-Ticket';
     if (isEB && ticketName.toLowerCase().indexOf('early bird') === -1) {
@@ -727,6 +741,13 @@
   var badge = document.getElementById('ticket-badge');
   badge.textContent = isEB ? '⚡ Early Bird' : 'Ticket';
   if (isEB) { badge.style.background = 'linear-gradient(135deg,#FFE040,#FF8C00)'; badge.style.color = '#00224d'; }
+
+  // ── Price-dependent UI ────────────────────────────────────────────────
+  document.getElementById('btn-label').textContent = priceNum > 0 ? 'Jetzt Registrieren & zur Zahlung →' : 'Jetzt Registrieren →';
+  if (priceNum === 0) {
+    var formNote = document.getElementById('form-note');
+    if (formNote) formNote.style.display = 'none';
+  }
 
   // ── Event Info Strip ──────────────────────────────────────────────────
   if (ev) {
@@ -768,11 +789,18 @@
       rows += '<tr><td>event_id</td><td>' + esc(eventId || '–') + '</td></tr>';
       rows += '<tr><td>ticket</td><td>'   + esc(ticketLabel || '–') + '</td></tr>';
 
+      rows += '<tr><td colspan="2" style="padding:10px 8px 2px;color:#16a34a;font-size:10px;letter-spacing:.08em;font-weight:600;">TICKET-PREIS (berechnet)</td></tr>';
+      rows += '<tr><td>ticketName</td><td>' + esc(ticketName || '–') + '</td></tr>';
+      rows += '<tr><td>isEB</td><td>' + (isEB ? 'ja' : 'nein') + '</td></tr>';
+      rows += '<tr><td>isDuo</td><td>' + (isDuo ? 'ja' : 'nein') + '</td></tr>';
+      rows += '<tr><td style="font-weight:600;">priceNum</td><td style="font-weight:600;color:#16a34a;">€ ' + priceNum + '</td></tr>';
+
       rows += '<tr><td colspan="2" style="padding:10px 8px 2px;color:#555;font-size:10px;letter-spacing:.08em;">EVENT-DATEN (aus Datenbank)</td></tr>';
-      var evKeys = ['id','name','type','format','year','month','day','time_from','time_to','location','price','spots','description','payment_url','video_meeting_url'];
+      var evKeys = ['id','name','type','format','year','month','day','time_from','time_to','location','price','spots','description','video_meeting_url'];
+      var evKeyLabels = { price: 'price (Standard Einzelpreis)' };
       evKeys.forEach(function(k) {
         var val = ev ? ev[k] : undefined;
-        rows += '<tr><td>' + esc(k) + '</td><td>' + ((val !== undefined && val !== null && val !== '') ? esc(val) : '–') + '</td></tr>';
+        rows += '<tr><td>' + esc(evKeyLabels[k] || k) + '</td><td>' + ((val !== undefined && val !== null && val !== '') ? esc(val) : '–') + '</td></tr>';
       });
       debugTable.innerHTML = rows;
       debugSection.style.display = '';
@@ -786,6 +814,19 @@
         meetUrlEl.innerHTML = '<a href="' + esc(ev.video_meeting_url) + '" target="_blank" rel="noopener">' + esc(ev.video_meeting_url) + '</a>';
         meetBtn.href = ev.video_meeting_url;
         meetBox.style.display = 'flex';
+      }
+    }
+
+    if (paymentUrl) {
+      var payBox    = document.getElementById('test-payment-box');
+      var payNameEl = document.getElementById('test-payment-name');
+      var payUrlEl  = document.getElementById('test-payment-url');
+      var payBtn    = document.getElementById('test-payment-btn');
+      if (payBox && payNameEl && payUrlEl && payBtn) {
+        payNameEl.textContent = (paymentLinkObj && paymentLinkObj.name) ? paymentLinkObj.name : '–';
+        payUrlEl.innerHTML = '<a href="' + esc(paymentUrl) + '" target="_blank" rel="noopener">' + esc(paymentUrl) + '</a>';
+        payBtn.href = paymentUrl;
+        payBox.style.display = 'flex';
       }
     }
   }
@@ -860,8 +901,10 @@
       var dateList = allWorkshopEvents.map(function(w) {
         return (w.location || '') + ' · ' + w.day + '. ' + MONTH_NAMES[w.month].substring(0, 3) + '.';
       }).join(' · und · ');
+      noteEl.style.display = '';
       noteEl.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>'
-        + '<span><strong>Nach der Registrierung wirst du zur sicheren Zahlungsseite weitergeleitet.</strong><br>'
+        + '<span>'
+        + (priceNum > 0 ? '<strong>Nach der Registrierung wirst du zur sicheren Zahlungsseite weitergeleitet.</strong><br>' : '')
         + dateList + '<br>Begrenzte Plätze</span>';
     }
   }
@@ -875,7 +918,7 @@
     btn.disabled = on;
     btn.classList.toggle('loading', on);
     spinner.style.display = on ? 'block' : 'none';
-    btnLabel.textContent  = on ? 'E-Mail wird gesendet …' : 'Jetzt Registrieren & zur Zahlung →';
+    btnLabel.textContent  = on ? 'E-Mail wird gesendet …' : (priceNum > 0 ? 'Jetzt Registrieren & zur Zahlung →' : 'Jetzt Registrieren →');
   }
 
   document.getElementById('reg-form').addEventListener('submit', async function (e) {

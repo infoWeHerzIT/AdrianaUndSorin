@@ -1011,7 +1011,7 @@ async function loadEvents() {
     timeFrom: r.time_from, timeTo: r.time_to,
     location: r.location, format: r.format,
     price: r.price, spots: r.spots, description: r.description,
-    url: r.url, paymentUrl: r.payment_url, videoMeetingUrl: r.video_meeting_url
+    url: r.url, videoMeetingUrl: r.video_meeting_url
   }));
 }
 
@@ -1033,7 +1033,6 @@ function normalizeEvent(ev) {
     spots:       ev.spots       || '',
     description: ev.description || '',
     url:             ev.url             || 'register.html',
-    paymentUrl:      ev.paymentUrl      || '',
     videoMeetingUrl: ev.videoMeetingUrl || ''
   };
 }
@@ -1184,7 +1183,7 @@ function buildEventCard(ev, isPast) {
     year: 'Jahr', month: 'Monat', day: 'Tag',
     timeFrom: 'Von', timeTo: 'Bis', location: 'Ort',
     price: 'Preis', spots: 'Plätze', description: 'Beschreibung',
-    url: 'Anmelde-URL', paymentUrl: 'Zahlungslink', videoMeetingUrl: 'Video-Meeting'
+    url: 'Anmelde-URL', videoMeetingUrl: 'Video-Meeting'
   };
   const debugRows = isTestEvent
     ? Object.entries(DEBUG_LABELS).map(([k, lbl]) => {

@@ -405,6 +405,7 @@
     <div class="nav-links">
       <a href="admin-events.html" class="nav-link">Events</a>
       <a href="admin-teilnehmer.html" class="nav-link">Teilnehmer</a>
+      <a href="admin-payment-links.html" class="nav-link">Zahlungslinks</a>
       <button id="btn-logout" class="nav-link" style="border-color:rgba(220,38,38,0.4);color:#f87171;">Ausloggen</button>
     </div>
   </div>
@@ -491,20 +492,38 @@
       <div class="field-row">
         <div class="field-group">
           <label for="field-price">Preis</label>
-          <input type="text" id="field-price" placeholder="z. B. ab 48 €" maxlength="40">
+          <input type="number" id="field-price" min="0" max="9999" step="1" placeholder="z. B. 199" style="max-width:110px;">
         </div>
         <div class="field-group">
           <label for="field-spots">Plätze</label>
           <input type="text" id="field-spots" placeholder="z. B. max. 12" maxlength="40">
         </div>
       </div>
+
+      <div class="field-group" id="fg-payment-url" style="display:none;">
+        <label for="field-payment-link-id">Zahlungslink – Einzelticket <span style="font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.1em;color:var(--orange);margin-left:6px;">PFLICHTFELD</span></label>
+        <select id="field-payment-link-id">
+          <option value="">-- kein --</option>
+        </select>
+        <div class="field-error">Bitte einen Zahlungslink für das Einzelticket auswählen.</div>
+        <div class="field-hint">Wird nach der Registrierung aufgerufen und in der Bestätigungs-E-Mail verlinkt.</div>
+      </div>
+
       <div class="field-group">
-        <label for="field-duo-discount">Duo-Rabatt</label>
+        <label for="field-duo-discount">Duo Preis · ab 2 Personen</label>
         <div style="display:flex;align-items:center;gap:8px;">
-          <input type="number" id="field-duo-discount" min="0" max="99" step="1" placeholder="z. B. 30" style="max-width:110px;">
-          <span style="font-size:13px;color:#888;">% Rabatt pro Person · ab 2 Personen</span>
+          <input type="number" id="field-duo-discount" min="0" max="9999" step="1" placeholder="z. B. 199" style="max-width:110px;">
+          <span style="font-size:13px;color:#888;">€ pro Person</span>
         </div>
         <div class="field-hint">Leer lassen = 30% Standard. 0 eingeben = kein Duo-Ticket.</div>
+      </div>
+
+      <div class="field-group" id="fg-duo-payment-link" style="display:none;">
+        <label for="field-duo-payment-link-id">Zahlungslink – Duo-Ticket <span style="font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.1em;color:var(--orange);margin-left:6px;">PFLICHTFELD</span></label>
+        <select id="field-duo-payment-link-id">
+          <option value="">-- kein --</option>
+        </select>
+        <div class="field-error">Bitte einen Zahlungslink für das Duo-Ticket auswählen.</div>
       </div>
 
       <div class="field-group">
@@ -516,13 +535,6 @@
         <label for="field-url">Anmelde-URL *</label>
         <input type="url" id="field-url" placeholder="register.html" value="register.html">
         <div class="field-error">Anmelde-URL ist erforderlich.</div>
-      </div>
-
-      <div class="field-group" id="fg-payment-url">
-        <label for="field-payment-url">Zahlungslink <span id="url-req-badge" style="display:none;font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.1em;color:var(--orange);margin-left:6px;">PFLICHTFELD</span></label>
-        <input type="url" id="field-payment-url" placeholder="https://…">
-        <div class="field-error">Zahlungslink ist bei kostenpflichtigen Events erforderlich.</div>
-        <div class="field-hint" id="url-hint" style="display:none;">Wird nach der Registrierung aufgerufen und in der Bestätigungs-E-Mail verlinkt.</div>
       </div>
 
       <div class="field-group" id="fg-video-url">
@@ -554,30 +566,33 @@
             <div class="field-error">Bitte ein Enddatum angeben.</div>
           </div>
           <div class="field-group">
-            <label>Early-Bird-Preis (Einzelticket)</label>
-            <div class="eb-price-mode-row">
-              <label class="eb-price-mode-option">
-                <input type="checkbox" id="eb-mode-fixed" checked>
-                Fester Preis
-              </label>
-              <label class="eb-price-mode-option">
-                <input type="checkbox" id="eb-mode-percent">
-                % vom Ticketpreis
-              </label>
-            </div>
+            <label for="field-eb-price-value">Early-Bird-Preis (Einzelticket)</label>
             <div class="eb-price-input-row">
-              <input type="number" id="field-eb-price-value" min="0" step="1" placeholder="z. B. 48">
-              <span class="eb-price-unit" id="eb-price-unit">€</span>
+              <input type="number" id="field-eb-price-value" min="0" step="1" placeholder="z. B. 159">
+              <span class="eb-price-unit">€</span>
             </div>
-            <div class="field-hint orange" id="eb-calc-hint" style="display:none;"></div>
+          </div>
+          <div class="field-group" id="fg-eb-payment-link" style="display:none;">
+            <label for="field-eb-payment-link-id">Zahlungslink – Early Bird Einzelticket <span style="font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.1em;color:var(--orange);margin-left:6px;">PFLICHTFELD</span></label>
+            <select id="field-eb-payment-link-id">
+              <option value="">-- kein --</option>
+            </select>
+            <div class="field-error">Bitte einen Zahlungslink für das Early-Bird Einzelticket auswählen.</div>
           </div>
           <div class="field-group">
-            <label for="field-eb-duo-discount">Duo-Rabatt (Early Bird)</label>
+            <label for="field-eb-duo-discount">Duo Preis (Early Bird) · ab 2 Personen</label>
             <div style="display:flex;align-items:center;gap:8px;">
-              <input type="number" id="field-eb-duo-discount" min="0" max="99" step="1" placeholder="z. B. 10" style="max-width:110px;">
-              <span style="font-size:13px;color:#888;">% Rabatt auf EB-Preis · pro Person</span>
+              <input type="number" id="field-eb-duo-discount" min="0" max="9999" step="1" placeholder="z. B. 159" style="max-width:110px;">
+              <span style="font-size:13px;color:#888;">€ pro Person</span>
             </div>
-            <div class="field-hint">Leer = kein zusätzlicher Duo-Rabatt auf EB-Preis.</div>
+            <div class="field-hint">Leer = kein EB Duo-Preis.</div>
+          </div>
+          <div class="field-group" id="fg-eb-duo-payment-link" style="display:none;">
+            <label for="field-eb-duo-payment-link-id">Zahlungslink – Early Bird Duo-Ticket <span style="font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.1em;color:var(--orange);margin-left:6px;">PFLICHTFELD</span></label>
+            <select id="field-eb-duo-payment-link-id">
+              <option value="">-- kein --</option>
+            </select>
+            <div class="field-error">Bitte einen Zahlungslink für das Early-Bird Duo-Ticket auswählen.</div>
           </div>
         </div>
       </div>
@@ -718,9 +733,33 @@ function genId() {
   return 'evt_' + Date.now() + '_' + Math.floor(Math.random()*9999);
 }
 
+// ── Payment links catalog ──────────────────────────────────────
+let paymentLinks = [];
+
+async function loadPaymentLinks() {
+  const { data } = await db.from('payment_links').select('*').order('name');
+  if (!data) return;
+  paymentLinks = data;
+  ['field-payment-link-id','field-duo-payment-link-id','field-eb-payment-link-id','field-eb-duo-payment-link-id'].forEach(selId => {
+    const sel = document.getElementById(selId);
+    if (!sel) return;
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">-- kein --</option>';
+    data.forEach(link => {
+      const opt = document.createElement('option');
+      opt.value = link.id;
+      opt.textContent = link.name;
+      sel.appendChild(opt);
+    });
+    if (cur) sel.value = cur;
+  });
+}
+
+
+
 // Supabase row ↔ local object (same mapping as admin-events.html)
 function rowToEvent(r) {
-  let earlyBird = { enabled: false, deadline: '', priceMode: 'fixed', priceValue: '', duoDiscount: null };
+  let earlyBird = { enabled: false, deadline: '', priceValue: '', duoDiscount: null };
   if (r.eb_data) {
     try { earlyBird = { ...earlyBird, ...JSON.parse(r.eb_data) }; } catch(e) {}
   }
@@ -732,10 +771,13 @@ function rowToEvent(r) {
     price: r.price || '', spots: r.spots || '',
     description: r.description || '',
     url: r.url || 'register.html',
-    paymentUrl: r.payment_url || '',
     videoMeetingUrl: r.video_meeting_url || '',
     ressourcenUrl: r.ressourcen_url || '',
     duoDiscount: r.duo_discount != null ? r.duo_discount : null,
+    paymentLinkId:    r.payment_link_id     || null,
+    duoPaymentLinkId: r.duo_payment_link_id || null,
+    ebPaymentLinkId:  r.eb_payment_link_id  || null,
+    ebDuoPaymentLinkId: r.eb_duo_payment_link_id || null,
     earlyBird
   };
 }
@@ -749,10 +791,13 @@ function eventToRow(ev) {
     price: ev.price, spots: ev.spots,
     description: ev.description,
     url: ev.url || 'register.html',
-    payment_url: ev.paymentUrl || null,
     video_meeting_url: ev.videoMeetingUrl || null,
     ressourcen_url: ev.ressourcenUrl || null,
     duo_discount: ev.duoDiscount != null && ev.duoDiscount !== '' ? parseInt(ev.duoDiscount) : null,
+    payment_link_id:     ev.paymentLinkId     || null,
+    duo_payment_link_id: ev.duoPaymentLinkId  || null,
+    eb_payment_link_id:  ev.ebPaymentLinkId   || null,
+    eb_duo_payment_link_id: ev.ebDuoPaymentLinkId || null,
     eb_data: (eb && eb.enabled) ? JSON.stringify(eb) : null
   };
 }
@@ -792,6 +837,9 @@ function setupNewEventMode() {
   updateTypeHint();
   updateLocationRequired();
   updateUrlHint();
+  updateDuoPaymentLink();
+  updateEbPaymentLink();
+  updateEbDuoPaymentLink();
 }
 
 function fillForm(ev) {
@@ -809,24 +857,25 @@ function fillForm(ev) {
   document.getElementById('field-duo-discount').value = ev.duoDiscount != null ? ev.duoDiscount : '';
   document.getElementById('field-description').value = ev.description || '';
   document.getElementById('field-url').value           = ev.url            || 'register.html';
-  document.getElementById('field-payment-url').value  = ev.paymentUrl     || '';
+  document.getElementById('field-payment-link-id').value     = ev.paymentLinkId     || '';
+  document.getElementById('field-duo-payment-link-id').value = ev.duoPaymentLinkId  || '';
+  document.getElementById('field-eb-payment-link-id').value  = ev.ebPaymentLinkId   || '';
+  document.getElementById('field-eb-duo-payment-link-id').value = ev.ebDuoPaymentLinkId || '';
   document.getElementById('field-video-url').value    = ev.videoMeetingUrl || '';
   document.getElementById('field-ressourcen-url').value = ev.ressourcenUrl || '';
   const eb = ev.earlyBird || {};
   document.getElementById('field-eb-enabled').checked = !!eb.enabled;
   document.getElementById('eb-fields').style.display  = eb.enabled ? '' : 'none';
   document.getElementById('field-eb-deadline').value  = eb.deadline || '';
-  const isPercent = eb.priceMode === 'percent';
-  document.getElementById('eb-mode-fixed').checked    = !isPercent;
-  document.getElementById('eb-mode-percent').checked  = isPercent;
   document.getElementById('field-eb-price-value').value    = eb.priceValue   != null ? eb.priceValue   : '';
   document.getElementById('field-eb-duo-discount').value   = eb.duoDiscount  != null ? eb.duoDiscount  : '';
-  document.getElementById('eb-price-unit').textContent     = isPercent ? '%' : '€';
   document.getElementById('fg-eb-deadline').classList.remove('has-error');
-  updateEbCalcHint();
   updateTypeHint();
   updateLocationRequired();
   updateUrlHint();
+  updateDuoPaymentLink();
+  updateEbPaymentLink();
+  updateEbDuoPaymentLink();
   updateEventButtons(ev);
 }
 
@@ -874,13 +923,15 @@ document.getElementById('event-form').addEventListener('submit', async e => {
     duoDiscount: document.getElementById('field-duo-discount').value,
     description: document.getElementById('field-description').value.trim(),
     url:             document.getElementById('field-url').value.trim() || 'register.html',
-    paymentUrl:      document.getElementById('field-payment-url').value.trim(),
+    paymentLinkId:    document.getElementById('field-payment-link-id').value || null,
+    duoPaymentLinkId: document.getElementById('field-duo-payment-link-id').value || null,
+    ebPaymentLinkId:  document.getElementById('field-eb-payment-link-id').value || null,
+    ebDuoPaymentLinkId: document.getElementById('field-eb-duo-payment-link-id').value || null,
     videoMeetingUrl: document.getElementById('field-video-url').value.trim(),
     ressourcenUrl:   document.getElementById('field-ressourcen-url').value.trim(),
     earlyBird: {
-      enabled:    document.getElementById('field-eb-enabled').checked,
-      deadline:   document.getElementById('field-eb-deadline').value,
-      priceMode:   document.getElementById('eb-mode-fixed').checked ? 'fixed' : 'percent',
+      enabled:     document.getElementById('field-eb-enabled').checked,
+      deadline:    document.getElementById('field-eb-deadline').value,
       priceValue:  document.getElementById('field-eb-price-value').value,
       duoDiscount: document.getElementById('field-eb-duo-discount').value !== ''
                      ? parseInt(document.getElementById('field-eb-duo-discount').value) : null
@@ -924,9 +975,30 @@ function validateForm() {
   }
 
   const priceRaw = document.getElementById('field-price').value;
-  const priceNum = parseFloat((priceRaw.match(/\d+(\.\d+)?/) || [])[0]) || 0;
+  const priceNum = parseFloat(priceRaw) || 0;
   if (priceNum > 0) {
-    checkField('fg-payment-url', 'field-payment-url', document.getElementById('field-payment-url').value.trim() !== '');
+    checkField('fg-payment-url', 'field-payment-link-id',
+      document.getElementById('field-payment-link-id').value !== '');
+  }
+
+  const duoVal = document.getElementById('field-duo-discount').value;
+  if (duoVal !== '') {
+    checkField('fg-duo-payment-link', 'field-duo-payment-link-id',
+      document.getElementById('field-duo-payment-link-id').value !== '');
+  }
+
+  const ebEnabled = document.getElementById('field-eb-enabled').checked;
+  if (ebEnabled) {
+    const ebPriceVal = document.getElementById('field-eb-price-value').value;
+    if (ebPriceVal !== '') {
+      checkField('fg-eb-payment-link', 'field-eb-payment-link-id',
+        document.getElementById('field-eb-payment-link-id').value !== '');
+    }
+    const ebDuoVal = document.getElementById('field-eb-duo-discount').value;
+    if (ebDuoVal !== '') {
+      checkField('fg-eb-duo-payment-link', 'field-eb-duo-payment-link-id',
+        document.getElementById('field-eb-duo-payment-link-id').value !== '');
+    }
   }
 
   const ressourcenVal = document.getElementById('field-ressourcen-url').value.trim();
@@ -962,19 +1034,42 @@ function updateLocationRequired() {
 }
 document.getElementById('field-format').addEventListener('change', updateLocationRequired);
 
-// ── Payment URL hint (shown when price > 0) ────────────────────
+// ── Payment link selects: show/hide based on price inputs ─────
 function updateUrlHint() {
   const raw  = document.getElementById('field-price').value;
-  const num  = parseFloat((raw.match(/\d+(\.\d+)?/) || [])[0]) || 0;
+  const num  = parseFloat(raw) || 0;
   const show = num > 0;
-  const hint  = document.getElementById('url-hint');
-  const badge = document.getElementById('url-req-badge');
-  const fg    = document.getElementById('fg-payment-url');
-  if (hint)  hint.style.display  = show ? '' : 'none';
-  if (badge) badge.style.display = show ? '' : 'none';
-  if (!show && fg) { fg.classList.remove('has-error'); const inp = document.getElementById('field-payment-url'); if (inp) inp.classList.remove('error'); }
+  const fg   = document.getElementById('fg-payment-url');
+  if (fg) fg.style.display = show ? '' : 'none';
+  if (!show && fg) { fg.classList.remove('has-error'); const sel = document.getElementById('field-payment-link-id'); if (sel) sel.classList.remove('error'); }
 }
 document.getElementById('field-price').addEventListener('input', updateUrlHint);
+
+function updateDuoPaymentLink() {
+  const show = document.getElementById('field-duo-discount').value !== '';
+  const fg   = document.getElementById('fg-duo-payment-link');
+  if (fg) fg.style.display = show ? '' : 'none';
+  if (!show && fg) { fg.classList.remove('has-error'); const sel = document.getElementById('field-duo-payment-link-id'); if (sel) sel.classList.remove('error'); }
+}
+document.getElementById('field-duo-discount').addEventListener('input', updateDuoPaymentLink);
+
+function updateEbPaymentLink() {
+  const ebOn = document.getElementById('field-eb-enabled').checked;
+  const show = ebOn && document.getElementById('field-eb-price-value').value !== '';
+  const fg   = document.getElementById('fg-eb-payment-link');
+  if (fg) fg.style.display = show ? '' : 'none';
+  if (!show && fg) { fg.classList.remove('has-error'); const sel = document.getElementById('field-eb-payment-link-id'); if (sel) sel.classList.remove('error'); }
+}
+document.getElementById('field-eb-price-value').addEventListener('input', updateEbPaymentLink);
+
+function updateEbDuoPaymentLink() {
+  const ebOn = document.getElementById('field-eb-enabled').checked;
+  const show = ebOn && document.getElementById('field-eb-duo-discount').value !== '';
+  const fg   = document.getElementById('fg-eb-duo-payment-link');
+  if (fg) fg.style.display = show ? '' : 'none';
+  if (!show && fg) { fg.classList.remove('has-error'); const sel = document.getElementById('field-eb-duo-payment-link-id'); if (sel) sel.classList.remove('error'); }
+}
+document.getElementById('field-eb-duo-discount').addEventListener('input', updateEbDuoPaymentLink);
 
 // ── Early Bird toggle ─────────────────────────────────────────
 document.getElementById('field-eb-enabled').addEventListener('change', function() {
@@ -983,37 +1078,10 @@ document.getElementById('field-eb-enabled').addEventListener('change', function(
     document.getElementById('fg-eb-deadline').classList.remove('has-error');
     document.getElementById('field-eb-deadline').classList.remove('error');
   }
+  updateEbPaymentLink();
+  updateEbDuoPaymentLink();
 });
-document.getElementById('eb-mode-fixed').addEventListener('change', function() {
-  if (this.checked) { document.getElementById('eb-mode-percent').checked = false; }
-  else              { document.getElementById('eb-mode-percent').checked = true; }
-  document.getElementById('eb-price-unit').textContent = document.getElementById('eb-mode-percent').checked ? '%' : '€';
-  updateEbCalcHint();
-});
-document.getElementById('eb-mode-percent').addEventListener('change', function() {
-  if (this.checked) { document.getElementById('eb-mode-fixed').checked = false; }
-  else              { document.getElementById('eb-mode-fixed').checked = true; }
-  document.getElementById('eb-price-unit').textContent = this.checked ? '%' : '€';
-  updateEbCalcHint();
-});
-document.getElementById('field-eb-price-value').addEventListener('input', updateEbCalcHint);
-document.getElementById('field-price').addEventListener('input', updateEbCalcHint);
 
-function updateEbCalcHint() {
-  const hint = document.getElementById('eb-calc-hint');
-  if (!hint) return;
-  const isPercent = document.getElementById('eb-mode-percent').checked;
-  if (!isPercent) { hint.style.display = 'none'; return; }
-  const pct      = parseFloat(document.getElementById('field-eb-price-value').value) || 0;
-  const priceRaw = document.getElementById('field-price').value;
-  const base     = parseFloat((priceRaw.match(/\d+(\.\d+)?/) || [])[0]) || 0;
-  if (!pct || !base) { hint.style.display = 'none'; return; }
-  const discount  = base * pct / 100;
-  const ebPrice   = base - discount;
-  const fmt = n => n.toFixed(2).replace('.', ',');
-  hint.innerHTML = pct + '% von ' + fmt(base) + ' € = ' + fmt(discount) + ' €<br>' + fmt(ebPrice) + ' € Early-Bird-Preis';
-  hint.style.display = '';
-}
 
 // ── Participants ──────────────────────────────────────────────
 let allParticipants = [];
@@ -1271,6 +1339,7 @@ document.getElementById('participant-form').addEventListener('submit', async e =
 
 // ── Init ──────────────────────────────────────────────────────
 (async () => {
+  await loadPaymentLinks();
   if (isNewEvent) {
     setupNewEventMode();
     return;
