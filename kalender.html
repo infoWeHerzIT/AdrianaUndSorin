@@ -1051,15 +1051,7 @@ function extractPrice(priceStr) {
 }
 
 function buildRegisterUrl(ev) {
-  const p = new URLSearchParams({
-    ticket:   'Einzelticket',
-    price:    extractPrice(ev.price),
-    per:      'pro Person',
-    desc:     'Voller Zugang zum Workshop inkl. aller Materialien und Audio-Trance.',
-    url:      ev.paymentUrl || '',
-    event_id: ev.id,
-    event_data: JSON.stringify(ev)
-  });
+  const p = new URLSearchParams({ event_id: ev.id, ticket: 'Einzelticket' });
   return 'register.html?' + p.toString();
 }
 

@@ -991,14 +991,8 @@ document.getElementById('footer-year').textContent = new Date().getFullYear();
     var priceVal   = priceMatch ? priceMatch[1].replace(',', '.') : '';
     var isFree     = !priceVal || /kostenlos/i.test(priceRaw);
 
-    // Build register URL with all params
-    var p = new URLSearchParams();
-    p.set('event_id',   event.id);
-    p.set('ticket',     event.name || 'Webinar-Ticket');
-    if (!isFree) { p.set('price', priceVal); p.set('per', 'Person'); }
-    if (event.payment_url) p.set('url', event.payment_url);
-    p.set('event_data', JSON.stringify(eventData));
-    var registerUrl = 'register.html?' + p.toString();
+    // Only event_id needed – all ticket data loaded from DB on register.html
+    var registerUrl = 'register.html?event_id=' + encodeURIComponent(event.id) + '&ticket=Einzelticket';
 
     document.getElementById('cta-btn').href      = registerUrl;
     document.getElementById('facts-cta-btn').href = registerUrl;

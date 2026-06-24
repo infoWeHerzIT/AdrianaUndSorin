@@ -597,397 +597,388 @@
 </section>
 
 <script>
-  // ── Shared storage key ──
-  var STORAGE_KEY = 'dc_events';
+(async function () {
   var MONTH_NAMES = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
   var DAY_NAMES   = ['So','Mo','Di','Mi','Do','Fr','Sa'];
 
-  var FALLBACK_EVENTS = [
-    { id: 'default_1', name: 'Deep Coaching Workshop', type: 'Workshop', year: 2026, month: 5, day: 20,
-      timeFrom: '10:00', timeTo: '16:00', location: 'Nürnberg', format: 'Präsenz', price: 'ab 48 €' },
-    { id: 'default_2', name: 'Deep Coaching Workshop', type: 'Workshop', year: 2026, month: 6, day: 18,
-      timeFrom: '10:00', timeTo: '16:00', location: 'Rodgau', format: 'Präsenz', price: 'ab 48 €' }
-  ];
+  var params      = new URLSearchParams(window.location.search);
+  var eventId     = params.get('event_id') || '';
+  // Optional ticket-type label from URL (e.g. "Einzelticket", "Duo-Ticket", "Test-Ticket")
+  // Everything else (price, payment URL, description) comes from the database.
+  var ticketLabel = params.get('ticket') || '';
+  var isEB        = ticketLabel.toLowerCase().indexOf('early bird') !== -1;
+  var isDuo       = ticketLabel.toLowerCase().indexOf('duo')        !== -1;
 
-  function loadAllEvents() {
-    try {
-      var s = localStorage.getItem(STORAGE_KEY);
-      if (s) { var p = JSON.parse(s); if (Array.isArray(p) && p.length) return p; }
-    } catch(e) {}
-    return FALLBACK_EVENTS;
-  }
-
+  // ── Helpers ──────────────────────────────────────────────────────────
   function fmtDateLong(ev) {
-    var d = new Date(ev.year, ev.month, ev.day);
-    var t = (ev.timeFrom || '') + (ev.timeTo ? ' – ' + ev.timeTo : '');
+    var d  = new Date(ev.year, ev.month, ev.day);
+    var tf = ev.time_from || '';
+    var tt = ev.time_to   || '';
+    var t  = tf ? tf + (tt ? ' – ' + tt + ' Uhr' : '') : '';
     return DAY_NAMES[d.getDay()] + '., ' + ev.day + '. ' + MONTH_NAMES[ev.month] + ' ' + ev.year + (t ? ' · ' + t : '');
   }
   function fmtDateShort(ev) {
     return ev.day + '. ' + MONTH_NAMES[ev.month] + ' ' + ev.year;
   }
-
   function esc(v) { return String(v||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-  (function () {
-    var params   = new URLSearchParams(window.location.search);
-    var ticket   = params.get('ticket')   || 'Ticket';
-    var price    = params.get('price')    || '';
-    var per      = params.get('per')      || '';
-    var desc     = params.get('desc')     || '';
-    var rawUrl   = params.get('url')      || '';
-    var vividUrl = rawUrl || 'index.html#investment';
-    var eventId  = params.get('event_id') || '';
-    var isEB     = ticket.toLowerCase().indexOf('early bird') !== -1;
-    var priceNum = parseFloat(price) || 0;
+  // ── Load from Supabase ────────────────────────────────────────────────
+  var ev                = null;   // specific event (loaded by event_id)
+  var allWorkshopEvents = [];     // upcoming Präsenz Workshops (for location selector)
 
-    var allEvents      = loadAllEvents();
-    var specificEvent  = null;
-    var eventDataParam = params.get('event_data') || '';
-    if (eventDataParam) {
-      try { specificEvent = JSON.parse(eventDataParam); } catch(e) {}
-    }
-    if (!specificEvent && eventId) {
-      specificEvent = allEvents.find(function(e){ return e.id === eventId; }) || null;
+  try {
+    if (eventId) {
+      var r1 = await db.from('events').select('*').eq('id', eventId).single();
+      if (!r1.error && r1.data) ev = r1.data;
     }
 
-    // Auto-fill and debug panel for test events
-    if (ticket.trim().toLowerCase().startsWith('test')) {
-      document.getElementById('vorname').value  = 'Test';
-      document.getElementById('nachname').value = 'Tester';
-      document.getElementById('email').value    = 'email@test.tester';
-      document.getElementById('handy').value    = '0157333114499';
-
-      // Show all transmitted data in debug panel
-      var debugSection = document.getElementById('test-debug-section');
-      var debugTable   = document.getElementById('test-debug-table');
-      if (debugSection && debugTable) {
-        var rows = '';
-
-        // ── Section 1: raw URL params (excluding event_data blob) ──
-        rows += '<tr><td colspan="2" style="padding:6px 8px 2px;color:#555;font-size:10px;letter-spacing:.08em;">URL-PARAMETER</td></tr>';
-        params.forEach(function(val, key) {
-          if (key === 'event_data') return;
-          rows += '<tr><td>' + esc(key) + '</td><td>' + (val !== '' ? esc(val) : '–') + '</td></tr>';
+    // Load upcoming Präsenz Workshops for location radio buttons
+    // (skipped when the event itself is Online/Hybrid – location is then fixed)
+    var skipWorkshopLoad = ev && ev.format && ev.format !== 'Präsenz';
+    if (!skipWorkshopLoad) {
+      var today    = new Date();
+      var todayVal = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      var r2 = await db.from('events').select('*')
+        .eq('type', 'Workshop')
+        .order('year').order('month').order('day');
+      if (!r2.error && r2.data) {
+        allWorkshopEvents = r2.data.filter(function(e) {
+          return e.format === 'Präsenz' && new Date(e.year, e.month, e.day) >= todayVal;
         });
-
-        // ── Section 2: parsed event_data fields ──
-        var evSrc = specificEvent || {};
-        var evKeys = ['id','name','type','format','year','month','day','timeFrom','timeTo','time',
-                      'location','price','spots','description','url','paymentUrl','videoMeetingUrl'];
-        rows += '<tr><td colspan="2" style="padding:10px 8px 2px;color:#555;font-size:10px;letter-spacing:.08em;">EVENT-DATEN (event_data)</td></tr>';
-        evKeys.forEach(function(k) {
-          var val = evSrc[k];
-          var display = (val !== undefined && val !== null && val !== '') ? esc(val) : '–';
-          rows += '<tr><td>' + esc(k) + '</td><td>' + display + '</td></tr>';
-        });
-
-        debugTable.innerHTML = rows;
-        debugSection.style.display = '';
       }
+    }
+  } catch (err) {
+    console.error('DB load error:', err);
+  }
 
-      // Show meeting link box if the event has one
-      var meetingUrl = (specificEvent && specificEvent.videoMeetingUrl) ? specificEvent.videoMeetingUrl : '';
-      if (meetingUrl) {
-        var meetBox = document.getElementById('test-meeting-box');
-        var meetUrlEl = document.getElementById('test-meeting-url');
-        var meetBtn   = document.getElementById('test-meeting-btn');
-        if (meetBox && meetUrlEl && meetBtn) {
-          meetUrlEl.innerHTML = '<a href="' + esc(meetingUrl) + '" target="_blank" rel="noopener">' + esc(meetingUrl) + '</a>';
-          meetBtn.href = meetingUrl;
-          meetBox.style.display = 'flex';
+  // ── Build ticket data from DB (URL params only as last-resort fallback) ──
+  var priceRaw, priceNum, paymentUrl, videoMeetingUrl, ticketName, ticketPer, ticketDesc;
+
+  if (ev) {
+    // Primary: Supabase
+    var rawPriceStr  = ev.price || '';
+    var priceMatch   = rawPriceStr.match(/(\d+([.,]\d+)?)/);
+    var basePriceNum = priceMatch ? parseFloat(priceMatch[1].replace(',', '.')) : 0;
+
+    // ── Early Bird check ─────────────────────────────────────────────────
+    var ebActive = false;
+    if (ev.eb_data) {
+      try {
+        var eb = JSON.parse(ev.eb_data);
+        if (eb.enabled && eb.deadline) {
+          var ebDeadline = new Date(eb.deadline);
+          ebDeadline.setHours(23, 59, 59, 999); // inclusive: whole deadline day counts
+          if (ebDeadline >= new Date()) {
+            ebActive = true;
+            var ebVal = parseFloat(String(eb.priceValue || '0').replace(',', '.')) || 0;
+            if (eb.priceMode === 'percent' && ebVal > 0) {
+              basePriceNum = Math.round(basePriceNum * (1 - ebVal / 100));
+            } else if (eb.priceMode === 'fixed' && ebVal > 0) {
+              basePriceNum = Math.round(ebVal);
+            }
+          }
         }
-      }
+      } catch(e) {}
+    }
+    if (ebActive) isEB = true;
+
+    priceNum        = isDuo && basePriceNum > 0 ? Math.round(basePriceNum * 0.70) : basePriceNum;
+    priceRaw        = priceNum > 0 ? String(priceNum) : rawPriceStr;
+    paymentUrl      = ev.payment_url       || '';
+    videoMeetingUrl = ev.video_meeting_url || '';
+    ticketName      = ticketLabel || ev.name || 'Workshop-Ticket';
+    if (ebActive && ticketName.toLowerCase().indexOf('early bird') === -1) {
+      ticketName += ' · Early Bird';
+    }
+    ticketPer       = isDuo ? 'pro Person · 2 Personen' : 'pro Person';
+    ticketDesc      = '';
+  } else {
+    // Fallback: URL params (backward compat for hardcoded links without event_id)
+    priceRaw        = params.get('price') || '';
+    priceNum        = parseFloat(priceRaw) || 0;
+    paymentUrl      = params.get('url')   || '';
+    videoMeetingUrl = '';
+    ticketName      = ticketLabel || 'Ticket';
+    ticketPer       = params.get('per')   || '';
+    ticketDesc      = params.get('desc')  || '';
+  }
+
+  var vividUrl     = paymentUrl || 'index.html#investment';
+  var isTestTicket = ticketName.trim().toLowerCase().startsWith('test');
+
+  // ── Ticket Card ───────────────────────────────────────────────────────
+  document.getElementById('ticket-name').textContent = ticketName;
+  document.getElementById('ticket-per').textContent  = ticketPer;
+  document.getElementById('ticket-desc').textContent = ticketDesc;
+  document.getElementById('ticket-price').innerHTML  =
+    priceNum > 0 ? '<sup>€</sup>' + priceNum : (priceRaw ? priceRaw : '<sup>€</sup>0');
+
+  var badge = document.getElementById('ticket-badge');
+  badge.textContent = isEB ? '⚡ Early Bird' : 'Ticket';
+  if (isEB) { badge.style.background = 'linear-gradient(135deg,#FFE040,#FF8C00)'; badge.style.color = '#00224d'; }
+
+  // ── Event Info Strip ──────────────────────────────────────────────────
+  if (ev) {
+    var strip    = document.getElementById('event-info-strip');
+    var infoName = document.getElementById('event-info-name');
+    var infoMeta = document.getElementById('event-info-meta');
+
+    infoName.textContent = ev.name || '';
+
+    var d       = new Date(ev.year, ev.month, ev.day);
+    var dateStr = DAY_NAMES[d.getDay()] + '., ' + ev.day + '. ' + MONTH_NAMES[ev.month] + ' ' + ev.year;
+    if (ev.time_from) { dateStr += ' · ' + ev.time_from; if (ev.time_to) dateStr += ' – ' + ev.time_to + ' Uhr'; }
+
+    var metaHtml = '';
+    if (ev.type)     metaHtml += '<span class="event-info-tag">'   + esc(ev.type)     + '</span>';
+    if (ev.format)   metaHtml += '<span class="event-info-tag">'   + esc(ev.format)   + '</span>';
+    if (ev.location) metaHtml += '<span class="event-info-date">'
+      + '<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>'
+      + esc(ev.location) + '</span>';
+    if (dateStr)     metaHtml += '<span class="event-info-date">'
+      + '<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>'
+      + esc(dateStr) + '</span>';
+
+    infoMeta.innerHTML = metaHtml;
+    strip.style.display = 'block';
+  }
+
+  // ── Test event: auto-fill & debug panel ──────────────────────────────
+  if (isTestTicket) {
+    document.getElementById('vorname').value  = 'Test';
+    document.getElementById('nachname').value = 'Tester';
+    document.getElementById('email').value    = 'email@test.tester';
+    document.getElementById('handy').value    = '0157333114499';
+
+    var debugSection = document.getElementById('test-debug-section');
+    var debugTable   = document.getElementById('test-debug-table');
+    if (debugSection && debugTable) {
+      var rows = '<tr><td colspan="2" style="padding:6px 8px 2px;color:#555;font-size:10px;letter-spacing:.08em;">URL-PARAMETER</td></tr>';
+      rows += '<tr><td>event_id</td><td>' + esc(eventId || '–') + '</td></tr>';
+      rows += '<tr><td>ticket</td><td>'   + esc(ticketLabel || '–') + '</td></tr>';
+
+      rows += '<tr><td colspan="2" style="padding:10px 8px 2px;color:#555;font-size:10px;letter-spacing:.08em;">EVENT-DATEN (aus Datenbank)</td></tr>';
+      var evKeys = ['id','name','type','format','year','month','day','time_from','time_to','location','price','spots','description','payment_url','video_meeting_url'];
+      evKeys.forEach(function(k) {
+        var val = ev ? ev[k] : undefined;
+        rows += '<tr><td>' + esc(k) + '</td><td>' + ((val !== undefined && val !== null && val !== '') ? esc(val) : '–') + '</td></tr>';
+      });
+      debugTable.innerHTML = rows;
+      debugSection.style.display = '';
     }
 
-    // "Online mode" = a specific event that is NOT Präsenz Workshop
-    var isOnlineMode = specificEvent &&
-      (specificEvent.format !== 'Präsenz' || specificEvent.type !== 'Workshop');
-
-    // ── Ticket Card ──────────────────────────────────────────────
-    var ticketCard = document.getElementById('ticket-card');
-    {
-      document.getElementById('ticket-name').textContent = ticket;
-      document.getElementById('ticket-per').textContent  = per;
-      document.getElementById('ticket-desc').textContent = desc;
-      document.getElementById('ticket-price').innerHTML  = price ? '<sup>€</sup>' + price : '<sup>€</sup>0';
-      var badge = document.getElementById('ticket-badge');
-      badge.textContent = isEB ? '⚡ Early Bird' : 'Ticket';
-      if (isEB) {
-        badge.style.background = 'linear-gradient(135deg, #FFE040, #FF8C00)';
-        badge.style.color      = '#00224d';
+    if (ev && ev.video_meeting_url) {
+      var meetBox   = document.getElementById('test-meeting-box');
+      var meetUrlEl = document.getElementById('test-meeting-url');
+      var meetBtn   = document.getElementById('test-meeting-btn');
+      if (meetBox && meetUrlEl && meetBtn) {
+        meetUrlEl.innerHTML = '<a href="' + esc(ev.video_meeting_url) + '" target="_blank" rel="noopener">' + esc(ev.video_meeting_url) + '</a>';
+        meetBtn.href = ev.video_meeting_url;
+        meetBox.style.display = 'flex';
       }
     }
+  }
 
-    // ── Event Info Strip ─────────────────────────────────────────
-    if (specificEvent) {
-      var strip    = document.getElementById('event-info-strip');
-      var infoName = document.getElementById('event-info-name');
-      var infoMeta = document.getElementById('event-info-meta');
+  // ── Location / Veranstaltungsort ──────────────────────────────────────
+  var locContainer = document.getElementById('location-options');
+  var locGroup     = locContainer ? locContainer.closest('.form-group') : null;
+  var isOnlineMode = ev && ev.format && ev.format !== 'Präsenz';
 
-      infoName.textContent = specificEvent.name || '';
-
-      var MONTH_FULL = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
-      var dateStr = '';
-      if (specificEvent.year && specificEvent.month !== undefined && specificEvent.day) {
-        var d = new Date(specificEvent.year, specificEvent.month, specificEvent.day);
-        var dayNames = ['So','Mo','Di','Mi','Do','Fr','Sa'];
-        dateStr = dayNames[d.getDay()] + '., ' + specificEvent.day + '. ' + MONTH_FULL[specificEvent.month] + ' ' + specificEvent.year;
-        if (specificEvent.timeFrom) {
-          dateStr += ' · ' + specificEvent.timeFrom;
-          if (specificEvent.timeTo) dateStr += ' – ' + specificEvent.timeTo + ' Uhr';
-        }
-      }
-
-      var metaHtml = '';
-      if (specificEvent.type)   metaHtml += '<span class="event-info-tag">' + esc(specificEvent.type)   + '</span>';
-      if (specificEvent.format) metaHtml += '<span class="event-info-tag">' + esc(specificEvent.format) + '</span>';
-      if (specificEvent.location) {
-        metaHtml += '<span class="event-info-date">'
-          + '<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>'
-          + esc(specificEvent.location) + '</span>';
-      }
-      if (dateStr) {
-        metaHtml += '<span class="event-info-date">'
-          + '<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>'
-          + esc(dateStr) + '</span>';
-      }
-      infoMeta.innerHTML = metaHtml;
-      strip.style.display = 'block';
-    }
-
-    // ── Location / Veranstaltungsort ─────────────────────────────
-    var locContainer = document.getElementById('location-options');
-    var locGroup     = locContainer ? locContainer.closest('.form-group') : null;
-
-    if (isOnlineMode) {
-      var loc = specificEvent.location || '';
-      if (locGroup) {
-        var lbl = locGroup.querySelector('.form-label');
-        if (lbl) lbl.textContent = 'Veranstaltungsort';
-      }
-
-      if (specificEvent.format === 'Hybrid') {
-        // Hybrid: show physical location AND online side by side
-        var ortVal = (loc ? loc + ' + ' : '') + 'Online · ' + fmtDateShort(specificEvent);
-        locContainer.innerHTML =
-          '<div class="location-fixed-wrap">'
-          + (loc
-            ? '<div class="location-fixed loc-praesenz">'
-              + '<div class="location-fixed-icon">📍</div>'
-              + '<div><div class="location-city">' + loc + '</div>'
-              + '<div class="location-date">' + fmtDateLong(specificEvent) + '</div></div></div>'
-            : '')
-          + '<div class="location-fixed loc-online">'
-          + '<div class="location-fixed-icon">💻</div>'
-          + '<div><div class="location-city">Online</div>'
-          + '<div class="location-date">' + fmtDateLong(specificEvent) + '</div></div></div>'
-          + '</div>'
-          + '<input type="hidden" name="ort" id="ort-fixed" value="' + ortVal + '">';
-
-      } else {
-        // Online or other non-Präsenz: single row
-        var isOnl  = specificEvent.format === 'Online';
-        var icon   = isOnl ? '💻' : '📍';
-        var locDisplay = loc || 'Online';
-        var ortVal = locDisplay + ' · ' + fmtDateShort(specificEvent);
-        locContainer.innerHTML =
-          '<div class="location-fixed">'
-          + '<div class="location-fixed-icon">' + icon + '</div>'
-          + '<div>'
-          + '<div class="location-city">' + locDisplay + '</div>'
-          + '<div class="location-date">' + fmtDateLong(specificEvent) + '</div>'
-          + '</div></div>'
-          + '<input type="hidden" name="ort" id="ort-fixed" value="' + ortVal + '">';
-      }
-
+  if (isOnlineMode) {
+    var loc = ev.location || '';
+    if (ev.format === 'Hybrid') {
+      var ortVal = (loc ? loc + ' + ' : '') + 'Online · ' + fmtDateShort(ev);
+      locContainer.innerHTML =
+        '<div class="location-fixed-wrap">'
+        + (loc ? '<div class="location-fixed loc-praesenz"><div class="location-fixed-icon">📍</div>'
+          + '<div><div class="location-city">' + esc(loc) + '</div>'
+          + '<div class="location-date">' + fmtDateLong(ev) + '</div></div></div>' : '')
+        + '<div class="location-fixed loc-online"><div class="location-fixed-icon">💻</div>'
+        + '<div><div class="location-city">Online</div>'
+        + '<div class="location-date">' + fmtDateLong(ev) + '</div></div></div>'
+        + '</div>'
+        + '<input type="hidden" name="ort" id="ort-fixed" value="' + esc(ortVal) + '">';
     } else {
-      // Load all Präsenz Workshop events → radio selector
-      var workshops = allEvents
-        .filter(function(e){ return e.type === 'Workshop' && e.format === 'Präsenz'; })
-        .sort(function(a,b){ return new Date(a.year,a.month,a.day) - new Date(b.year,b.month,b.day); });
+      var isOnl      = ev.format === 'Online';
+      var locDisplay = loc || 'Online';
+      var ortVal2    = locDisplay + ' · ' + fmtDateShort(ev);
+      locContainer.innerHTML =
+        '<div class="location-fixed">'
+        + '<div class="location-fixed-icon">' + (isOnl ? '💻' : '📍') + '</div>'
+        + '<div><div class="location-city">' + esc(locDisplay) + '</div>'
+        + '<div class="location-date">' + fmtDateLong(ev) + '</div></div></div>'
+        + '<input type="hidden" name="ort" id="ort-fixed" value="' + esc(ortVal2) + '">';
+    }
+  } else {
+    // Präsenz: build radio selector from DB
+    if (allWorkshopEvents.length === 0 && ev && ev.location) {
+      // No upcoming workshops but we have the specific event – show as fixed
+      locContainer.innerHTML =
+        '<div class="location-fixed"><div class="location-fixed-icon">📍</div>'
+        + '<div><div class="location-city">' + esc(ev.location) + '</div>'
+        + '<div class="location-date">' + fmtDateLong(ev) + '</div></div></div>'
+        + '<input type="hidden" name="ort" id="ort-fixed" value="' + esc(ev.location + ' · ' + fmtDateShort(ev)) + '">';
+    } else if (allWorkshopEvents.length === 1) {
+      var w = allWorkshopEvents[0];
+      locContainer.innerHTML =
+        '<div class="location-fixed"><div class="location-fixed-icon">📍</div>'
+        + '<div><div class="location-city">' + esc(w.location || '') + '</div>'
+        + '<div class="location-date">' + fmtDateLong(w) + '</div></div></div>'
+        + '<input type="hidden" name="ort" id="ort-fixed" value="' + esc((w.location || '') + ' · ' + fmtDateShort(w)) + '">';
+    } else {
+      locContainer.innerHTML = allWorkshopEvents.map(function(w) {
+        var checked = (ev && ev.id === w.id) ? 'checked' : '';
+        return '<label class="location-option">'
+          + '<input type="radio" name="ort" value="' + esc((w.location || '') + ' · ' + fmtDateShort(w)) + '" ' + checked + '>'
+          + '<span class="location-card">'
+          + '<span class="location-city">' + esc(w.location || '') + '</span>'
+          + '<span class="location-date">' + fmtDateLong(w) + '</span>'
+          + '</span></label>';
+      }).join('');
 
-      if (workshops.length === 0) workshops = FALLBACK_EVENTS;
-
-      if (workshops.length === 1) {
-        // Single workshop – show as fixed, no selector needed
-        var w = workshops[0];
-        locContainer.innerHTML =
-          '<div class="location-fixed">'
-          + '<div class="location-fixed-icon">📍</div>'
-          + '<div>'
-          + '<div class="location-city">' + w.location + '</div>'
-          + '<div class="location-date">' + fmtDateLong(w) + '</div>'
-          + '</div></div>'
-          + '<input type="hidden" name="ort" id="ort-fixed" value="' + w.location + ' · ' + fmtDateShort(w) + '">';
-      } else {
-        // Multiple – radio buttons
-        locContainer.innerHTML = workshops.map(function(w) {
-          var checked = (specificEvent && specificEvent.id === w.id) ? 'checked' : '';
-          return '<label class="location-option">'
-            + '<input type="radio" name="ort" value="' + w.location + ' · ' + fmtDateShort(w) + '" ' + checked + '>'
-            + '<span class="location-card">'
-            + '<span class="location-city">' + w.location + '</span>'
-            + '<span class="location-date">' + fmtDateLong(w) + '</span>'
-            + '</span></label>';
-        }).join('');
-
-        // Re-attach radio error clearing
-        locContainer.querySelectorAll('input[name="ort"]').forEach(function(r) {
-          r.addEventListener('change', function() {
-            document.getElementById('err-ort').classList.remove('visible');
-            locContainer.querySelectorAll('.location-card').forEach(function(c){ c.classList.remove('error'); });
-          });
+      locContainer.querySelectorAll('input[name="ort"]').forEach(function(r) {
+        r.addEventListener('change', function() {
+          document.getElementById('err-ort').classList.remove('visible');
+          locContainer.querySelectorAll('.location-card').forEach(function(c){ c.classList.remove('error'); });
         });
-      }
-
-      // Update form note
-      var noteEl = document.getElementById('form-note');
-      if (noteEl && workshops.length > 0) {
-        var dateList = workshops.map(function(w){
-          return w.location + ' · ' + w.day + '. ' + MONTH_NAMES[w.month].substring(0,3) + '.';
-        }).join(' · und · ');
-        noteEl.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>'
-          + '<span><strong>Nach der Registrierung wirst du zur sicheren Zahlungsseite weitergeleitet.</strong><br>'
-          + dateList + '<br>Begrenzte Plätze</span>';
-      }
+      });
     }
 
-    // ── Form submission ──────────────────────────────────────────
-    var btn      = document.getElementById('btn-register');
-    var spinner  = document.getElementById('btn-spinner');
-    var btnLabel = document.getElementById('btn-label');
-
-    function setLoading(on) {
-      btn.disabled = on;
-      btn.classList.toggle('loading', on);
-      spinner.style.display = on ? 'block' : 'none';
-      btnLabel.textContent  = on ? 'E-Mail wird gesendet …' : 'Jetzt Registrieren & zur Zahlung →';
+    var noteEl = document.getElementById('form-note');
+    if (noteEl && allWorkshopEvents.length > 0) {
+      var dateList = allWorkshopEvents.map(function(w) {
+        return (w.location || '') + ' · ' + w.day + '. ' + MONTH_NAMES[w.month].substring(0, 3) + '.';
+      }).join(' · und · ');
+      noteEl.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>'
+        + '<span><strong>Nach der Registrierung wirst du zur sicheren Zahlungsseite weitergeleitet.</strong><br>'
+        + dateList + '<br>Begrenzte Plätze</span>';
     }
+  }
 
-    document.getElementById('reg-form').addEventListener('submit', async function (e) {
-      e.preventDefault();
-      var valid = true;
+  // ── Form submission ───────────────────────────────────────────────────
+  var btn      = document.getElementById('btn-register');
+  var spinner  = document.getElementById('btn-spinner');
+  var btnLabel = document.getElementById('btn-label');
 
-      var fields = [
-        { id: 'vorname',  errId: 'err-vorname',  validate: function(v){ return v.trim().length > 0; } },
-        { id: 'nachname', errId: 'err-nachname', validate: function(v){ return v.trim().length > 0; } },
-        { id: 'email',    errId: 'err-email',    validate: function(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()); } },
-        { id: 'handy',    errId: 'err-handy',    validate: function(v){ return v.trim().length >= 6; } },
-      ];
+  function setLoading(on) {
+    btn.disabled = on;
+    btn.classList.toggle('loading', on);
+    spinner.style.display = on ? 'block' : 'none';
+    btnLabel.textContent  = on ? 'E-Mail wird gesendet …' : 'Jetzt Registrieren & zur Zahlung →';
+  }
 
-      fields.forEach(function(f) {
-        var input = document.getElementById(f.id);
-        var err   = document.getElementById(f.errId);
-        if (!f.validate(input.value)) {
-          input.classList.add('error'); err.classList.add('visible'); valid = false;
-        } else {
-          input.classList.remove('error'); err.classList.remove('visible');
-        }
-      });
+  document.getElementById('reg-form').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var valid = true;
 
-      // Location validation – only for radio buttons
-      var ortFixed    = document.getElementById('ort-fixed');
-      var ortSelected = document.querySelector('input[name="ort"]:checked');
-      var errOrt      = document.getElementById('err-ort');
+    var fields = [
+      { id: 'vorname',  errId: 'err-vorname',  validate: function(v){ return v.trim().length > 0; } },
+      { id: 'nachname', errId: 'err-nachname', validate: function(v){ return v.trim().length > 0; } },
+      { id: 'email',    errId: 'err-email',    validate: function(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()); } },
+      { id: 'handy',    errId: 'err-handy',    validate: function(v){ return v.trim().length >= 6; } },
+    ];
 
-      if (!ortFixed && !ortSelected) {
-        errOrt.classList.add('visible');
-        document.querySelectorAll('.location-card').forEach(function(c){ c.classList.add('error'); });
-        valid = false;
+    fields.forEach(function(f) {
+      var input = document.getElementById(f.id);
+      var err   = document.getElementById(f.errId);
+      if (!f.validate(input.value)) {
+        input.classList.add('error'); err.classList.add('visible'); valid = false;
       } else {
-        errOrt.classList.remove('visible');
-        document.querySelectorAll('.location-card').forEach(function(c){ c.classList.remove('error'); });
-      }
-
-      if (!valid) return;
-
-      var vorname  = document.getElementById('vorname').value.trim();
-      var nachname = document.getElementById('nachname').value.trim();
-      var email    = document.getElementById('email').value.trim();
-      var handy    = document.getElementById('handy').value.trim();
-      var ort      = ortFixed ? ortFixed.value : (ortSelected ? ortSelected.value : '');
-
-      setLoading(true);
-
-      var eventName   = specificEvent ? (specificEvent.name || '') : '';
-      var isTestEvent = eventName.trim().toLowerCase().startsWith('test')
-                     || ticket.trim().toLowerCase().startsWith('test');
-
-      // Teilnehmer in Supabase speichern (immer, auch bei Test-Events)
-      const resolvedEventId = eventId || (specificEvent ? specificEvent.id : null);
-
-      // 1. Participant anlegen oder per Handynummer aktualisieren
-      const participantFields = { vorname, nachname, email, ort };
-      if (handy) participantFields.handy = handy;
-      const { data: partData, error: partError } = handy
-        ? await db.from('participants').upsert(participantFields, { onConflict: 'handy' }).select('id').single()
-        : await db.from('participants').insert(participantFields).select('id').single();
-
-      // 2. Event-Teilnahme anlegen
-      let dbError = partError;
-      if (!partError && partData) {
-        const { error: epError } = await db.from('event_participations').insert({
-          event_id:       resolvedEventId,
-          participant_id: partData.id,
-          ticket_name:    ticket,
-          ticket_price:   price ? '€' + price : 'kostenlos',
-          payment_status: 'pending'
-        });
-        dbError = epError;
-      }
-      if (dbError) console.error('Supabase insert error:', dbError.message);
-
-      var videoMeetingUrl = specificEvent ? (specificEvent.videoMeetingUrl || '') : '';
-      var paymentUrlFinal = priceNum > 0 ? rawUrl : '';
-      var thankyouParams  = new URLSearchParams({
-        vorname:           vorname,
-        nachname:          nachname,
-        email:             email,
-        handy:             handy,
-        ort:               ort,
-        ticket:            ticket,
-        price:             price,
-        per:               per,
-        payment_url:       paymentUrlFinal,
-        video_meeting_url: videoMeetingUrl
-      });
-      if (isTestEvent) thankyouParams.set('is_test', '1');
-      var thankyouUrl = 'Templates/danke.html?' + thankyouParams.toString();
-
-      function goToDanke() { window.location.href = thankyouUrl; }
-
-      if (!isTestEvent) {
-        try {
-          emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID_Erfolgreiche_Registrierung_fur_Nutzer, {
-            to_name:           vorname + ' ' + nachname,
-            to_email:          email,
-            vorname:           vorname,
-            nachname:          nachname,
-            handy:             handy,
-            ticket_name:       ticket,
-            ticket_price:      price ? '€' + price : 'kostenlos',
-            ticket_per:        per,
-            ort:               ort,
-            payment_url:       paymentUrlFinal,
-            video_meeting_url: videoMeetingUrl,
-            payment_notice:    priceNum > 0 ? 'Beachten Sie, dass Sie an Event nur teilnehmen können, wenn die Bezahlung von uns bestätigt wurde und sie eine Bestätigungs E-Mail dafür bekommen.' : '',
-          }).then(goToDanke).catch(goToDanke);
-        } catch(e) {
-          goToDanke();
-        }
-      } else {
-        goToDanke();
+        input.classList.remove('error'); err.classList.remove('visible');
       }
     });
 
-    // Clear field errors on input
-    ['vorname','nachname','email','handy'].forEach(function(id) {
-      document.getElementById(id).addEventListener('input', function() {
-        this.classList.remove('error');
-        document.getElementById('err-' + id).classList.remove('visible');
+    var ortFixed    = document.getElementById('ort-fixed');
+    var ortSelected = document.querySelector('input[name="ort"]:checked');
+    var errOrt      = document.getElementById('err-ort');
+
+    if (!ortFixed && !ortSelected) {
+      errOrt.classList.add('visible');
+      document.querySelectorAll('.location-card').forEach(function(c){ c.classList.add('error'); });
+      valid = false;
+    } else {
+      errOrt.classList.remove('visible');
+      document.querySelectorAll('.location-card').forEach(function(c){ c.classList.remove('error'); });
+    }
+
+    if (!valid) return;
+
+    var vorname  = document.getElementById('vorname').value.trim();
+    var nachname = document.getElementById('nachname').value.trim();
+    var email    = document.getElementById('email').value.trim();
+    var handy    = document.getElementById('handy').value.trim();
+    var ort      = ortFixed ? ortFixed.value : (ortSelected ? ortSelected.value : '');
+
+    setLoading(true);
+
+    // Save to Supabase
+    var participantFields = { vorname, nachname, email, ort };
+    if (handy) participantFields.handy = handy;
+    var saveResult = handy
+      ? await db.from('participants').upsert(participantFields, { onConflict: 'handy' }).select('id').single()
+      : await db.from('participants').insert(participantFields).select('id').single();
+
+    var dbError = saveResult.error;
+    if (!saveResult.error && saveResult.data) {
+      var ep = await db.from('event_participations').insert({
+        event_id:       eventId || (ev ? ev.id : null),
+        participant_id: saveResult.data.id,
+        ticket_name:    ticketName,
+        ticket_price:   priceNum > 0 ? '€' + priceNum : 'kostenlos',
+        payment_status: 'pending'
       });
+      dbError = ep.error;
+    }
+    if (dbError) console.error('Supabase insert error:', dbError.message);
+
+    var paymentUrlFinal = priceNum > 0 ? vividUrl : '';
+    var thankyouParams  = new URLSearchParams({
+      vorname:           vorname,
+      nachname:          nachname,
+      email:             email,
+      handy:             handy,
+      ort:               ort,
+      ticket:            ticketName,
+      price:             priceNum > 0 ? String(priceNum) : '',
+      per:               ticketPer,
+      payment_url:       paymentUrlFinal,
+      video_meeting_url: videoMeetingUrl
     });
-  })();
+    if (isTestTicket) thankyouParams.set('is_test', '1');
+    var thankyouUrl = 'Templates/danke.html?' + thankyouParams.toString();
+
+    function goToDanke() { window.location.href = thankyouUrl; }
+
+    if (!isTestTicket) {
+      try {
+        emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID_Erfolgreiche_Registrierung_fur_Nutzer, {
+          to_name:           vorname + ' ' + nachname,
+          to_email:          email,
+          vorname:           vorname,
+          nachname:          nachname,
+          handy:             handy,
+          ticket_name:       ticketName,
+          ticket_price:      priceNum > 0 ? '€' + priceNum : 'kostenlos',
+          ticket_per:        ticketPer,
+          ort:               ort,
+          payment_url:       paymentUrlFinal,
+          video_meeting_url: videoMeetingUrl,
+          payment_notice:    priceNum > 0 ? 'Beachten Sie, dass Sie an Event nur teilnehmen können, wenn die Bezahlung von uns bestätigt wurde und sie eine Bestätigungs E-Mail dafür bekommen.' : '',
+        }).then(goToDanke).catch(goToDanke);
+      } catch(e) { goToDanke(); }
+    } else {
+      goToDanke();
+    }
+  });
+
+  // Clear field errors on input
+  ['vorname','nachname','email','handy'].forEach(function(id) {
+    document.getElementById(id).addEventListener('input', function() {
+      this.classList.remove('error');
+      document.getElementById('err-' + id).classList.remove('visible');
+    });
+  });
+})();
 </script>
 
 </body>

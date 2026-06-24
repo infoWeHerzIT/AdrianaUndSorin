@@ -1316,21 +1316,12 @@ document.getElementById('footer-year').textContent = new Date().getFullYear();
     var pageTitle = (ev.name || 'Workshop') + ' – Adriana & Sorin';
     document.title = pageTitle;
 
-    /* nav CTA */
-    var registerUrlBase = 'register.html?event_id=' + encodeURIComponent(ev.id);
-    var fullRegisterUrl = registerUrlBase;
-    (function(){
-      var p = new URLSearchParams();
-      p.set('event_id', ev.id);
-      p.set('ticket',   ev.name || 'Workshop-Ticket');
-      if(!isFree && priceNum){ p.set('price', priceNum.toString()); p.set('per', 'Person'); }
-      if(ev.payment_url) p.set('url', ev.payment_url);
-      fullRegisterUrl = 'register.html?' + p.toString();
-    })();
+    /* nav CTA – only event_id; all other ticket data loaded from DB on register.html */
+    var fullRegisterUrl = 'register.html?event_id=' + encodeURIComponent(ev.id);
 
-    document.getElementById('nav-cta-btn').href  = fullRegisterUrl;
-    document.getElementById('hero-cta-btn').href  = fullRegisterUrl;
-    document.getElementById('cta-btn').href        = fullRegisterUrl;
+    document.getElementById('nav-cta-btn').href   = fullRegisterUrl + '&ticket=Einzelticket';
+    document.getElementById('hero-cta-btn').href  = fullRegisterUrl + '&ticket=Einzelticket';
+    document.getElementById('cta-btn').href        = fullRegisterUrl + '&ticket=Einzelticket';
 
     /* ── HERO ── */
     setText('hero-eyebrow-label', 'Workshop · ' + format);
@@ -1386,14 +1377,14 @@ document.getElementById('footer-year').textContent = new Date().getFullYear();
       soloEl.querySelector('.price-amount').innerHTML = '<span>€</span>' + soloPrice;
       duoEl.querySelector('.price-amount').innerHTML  = '<span>€</span>' + duoPrice;
 
-      soloEl.href = fullRegisterUrl + '&ticket=Einzelticket&per=Person';
+      soloEl.href = fullRegisterUrl + '&ticket=Einzelticket';
       soloEl.removeAttribute('onclick');
-      duoEl.href  = fullRegisterUrl + '&ticket=Duo-Ticket&per=2+Personen';
+      duoEl.href  = fullRegisterUrl + '&ticket=Duo-Ticket';
       duoEl.removeAttribute('onclick');
     } else if(isFree){
       document.getElementById('ticket-solo').querySelector('.price-amount').innerHTML = 'Kostenlos';
       document.getElementById('ticket-duo').style.display = 'none';
-      document.getElementById('ticket-solo').href = fullRegisterUrl;
+      document.getElementById('ticket-solo').href = fullRegisterUrl + '&ticket=Einzelticket';
       document.getElementById('ticket-solo').removeAttribute('onclick');
     }
 
