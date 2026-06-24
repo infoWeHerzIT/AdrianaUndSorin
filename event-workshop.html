@@ -492,17 +492,28 @@
   .pricing-grid {
     display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 28px;
   }
+  .pricing-divider {
+    grid-column: 1 / -1;
+    display: flex; align-items: center; gap: 14px;
+    font-size: 12px; color: #bbb; letter-spacing: .08em; text-transform: uppercase;
+    margin: 8px 0 4px;
+  }
+  .pricing-divider::before, .pricing-divider::after {
+    content: ''; flex: 1; height: 1px; background: rgba(0,34,77,.1);
+  }
   .price-card {
     border: 1px solid rgba(0,34,77,.12); padding: 36px 32px;
-    position: relative; width: 100%;
+    position: relative; width: 100%; box-sizing: border-box;
     transition: border-color .25s, box-shadow .25s, transform .25s;
     cursor: pointer; text-decoration: none; display: block; color: inherit;
   }
   .price-card:hover { border-color: var(--orange); box-shadow: 0 8px 32px rgba(255,99,0,.12); transform: translateY(-4px); }
   .price-card.featured { background: rgba(255,99,0,.03); }
-  .price-label { font-size: 12px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: #888; margin-bottom: 12px; }
-  .price-amount { font-family: 'Fredoka', sans-serif; font-size: 54px; font-weight: 900; color: var(--navy); line-height: 1; }
+  .price-label { font-size: 12px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: #888; margin-bottom: 12px; line-height: 1.6; }
+  .price-label .eb-tag { display: inline-block; background: linear-gradient(135deg,#FFE040,#FF8C00); color: #00224d; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; letter-spacing: .04em; vertical-align: middle; margin-right: 6px; margin-bottom: 4px; text-transform: none; }
+  .price-amount { font-family: 'Fredoka', sans-serif; font-size: clamp(36px, 7vw, 54px); font-weight: 900; color: var(--navy); line-height: 1; }
   .price-amount span { font-size: 22px; font-weight: 400; vertical-align: super; margin-right: 2px; color: var(--orange); }
+  .price-original { display: block; font-size: 17px; font-weight: 400; color: #bbb; text-decoration: line-through; margin-top: 5px; }
   .price-per { font-size: 13px; color: #888; margin-top: 6px; }
   .price-desc {
     font-size: 14px; line-height: 1.6; color: #555;
@@ -653,6 +664,8 @@
     .hero-inner { grid-template-columns: 1fr; }
     .hero-right { height: 65vw; max-height: 380px; padding: 0 5% 20px; }
     .hero-photo-frame { max-width: 100%; }
+    .price-card { padding: 24px 20px; }
+    .price-amount { font-size: clamp(32px, 9vw, 48px); }
     #problem .content-wrap { grid-template-columns: 1fr; gap: 36px; }
     #target .content-wrap { grid-template-columns: 1fr; gap: 28px; }
     .coach-split, .coach-split.reverse { grid-template-columns: 1fr; min-height: auto; }
@@ -1038,6 +1051,20 @@
         <div class="price-per">pro Person · ab 2 Personen</div>
         <div class="price-desc">Kommt gemeinsam, spart und verändert euch gemeinsam. Ca. 30% Rabatt.</div>
       </a>
+      <!-- Regular price cards – nur sichtbar wenn Early Bird aktiv -->
+      <div class="pricing-divider" id="regular-divider" style="display:none;">oder zum regulären Preis</div>
+      <a href="#" class="price-card reveal" id="ticket-solo-reg" style="display:none;text-decoration:none;color:inherit;" onclick="return false;">
+        <div class="price-label">Einzelticket</div>
+        <div class="price-amount"><span>€</span>–</div>
+        <div class="price-per">pro Person</div>
+        <div class="price-desc">Voller Zugang inkl. aller Materialien, Workbook und Audio-Trance.</div>
+      </a>
+      <a href="#" class="price-card reveal" id="ticket-duo-reg" style="display:none;text-decoration:none;color:inherit;" onclick="return false;">
+        <div class="price-label">Duo-Ticket</div>
+        <div class="price-amount"><span>€</span>–</div>
+        <div class="price-per">pro Person · ab 2 Personen</div>
+        <div class="price-desc">Kommt gemeinsam, spart und verändert euch gemeinsam. Ca. 30% Rabatt.</div>
+      </a>
       <div class="price-card reveal">
         <div class="price-label">Folge-Event Bonus</div>
         <div class="price-amount" style="font-size:38px;">20&nbsp;%</div>
@@ -1162,7 +1189,7 @@
     </div>
 
     <div style="margin-bottom:16px;">
-      <a href="#" id="cta-btn" class="btn-cta-big">Jetzt Platz sichern →</a>
+      <a href="#investment" id="cta-btn" class="btn-cta-big">Jetzt Platz sichern →</a>
     </div>
     <p class="cta-sub" id="cta-spots-note">Begrenzte Plätze · Tiefe statt Theorie</p>
   </div>
@@ -1311,6 +1338,28 @@ document.getElementById('footer-year').textContent = new Date().getFullYear();
     var priceNum     = parsePriceNumber(priceRaw);
     var isFree       = !priceNum || /kostenlos/i.test(priceRaw);
     var priceDisplay = isFree ? 'Kostenlos' : priceRaw;
+    // Duo-Rabatt aus DB (z. B. 30 → 0.70); null = 30% Default
+    var duoFactor = (ev.duo_discount != null) ? (1 - ev.duo_discount / 100) : 0.70;
+
+    /* ── Early Bird ── */
+    var ebActive    = false;
+    var ebSoloPrice = null;
+    if (ev.eb_data) {
+      try {
+        var eb         = JSON.parse(ev.eb_data);
+        var ebDeadline = new Date(eb.deadline);
+        ebDeadline.setHours(23, 59, 59, 999);
+        if (eb.enabled && eb.deadline && ebDeadline >= new Date()) {
+          var ebVal = parseFloat(String(eb.priceValue || '0').replace(',', '.')) || 0;
+          if (eb.priceMode === 'percent' && ebVal > 0 && priceNum) {
+            ebSoloPrice = Math.round(priceNum * (1 - ebVal / 100));
+          } else if (eb.priceMode === 'fixed' && ebVal > 0) {
+            ebSoloPrice = Math.round(ebVal);
+          }
+          if (ebSoloPrice) { ebActive = true; priceDisplay = 'ab €' + ebSoloPrice + ' (Early Bird)'; }
+        }
+      } catch(e) {}
+    }
 
     /* page title */
     var pageTitle = (ev.name || 'Workshop') + ' – Adriana & Sorin';
@@ -1319,9 +1368,6 @@ document.getElementById('footer-year').textContent = new Date().getFullYear();
     /* nav CTA – only event_id; all other ticket data loaded from DB on register.html */
     var fullRegisterUrl = 'register.html?event_id=' + encodeURIComponent(ev.id);
 
-    document.getElementById('nav-cta-btn').href   = fullRegisterUrl + '&ticket=Einzelticket';
-    document.getElementById('hero-cta-btn').href  = fullRegisterUrl + '&ticket=Einzelticket';
-    document.getElementById('cta-btn').href        = fullRegisterUrl + '&ticket=Einzelticket';
 
     /* ── HERO ── */
     setText('hero-eyebrow-label', 'Workshop · ' + format);
@@ -1355,7 +1401,8 @@ document.getElementById('footer-year').textContent = new Date().getFullYear();
 
     /* ── PROBLEM section – price stat card ── */
     if(!isFree && priceRaw){
-      setHtml('problem-price-val', 'ab&nbsp;<span>€</span>' + Math.floor(priceNum || 0));
+      var statPrice = (ebActive && ebSoloPrice) ? ebSoloPrice : Math.floor(priceNum || 0);
+      setHtml('problem-price-val', 'ab&nbsp;<span>€</span>' + statPrice);
     } else if(isFree){
       setHtml('problem-price-val', 'Ko<span>stenlos</span>');
     }
@@ -1367,20 +1414,61 @@ document.getElementById('footer-year').textContent = new Date().getFullYear();
     }
 
     /* ── INVESTMENT price cards ── */
+    var hasDuo = duoFactor > 0;
     if(!isFree && priceNum){
-      var soloPrice = priceNum;
-      var duoPrice  = Math.round(soloPrice * 0.70);
-
       var soloEl = document.getElementById('ticket-solo');
       var duoEl  = document.getElementById('ticket-duo');
 
-      soloEl.querySelector('.price-amount').innerHTML = '<span>€</span>' + soloPrice;
-      duoEl.querySelector('.price-amount').innerHTML  = '<span>€</span>' + duoPrice;
+      if (!hasDuo) duoEl.style.display = 'none';
 
-      soloEl.href = fullRegisterUrl + '&ticket=Einzelticket';
-      soloEl.removeAttribute('onclick');
-      duoEl.href  = fullRegisterUrl + '&ticket=Duo-Ticket';
-      duoEl.removeAttribute('onclick');
+      if(ebActive && ebSoloPrice){
+        var ebDuoDiscount  = (eb.duoDiscount != null && eb.duoDiscount !== '') ? parseFloat(eb.duoDiscount) : 0;
+        var ebDuoPerPerson = ebDuoDiscount > 0 ? Math.round(ebSoloPrice * (1 - ebDuoDiscount / 100)) : ebSoloPrice;
+        var regDuoPerPerson = Math.round(priceNum * duoFactor);
+
+        soloEl.querySelector('.price-label').innerHTML = '<span class="eb-tag">⚡ Early Bird</span>Einzelticket';
+        soloEl.querySelector('.price-amount').innerHTML =
+          '<span>€</span>' + ebSoloPrice + '<del class="price-original">€' + priceNum + '</del>';
+        soloEl.href = fullRegisterUrl + '&ticket=Einzelticket+Early+Bird';
+        soloEl.removeAttribute('onclick');
+
+        if(hasDuo){
+          duoEl.querySelector('.price-label').innerHTML  = '<span class="eb-tag">⚡ Early Bird</span>Duo-Ticket';
+          duoEl.querySelector('.price-amount').innerHTML =
+            '<span>€</span>' + ebDuoPerPerson + '<del class="price-original">€' + regDuoPerPerson + '</del>';
+          duoEl.querySelector('.price-per').textContent = 'pro Person · Early Bird';
+          duoEl.href = fullRegisterUrl + '&ticket=Duo-Ticket+Early+Bird';
+          duoEl.removeAttribute('onclick');
+        }
+
+        // Reguläre Tickets zusätzlich anzeigen
+        var soloRegEl = document.getElementById('ticket-solo-reg');
+        var duoRegEl  = document.getElementById('ticket-duo-reg');
+        document.getElementById('regular-divider').style.display = '';
+        soloRegEl.style.display = '';
+        soloRegEl.querySelector('.price-amount').innerHTML = '<span>€</span>' + priceNum;
+        soloRegEl.href = fullRegisterUrl + '&ticket=Einzelticket';
+        soloRegEl.removeAttribute('onclick');
+
+        if(hasDuo){
+          duoRegEl.style.display = '';
+          duoRegEl.querySelector('.price-amount').innerHTML = '<span>€</span>' + Math.round(priceNum * duoFactor);
+          duoRegEl.href = fullRegisterUrl + '&ticket=Duo-Ticket';
+          duoRegEl.removeAttribute('onclick');
+        }
+
+      } else {
+        soloEl.querySelector('.price-amount').innerHTML = '<span>€</span>' + priceNum;
+        soloEl.href = fullRegisterUrl + '&ticket=Einzelticket';
+        soloEl.removeAttribute('onclick');
+
+        if(hasDuo){
+          duoEl.querySelector('.price-amount').innerHTML = '<span>€</span>' + Math.round(priceNum * duoFactor);
+          duoEl.href = fullRegisterUrl + '&ticket=Duo-Ticket';
+          duoEl.removeAttribute('onclick');
+        }
+      }
+
     } else if(isFree){
       document.getElementById('ticket-solo').querySelector('.price-amount').innerHTML = 'Kostenlos';
       document.getElementById('ticket-duo').style.display = 'none';

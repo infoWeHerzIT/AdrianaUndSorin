@@ -661,36 +661,49 @@
     var basePriceNum = priceMatch ? parseFloat(priceMatch[1].replace(',', '.')) : 0;
 
     // ── Early Bird check ─────────────────────────────────────────────────
-    var ebActive = false;
+    // isEB comes from the ticket label – only apply EB pricing if user chose an EB ticket
+    var eb = null;
     if (ev.eb_data) {
       try {
-        var eb = JSON.parse(ev.eb_data);
-        if (eb.enabled && eb.deadline) {
-          var ebDeadline = new Date(eb.deadline);
+        var ebParsed = JSON.parse(ev.eb_data);
+        if (ebParsed.enabled && ebParsed.deadline) {
+          var ebDeadline = new Date(ebParsed.deadline);
           ebDeadline.setHours(23, 59, 59, 999); // inclusive: whole deadline day counts
           if (ebDeadline >= new Date()) {
-            ebActive = true;
-            var ebVal = parseFloat(String(eb.priceValue || '0').replace(',', '.')) || 0;
-            if (eb.priceMode === 'percent' && ebVal > 0) {
-              basePriceNum = Math.round(basePriceNum * (1 - ebVal / 100));
-            } else if (eb.priceMode === 'fixed' && ebVal > 0) {
-              basePriceNum = Math.round(ebVal);
+            eb = ebParsed;
+            if (isEB) {
+              var ebVal = parseFloat(String(eb.priceValue || '0').replace(',', '.')) || 0;
+              if (eb.priceMode === 'percent' && ebVal > 0) {
+                basePriceNum = Math.round(basePriceNum * (1 - ebVal / 100));
+              } else if (eb.priceMode === 'fixed' && ebVal > 0) {
+                basePriceNum = Math.round(ebVal);
+              }
             }
           }
         }
       } catch(e) {}
     }
-    if (ebActive) isEB = true;
 
-    priceNum        = isDuo && basePriceNum > 0 ? Math.round(basePriceNum * 0.70) : basePriceNum;
+    // Duo: Gesamtpreis für 2 Personen. EB-Duo-Rabatt optional auf EB-Preis.
+    var duoFactor = (ev.duo_discount != null) ? (1 - ev.duo_discount / 100) : 0.70;
+    if (isDuo && basePriceNum > 0) {
+      if (isEB) {
+        var ebDuoDiscount = (eb && eb.duoDiscount != null && eb.duoDiscount !== '') ? parseFloat(eb.duoDiscount) : 0;
+        priceNum = ebDuoDiscount > 0 ? Math.round(basePriceNum * (1 - ebDuoDiscount / 100)) * 2 : basePriceNum * 2;
+      } else {
+        priceNum = Math.round(basePriceNum * duoFactor) * 2;
+      }
+    } else {
+      priceNum = basePriceNum;
+    }
     priceRaw        = priceNum > 0 ? String(priceNum) : rawPriceStr;
     paymentUrl      = ev.payment_url       || '';
     videoMeetingUrl = ev.video_meeting_url || '';
     ticketName      = ticketLabel || ev.name || 'Workshop-Ticket';
-    if (ebActive && ticketName.toLowerCase().indexOf('early bird') === -1) {
+    if (isEB && ticketName.toLowerCase().indexOf('early bird') === -1) {
       ticketName += ' · Early Bird';
     }
-    ticketPer       = isDuo ? 'pro Person · 2 Personen' : 'pro Person';
+    ticketPer = isDuo ? 'für 2 Personen' : 'pro Person';
     ticketDesc      = '';
   } else {
     // Fallback: URL params (backward compat for hardcoded links without event_id)
@@ -964,6 +977,7 @@
           payment_url:       paymentUrlFinal,
           video_meeting_url: videoMeetingUrl,
           payment_notice:    priceNum > 0 ? 'Beachten Sie, dass Sie an Event nur teilnehmen können, wenn die Bezahlung von uns bestätigt wurde und sie eine Bestätigungs E-Mail dafür bekommen.' : '',
+          bcc_email:         EMAILJS_REGISTRIERUNG_BCC,
         }).then(goToDanke).catch(goToDanke);
       } catch(e) { goToDanke(); }
     } else {

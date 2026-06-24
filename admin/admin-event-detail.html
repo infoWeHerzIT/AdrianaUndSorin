@@ -500,6 +500,14 @@
           <input type="text" id="field-spots" placeholder="z. B. max. 12" maxlength="40">
         </div>
       </div>
+      <div class="field-group">
+        <label for="field-duo-discount">Duo-Rabatt</label>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <input type="number" id="field-duo-discount" min="0" max="99" step="1" placeholder="z. B. 30" style="max-width:110px;">
+          <span style="font-size:13px;color:#888;">% Rabatt pro Person · ab 2 Personen</span>
+        </div>
+        <div class="field-hint">Leer lassen = 30% Standard. 0 eingeben = kein Duo-Ticket.</div>
+      </div>
 
       <div class="field-group">
         <label for="field-description">Beschreibung</label>
@@ -548,7 +556,7 @@
             <div class="field-error">Bitte ein Enddatum angeben.</div>
           </div>
           <div class="field-group">
-            <label>Early-Bird-Preis</label>
+            <label>Early-Bird-Preis (Einzelticket)</label>
             <div class="eb-price-mode-row">
               <label class="eb-price-mode-option">
                 <input type="checkbox" id="eb-mode-fixed" checked>
@@ -564,6 +572,14 @@
               <span class="eb-price-unit" id="eb-price-unit">€</span>
             </div>
             <div class="field-hint orange" id="eb-calc-hint" style="display:none;"></div>
+          </div>
+          <div class="field-group">
+            <label for="field-eb-duo-discount">Duo-Rabatt (Early Bird)</label>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <input type="number" id="field-eb-duo-discount" min="0" max="99" step="1" placeholder="z. B. 10" style="max-width:110px;">
+              <span style="font-size:13px;color:#888;">% Rabatt auf EB-Preis · pro Person</span>
+            </div>
+            <div class="field-hint">Leer = kein zusätzlicher Duo-Rabatt auf EB-Preis.</div>
           </div>
         </div>
       </div>
@@ -706,7 +722,7 @@ function genId() {
 
 // Supabase row ↔ local object (same mapping as admin-events.html)
 function rowToEvent(r) {
-  let earlyBird = { enabled: false, deadline: '', priceMode: 'fixed', priceValue: '' };
+  let earlyBird = { enabled: false, deadline: '', priceMode: 'fixed', priceValue: '', duoDiscount: null };
   if (r.eb_data) {
     try { earlyBird = { ...earlyBird, ...JSON.parse(r.eb_data) }; } catch(e) {}
   }
@@ -721,6 +737,7 @@ function rowToEvent(r) {
     paymentUrl: r.payment_url || '',
     videoMeetingUrl: r.video_meeting_url || '',
     ressourcenUrl: r.ressourcen_url || '',
+    duoDiscount: r.duo_discount != null ? r.duo_discount : null,
     earlyBird
   };
 }
@@ -737,6 +754,7 @@ function eventToRow(ev) {
     payment_url: ev.paymentUrl || null,
     video_meeting_url: ev.videoMeetingUrl || null,
     ressourcen_url: ev.ressourcenUrl || null,
+    duo_discount: ev.duoDiscount != null && ev.duoDiscount !== '' ? parseInt(ev.duoDiscount) : null,
     eb_data: (eb && eb.enabled) ? JSON.stringify(eb) : null
   };
 }
@@ -788,8 +806,9 @@ function fillForm(ev) {
   document.getElementById('field-time-from').value = ev.timeFrom || '10:00';
   document.getElementById('field-time-to').value   = ev.timeTo   || '16:00';
   document.getElementById('field-location').value  = ev.location || '';
-  document.getElementById('field-price').value     = ev.price    || '';
-  document.getElementById('field-spots').value     = ev.spots    || '';
+  document.getElementById('field-price').value        = ev.price       || '';
+  document.getElementById('field-spots').value        = ev.spots       || '';
+  document.getElementById('field-duo-discount').value = ev.duoDiscount != null ? ev.duoDiscount : '';
   document.getElementById('field-description').value = ev.description || '';
   document.getElementById('field-url').value           = ev.url            || 'register.html';
   document.getElementById('field-payment-url').value  = ev.paymentUrl     || '';
@@ -802,8 +821,9 @@ function fillForm(ev) {
   const isPercent = eb.priceMode === 'percent';
   document.getElementById('eb-mode-fixed').checked    = !isPercent;
   document.getElementById('eb-mode-percent').checked  = isPercent;
-  document.getElementById('field-eb-price-value').value = eb.priceValue != null ? eb.priceValue : '';
-  document.getElementById('eb-price-unit').textContent  = isPercent ? '%' : '€';
+  document.getElementById('field-eb-price-value').value    = eb.priceValue   != null ? eb.priceValue   : '';
+  document.getElementById('field-eb-duo-discount').value   = eb.duoDiscount  != null ? eb.duoDiscount  : '';
+  document.getElementById('eb-price-unit').textContent     = isPercent ? '%' : '€';
   document.getElementById('fg-eb-deadline').classList.remove('has-error');
   updateEbCalcHint();
   updateTypeHint();
@@ -853,6 +873,7 @@ document.getElementById('event-form').addEventListener('submit', async e => {
     format:      document.getElementById('field-format').value,
     price:       document.getElementById('field-price').value.trim(),
     spots:       document.getElementById('field-spots').value.trim(),
+    duoDiscount: document.getElementById('field-duo-discount').value,
     description: document.getElementById('field-description').value.trim(),
     url:             document.getElementById('field-url').value.trim() || 'register.html',
     paymentUrl:      document.getElementById('field-payment-url').value.trim(),
@@ -861,8 +882,10 @@ document.getElementById('event-form').addEventListener('submit', async e => {
     earlyBird: {
       enabled:    document.getElementById('field-eb-enabled').checked,
       deadline:   document.getElementById('field-eb-deadline').value,
-      priceMode:  document.getElementById('eb-mode-fixed').checked ? 'fixed' : 'percent',
-      priceValue: document.getElementById('field-eb-price-value').value
+      priceMode:   document.getElementById('eb-mode-fixed').checked ? 'fixed' : 'percent',
+      priceValue:  document.getElementById('field-eb-price-value').value,
+      duoDiscount: document.getElementById('field-eb-duo-discount').value !== ''
+                     ? parseInt(document.getElementById('field-eb-duo-discount').value) : null
     }
   };
 
@@ -1037,7 +1060,8 @@ async function sendThankYouEmails() {
         event_name:      currentEvent.name,
         event_ort:       currentEvent.location || '',
         event_datum:     eventDatum,
-        feedback_url:    feedbackUrl
+        feedback_url:    feedbackUrl,
+        bcc_email:       EMAILJS_EVENT_DETAILS_CHANGE_BCC,
       });
       success++;
     } catch (e) {

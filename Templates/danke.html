@@ -366,7 +366,6 @@
   if (handy) rows += row('Handynummer', esc(handy));
   rows += row('Ticket',  esc(ticket) + ' &nbsp;·&nbsp; ' + esc(priceDisplay));
   if (ort) rows += row('Veranstaltungsort', esc(ort));
-  if (payUrl)  rows += row('Zahlungslink',  '<a href="' + esc(payUrl)  + '" target="_blank" rel="noopener">' + esc(payUrl)  + '</a>');
   if (meetUrl) rows += row('Video-Meeting', '<a href="' + esc(meetUrl) + '" target="_blank" rel="noopener">' + esc(meetUrl) + '</a>');
   document.getElementById('summary-rows').innerHTML = rows;
 
