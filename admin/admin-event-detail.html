@@ -489,41 +489,37 @@
         <div class="field-error">Ort ist bei Präsenz-Events erforderlich.</div>
       </div>
 
-      <div class="field-row">
-        <div class="field-group">
+      <div class="field-group">
+        <label for="field-spots">Plätze</label>
+        <input type="text" id="field-spots" placeholder="z. B. max. 12" maxlength="40">
+      </div>
+
+      <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:16px;">
+        <div class="field-group" style="flex:1;margin-bottom:0;">
           <label for="field-price">Preis</label>
           <input type="number" id="field-price" min="0" max="9999" step="1" placeholder="z. B. 199" style="max-width:110px;">
         </div>
-        <div class="field-group">
-          <label for="field-spots">Plätze</label>
-          <input type="text" id="field-spots" placeholder="z. B. max. 12" maxlength="40">
+        <div class="field-group" id="fg-payment-url" style="flex:2;display:none;margin-bottom:0;">
+          <label for="field-payment-link-id">Zahlungslink – Einzelticket <span style="font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.1em;color:var(--orange);margin-left:6px;">PFLICHTFELD</span></label>
+          <select id="field-payment-link-id"><option value="">-- kein --</option></select>
+          <div class="field-error">Bitte einen Zahlungslink für das Einzelticket auswählen.</div>
+          <div class="field-hint">Wird nach der Registrierung aufgerufen und in der Bestätigungs-E-Mail verlinkt.</div>
         </div>
       </div>
 
-      <div class="field-group" id="fg-payment-url" style="display:none;">
-        <label for="field-payment-link-id">Zahlungslink – Einzelticket <span style="font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.1em;color:var(--orange);margin-left:6px;">PFLICHTFELD</span></label>
-        <select id="field-payment-link-id">
-          <option value="">-- kein --</option>
-        </select>
-        <div class="field-error">Bitte einen Zahlungslink für das Einzelticket auswählen.</div>
-        <div class="field-hint">Wird nach der Registrierung aufgerufen und in der Bestätigungs-E-Mail verlinkt.</div>
-      </div>
-
-      <div class="field-group">
-        <label for="field-duo-discount">Duo Preis · ab 2 Personen</label>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <input type="number" id="field-duo-discount" min="0" max="9999" step="1" placeholder="z. B. 199" style="max-width:110px;">
-          <span style="font-size:13px;color:#888;">€ pro Person</span>
+      <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:16px;">
+        <div class="field-group" style="flex:1;margin-bottom:0;">
+          <label for="field-duo-discount">Duo Preis · ab 2 Personen</label>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <input type="number" id="field-duo-discount" min="0" max="9999" step="1" placeholder="z. B. 199" style="max-width:110px;">
+            <span style="font-size:13px;color:#888;">€ pro Person</span>
+          </div>
         </div>
-        <div class="field-hint">Leer lassen = 30% Standard. 0 eingeben = kein Duo-Ticket.</div>
-      </div>
-
-      <div class="field-group" id="fg-duo-payment-link" style="display:none;">
-        <label for="field-duo-payment-link-id">Zahlungslink – Duo-Ticket <span style="font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.1em;color:var(--orange);margin-left:6px;">PFLICHTFELD</span></label>
-        <select id="field-duo-payment-link-id">
-          <option value="">-- kein --</option>
-        </select>
-        <div class="field-error">Bitte einen Zahlungslink für das Duo-Ticket auswählen.</div>
+        <div class="field-group" id="fg-duo-payment-link" style="flex:2;display:none;margin-bottom:0;">
+          <label for="field-duo-payment-link-id">Zahlungslink – Duo-Ticket <span style="font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.1em;color:var(--orange);margin-left:6px;">PFLICHTFELD</span></label>
+          <select id="field-duo-payment-link-id"><option value="">-- kein --</option></select>
+          <div class="field-error">Bitte einen Zahlungslink für das Duo-Ticket auswählen.</div>
+        </div>
       </div>
 
       <div class="field-group">
@@ -565,34 +561,34 @@
             <div class="field-hint">Early-Bird-Angebot endet an diesem Datum.</div>
             <div class="field-error">Bitte ein Enddatum angeben.</div>
           </div>
-          <div class="field-group">
-            <label for="field-eb-price-value">Early-Bird-Preis (Einzelticket)</label>
-            <div class="eb-price-input-row">
-              <input type="number" id="field-eb-price-value" min="0" step="1" placeholder="z. B. 159">
-              <span class="eb-price-unit">€</span>
+          <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:16px;">
+            <div class="field-group" style="flex:1;margin-bottom:0;">
+              <label for="field-eb-price-value">Early-Bird-Preis</label>
+              <div class="eb-price-input-row">
+                <input type="number" id="field-eb-price-value" min="0" step="1" placeholder="z. B. 159">
+                <span class="eb-price-unit">€</span>
+              </div>
+            </div>
+            <div class="field-group" id="fg-eb-payment-link" style="flex:2;display:none;margin-bottom:0;">
+              <label for="field-eb-payment-link-id">Zahlungslink – Early Bird Einzelticket <span style="font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.1em;color:var(--orange);margin-left:6px;">PFLICHTFELD</span></label>
+              <select id="field-eb-payment-link-id"><option value="">-- kein --</option></select>
+              <div class="field-error">Bitte einen Zahlungslink für das Early-Bird Einzelticket auswählen.</div>
             </div>
           </div>
-          <div class="field-group" id="fg-eb-payment-link" style="display:none;">
-            <label for="field-eb-payment-link-id">Zahlungslink – Early Bird Einzelticket <span style="font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.1em;color:var(--orange);margin-left:6px;">PFLICHTFELD</span></label>
-            <select id="field-eb-payment-link-id">
-              <option value="">-- kein --</option>
-            </select>
-            <div class="field-error">Bitte einen Zahlungslink für das Early-Bird Einzelticket auswählen.</div>
-          </div>
-          <div class="field-group">
-            <label for="field-eb-duo-discount">Duo Preis (Early Bird) · ab 2 Personen</label>
-            <div style="display:flex;align-items:center;gap:8px;">
-              <input type="number" id="field-eb-duo-discount" min="0" max="9999" step="1" placeholder="z. B. 159" style="max-width:110px;">
-              <span style="font-size:13px;color:#888;">€ pro Person</span>
+
+          <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:16px;">
+            <div class="field-group" style="flex:1;margin-bottom:0;">
+              <label for="field-eb-duo-discount">Duo Preis · ab 2 Personen</label>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <input type="number" id="field-eb-duo-discount" min="0" max="9999" step="1" placeholder="z. B. 159" style="max-width:110px;">
+                <span class="eb-price-unit">€</span><span style="font-size:13px;color:#888;">pro Person</span>
+              </div>
             </div>
-            <div class="field-hint">Leer = kein EB Duo-Preis.</div>
-          </div>
-          <div class="field-group" id="fg-eb-duo-payment-link" style="display:none;">
-            <label for="field-eb-duo-payment-link-id">Zahlungslink – Early Bird Duo-Ticket <span style="font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.1em;color:var(--orange);margin-left:6px;">PFLICHTFELD</span></label>
-            <select id="field-eb-duo-payment-link-id">
-              <option value="">-- kein --</option>
-            </select>
-            <div class="field-error">Bitte einen Zahlungslink für das Early-Bird Duo-Ticket auswählen.</div>
+            <div class="field-group" id="fg-eb-duo-payment-link" style="flex:2;display:none;margin-bottom:0;">
+              <label for="field-eb-duo-payment-link-id">Zahlungslink – Early Bird Duo-Ticket <span style="font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.1em;color:var(--orange);margin-left:6px;">PFLICHTFELD</span></label>
+              <select id="field-eb-duo-payment-link-id"><option value="">-- kein --</option></select>
+              <div class="field-error">Bitte einen Zahlungslink für das Early-Bird Duo-Ticket auswählen.</div>
+            </div>
           </div>
         </div>
       </div>

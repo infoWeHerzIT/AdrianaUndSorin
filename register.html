@@ -463,9 +463,8 @@
   <div class="hero-accent-bar"></div>
   <div class="reg-hero-inner">
     <span class="section-label">Dein Ticket</span>
-    <h1>Fast dabei – nur noch<br> <em>registrieren</em> und <em>bezahlen.</em></h1>
-    <p class="reg-hero-sub">Füll das Formular aus und sichere deinen Platz beim Deep Coaching Workshop.</p>
-
+    <h1>Fast dabei -<em>registrieren</em> und <em>bezahlen.</em></h1>
+    
     <div class="ticket-card" id="ticket-card">
       <div class="event-info-strip" id="event-info-strip">
         <div class="event-info-name" id="event-info-name"></div>
@@ -509,6 +508,12 @@
     </div>
 
     <form id="reg-form" novalidate>
+      <!-- Honeypot: sichtbar nur für Bots, echte Nutzer sehen/füllen dieses Feld nie -->
+      <div style="position:absolute;left:-9999px;top:-9999px;height:0;width:0;overflow:hidden;" aria-hidden="true">
+        <label for="hp-website">Website</label>
+        <input type="text" id="hp-website" name="website" tabindex="-1" autocomplete="off">
+      </div>
+
       <div class="form-row">
         <div class="form-group">
           <label class="form-label" for="vorname">Vorname</label>
@@ -533,29 +538,6 @@
         <input class="form-input" type="tel" id="handy" name="handy" placeholder="+49 170 123 4567" autocomplete="tel">
         <span class="field-error" id="err-handy">Bitte Handynummer eingeben</span>
       </div>
-
-      <div class="form-group">
-        <label class="form-label">Veranstaltungsort</label>
-        <div class="location-options" id="location-options">
-          <label class="location-option">
-            <input type="radio" name="ort" value="Nürnberg · 20. Juni 2026">
-            <span class="location-card">
-              <span class="location-city">Nürnberg</span>
-              <span class="location-date">20. Juni 2026</span>
-            </span>
-          </label>
-          <label class="location-option">
-            <input type="radio" name="ort" value="Rodgau · 18. Juli 2026">
-            <span class="location-card">
-              <span class="location-city">Rodgau</span>
-              <span class="location-date">18. Juli 2026</span>
-            </span>
-          </label>
-        </div>
-        <span class="field-error" id="err-ort">Bitte einen Veranstaltungsort auswählen</span>
-      </div>
-
-      <hr class="form-divider">
 
       <button type="submit" class="btn-register" id="btn-register">
         <span class="spinner" id="btn-spinner"></span>
@@ -923,6 +905,13 @@
 
   document.getElementById('reg-form').addEventListener('submit', async function (e) {
     e.preventDefault();
+
+    // Honeypot: Bots füllen dieses Feld aus, echte Nutzer nicht
+    if (document.getElementById('hp-website').value) {
+      window.location.href = 'Templates/danke.html?' + new URLSearchParams({ vorname: document.getElementById('vorname').value.trim() || 'Besucher' }).toString();
+      return;
+    }
+
     var valid = true;
 
     var fields = [
