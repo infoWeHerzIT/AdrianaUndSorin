@@ -411,7 +411,6 @@
 
 <script>
 (function () {
-  var STORAGE_KEY = 'dc_events';
   var MONTH_NAMES = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
   var MONTH_SHORT = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
 
@@ -423,10 +422,6 @@
   ];
 
   function loadAllEvents() {
-    try {
-      var s = localStorage.getItem(STORAGE_KEY);
-      if (s) { var p = JSON.parse(s); if (Array.isArray(p) && p.length) return p; }
-    } catch (e) {}
     return FALLBACK_EVENTS;
   }
 
