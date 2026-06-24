@@ -111,7 +111,7 @@
 
   /* ── HERO ── */
   #hero {
-    min-height: 100vh;
+    min-height: 60vh;
     background: var(--navy);
     position: relative; overflow: hidden;
     padding-top: 80px;
@@ -217,12 +217,12 @@
 
   /* Hero photo */
   .hero-right {
-    position: relative; height: 10vh;
-    display: flex; align-items: flex-end; padding-right: 5%;
+    position: relative; height: auto;
+    display: flex; align-items: flex-start; padding-right: 5%;
   }
-  .hero-photo-frame { position: relative; width: 100%; max-width: 500px; margin-left: auto; }
+  .hero-photo-frame { position: relative; width: 100%; max-width: 420px; margin-left: auto; }
   .hero-photo-frame img {
-    width: 100%; height: auto; display: block; object-fit: cover;
+    width: 100%; height: auto; display: block;
   }
   .hero-corner-decor {
     position: absolute; top: -1px; right: -1px;
@@ -521,7 +521,7 @@
   /* ── RESPONSIVE ── */
   @media (max-width: 860px) {
     .hero-inner { grid-template-columns: 1fr; }
-    .hero-right { height: 65vw; max-height: 380px; padding: 0 5% 20px; }
+    .hero-right { height: auto; padding: 0 5% 20px; }
     .hero-photo-frame { max-width: 100%; }
     #beschreibung .content-wrap { grid-template-columns: 1fr; gap: 36px; }
     .facts-card { position: static; }
