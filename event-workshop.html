@@ -197,7 +197,7 @@
   .hero-title em { font-style: normal; color: var(--orange); }
 
   .hero-sub {
-    font-size: 18px; font-weight: 300; line-height: 1.7;
+    font-size: 16px; font-weight: 300; line-height: 1.7;
     color: rgba(255,255,255,.7); max-width: 480px; margin-bottom: 36px;
   }
 
@@ -240,7 +240,7 @@
 
   .hero-right {
     position: relative; height: 100vh;
-    display: flex; align-items: flex-end; padding-right: 5%;
+    display: flex; align-items: center; padding-right: 5%;
   }
   .hero-photo-frame { position: relative; width: 100%; max-width: 520px; margin-left: auto; }
   .hero-photo-frame img { width: 100%; height: auto; display: block; object-fit: cover; }
@@ -1382,10 +1382,13 @@ document.getElementById('footer-year').textContent = new Date().getFullYear();
         ev.name.replace(/([–—:\-])/, '<br>$1') + '<br>mit <em>Adriana &amp; Sorin</em>';
     }
     if(ev.description){
-      var teaser = ev.description.length > 220
-        ? ev.description.substring(0, 220).replace(/\s+\S*$/, '') + ' …'
+      var teaser = ev.description.length > 1200
+        ? ev.description.substring(0, 1200).replace(/\s+\S*$/, '') + ' …'
         : ev.description;
-      setText('hero-desc', teaser);
+      var descHtml = teaser
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/\n\n+/g,'<br><br>').replace(/\n/g,'<br>');
+      setHtml('hero-desc', descHtml);
     }
 
     var metaHtml = '';
