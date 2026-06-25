@@ -159,6 +159,39 @@
     font-style: italic;
   }
 
+  /* ─── PARTICIPANT READ-ONLY ─── */
+  .participant-readonly-wrap {
+    background: rgba(0,34,77,0.04);
+    border: 1px solid rgba(0,34,77,0.12);
+    border-radius: 2px;
+    padding: 14px 16px;
+    margin-bottom: 22px;
+    display: none;
+  }
+  .participant-readonly-wrap .pr-label {
+    font-size: 12px; font-weight: 500;
+    letter-spacing: .1em; text-transform: uppercase;
+    color: rgba(0,34,77,0.45); margin-bottom: 10px; display: block;
+  }
+  .participant-readonly-wrap .pr-name {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 18px; font-weight: 600; color: var(--navy);
+    margin-bottom: 4px;
+  }
+  .participant-readonly-wrap .pr-details {
+    font-size: 13px; color: rgba(0,34,77,0.55);
+    display: flex; gap: 18px; flex-wrap: wrap;
+  }
+  .participant-readonly-wrap .pr-hint {
+    font-size: 11px; color: rgba(0,34,77,0.35);
+    font-style: italic; margin-top: 8px;
+  }
+  .form-input[readonly] {
+    background: rgba(0,34,77,0.03);
+    color: rgba(0,34,77,0.55);
+    cursor: default;
+  }
+
   /* ─── STAR RATING ─── */
   .star-rating {
     display: flex; flex-direction: row-reverse;
@@ -382,13 +415,23 @@
           <textarea class="form-textarea" id="improvement" name="improvement" placeholder="Sag uns ehrlich, was besser sein könnte."></textarea>
         </div>
 
-        <div class="form-group">
+        <div class="participant-readonly-wrap" id="participant-readonly">
+          <span class="pr-label">Teilnehmer</span>
+          <div class="pr-name" id="pr-name"></div>
+          <div class="pr-details">
+            <span id="pr-email"></span>
+            <span id="pr-handy"></span>
+          </div>
+          <div class="pr-hint">Deine Daten wurden vorab eingetragen und können hier nicht geändert werden.</div>
+        </div>
+
+        <div class="form-group" id="fg-vorname">
           <label class="form-label" for="vorname">Vollständiger Name <span class="req">*</span></label>
           <input class="form-input" type="text" id="vorname" name="vorname" placeholder="Max Mustermann" autocomplete="name">
           <span class="field-error" id="err-vorname">Bitte gib deinen vollständigen Namen ein</span>
         </div>
 
-        <div class="form-row">
+        <div class="form-row" id="fg-contact">
           <div class="form-group">
             <label class="form-label" for="email">E-Mail <span class="req">*</span></label>
             <input class="form-input" type="email" id="email" name="email" placeholder="max@beispiel.de" autocomplete="email">
@@ -404,7 +447,7 @@
         <hr class="form-divider">
 
         <label class="form-checkbox">
-          <input type="checkbox" id="testimonial" name="testimonial">
+          <input type="checkbox" id="testimonial" name="testimonial" checked>
           <span>Ich bin damit einverstanden, dass mein Feedback (ggf. gekürzt oder anonymisiert) als Testimonial verwendet werden darf.</span>
         </label>
 
@@ -488,6 +531,40 @@
         select.appendChild(otherOpt);
       }
     });
+
+  // ── Participant laden (wenn participant_id in URL) ──
+  if (presetParticipantId) {
+    db.from('participants')
+      .select('vorname, nachname, email, handy')
+      .eq('id', presetParticipantId)
+      .single()
+      .then(function (res) {
+        if (!res.data) return;
+        var p    = res.data;
+        var name = ((p.vorname || '') + ' ' + (p.nachname || '')).trim();
+
+        // Badge anzeigen
+        document.getElementById('participant-readonly').style.display = 'block';
+        document.getElementById('pr-name').textContent  = name;
+        document.getElementById('pr-email').textContent = p.email  || '';
+        document.getElementById('pr-handy').textContent = p.handy  || '';
+
+        // Felder befüllen und sperren
+        var vornameEl = document.getElementById('vorname');
+        var emailEl   = document.getElementById('email');
+        var handyEl   = document.getElementById('handy');
+        vornameEl.value = name;
+        emailEl.value   = p.email  || '';
+        handyEl.value   = p.handy  || '';
+        vornameEl.setAttribute('readonly', '');
+        emailEl.setAttribute('readonly', '');
+        handyEl.setAttribute('readonly', '');
+
+        // Fehlermeldungen und Pflichtfeld-Sternchen ausblenden
+        document.getElementById('fg-vorname').querySelector('.req').style.display = 'none';
+        document.getElementById('fg-contact').querySelectorAll('.req').forEach(function(el){ el.style.display='none'; });
+      });
+  }
 
   // ── Clear errors on interaction ──
   select.addEventListener('change', function () {
