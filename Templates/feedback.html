@@ -437,7 +437,7 @@
             <input class="form-input" type="email" id="email" name="email" placeholder="max@beispiel.de" autocomplete="email">
             <span class="field-error" id="err-email">Bitte gib eine gültige E-Mail-Adresse ein</span>
           </div>
-          <div class="form-group">
+          <div class="form-group" id="fg-handy">
             <label class="form-label" for="handy">Telefon <span class="req">*</span></label>
             <input class="form-input" type="tel" id="handy" name="handy" placeholder="+49 123 456789" autocomplete="tel">
             <span class="field-error" id="err-handy">Bitte gib deine Telefonnummer ein</span>
@@ -552,13 +552,14 @@
         // Felder befüllen und sperren
         var vornameEl = document.getElementById('vorname');
         var emailEl   = document.getElementById('email');
-        var handyEl   = document.getElementById('handy');
         vornameEl.value = name;
         emailEl.value   = p.email  || '';
-        handyEl.value   = p.handy  || '';
         vornameEl.setAttribute('readonly', '');
         emailEl.setAttribute('readonly', '');
-        handyEl.setAttribute('readonly', '');
+
+        // Telefon ausblenden nur wenn Nummer bereits bekannt
+        var fgHandy = document.getElementById('fg-handy');
+        if (fgHandy && p.handy) fgHandy.style.display = 'none';
 
         // Fehlermeldungen und Pflichtfeld-Sternchen ausblenden
         document.getElementById('fg-vorname').querySelector('.req').style.display = 'none';
@@ -630,8 +631,9 @@
       valid = false;
     }
 
-    var handyVal = document.getElementById('handy').value.trim();
-    if (!handyVal) {
+    var handyHidden = document.getElementById('fg-handy') && document.getElementById('fg-handy').style.display === 'none';
+    var handyVal = handyHidden ? '' : document.getElementById('handy').value.trim();
+    if (!handyHidden && !handyVal) {
       document.getElementById('handy').classList.add('error');
       document.getElementById('err-handy').classList.add('visible');
       valid = false;
