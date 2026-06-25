@@ -793,49 +793,31 @@
   /* ─── EVENT SECTION TOGGLES ─── */
   .event-toggle-bar {
     display: flex;
-    gap: 16px;
+    gap: 6px;
     margin-bottom: 20px;
     flex-wrap: wrap;
     align-items: center;
+    background: rgba(0,34,77,0.05);
+    border-radius: 4px;
+    padding: 4px;
+    width: fit-content;
   }
-  .event-toggle {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    user-select: none;
-  }
-  .event-toggle input[type="checkbox"] {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 15px; height: 15px;
-    border: 2px solid var(--orange);
-    border-radius: 2px;
-    background: transparent;
-    cursor: pointer;
-    position: relative;
-    flex-shrink: 0;
-    transition: background .15s, border-color .15s;
-  }
-  .event-toggle input[type="checkbox"]:checked { background: var(--orange); }
-  .event-toggle input[type="checkbox"]:checked::after {
-    content: '';
-    position: absolute;
-    left: 2px; top: -1px;
-    width: 5px; height: 9px;
-    border: 2px solid white;
-    border-top: none; border-left: none;
-    transform: rotate(45deg);
-  }
-  .event-toggle-label {
+  .event-view-btn {
     font-family: 'Orbitron', monospace;
     font-size: 9px; font-weight: 700;
     letter-spacing: .14em; text-transform: uppercase;
-    color: var(--orange);
+    padding: 6px 14px; border-radius: 2px;
+    border: none; background: transparent;
+    color: rgba(0,34,77,0.45);
+    cursor: pointer; transition: all .15s;
+    user-select: none;
   }
-  .event-toggle.past input[type="checkbox"] { border-color: rgba(0,34,77,0.35); }
-  .event-toggle.past input[type="checkbox"]:checked { background: rgba(0,34,77,0.35); border-color: rgba(0,34,77,0.35); }
-  .event-toggle.past .event-toggle-label { color: rgba(0,34,77,0.4); }
+  .event-view-btn:hover { color: var(--navy); }
+  .event-view-btn.active {
+    background: var(--orange);
+    color: var(--white);
+    box-shadow: 0 2px 8px rgba(255,99,0,0.3);
+  }
   .event-card.past-event { opacity: 0.55; }
   .event-card.past-event:hover { opacity: 1; }
 
@@ -956,14 +938,9 @@
       <div class="events-sidebar reveal">
         <div class="events-sidebar-title">Alle Termine im Überblick</div>
         <div class="event-toggle-bar">
-          <label class="event-toggle">
-            <input type="checkbox" id="toggle-upcoming" checked>
-            <span class="event-toggle-label">Kommende Events</span>
-          </label>
-          <label class="event-toggle past">
-            <input type="checkbox" id="toggle-past">
-            <span class="event-toggle-label">Vergangene Events</span>
-          </label>
+          <button class="event-view-btn active" data-view="upcoming">Kommende</button>
+          <button class="event-view-btn" data-view="past">Vergangene</button>
+          <button class="event-view-btn" data-view="all">Alle</button>
         </div>
         <div id="event-list">
           <!-- JS generated -->
@@ -1230,11 +1207,13 @@ function buildEventCard(ev, isPast) {
   return card;
 }
 
+let activeView = 'upcoming'; // 'upcoming' | 'past' | 'all'
+
 function applyToggleStates() {
   const upcomingSection = document.getElementById('event-section-upcoming');
   const pastSection     = document.getElementById('event-section-past');
-  if (upcomingSection) upcomingSection.style.display = document.getElementById('toggle-upcoming')?.checked ? '' : 'none';
-  if (pastSection)     pastSection.style.display     = document.getElementById('toggle-past')?.checked     ? '' : 'none';
+  if (upcomingSection) upcomingSection.style.display = (activeView === 'upcoming' || activeView === 'all') ? '' : 'none';
+  if (pastSection)     pastSection.style.display     = (activeView === 'past'     || activeView === 'all') ? '' : 'none';
 }
 
 function renderEventList() {
@@ -1364,8 +1343,14 @@ document.getElementById('next-month').addEventListener('click', () => {
   renderCalendar();
   renderEventList();
 
-  document.getElementById('toggle-upcoming').addEventListener('change', applyToggleStates);
-  document.getElementById('toggle-past').addEventListener('change', applyToggleStates);
+  document.querySelectorAll('.event-view-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeView = btn.dataset.view;
+      document.querySelectorAll('.event-view-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      applyToggleStates();
+    });
+  });
 })();
 
 // Observe static reveal elements (event cards already observed individually)
