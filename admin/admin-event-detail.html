@@ -302,69 +302,7 @@
   .eb-price-input-row input { flex: 1; }
   .eb-price-unit { font-size: 15px; font-weight: 600; color: var(--navy); min-width: 22px; }
 
-  /* ─── PARTICIPANTS ─── */
-  .list-title {
-    font-family: 'Fredoka', sans-serif;
-    font-size: 22px; font-weight: 700; color: var(--navy);
-    margin-bottom: 16px;
-  }
-  .table-wrap {
-    background: var(--white);
-    border: 1px solid rgba(0,34,77,0.1);
-    border-radius: 2px;
-    overflow-x: auto;
-    margin-bottom: 40px;
-  }
-  table { width: 100%; border-collapse: collapse; font-size: 14px; }
-  thead th {
-    text-align: left;
-    font-family: 'Orbitron', monospace;
-    font-size: 8px; font-weight: 700; letter-spacing: .18em;
-    text-transform: uppercase; color: rgba(0,34,77,0.45);
-    padding: 14px 16px;
-    border-bottom: 1px solid rgba(0,34,77,0.1);
-    white-space: nowrap;
-    background: #fafaf9;
-  }
-  tbody tr { border-bottom: 1px solid rgba(0,34,77,0.07); }
-  tbody tr:last-child { border-bottom: none; }
-  tbody tr:hover { background: rgba(0,34,77,0.025); }
-  tbody td { padding: 13px 16px; vertical-align: middle; color: var(--navy); }
-  td.name-col { font-weight: 500; }
-  td.email-col { color: rgba(0,34,77,0.65); font-size: 13px; }
-  td.phone-col { color: rgba(0,34,77,0.65); font-size: 13px; white-space: nowrap; }
-  td.ticket-col { font-size: 13px; }
-  td.price-col { font-size: 13px; white-space: nowrap; }
-  td.date-col { font-size: 12px; color: rgba(0,34,77,0.5); white-space: nowrap; }
-  td.action-col { text-align: right; white-space: nowrap; }
-
-  .btn-delete-row {
-    background: rgba(220,38,38,0.08);
-    color: var(--red); border: 1px solid rgba(220,38,38,0.2);
-    border-radius: 2px; cursor: pointer;
-    font-size: 14px; padding: 6px 10px;
-    transition: background .15s;
-  }
-  .btn-delete-row:hover { background: rgba(220,38,38,0.15); }
-
-  .status-select {
-    padding: 5px 10px; border-radius: 2px; border: none;
-    font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500;
-    cursor: pointer; outline: none; transition: opacity .2s;
-  }
-  .status-select:hover { opacity: .85; }
-  .status-select.pending { background: rgba(217,119,6,0.12); color: var(--yellow); border: 1px solid rgba(217,119,6,0.3); }
-  .status-select.confirmed { background: rgba(22,163,74,0.1); color: var(--green); border: 1px solid rgba(22,163,74,0.3); }
-  .status-select.cancelled { background: rgba(220,38,38,0.08); color: var(--red); border: 1px solid rgba(220,38,38,0.25); }
-  .status-select option { background: var(--white); color: var(--navy); font-weight: 400; }
-
-  .empty-state { text-align: center; padding: 48px 20px; color: rgba(0,34,77,0.4); }
-  .empty-state .empty-icon { font-size: 32px; margin-bottom: 10px; }
-  .empty-state p { font-size: 14px; }
-  .loading-row td { text-align: center; padding: 40px; color: rgba(0,34,77,0.4); font-size: 14px; }
-
-  tbody tr[data-id] { cursor: pointer; }
-  tbody tr.selected-row { background: rgba(255,99,0,0.06); }
+  /* Teilnehmer-Styles → teilnehmer-table.js */
 
   /* ─── TOAST ─── */
   #toast {
@@ -385,13 +323,11 @@
     .admin-main { padding: 24px 16px 0; }
     .nav-links { display: none; }
     .field-row { grid-template-columns: 1fr; }
-    .teilnehmer-layout { grid-template-columns: 1fr; }
-    .form-panel.sticky { position: static; }
-    td.phone-col, td.ticket-col, td.date-col { display: none; }
   }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../supabase-config.js"></script>
+<script src="teilnehmer-table.js"></script>
 </head>
 <body>
 
@@ -602,95 +538,7 @@
   </div>
 
   <!-- PARTICIPANTS -->
-  <div id="participants-section" class="teilnehmer-layout">
-    <div>
-      <div class="list-title" id="participants-title">Angemeldete Teilnehmer</div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>E-Mail</th>
-              <th class="phone-col">Telefon</th>
-              <th class="ticket-col">Ticket</th>
-              <th class="price-col">Preis</th>
-              <th>Status</th>
-              <th class="date-col">Angemeldet</th>
-              <th class="action-col"></th>
-            </tr>
-          </thead>
-          <tbody id="participants-tbody">
-            <tr class="loading-row"><td colspan="8">Wird geladen…</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="form-panel sticky" id="participant-form-panel">
-      <span class="section-label">Teilnehmer</span>
-      <div class="form-title">Daten bearbeiten</div>
-
-      <p class="form-placeholder" id="participant-form-placeholder">Klicke in der Liste auf einen Teilnehmer, um dessen Daten zu bearbeiten.</p>
-
-      <form id="participant-form" style="display:none;" novalidate>
-        <div class="field-group">
-          <label for="pf-event">Event</label>
-          <select id="pf-event"></select>
-        </div>
-        <div class="field-row">
-          <div class="field-group">
-            <label for="pf-vorname">Vorname *</label>
-            <input type="text" id="pf-vorname" maxlength="80">
-          </div>
-          <div class="field-group">
-            <label for="pf-nachname">Nachname *</label>
-            <input type="text" id="pf-nachname" maxlength="80">
-          </div>
-        </div>
-        <div class="field-group">
-          <label for="pf-email">E-Mail *</label>
-          <input type="email" id="pf-email" maxlength="120">
-        </div>
-        <div class="field-row">
-          <div class="field-group">
-            <label for="pf-handy">Telefon</label>
-            <input type="text" id="pf-handy" maxlength="40">
-          </div>
-          <div class="field-group">
-            <label for="pf-ort">Ort</label>
-            <input type="text" id="pf-ort" maxlength="80">
-          </div>
-        </div>
-        <div class="field-row">
-          <div class="field-group">
-            <label for="pf-ticket">Ticket</label>
-            <input type="text" id="pf-ticket" maxlength="60">
-          </div>
-          <div class="field-group">
-            <label for="pf-price">Preis</label>
-            <input type="text" id="pf-price" maxlength="40">
-          </div>
-        </div>
-        <div class="field-group">
-          <label for="pf-status">Status</label>
-          <select id="pf-status">
-            <option value="pending">Registriert</option>
-            <option value="confirmed">Bezahlt</option>
-            <option value="cancelled">Storniert</option>
-          </select>
-        </div>
-        <div class="field-group">
-          <label>Angemeldet am</label>
-          <input type="text" id="pf-registered" disabled>
-        </div>
-
-        <div class="form-actions">
-          <button type="submit" class="btn-save" id="pf-save">Speichern</button>
-          <button type="button" class="btn-cancel-form" id="pf-close">Schließen</button>
-        </div>
-      </form>
-    </div>
-  </div>
+  <div id="tt-event-root" style="margin-top: 40px;"></div>
 
 </div>
 
@@ -1079,24 +927,14 @@ document.getElementById('field-eb-enabled').addEventListener('change', function(
 });
 
 
-// ── Participants ──────────────────────────────────────────────
-let allParticipants = [];
-let allEventsList = [];
-let selectedParticipantId = null;
-
-function formatDate(isoStr) {
-  if (!isoStr) return '–';
-  const d = new Date(isoStr);
-  return d.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' })
-       + ' ' + d.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
-}
+let ttTable = null;
 
 // ── Dankes-Mail ───────────────────────────────────────────────
 const MONTH_NAMES = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
 
 async function sendThankYouEmails() {
   if (!currentEvent) return;
-  const confirmed = allParticipants.filter(p => (p.payment_status || 'pending') === 'confirmed');
+  const confirmed = (ttTable ? ttTable.participants : []).filter(p => (p.payment_status || 'pending') === 'confirmed');
   if (confirmed.length === 0) {
     showToast('Keine bezahlten Teilnehmer für dieses Event.', 'error');
     return;
@@ -1142,196 +980,6 @@ async function sendThankYouEmails() {
 
 document.getElementById('btn-send-thankyou').addEventListener('click', sendThankYouEmails);
 
-async function loadParticipants() {
-  const [evRes, parRes] = await Promise.all([
-    db.from('events').select('id, name, year, month, day').order('year').order('month').order('day'),
-    db.from('event_participations').select('*, participants(vorname, nachname, email, handy, ort)').eq('event_id', eventId).order('registered_at', { ascending: false })
-  ]);
-  if (evRes.error) { showToast('Events konnten nicht geladen werden: ' + evRes.error.message, 'error'); }
-  if (parRes.error) { showToast('Teilnehmer konnten nicht geladen werden: ' + parRes.error.message, 'error'); return; }
-  allEventsList = evRes.data || [];
-  allParticipants = (parRes.data || []).map(ep => ({
-    id:             ep.id,
-    event_id:       ep.event_id,
-    participant_id: ep.participant_id,
-    vorname:        ep.participants?.vorname || '',
-    nachname:       ep.participants?.nachname || '',
-    email:          ep.participants?.email || '',
-    handy:          ep.participants?.handy || '',
-    ort:            ep.participants?.ort || '',
-    ticket_name:    ep.ticket_name,
-    ticket_price:   ep.ticket_price,
-    payment_status: ep.payment_status,
-    registered_at:  ep.registered_at
-  }));
-  populateParticipantEventSelect();
-  renderParticipants();
-}
-
-function populateParticipantEventSelect() {
-  const sel = document.getElementById('pf-event');
-  const current = sel.value;
-  sel.innerHTML = '';
-  allEventsList.forEach(ev => {
-    const opt = document.createElement('option');
-    opt.value = ev.id;
-    opt.textContent = ev.name + ' – ' + ev.day + '.' + String(ev.month + 1).padStart(2,'0') + '.' + ev.year;
-    sel.appendChild(opt);
-  });
-  if (current) sel.value = current;
-}
-
-function renderParticipants() {
-  document.getElementById('participants-title').textContent = 'Angemeldete Teilnehmer (' + allParticipants.length + ')';
-  const tbody = document.getElementById('participants-tbody');
-
-  if (allParticipants.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">📋</div><p>Noch keine Anmeldungen für dieses Event.</p></div></td></tr>';
-    return;
-  }
-
-  tbody.innerHTML = allParticipants.map(p => {
-    const status = p.payment_status || 'pending';
-    const fullName = (p.vorname || '') + ' ' + (p.nachname || '');
-    return `<tr data-id="${p.id}"${p.id === selectedParticipantId ? ' class="selected-row"' : ''}>
-      <td class="name-col">${esc(p.vorname || '')} ${esc(p.nachname || '')}</td>
-      <td class="email-col">${esc(p.email || '–')}</td>
-      <td class="phone-col">${esc(p.handy || '–')}</td>
-      <td class="ticket-col">${esc(p.ticket_name || '–')}</td>
-      <td class="price-col">${esc(p.ticket_price || '–')}</td>
-      <td>
-        <select class="status-select ${status}" data-id="${p.id}" onchange="changeStatus(this)">
-          <option value="pending"   ${status==='pending'   ? 'selected' : ''}>Registriert</option>
-          <option value="confirmed" ${status==='confirmed' ? 'selected' : ''}>Bezahlt</option>
-          <option value="cancelled" ${status==='cancelled' ? 'selected' : ''}>Storniert</option>
-        </select>
-      </td>
-      <td class="date-col">${formatDate(p.registered_at)}</td>
-      <td class="action-col">
-        <button class="btn-delete-row" data-id="${p.id}" data-name="${esc(fullName.trim() || 'diesen Teilnehmer')}" onclick="deleteParticipant(this)" title="Teilnehmer löschen">🗑</button>
-      </td>
-    </tr>`;
-  }).join('');
-}
-
-async function changeStatus(selectEl) {
-  const id        = selectEl.dataset.id;
-  const newStatus = selectEl.value;
-  selectEl.className = 'status-select ' + newStatus;
-
-  const { error } = await db.from('event_participations').update({ payment_status: newStatus }).eq('id', id);
-  if (error) {
-    showToast('Fehler: ' + error.message, 'error');
-    const p = allParticipants.find(x => x.id === id);
-    if (p) {
-      selectEl.value = p.payment_status;
-      selectEl.className = 'status-select ' + p.payment_status;
-    }
-    return;
-  }
-
-  const p = allParticipants.find(x => x.id === id);
-  if (p) p.payment_status = newStatus;
-  if (selectedParticipantId === id) document.getElementById('pf-status').value = newStatus;
-  showToast('Status gespeichert', 'success');
-}
-
-async function deleteParticipant(btn) {
-  const id   = btn.dataset.id;
-  const name = btn.dataset.name;
-  if (!confirm('"' + name + '" wirklich unwiderruflich löschen?')) return;
-
-  btn.disabled = true;
-  const { error } = await db.from('event_participations').delete().eq('id', id);
-  if (error) {
-    showToast('Fehler beim Löschen: ' + error.message, 'error');
-    btn.disabled = false;
-    return;
-  }
-
-  allParticipants = allParticipants.filter(x => x.id !== id);
-  if (selectedParticipantId === id) closeParticipantForm();
-  renderParticipants();
-  showToast('Teilnehmer gelöscht', 'success');
-}
-
-// ── Teilnehmer-Formular ─────────────────────────────────────────
-function selectParticipant(id) {
-  const p = allParticipants.find(x => x.id === id);
-  if (!p) return;
-  selectedParticipantId = id;
-
-  document.getElementById('pf-event').value      = p.event_id || eventId;
-  document.getElementById('pf-vorname').value    = p.vorname || '';
-  document.getElementById('pf-nachname').value   = p.nachname || '';
-  document.getElementById('pf-email').value      = p.email || '';
-  document.getElementById('pf-handy').value      = p.handy || '';
-  document.getElementById('pf-ort').value        = p.ort || '';
-  document.getElementById('pf-ticket').value     = p.ticket_name || '';
-  document.getElementById('pf-price').value      = p.ticket_price || '';
-  document.getElementById('pf-status').value     = p.payment_status || 'pending';
-  document.getElementById('pf-registered').value = formatDate(p.registered_at);
-
-  document.getElementById('participant-form-placeholder').style.display = 'none';
-  document.getElementById('participant-form').style.display = '';
-
-  document.querySelectorAll('#participants-tbody tr.selected-row').forEach(tr => tr.classList.remove('selected-row'));
-  const row = document.querySelector('#participants-tbody tr[data-id="' + id + '"]');
-  if (row) row.classList.add('selected-row');
-}
-
-function closeParticipantForm() {
-  selectedParticipantId = null;
-  document.getElementById('participant-form').style.display = 'none';
-  document.getElementById('participant-form-placeholder').style.display = '';
-  document.querySelectorAll('#participants-tbody tr.selected-row').forEach(tr => tr.classList.remove('selected-row'));
-}
-
-document.getElementById('pf-close').addEventListener('click', closeParticipantForm);
-
-document.getElementById('participants-tbody').addEventListener('click', e => {
-  if (e.target.closest('select, button')) return;
-  const tr = e.target.closest('tr[data-id]');
-  if (!tr) return;
-  selectParticipant(tr.dataset.id);
-});
-
-document.getElementById('participant-form').addEventListener('submit', async e => {
-  e.preventDefault();
-  if (!selectedParticipantId) return;
-
-  const vorname  = document.getElementById('pf-vorname').value.trim();
-  const nachname = document.getElementById('pf-nachname').value.trim();
-  const email    = document.getElementById('pf-email').value.trim();
-  if (!vorname || !nachname || !email) {
-    showToast('Vorname, Nachname und E-Mail sind erforderlich.', 'error');
-    return;
-  }
-
-  const newEventId = document.getElementById('pf-event').value;
-  const epFields   = { event_id: newEventId, ticket_name: document.getElementById('pf-ticket').value.trim(), ticket_price: document.getElementById('pf-price').value.trim(), payment_status: document.getElementById('pf-status').value };
-  const partFields = { vorname, nachname, email, handy: document.getElementById('pf-handy').value.trim(), ort: document.getElementById('pf-ort').value.trim() };
-
-  const { error: epErr } = await db.from('event_participations').update(epFields).eq('id', selectedParticipantId);
-  if (epErr) { showToast('Fehler beim Speichern: ' + epErr.message, 'error'); return; }
-
-  const p = allParticipants.find(x => x.id === selectedParticipantId);
-  if (p?.participant_id) {
-    const { error: partErr } = await db.from('participants').update(partFields).eq('id', p.participant_id);
-    if (partErr) { showToast('Fehler beim Speichern: ' + partErr.message, 'error'); return; }
-  }
-
-  if (newEventId !== eventId) {
-    // Teilnehmer wurde einem anderen Event zugeordnet – verschwindet aus dieser Liste
-    allParticipants = allParticipants.filter(x => x.id !== selectedParticipantId);
-    closeParticipantForm();
-  } else {
-    if (p) Object.assign(p, { ...epFields, ...partFields });
-  }
-
-  renderParticipants();
-  showToast('Teilnehmer aktualisiert ✓', 'success');
-});
 
 // ── Init ──────────────────────────────────────────────────────
 (async () => {
@@ -1341,7 +989,7 @@ document.getElementById('participant-form').addEventListener('submit', async e =
     return;
   }
   await loadEvent();
-  await loadParticipants();
+  ttTable = new TeilnehmerTable(document.getElementById('tt-event-root'), { fixedEventId: eventId });
 })();
 </script>
 </body>
