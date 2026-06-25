@@ -119,6 +119,7 @@
     color: rgba(0,34,77,0.55);
   }
   .form-label .opt { text-transform: none; letter-spacing: 0; font-weight: 400; color: rgba(0,34,77,0.35); }
+  .form-label .req { color: #e53e3e; }
 
   .form-input, .form-select, .form-textarea {
     border: 1px solid rgba(0,34,77,0.18);
@@ -140,6 +141,23 @@
   .form-input.error, .form-select.error { border-color: #e53e3e; box-shadow: 0 0 0 3px rgba(229,62,62,0.1); }
   .field-error { font-size: 12px; color: #e53e3e; display: none; margin-top: -4px; }
   .field-error.visible { display: block; }
+
+  /* ─── EVENT READ-ONLY ─── */
+  .event-readonly {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    padding: 12px 16px;
+    background: rgba(0,34,77,0.04);
+    border: 1px solid rgba(0,34,77,0.12);
+    border-radius: 2px;
+  }
+  .event-readonly-badge {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 15px; font-weight: 600; color: var(--navy);
+  }
+  .event-readonly-hint {
+    font-size: 12px; color: rgba(0,34,77,0.4);
+    font-style: italic;
+  }
 
   /* ─── STAR RATING ─── */
   .star-rating {
@@ -314,15 +332,19 @@
     <div id="form-state">
       <span class="section-label">Erfahrungsbericht</span>
       <h2>Erzähl uns von deinem Erlebnis</h2>
-      <p class="form-subtitle">Alle Angaben außer der Bewertung sind freiwillig.</p>
+      <p class="form-subtitle">Felder mit * sind Pflichtfelder.</p>
 
       <form id="feedback-form" novalidate>
 
-        <div class="form-group">
+        <div class="form-group" id="fg-event">
           <label class="form-label" for="event">Veranstaltung</label>
           <select class="form-select" id="event" name="event">
             <option value="">Bitte auswählen …</option>
           </select>
+          <div class="event-readonly" id="event-readonly" style="display:none;">
+            <span class="event-readonly-badge" id="event-readonly-label"></span>
+            <span class="event-readonly-hint">Diese Veranstaltung wurde vorab festgelegt.</span>
+          </div>
           <span class="field-error" id="err-event">Bitte wähle die Veranstaltung aus</span>
         </div>
 
@@ -360,14 +382,22 @@
           <textarea class="form-textarea" id="improvement" name="improvement" placeholder="Sag uns ehrlich, was besser sein könnte."></textarea>
         </div>
 
+        <div class="form-group">
+          <label class="form-label" for="vorname">Vollständiger Name <span class="req">*</span></label>
+          <input class="form-input" type="text" id="vorname" name="vorname" placeholder="Max Mustermann" autocomplete="name">
+          <span class="field-error" id="err-vorname">Bitte gib deinen vollständigen Namen ein</span>
+        </div>
+
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label" for="vorname">Vorname <span class="opt">(optional)</span></label>
-            <input class="form-input" type="text" id="vorname" name="vorname" placeholder="Max" autocomplete="given-name">
+            <label class="form-label" for="email">E-Mail <span class="req">*</span></label>
+            <input class="form-input" type="email" id="email" name="email" placeholder="max@beispiel.de" autocomplete="email">
+            <span class="field-error" id="err-email">Bitte gib eine gültige E-Mail-Adresse ein</span>
           </div>
           <div class="form-group">
-            <label class="form-label" for="email">E-Mail <span class="opt">(optional)</span></label>
-            <input class="form-input" type="email" id="email" name="email" placeholder="max@beispiel.de" autocomplete="email">
+            <label class="form-label" for="handy">Telefon <span class="req">*</span></label>
+            <input class="form-input" type="tel" id="handy" name="handy" placeholder="+49 123 456789" autocomplete="tel">
+            <span class="field-error" id="err-handy">Bitte gib deine Telefonnummer ein</span>
           </div>
         </div>
 
@@ -411,44 +441,53 @@
 
 <script>
 (function () {
-  var MONTH_NAMES = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
   var MONTH_SHORT = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
-
-  var FALLBACK_EVENTS = [
-    { id: 'default_1', name: 'Deep Coaching Workshop', type: 'Workshop', year: 2026, month: 5, day: 20,
-      location: 'Nürnberg', format: 'Präsenz' },
-    { id: 'default_2', name: 'Deep Coaching Workshop', type: 'Workshop', year: 2026, month: 6, day: 18,
-      location: 'Rodgau', format: 'Präsenz' }
-  ];
-
-  function loadAllEvents() {
-    return FALLBACK_EVENTS;
-  }
 
   function fmtShort(ev) {
     return ev.location + ' · ' + ev.day + '. ' + MONTH_SHORT[ev.month] + ' ' + ev.year;
   }
 
-  var params       = new URLSearchParams(window.location.search);
-  var presetEventId= params.get('event_id') || '';
+  var params              = new URLSearchParams(window.location.search);
+  var presetEventId       = params.get('event_id')       || '';
+  var presetParticipantId = params.get('participant_id') || '';
 
-  // ── Populate event dropdown ──
   var select = document.getElementById('event');
-  var events = loadAllEvents()
-    .filter(function (e) { return e.type === 'Workshop'; })
-    .sort(function (a, b) { return new Date(b.year, b.month, b.day) - new Date(a.year, a.month, a.day); });
+  var events = [];
 
-  events.forEach(function (ev) {
-    var opt = document.createElement('option');
-    opt.value = ev.id || fmtShort(ev);
-    opt.textContent = fmtShort(ev);
-    if (presetEventId && ev.id === presetEventId) opt.selected = true;
-    select.appendChild(opt);
-  });
-  var otherOpt = document.createElement('option');
-  otherOpt.value = 'sonstiges';
-  otherOpt.textContent = 'Anderes Event';
-  select.appendChild(otherOpt);
+  // ── Events aus Supabase laden ──
+  db.from('events')
+    .select('id, name, type, year, month, day, location')
+    .order('year').order('month').order('day')
+    .then(function (res) {
+      events = (res.data || [])
+        .sort(function (a, b) { return new Date(b.year, b.month, b.day) - new Date(a.year, a.month, a.day); });
+
+      if (presetEventId) {
+        // Read-only Modus: Dropdown ausblenden, Badge anzeigen
+        var preset = events.find(function (e) { return e.id === presetEventId; });
+        var label  = preset ? (preset.name + ' · ' + fmtShort(preset)) : presetEventId;
+        select.style.display = 'none';
+        document.getElementById('event-readonly').style.display = 'flex';
+        document.getElementById('event-readonly-label').textContent = label;
+        // Dummy-Option damit der select-Wert gesetzt ist
+        var opt = document.createElement('option');
+        opt.value = presetEventId;
+        opt.selected = true;
+        select.appendChild(opt);
+      } else {
+        // Normaler Dropdown
+        events.forEach(function (ev) {
+          var opt = document.createElement('option');
+          opt.value = ev.id;
+          opt.textContent = fmtShort(ev);
+          select.appendChild(opt);
+        });
+        var otherOpt = document.createElement('option');
+        otherOpt.value = 'sonstiges';
+        otherOpt.textContent = 'Anderes Event';
+        select.appendChild(otherOpt);
+      }
+    });
 
   // ── Clear errors on interaction ──
   select.addEventListener('change', function () {
@@ -459,6 +498,12 @@
     r.addEventListener('change', function () {
       document.getElementById('star-rating-wrap').classList.remove('error');
       document.getElementById('err-rating').classList.remove('visible');
+    });
+  });
+  ['vorname','email','handy'].forEach(function (id) {
+    document.getElementById(id).addEventListener('input', function () {
+      this.classList.remove('error');
+      document.getElementById('err-' + id).classList.remove('visible');
     });
   });
 
@@ -494,18 +539,48 @@
       valid = false;
     }
 
+    var vornameVal = document.getElementById('vorname').value.trim();
+    if (!vornameVal) {
+      document.getElementById('vorname').classList.add('error');
+      document.getElementById('err-vorname').classList.add('visible');
+      valid = false;
+    }
+
+    var emailVal = document.getElementById('email').value.trim();
+    if (!emailVal || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+      document.getElementById('email').classList.add('error');
+      document.getElementById('err-email').classList.add('visible');
+      valid = false;
+    }
+
+    var handyVal = document.getElementById('handy').value.trim();
+    if (!handyVal) {
+      document.getElementById('handy').classList.add('error');
+      document.getElementById('err-handy').classList.add('visible');
+      valid = false;
+    }
+
     if (!valid) return;
 
-    var selectedOption = select.options[select.selectedIndex];
+    var selectedOption  = select.options[select.selectedIndex];
     var eventLabel      = selectedOption.value === 'sonstiges' ? 'Anderes Event' : selectedOption.textContent;
-    var resolvedEventId = (events.find(function (ev) { return (ev.id || fmtShort(ev)) === select.value; }) || {}).id || null;
+    var resolvedEventId = (selectedOption.value && selectedOption.value !== 'sonstiges') ? selectedOption.value : null;
     var recommendInput  = document.querySelector('input[name="recommend"]:checked');
 
+    // DB-Constraint: event_id oder participant_id muss gesetzt sein
+    if (!resolvedEventId && !presetParticipantId) {
+      select.classList.add('error');
+      document.getElementById('err-event').classList.add('visible');
+      return;
+    }
+
     var payload = {
-      event_id:       resolvedEventId,
+      event_id:       resolvedEventId || null,
+      participant_id: presetParticipantId || null,
       ort:            eventLabel,
-      vorname:        document.getElementById('vorname').value.trim(),
-      email:          document.getElementById('email').value.trim(),
+      vorname:        vornameVal,
+      email:          emailVal,
+      handy:          handyVal,
       rating:         parseInt(ratingInput.value, 10),
       recommend:      recommendInput ? recommendInput.value : null,
       highlight:      document.getElementById('highlight').value.trim(),

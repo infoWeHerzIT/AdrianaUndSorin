@@ -82,6 +82,25 @@ const CSS = `
   .table-wrap td.action-col { text-align: right; white-space: nowrap; }
   .table-wrap tbody tr[data-id] { cursor: pointer; }
   .table-wrap tbody tr.selected-row { background: rgba(255,99,0,0.06); }
+  .table-wrap tbody tr.checked-row { background: rgba(0,34,77,0.04); }
+  .table-wrap tbody tr.checked-row.selected-row { background: rgba(255,99,0,0.08); }
+  .table-wrap th.chk-col, .table-wrap td.chk-col { width: 40px; padding: 10px 4px 10px 16px; text-align: center; }
+  .table-wrap input[type=checkbox] { width: 15px; height: 15px; cursor: pointer; accent-color: var(--orange, #ff6300); vertical-align: middle; }
+
+  .selection-bar {
+    display: flex; align-items: center; gap: 12px;
+    background: rgba(0,34,77,0.06); border: 1px solid rgba(0,34,77,0.12);
+    border-radius: 2px; padding: 8px 14px; margin-bottom: 10px;
+    font-size: 13px; color: var(--navy, #00224d);
+  }
+  .selection-bar strong { font-weight: 700; }
+  .btn-clear-selection {
+    background: transparent; border: 1px solid rgba(0,34,77,0.2);
+    color: rgba(0,34,77,0.55); font-size: 12px; padding: 3px 10px;
+    border-radius: 2px; cursor: pointer; font-family: 'DM Sans', sans-serif;
+    transition: background .15s;
+  }
+  .btn-clear-selection:hover { background: rgba(0,34,77,0.08); color: var(--navy, #00224d); }
 
   .btn-delete-row {
     background: rgba(220,38,38,0.08); color: var(--red, #dc2626);
@@ -149,6 +168,44 @@ const CSS = `
   }
   .form-panel .btn-cancel-form:hover { background: rgba(0,34,77,0.04); color: var(--navy, #00224d); }
 
+  .tt-section {
+    background: var(--white, #fff);
+    border: 1px solid rgba(0,34,77,0.1);
+    border-radius: 2px;
+    box-shadow: 0 4px 24px rgba(0,34,77,0.07);
+  }
+  .tt-section-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 28px;
+    background: var(--navy, #00224d);
+    border-left: 5px solid var(--orange, #ff6300);
+    border-radius: 2px 2px 0 0;
+    position: relative;
+  }
+  .tt-section-head::after {
+    content: '';
+    position: absolute; left: 0; right: 0; bottom: 0; height: 2px;
+    background: linear-gradient(to right, var(--orange, #ff6300), transparent);
+  }
+  .tt-section-eyebrow {
+    font-family: 'Orbitron', monospace;
+    font-size: 9px; font-weight: 700;
+    letter-spacing: .2em; text-transform: uppercase;
+    color: var(--orange, #ff6300); margin-bottom: 4px; display: block;
+  }
+  .tt-section-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 22px; font-weight: 700;
+    color: var(--white, #fff); line-height: 1;
+  }
+  .tt-section-count {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 36px; font-weight: 700;
+    color: rgba(255,255,255,0.18);
+    line-height: 1;
+  }
+  .tt-section-body { padding: 28px; }
+
   @media (max-width: 640px) {
     .teilnehmer-layout { grid-template-columns: 1fr; }
     .form-panel { position: static; }
@@ -156,6 +213,7 @@ const CSS = `
     .table-wrap td.event-col,
     .table-wrap td.ticket-col,
     .table-wrap td.date-col { display: none; }
+    .tt-section-body { padding: 18px 16px; }
   }
 `;
 
@@ -195,6 +253,7 @@ class TeilnehmerTable {
     this._allParticipants = [];
     this._eventsMap       = {};
     this._selectedId      = null;
+    this._checkedIds      = new Set();
     this._activeTimeView  = 'upcoming';
     this._TODAY = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
 
@@ -206,7 +265,8 @@ class TeilnehmerTable {
   }
 
   // Öffentlich: Zugriff auf geladene Teilnehmer (z.B. für Dankes-Mail)
-  get participants() { return this._allParticipants; }
+  get participants()        { return this._allParticipants; }
+  get checkedParticipants() { return this._allParticipants.filter(p => this._checkedIds.has(p.id)); }
 
   // ── DOM helper ──────────────────────────────────────────────
   _e(id) { return document.getElementById('tt' + this._n + '-' + id); }
@@ -226,9 +286,20 @@ class TeilnehmerTable {
     const fe = this._fixedEventId;
     const sf = this._showTimeFilter;
     const se = this._showEventFilter;
-    const cols = fe ? 8 : 9;
+    const cols = fe ? 9 : 10;
+
+    const title = this._fixedEventId ? 'Angemeldete Teilnehmer' : 'Alle Anmeldungen';
 
     this._con.innerHTML = `
+<div class="tt-section">
+  <div class="tt-section-head">
+    <div>
+      <span class="tt-section-eyebrow">Teilnehmer</span>
+      <div class="tt-section-title">${title}</div>
+    </div>
+    <div class="tt-section-count" id="tt${n}-section-count">–</div>
+  </div>
+  <div class="tt-section-body">
 <div class="teilnehmer-layout">
   <div>
     <div class="stats-bar">
@@ -253,9 +324,14 @@ class TeilnehmerTable {
       <input type="search" id="tt${n}-filter-search" placeholder="Name oder E-Mail suchen…">
       <button type="button" class="btn-add-participant" id="tt${n}-btn-add">+ Teilnehmer hinzufügen</button>
     </div>
+    <div class="selection-bar" id="tt${n}-selection-bar" style="display:none;">
+      <strong id="tt${n}-selection-count">0</strong> Teilnehmer ausgewählt
+      <button type="button" class="btn-clear-selection" id="tt${n}-btn-clear-sel">Auswahl aufheben</button>
+    </div>
     <div class="table-wrap">
       <table>
         <thead><tr>
+          <th class="chk-col"><input type="checkbox" id="tt${n}-chk-all" title="Alle auswählen"></th>
           <th>Name</th><th>E-Mail</th>
           <th class="phone-col">Telefon</th>
           ${!fe ? '<th class="event-col">Event</th>' : ''}
@@ -309,6 +385,8 @@ class TeilnehmerTable {
       </div>
     </form>
   </div>
+</div>
+  </div>
 </div>`;
   }
 
@@ -328,9 +406,28 @@ class TeilnehmerTable {
     this._e('filter-status').addEventListener('change', () => { this._updateStats(); this._renderTable(); });
     this._e('filter-search').addEventListener('input',  () => { this._updateStats(); this._renderTable(); });
     this._e('tbody').addEventListener('click', e => {
-      if (e.target.closest('select, button')) return;
+      if (e.target.closest('select, button, input')) return;
       const tr = e.target.closest('tr[data-id]');
       if (tr) this._selectParticipant(tr.dataset.id);
+    });
+    this._e('tbody').addEventListener('change', e => {
+      if (!e.target.matches('.row-chk')) return;
+      const id = e.target.dataset.id;
+      if (e.target.checked) this._checkedIds.add(id);
+      else                  this._checkedIds.delete(id);
+      this._updateCheckUI();
+    });
+    this._e('chk-all').addEventListener('change', e => {
+      const list = this._filtered();
+      if (e.target.checked) list.forEach(p => this._checkedIds.add(p.id));
+      else                  list.forEach(p => this._checkedIds.delete(p.id));
+      this._renderTable();
+      this._updateCheckUI();
+    });
+    this._e('btn-clear-sel').addEventListener('click', () => {
+      this._checkedIds.clear();
+      this._renderTable();
+      this._updateCheckUI();
     });
     this._e('pf-close').addEventListener('click', () => this._closeForm());
     this._e('btn-add').addEventListener('click',  () => this._openNewForm());
@@ -432,6 +529,22 @@ class TeilnehmerTable {
     this._e('stat-pending').textContent   = list.filter(p => p.payment_status === 'pending').length;
     this._e('stat-confirmed').textContent = list.filter(p => p.payment_status === 'confirmed').length;
     this._e('stat-cancelled').textContent = list.filter(p => p.payment_status === 'cancelled').length;
+    const sc = this._e('section-count');
+    if (sc) sc.textContent = list.length;
+  }
+
+  _updateCheckUI() {
+    const list    = this._filtered();
+    const checked = list.filter(p => this._checkedIds.has(p.id));
+    const chkAll  = this._e('chk-all');
+    if (chkAll) {
+      chkAll.indeterminate = checked.length > 0 && checked.length < list.length;
+      chkAll.checked       = list.length > 0 && checked.length === list.length;
+    }
+    const bar = this._e('selection-bar');
+    if (bar) bar.style.display = this._checkedIds.size > 0 ? 'flex' : 'none';
+    const cnt = this._e('selection-count');
+    if (cnt) cnt.textContent = this._checkedIds.size;
   }
 
   // ── Tabelle rendern ────────────────────────────────────────
@@ -440,10 +553,11 @@ class TeilnehmerTable {
     const list   = this._filtered();
     const n      = this._n;
     const fe     = this._fixedEventId;
-    const cols   = fe ? 8 : 9;
+    const cols   = fe ? 9 : 10;
 
     if (list.length === 0) {
       tbody.innerHTML = `<tr><td colspan="${cols}"><div class="empty-state"><div class="empty-icon">📋</div><p>Keine Anmeldungen gefunden.</p></div></td></tr>`;
+      this._updateCheckUI();
       return;
     }
 
@@ -452,9 +566,12 @@ class TeilnehmerTable {
       const evLabel  = ev
         ? esc(ev.name) + '<br><small>' + ev.day + '.' + String(ev.month+1).padStart(2,'0') + '.' + ev.year + '</small>'
         : (p.event_id ? '<small style="color:rgba(0,34,77,0.4)">' + esc(p.event_id) + '</small>' : '–');
-      const status   = p.payment_status || 'pending';
-      const fullName = ((p.vorname || '') + ' ' + (p.nachname || '')).trim();
-      return `<tr data-id="${p.id}"${p.id === this._selectedId ? ' class="selected-row"' : ''}>
+      const status    = p.payment_status || 'pending';
+      const fullName  = ((p.vorname || '') + ' ' + (p.nachname || '')).trim();
+      const isChecked = this._checkedIds.has(p.id);
+      const rowClass  = [p.id === this._selectedId ? 'selected-row' : '', isChecked ? 'checked-row' : ''].filter(Boolean).join(' ');
+      return `<tr data-id="${p.id}"${rowClass ? ` class="${rowClass}"` : ''}>
+        <td class="chk-col"><input type="checkbox" class="row-chk" data-id="${p.id}"${isChecked ? ' checked' : ''}></td>
         <td class="name-col">${esc(p.vorname)} ${esc(p.nachname)}</td>
         <td class="email-col">${esc(p.email || '–')}</td>
         <td class="phone-col">${esc(p.handy || '–')}</td>
@@ -470,6 +587,7 @@ class TeilnehmerTable {
         <td class="action-col"><button class="btn-delete-row" data-id="${p.id}" data-name="${esc(fullName || 'diesen Teilnehmer')}" onclick="_tt[${n}].deleteParticipant(this)" title="Löschen">🗑</button></td>
       </tr>`;
     }).join('');
+    this._updateCheckUI();
   }
 
   // ── Status ändern (public – inline-Handler) ────────────────
