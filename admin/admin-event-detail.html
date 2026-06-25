@@ -879,51 +879,10 @@ document.getElementById('btn-feedback-link').addEventListener('click', async fun
     });
   }
 
-  // If no configured URLs, fall back to current origin
-  if (urls.length === 0) {
-    copyUrl(buildFeedbackUrl(window.location.origin + window.location.pathname.replace(/admin\/[^/]+$/, '')));
-    return;
-  }
-
-  // If exactly one URL, copy directly
-  if (urls.length === 1) {
-    copyUrl(buildFeedbackUrl(urls[0]));
-    return;
-  }
-
-  // Multiple URLs → show picker modal
-  const backdrop = document.createElement('div');
-  backdrop.className = 'site-url-modal-backdrop';
-  backdrop.innerHTML = `
-    <div class="site-url-modal" role="dialog" aria-modal="true" aria-label="Feedback-Link erstellen">
-      <h3>Für welche Website?</h3>
-      <p>Wähle die Basis-URL, für die der Feedback-Link generiert werden soll.</p>
-      ${urls.map((u, i) => `
-        <div class="site-url-option" data-idx="${i}" tabindex="0" role="button">
-          <span class="suo-url">${u}</span>
-          <span class="suo-copy">Kopieren</span>
-        </div>`).join('')}
-      <button class="site-url-modal-close">Abbrechen</button>
-    </div>`;
-
-  function closeModal() { backdrop.remove(); }
-
-  backdrop.querySelector('.site-url-modal-close').addEventListener('click', closeModal);
-  backdrop.addEventListener('click', function (e) {
-    if (e.target === backdrop) closeModal();
-  });
-  backdrop.querySelectorAll('.site-url-option').forEach(function (el) {
-    function pick() {
-      const idx = parseInt(el.dataset.idx, 10);
-      copyUrl(buildFeedbackUrl(urls[idx]));
-      closeModal();
-    }
-    el.addEventListener('click', pick);
-    el.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') pick(); });
-  });
-
-  document.body.appendChild(backdrop);
-  backdrop.querySelector('.site-url-option').focus();
+  const base = urls.length > 0
+    ? urls[0]
+    : window.location.origin + window.location.pathname.replace(/admin\/[^/]+$/, '');
+  copyUrl(buildFeedbackUrl(base));
 });
 
 // ── Save ──────────────────────────────────────────────────────
@@ -1136,9 +1095,20 @@ async function sendThankYouEmails() {
 
   const eventDatum = currentEvent.day + '. ' + MONTH_NAMES[currentEvent.month] + ' ' + currentEvent.year;
 
+  // Basis-URL aus Custom Secrets holen
+  let siteBase = window.location.origin + window.location.pathname.replace(/admin\/[^/]+$/, '');
+  try {
+    const { data: settingsData } = await db.functions.invoke('get-settings');
+    if (settingsData && Array.isArray(settingsData.urls) && settingsData.urls[0]) {
+      siteBase = settingsData.urls[0].replace(/\/?$/, '');
+    }
+  } catch (e) { /* Fallback auf Origin */ }
+
   let success = 0, failed = 0;
   const errors = [];
   for (const p of confirmed) {
+    const feedbackUrl = siteBase + '/Templates/feedback.html?participant_id=' + encodeURIComponent(p.id)
+                      + '&event_id=' + encodeURIComponent(eventId);
     try {
       const { error: fnError } = await db.functions.invoke('send-email', {
         body: {
@@ -1153,6 +1123,7 @@ async function sendThankYouEmails() {
             event_ort:      currentEvent.location || '',
             event_datum:    eventDatum,
             event_id:       eventId,
+            feedback_url:   feedbackUrl,
           }
         }
       });
