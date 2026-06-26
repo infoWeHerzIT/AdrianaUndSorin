@@ -424,13 +424,13 @@
           <div class="pr-hint">Deine Daten wurden vorab eingetragen und können hier nicht geändert werden.</div>
         </div>
 
-        <div class="form-group" id="fg-vorname">
+        <div class="form-group" id="fg-vorname" style="display:none">
           <label class="form-label" for="vorname">Vollständiger Name <span class="req">*</span></label>
           <input class="form-input" type="text" id="vorname" name="vorname" placeholder="Max Mustermann" autocomplete="name">
           <span class="field-error" id="err-vorname">Bitte gib deinen vollständigen Namen ein</span>
         </div>
 
-        <div class="form-row" id="fg-contact">
+        <div class="form-row" id="fg-contact" style="display:none">
           <div class="form-group">
             <label class="form-label" for="email">E-Mail <span class="req">*</span></label>
             <input class="form-input" type="email" id="email" name="email" placeholder="max@beispiel.de" autocomplete="email">
@@ -531,9 +531,14 @@
       }
     });
 
+  // ── Felder einblenden wenn kein Participant preset ──
+  if (!presetParticipantId) {
+    document.getElementById('fg-vorname').style.display = '';
+    document.getElementById('fg-contact').style.display = '';
+  }
+
   // ── Participant laden (wenn participant_id in URL) ──
   if (presetParticipantId) {
-
     db.from('participants')
       .select('vorname, nachname, email, handy')
       .eq('id', presetParticipantId)
