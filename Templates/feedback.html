@@ -539,7 +539,8 @@
       .eq('id', presetParticipantId)
       .single()
       .then(function (res) {
-        if (!res.data) return;
+        if (res.error) { console.error('[feedback] Participant load error:', res.error); return; }
+        if (!res.data)  { console.warn('[feedback] Kein Participant gefunden für id:', presetParticipantId); return; }
         var p    = res.data;
         var name = ((p.vorname || '') + ' ' + (p.nachname || '')).trim();
 
