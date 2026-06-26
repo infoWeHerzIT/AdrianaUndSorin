@@ -507,7 +507,7 @@
       if (presetEventId) {
         // Read-only Modus: Dropdown ausblenden, Badge anzeigen
         var preset = events.find(function (e) { return e.id === presetEventId; });
-        var label  = preset ? (preset.name + ' · ' + fmtShort(preset)) : presetEventId;
+        var label  = preset ? (preset.name + fmtShort(preset)) : presetEventId;
         select.style.display = 'none';
         document.getElementById('event-readonly').style.display = 'flex';
         document.getElementById('event-readonly-label').textContent = label;
