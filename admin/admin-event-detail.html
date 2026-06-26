@@ -1107,7 +1107,7 @@ async function sendThankYouEmails() {
   let success = 0, failed = 0;
   const errors = [];
   for (const p of confirmed) {
-    const feedbackUrl = siteBase + '/Templates/feedback.html?participant_id=' + encodeURIComponent(p.id)
+    const feedbackUrl = siteBase + '/Templates/feedback.html?participant_id=' + encodeURIComponent(p.participant_id || p.id)
                       + '&event_id=' + encodeURIComponent(eventId);
     try {
       const { error: fnError } = await db.functions.invoke('send-email', {

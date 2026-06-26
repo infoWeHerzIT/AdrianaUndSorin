@@ -420,7 +420,6 @@
           <div class="pr-name" id="pr-name"></div>
           <div class="pr-details">
             <span id="pr-email"></span>
-            <span id="pr-handy"></span>
           </div>
           <div class="pr-hint">Deine Daten wurden vorab eingetragen und können hier nicht geändert werden.</div>
         </div>
@@ -534,6 +533,7 @@
 
   // ── Participant laden (wenn participant_id in URL) ──
   if (presetParticipantId) {
+
     db.from('participants')
       .select('vorname, nachname, email, handy')
       .eq('id', presetParticipantId)
@@ -548,23 +548,14 @@
         document.getElementById('participant-readonly').style.display = 'block';
         document.getElementById('pr-name').textContent  = name;
         document.getElementById('pr-email').textContent = p.email  || '';
-        document.getElementById('pr-handy').textContent = p.handy  || '';
 
-        // Felder befüllen und sperren
-        var vornameEl = document.getElementById('vorname');
-        var emailEl   = document.getElementById('email');
-        vornameEl.value = name;
-        emailEl.value   = p.email  || '';
-        vornameEl.setAttribute('readonly', '');
-        emailEl.setAttribute('readonly', '');
+        // Felder für Payload befüllen
+        document.getElementById('vorname').value = name;
+        document.getElementById('email').value   = p.email || '';
 
-        // Telefon ausblenden nur wenn Nummer bereits bekannt
-        var fgHandy = document.getElementById('fg-handy');
-        if (fgHandy && p.handy) fgHandy.style.display = 'none';
-
-        // Fehlermeldungen und Pflichtfeld-Sternchen ausblenden
-        document.getElementById('fg-vorname').querySelector('.req').style.display = 'none';
-        document.getElementById('fg-contact').querySelectorAll('.req').forEach(function(el){ el.style.display='none'; });
+        // Felder sofort ausblenden – Participant ist bekannt
+        document.getElementById('fg-vorname').style.display = 'none';
+        document.getElementById('fg-contact').style.display = 'none';
       });
   }
 
@@ -618,23 +609,25 @@
       valid = false;
     }
 
+    var contactHidden = document.getElementById('fg-contact').style.display === 'none';
+
     var vornameVal = document.getElementById('vorname').value.trim();
-    if (!vornameVal) {
+    if (!contactHidden && !vornameVal) {
       document.getElementById('vorname').classList.add('error');
       document.getElementById('err-vorname').classList.add('visible');
       valid = false;
     }
 
     var emailVal = document.getElementById('email').value.trim();
-    if (!emailVal || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+    if (!contactHidden && (!emailVal || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal))) {
       document.getElementById('email').classList.add('error');
       document.getElementById('err-email').classList.add('visible');
       valid = false;
     }
 
-    var handyHidden = document.getElementById('fg-handy') && document.getElementById('fg-handy').style.display === 'none';
-    var handyVal = handyHidden ? '' : document.getElementById('handy').value.trim();
-    if (!handyHidden && !handyVal) {
+    var handyVal = (contactHidden || document.getElementById('fg-handy').style.display === 'none')
+      ? '' : document.getElementById('handy').value.trim();
+    if (!contactHidden && document.getElementById('fg-handy').style.display !== 'none' && !handyVal) {
       document.getElementById('handy').classList.add('error');
       document.getElementById('err-handy').classList.add('visible');
       valid = false;
