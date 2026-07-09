@@ -147,6 +147,11 @@
   .btn-meet { background: #0078b4; color: var(--white); }
   .btn-pay:hover  { background: #e55700; }
   .btn-meet:hover { background: #005f8e; }
+  .btn-pay.highlight { animation: btn-pulse 1s ease-in-out 3; }
+  @keyframes btn-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255,99,0,0.6); }
+    50%      { box-shadow: 0 0 0 10px rgba(255,99,0,0); }
+  }
 
   /* ── Summary ── */
   .summary-box {
@@ -356,7 +361,7 @@
       + '<div class="step-label">Schritt ' + (stepNum - 1) + '</div>'
       + '<div class="step-text"><span style="color:#dc2626;">Bezahlung abschließen – wenn du es noch nicht schon erledigt hast!</span>'
       + '<small>Dein Platz ist erst nach erfolgreicher Zahlung reserviert.</small></div>'
-      + '<a class="btn-action btn-pay" href="' + esc(payUrl) + '" target="_blank" rel="noopener">Jetzt bezahlen →</a>'
+      + '<a class="btn-action btn-pay" id="btn-pay-action" href="' + esc(payUrl) + '" target="_blank" rel="noopener">Jetzt bezahlen →</a>'
       + '</div></div>';
   }
 
@@ -415,8 +420,16 @@
     var overlay = document.getElementById('redirect-overlay');
     overlay.classList.add('visible');
     setTimeout(function() {
-      window.open(payUrl, '_blank');
       overlay.classList.remove('visible');
+      var win = window.open(payUrl, '_blank');
+      var blocked = !win || win.closed || typeof win.closed === 'undefined';
+      if (blocked) {
+        var payBtn = document.getElementById('btn-pay-action');
+        if (payBtn) {
+          payBtn.classList.add('highlight');
+          payBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
     }, 2000);
   }
 })();
