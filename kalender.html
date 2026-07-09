@@ -818,6 +818,8 @@
     color: var(--white);
     box-shadow: 0 2px 8px rgba(255,99,0,0.3);
   }
+  .event-view-btn[data-status="Online"].active { background: #16a34a; box-shadow: 0 2px 8px rgba(22,163,74,0.3); }
+  .event-view-btn[data-status="Old"].active     { background: #444;    box-shadow: 0 2px 8px rgba(68,68,68,0.3); }
   .event-card.past-event { opacity: 0.55; }
   .event-card.past-event:hover { opacity: 1; }
 
@@ -938,9 +940,8 @@
       <div class="events-sidebar reveal">
         <div class="events-sidebar-title">Alle Termine im Überblick</div>
         <div class="event-toggle-bar">
-          <button class="event-view-btn active" data-view="upcoming">Kommende</button>
-          <button class="event-view-btn" data-view="past">Vergangene</button>
-          <button class="event-view-btn" data-view="all">Alle</button>
+          <button class="event-view-btn active" data-status="Online">Online</button>
+          <button class="event-view-btn" data-status="Old">Old</button>
         </div>
         <div id="event-list">
           <!-- JS generated -->
@@ -979,6 +980,8 @@ const MONTH_SHORT = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt
 const DAY_NAMES   = ['So','Mo','Di','Mi','Do','Fr','Sa'];
 const TODAY = new Date();
 
+function statusFromInt(n) { return n === 1 ? 'Online' : n === 2 ? 'Old' : 'Draft'; }
+
 async function loadEvents() {
   const { data, error } = await db.from('events').select('*').order('year').order('month').order('day');
   if (error || !data || data.length === 0) return [];
@@ -988,7 +991,8 @@ async function loadEvents() {
     timeFrom: r.time_from, timeTo: r.time_to,
     location: r.location, format: r.format,
     price: r.price, spots: r.spots, description: r.description,
-    url: r.url, videoMeetingUrl: r.video_meeting_url
+    url: r.url, videoMeetingUrl: r.video_meeting_url,
+    status: statusFromInt(r.status)
   }));
 }
 
@@ -1010,7 +1014,8 @@ function normalizeEvent(ev) {
     spots:       ev.spots       || '',
     description: ev.description || '',
     url:             ev.url             || 'register.html',
-    videoMeetingUrl: ev.videoMeetingUrl || ''
+    videoMeetingUrl: ev.videoMeetingUrl || '',
+    status:          ev.status          || 'Draft'
   };
 }
 
@@ -1036,6 +1041,7 @@ let EVENTS = [];
 // ── Filter state (all active by default) ──
 let activeFormats = new Set();
 let activeTypes   = new Set();
+let activeStatus  = 'Online'; // 'Draft' | 'Online' | 'Old'
 
 function initFilters() {
   activeFormats.clear(); activeTypes.clear();
@@ -1049,8 +1055,10 @@ function getFilteredEvents() {
   return EVENTS.filter(ev => {
     const fmt = ev.format || 'Präsenz';
     const typ = ev.type   || 'Sonstiges';
+    const st  = ev.status || 'Draft';
     if (activeFormats.size > 0 && !activeFormats.has(fmt)) return false;
     if (activeTypes.size > 0   && !activeTypes.has(typ))   return false;
+    if (st !== activeStatus) return false;
     return true;
   });
 }
@@ -1180,7 +1188,7 @@ function buildEventCard(ev, isPast) {
       ${ev.price ? `<div class="event-meta-row"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>${ev.price}</div>` : ''}
     </div>
     <div class="event-card-footer">
-      <span class="event-date-tag">${ev.day}. ${MONTH_NAMES[ev.month]}</span>
+      <span class="event-date-tag">${ev.day}. ${MONTH_NAMES[ev.month]} ${ev.year}</span>
       <span class="event-type-badge">
         <svg width="10" height="10" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
         ${ev.format || ev.type || 'Präsenz'}
@@ -1205,15 +1213,6 @@ function buildEventCard(ev, isPast) {
   });
 
   return card;
-}
-
-let activeView = 'upcoming'; // 'upcoming' | 'past' | 'all'
-
-function applyToggleStates() {
-  const upcomingSection = document.getElementById('event-section-upcoming');
-  const pastSection     = document.getElementById('event-section-past');
-  if (upcomingSection) upcomingSection.style.display = (activeView === 'upcoming' || activeView === 'all') ? '' : 'none';
-  if (pastSection)     pastSection.style.display     = (activeView === 'past'     || activeView === 'all') ? '' : 'none';
 }
 
 function renderEventList() {
@@ -1258,8 +1257,6 @@ function renderEventList() {
     });
     container.appendChild(pastSection);
   }
-
-  applyToggleStates();
 }
 
 function renderFilterBar() {
@@ -1345,10 +1342,11 @@ document.getElementById('next-month').addEventListener('click', () => {
 
   document.querySelectorAll('.event-view-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      activeView = btn.dataset.view;
+      activeStatus = btn.dataset.status;
       document.querySelectorAll('.event-view-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      applyToggleStates();
+      renderCalendar();
+      renderEventList();
     });
   });
 })();

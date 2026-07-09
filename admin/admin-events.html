@@ -160,8 +160,10 @@
   .event-admin-card::before {
     content: '';
     position: absolute; left: 0; top: 0; bottom: 0;
-    width: 4px; background: var(--orange);
+    width: 12px; background: var(--orange);
   }
+  .event-admin-card.status-online::before { background: var(--green); }
+  .event-admin-card.status-old::before { background: #444; }
   .event-admin-card:hover {
     border-color: rgba(255,99,0,0.3);
     box-shadow: 0 4px 16px rgba(0,34,77,0.08);
@@ -215,7 +217,7 @@
   .fmt-Hybrid  { background: linear-gradient(to bottom left, rgba(0,120,180,0.1) 50%, rgba(255,99,0,0.1) 50%); color: var(--navy); }
 
   .card-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-  .btn-edit, .btn-delete, .btn-confirm-del, .btn-cancel-del {
+  .btn-edit, .btn-delete, .btn-duplicate, .btn-confirm-del, .btn-cancel-del {
     border: none; cursor: pointer; border-radius: 2px;
     font-family: 'DM Sans', sans-serif;
     font-size: 12px; font-weight: 500;
@@ -252,6 +254,60 @@
     transition: background .15s, transform .1s;
   }
   .btn-goto:hover { background: rgba(22,163,74,0.18); }
+  .btn-duplicate {
+    background: rgba(255,99,0,0.08);
+    color: var(--orange); border: 1px solid rgba(255,99,0,0.25);
+  }
+  .btn-duplicate:hover { background: rgba(255,99,0,0.15); }
+
+  /* ─── DUPLICATE MODAL ─── */
+  .dup-modal-backdrop {
+    position: fixed; inset: 0; z-index: 500;
+    background: rgba(0,34,77,0.35); backdrop-filter: blur(2px);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .dup-modal {
+    background: var(--white); border-radius: 2px;
+    padding: 28px; min-width: 320px; max-width: 420px; width: 90%;
+    box-shadow: 0 16px 48px rgba(0,34,77,0.18);
+  }
+  .dup-modal h3 {
+    font-family: 'Fredoka', sans-serif; font-size: 18px;
+    font-weight: 700; color: var(--navy); margin-bottom: 6px;
+  }
+  .dup-modal p {
+    font-size: 13px; color: rgba(0,34,77,0.5); margin-bottom: 18px; line-height: 1.5;
+  }
+  .dup-modal-field { margin-bottom: 20px; }
+  .dup-modal-field label {
+    font-family: 'Orbitron', monospace;
+    font-size: 9px; font-weight: 700;
+    letter-spacing: .18em; text-transform: uppercase;
+    color: var(--navy); opacity: .7;
+    display: block; margin-bottom: 6px;
+  }
+  .dup-modal-field input {
+    width: 100%;
+    background: #f4f4f2;
+    border: 1px solid rgba(0,34,77,0.15);
+    border-radius: 2px;
+    padding: 9px 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--navy);
+    outline: none;
+  }
+  .dup-modal-actions { display: flex; gap: 10px; }
+  .dup-modal-actions .btn-cancel-del { flex: 1; }
+  .btn-duplicate-confirm {
+    flex: 1;
+    background: var(--orange); color: var(--white);
+    border: none; padding: 9px 14px; border-radius: 2px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 500; cursor: pointer;
+    transition: background .15s;
+  }
+  .btn-duplicate-confirm:hover { background: #e55700; }
 
   .empty-list {
     text-align: center; padding: 48px 24px;
@@ -351,6 +407,11 @@
   .filter-chip[data-typ="Webinar"].active     { background: #0078b4;       border-color: #0078b4;       color: var(--white); }
   .filter-chip[data-typ="Sonstiges"].active   { background: #666;          border-color: #666;          color: var(--white); }
 
+  /* Status toggle chip */
+  .filter-chip[data-status="Draft"]  { background: rgba(255,99,0,0.1);  color: var(--orange); border-color: rgba(255,99,0,0.3); }
+  .filter-chip[data-status="Online"] { background: rgba(22,163,74,0.1); color: var(--green);  border-color: rgba(22,163,74,0.3); }
+  .filter-chip[data-status="Old"]    { background: rgba(68,68,68,0.1);  color: #444;          border-color: rgba(68,68,68,0.3); }
+
   /* ─── PAST EVENT CARD ─── */
   .event-admin-card.past { opacity: 0.55; }
   .event-admin-card.past:hover { opacity: 1; }
@@ -414,7 +475,7 @@
 
   <div class="list-header">
     <div>
-      <span class="section-label" id="event-section-label">Aktuelle Events</span>
+      <span class="section-label" id="event-section-label">Events</span>
       <div class="list-title" id="event-count">0 Events</div>
     </div>
     <button class="btn-new-event" id="btn-new-event">+ Neuer Event</button>
@@ -438,6 +499,22 @@
     </div>
   </div>
 
+</div>
+
+<!-- DUPLICATE MODAL -->
+<div class="dup-modal-backdrop" id="dup-modal-backdrop" style="display:none;">
+  <div class="dup-modal">
+    <h3>Event duplizieren</h3>
+    <p>Das Event wird mit allen Eigenschaften kopiert, erhält aber ein neues Datum und den Status <strong>Draft</strong>.</p>
+    <div class="dup-modal-field">
+      <label for="dup-date">Neues Datum</label>
+      <input type="date" id="dup-date">
+    </div>
+    <div class="dup-modal-actions">
+      <button class="btn-cancel-del" id="dup-cancel">Abbrechen</button>
+      <button class="btn-duplicate-confirm" id="dup-confirm">Duplizieren</button>
+    </div>
+  </div>
 </div>
 
 <!-- TOAST -->
@@ -487,6 +564,10 @@ const DEFAULT_EVENTS = [
 const MONTH_NAMES = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
 const MONTH_SHORT = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
 
+// ── Status: 0 = Draft, 1 = Online, 2 = Old ─────────────────────
+function statusFromInt(n) { return n === 1 ? 'Online' : n === 2 ? 'Old' : 'Draft'; }
+function statusToInt(s) { return s === 'Online' ? 1 : s === 'Old' ? 2 : 0; }
+
 // Supabase row ↔ local object
 function rowToEvent(r) {
   let earlyBird = { enabled: false, deadline: '', priceMode: 'fixed', priceValue: '' };
@@ -502,6 +583,7 @@ function rowToEvent(r) {
     description: r.description || '',
     url: r.url || 'register.html',
     videoMeetingUrl: r.video_meeting_url || '',
+    status: statusFromInt(r.status),
     earlyBird
   };
 }
@@ -516,6 +598,7 @@ function eventToRow(ev) {
     description: ev.description,
     url: ev.url || 'register.html',
     video_meeting_url: ev.videoMeetingUrl || null,
+    status: statusToInt(ev.status),
     eb_data: (eb && eb.enabled) ? JSON.stringify(eb) : null
   };
 }
@@ -524,7 +607,18 @@ function eventToRow(ev) {
 async function loadEventsFromDB() {
   const { data, error } = await db.from('events').select('*').order('year').order('month').order('day');
   if (error) { showToast('Fehler beim Laden: ' + error.message, 'error'); return []; }
-  return (data || []).map(rowToEvent);
+  const evs = (data || []).map(rowToEvent);
+  await markPastEventsAsOld(evs);
+  return evs;
+}
+
+// Events deren Datum vorbei ist werden automatisch auf Status "Old" gesetzt
+async function markPastEventsAsOld(evs) {
+  const toMark = evs.filter(ev => ev.status !== 'Old' && !isUpcoming(ev));
+  for (const ev of toMark) {
+    ev.status = 'Old';
+    await db.from('events').update({ status: 2 }).eq('id', ev.id);
+  }
 }
 
 async function saveEventToDB(ev) {
@@ -543,7 +637,8 @@ let events = [];
 // ── Filter state ──────────────────────────────────────────────
 let adminActiveFormats = new Set();
 let adminActiveTypes   = new Set();
-let adminTimeFilter    = 'aktuelle'; // 'alle' | 'aktuelle' | 'vergangene'
+const STATUS_CYCLE = ['Draft', 'Online', 'Old'];
+let adminStatusFilter  = 'Online';   // 'Draft' | 'Online' | 'Old'
 
 function isUpcoming(ev) {
   const today = new Date(); today.setHours(0, 0, 0, 0);
@@ -560,12 +655,12 @@ function initAdminFilters() {
 
 function getAdminFilteredEvents() {
   return events.filter(ev => {
-    if (adminTimeFilter === 'aktuelle'   && !isUpcoming(ev)) return false;
-    if (adminTimeFilter === 'vergangene' &&  isUpcoming(ev)) return false;
     const fmt = ev.format || 'Präsenz';
     const typ = ev.type   || 'Sonstiges';
+    const st  = ev.status || 'Draft';
     if (adminActiveFormats.size > 0 && !adminActiveFormats.has(fmt)) return false;
     if (adminActiveTypes.size > 0   && !adminActiveTypes.has(typ))   return false;
+    if (st !== adminStatusFilter) return false;
     return true;
   });
 }
@@ -576,31 +671,29 @@ function renderAdminFilterBar() {
   bar.style.display = '';
   bar.innerHTML = '';
 
-  // ── Zeit-Filter ──
-  const timeGroup = document.createElement('div');
-  timeGroup.className = 'filter-group';
-  const timeLbl = document.createElement('span');
-  timeLbl.className = 'filter-group-label'; timeLbl.textContent = 'Zeitraum';
-  timeGroup.appendChild(timeLbl);
-  [['aktuelle', 'Aktuelle'], ['vergangene', 'Vergangene'], ['alle', 'Alle']].forEach(([val, label]) => {
+  const allFormats  = [...new Set(events.map(e => e.format || 'Präsenz'))];
+  const allTypes    = [...new Set(events.map(e => e.type   || 'Sonstiges'))];
+
+  if (events.length > 0) {
+    const g = document.createElement('div');
+    g.className = 'filter-group';
+    const lbl = document.createElement('span');
+    lbl.className = 'filter-group-label'; lbl.textContent = 'Status';
+    g.appendChild(lbl);
     const chip = document.createElement('button');
-    chip.className = 'filter-chip' + (adminTimeFilter === val ? ' active' : '');
-    chip.textContent = label;
+    chip.className = 'filter-chip';
+    chip.dataset.status = adminStatusFilter;
+    chip.textContent = adminStatusFilter;
     chip.addEventListener('click', () => {
-      adminTimeFilter = val;
-      const labels = { aktuelle: 'Aktuelle Events', vergangene: 'Vergangene Events', alle: 'Alle Events' };
-      document.getElementById('event-section-label').textContent = labels[val];
+      adminStatusFilter = STATUS_CYCLE[(STATUS_CYCLE.indexOf(adminStatusFilter) + 1) % STATUS_CYCLE.length];
       renderAdminFilterBar();
       renderList();
     });
-    timeGroup.appendChild(chip);
-  });
-  bar.appendChild(timeGroup);
+    g.appendChild(chip);
+    bar.appendChild(g);
+  }
 
-  const allFormats = [...new Set(events.map(e => e.format || 'Präsenz'))];
-  const allTypes   = [...new Set(events.map(e => e.type   || 'Sonstiges'))];
-
-  if (allFormats.length > 0 || allTypes.length > 0) {
+  if (events.length > 0 && (allFormats.length > 0 || allTypes.length > 0)) {
     const sep0 = document.createElement('div'); sep0.className = 'filter-sep';
     bar.appendChild(sep0);
   }
@@ -674,7 +767,7 @@ function renderList() {
   container.innerHTML = '';
   sorted.forEach(ev => {
     const card = document.createElement('div');
-    card.className = 'event-admin-card' + (isUpcoming(ev) ? '' : ' past');
+    card.className = 'event-admin-card' + (isUpcoming(ev) ? '' : ' past') + ' status-' + (ev.status || 'Draft').toLowerCase();
     card.id = 'admin-card-' + ev.id;
 
     const dateObj = new Date(ev.year, ev.month, ev.day);
@@ -700,6 +793,7 @@ function renderList() {
           </div>
           <div class="card-actions">
             <button class="btn-edit" data-id="${ev.id}">✎ Bearbeiten</button>
+            <button class="btn-duplicate" data-id="${ev.id}">⧉ Duplizieren</button>
             <button class="btn-delete" data-id="${ev.id}">🗑 Löschen</button>
             <a class="btn-goto" href="${ev.type === 'Webinar' ? '../event-webinar.html' : ev.type === 'Workshop' ? '../event-workshop.html' : '../register.html'}?event_id=${encodeURIComponent(ev.id)}" target="_blank" rel="noopener">Go To Event →</a>
           </div>
@@ -723,7 +817,61 @@ function renderList() {
   container.querySelectorAll('.btn-delete').forEach(btn => {
     btn.addEventListener('click', e => { e.stopPropagation(); confirmDelete(btn, btn.dataset.id); });
   });
+  container.querySelectorAll('.btn-duplicate').forEach(btn => {
+    btn.addEventListener('click', e => { e.stopPropagation(); openDuplicateModal(btn.dataset.id); });
+  });
 }
+
+// ── Duplicate ───────────────────────────────────────────────────
+function genId() {
+  return 'evt_' + Date.now() + '_' + Math.floor(Math.random()*9999);
+}
+
+let dupSourceId = null;
+
+function openDuplicateModal(id) {
+  const ev = events.find(e => e.id === id);
+  if (!ev) return;
+  dupSourceId = id;
+  const m = String(ev.month + 1).padStart(2,'0');
+  const d = String(ev.day).padStart(2,'0');
+  document.getElementById('dup-date').value = ev.year + '-' + m + '-' + d;
+  document.getElementById('dup-modal-backdrop').style.display = 'flex';
+}
+
+function closeDuplicateModal() {
+  document.getElementById('dup-modal-backdrop').style.display = 'none';
+  dupSourceId = null;
+}
+
+document.getElementById('dup-cancel').addEventListener('click', closeDuplicateModal);
+document.getElementById('dup-modal-backdrop').addEventListener('click', e => {
+  if (e.target.id === 'dup-modal-backdrop') closeDuplicateModal();
+});
+
+document.getElementById('dup-confirm').addEventListener('click', async () => {
+  const ev = events.find(e => e.id === dupSourceId);
+  const dateVal = document.getElementById('dup-date').value;
+  if (!ev || !dateVal) { showToast('Bitte ein Datum wählen.', 'error'); return; }
+  const parts = dateVal.split('-');
+
+  const duplicate = {
+    ...ev,
+    id: genId(),
+    year: parseInt(parts[0]),
+    month: parseInt(parts[1]) - 1,
+    day: parseInt(parts[2]),
+    status: 'Draft'
+  };
+
+  try {
+    await saveEventToDB(duplicate);
+    showToast('Event dupliziert ✓', 'success');
+    window.location.href = 'admin-event-detail.html?id=' + encodeURIComponent(duplicate.id);
+  } catch (err) {
+    showToast('Fehler beim Duplizieren: ' + err.message, 'error');
+  }
+});
 
 // ── Delete confirmation ────────────────────────────────────────
 function confirmDelete(btn, id) {
