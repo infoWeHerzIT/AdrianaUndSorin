@@ -362,16 +362,16 @@
     color: var(--orange); border-color: rgba(255,99,0,0.3);
   }
   .btn-status.status-draft:hover { background: rgba(255,99,0,0.18); }
-  .btn-status.status-online {
+  .btn-status.status-aktiv {
     background: rgba(22,163,74,0.1);
     color: var(--green); border-color: rgba(22,163,74,0.3);
   }
-  .btn-status.status-online:hover { background: rgba(22,163,74,0.18); }
-  .btn-status.status-old {
+  .btn-status.status-aktiv:hover { background: rgba(22,163,74,0.18); }
+  .btn-status.status-vergangene {
     background: rgba(68,68,68,0.1);
     color: #444; border-color: rgba(68,68,68,0.3);
   }
-  .btn-status.status-old:hover { background: rgba(68,68,68,0.18); }
+  .btn-status.status-vergangene:hover { background: rgba(68,68,68,0.18); }
   .btn-feedback-link {
     background: rgba(255,99,0,0.08);
     color: var(--orange); border: 1px solid rgba(255,99,0,0.3);
@@ -712,9 +712,9 @@ function esc(str) {
 let eventId = new URLSearchParams(window.location.search).get('id');
 const isNewEvent = !eventId;
 
-// ── Status: 0 = Draft, 1 = Online, 2 = Old ─────────────────────
-function statusFromInt(n) { return n === 1 ? 'Online' : n === 2 ? 'Old' : 'Draft'; }
-function statusToInt(s) { return s === 'Online' ? 1 : s === 'Old' ? 2 : 0; }
+// ── Status: 0 = Draft, 1 = Aktiv, 2 = Vergangene ───────────────
+function statusFromInt(n) { return n === 1 ? 'Aktiv' : n === 2 ? 'Vergangene' : 'Draft'; }
+function statusToInt(s) { return s === 'Aktiv' ? 1 : s === 'Vergangene' ? 2 : 0; }
 function isEventUpcoming(ev) {
   const today = new Date(); today.setHours(0, 0, 0, 0);
   return new Date(ev.year, ev.month, ev.day) >= today;
@@ -799,14 +799,14 @@ function eventToRow(ev) {
 let currentEvent = null;
 let currentStatus = 'Draft';
 
-const STATUS_CYCLE = ['Draft', 'Online', 'Old'];
+const STATUS_CYCLE = ['Draft', 'Aktiv', 'Vergangene'];
 
 function setStatusUI(status) {
   const btn = document.getElementById('btn-status');
   if (!btn) return;
   btn.textContent = status;
   btn.dataset.status = status;
-  btn.classList.remove('status-draft', 'status-online', 'status-old');
+  btn.classList.remove('status-draft', 'status-aktiv', 'status-vergangene');
   btn.classList.add('status-' + status.toLowerCase());
 }
 
@@ -825,8 +825,8 @@ async function loadEvent() {
     return;
   }
   const ev = rowToEvent(data);
-  if (ev.status !== 'Old' && !isEventUpcoming(ev)) {
-    ev.status = 'Old';
+  if (ev.status !== 'Vergangene' && !isEventUpcoming(ev)) {
+    ev.status = 'Vergangene';
     await db.from('events').update({ status: 2 }).eq('id', ev.id);
   }
   currentEvent = ev;

@@ -21,13 +21,13 @@ create table if not exists events (
   url              text default 'register.html',
   video_meeting_url text,
   ressourcen_url   text,
-  status           integer not null default 0, -- 0 = Draft, 1 = Online, 2 = Old
+  status           integer not null default 0, -- 0 = Draft, 1 = Aktiv, 2 = Vergangene
   created_at       timestamptz default now()
 );
 
 -- Falls die Tabelle bereits existiert (bestehende Installation),
 -- einmalig im Supabase SQL Editor ausführen:
-alter table events add column if not exists status integer not null default 0; -- 0 = Draft, 1 = Online, 2 = Old
+alter table events add column if not exists status integer not null default 0; -- 0 = Draft, 1 = Aktiv, 2 = Vergangene
 
 -- ── 2. PARTICIPANTS ──────────────────────────────────────────────
 -- Einmalige Kontaktdaten je Person. Unique Key = Handynummer.

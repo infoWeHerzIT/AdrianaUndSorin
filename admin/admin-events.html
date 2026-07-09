@@ -162,8 +162,8 @@
     position: absolute; left: 0; top: 0; bottom: 0;
     width: 12px; background: var(--orange);
   }
-  .event-admin-card.status-online::before { background: var(--green); }
-  .event-admin-card.status-old::before { background: #444; }
+  .event-admin-card.status-aktiv::before { background: var(--green); }
+  .event-admin-card.status-vergangene::before { background: #444; }
   .event-admin-card:hover {
     border-color: rgba(255,99,0,0.3);
     box-shadow: 0 4px 16px rgba(0,34,77,0.08);
@@ -409,8 +409,8 @@
 
   /* Status toggle chip */
   .filter-chip[data-status="Draft"]  { background: rgba(255,99,0,0.1);  color: var(--orange); border-color: rgba(255,99,0,0.3); }
-  .filter-chip[data-status="Online"] { background: rgba(22,163,74,0.1); color: var(--green);  border-color: rgba(22,163,74,0.3); }
-  .filter-chip[data-status="Old"]    { background: rgba(68,68,68,0.1);  color: #444;          border-color: rgba(68,68,68,0.3); }
+  .filter-chip[data-status="Aktiv"]  { background: rgba(22,163,74,0.1); color: var(--green);  border-color: rgba(22,163,74,0.3); }
+  .filter-chip[data-status="Vergangene"] { background: rgba(68,68,68,0.1); color: #444;      border-color: rgba(68,68,68,0.3); }
 
   /* ─── PAST EVENT CARD ─── */
   .event-admin-card.past { opacity: 0.55; }
@@ -564,9 +564,9 @@ const DEFAULT_EVENTS = [
 const MONTH_NAMES = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
 const MONTH_SHORT = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
 
-// ── Status: 0 = Draft, 1 = Online, 2 = Old ─────────────────────
-function statusFromInt(n) { return n === 1 ? 'Online' : n === 2 ? 'Old' : 'Draft'; }
-function statusToInt(s) { return s === 'Online' ? 1 : s === 'Old' ? 2 : 0; }
+// ── Status: 0 = Draft, 1 = Aktiv, 2 = Vergangene ───────────────
+function statusFromInt(n) { return n === 1 ? 'Aktiv' : n === 2 ? 'Vergangene' : 'Draft'; }
+function statusToInt(s) { return s === 'Aktiv' ? 1 : s === 'Vergangene' ? 2 : 0; }
 
 // Supabase row ↔ local object
 function rowToEvent(r) {
@@ -612,11 +612,11 @@ async function loadEventsFromDB() {
   return evs;
 }
 
-// Events deren Datum vorbei ist werden automatisch auf Status "Old" gesetzt
+// Events deren Datum vorbei ist werden automatisch auf Status "Vergangene" gesetzt
 async function markPastEventsAsOld(evs) {
-  const toMark = evs.filter(ev => ev.status !== 'Old' && !isUpcoming(ev));
+  const toMark = evs.filter(ev => ev.status !== 'Vergangene' && !isUpcoming(ev));
   for (const ev of toMark) {
-    ev.status = 'Old';
+    ev.status = 'Vergangene';
     await db.from('events').update({ status: 2 }).eq('id', ev.id);
   }
 }
@@ -637,8 +637,8 @@ let events = [];
 // ── Filter state ──────────────────────────────────────────────
 let adminActiveFormats = new Set();
 let adminActiveTypes   = new Set();
-const STATUS_CYCLE = ['Draft', 'Online', 'Old'];
-let adminStatusFilter  = 'Online';   // 'Draft' | 'Online' | 'Old'
+const STATUS_CYCLE = ['Draft', 'Aktiv', 'Vergangene'];
+let adminStatusFilter  = 'Aktiv';    // 'Draft' | 'Aktiv' | 'Vergangene'
 
 function isUpcoming(ev) {
   const today = new Date(); today.setHours(0, 0, 0, 0);

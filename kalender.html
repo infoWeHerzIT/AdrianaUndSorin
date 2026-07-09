@@ -818,8 +818,8 @@
     color: var(--white);
     box-shadow: 0 2px 8px rgba(255,99,0,0.3);
   }
-  .event-view-btn[data-status="Online"].active { background: #16a34a; box-shadow: 0 2px 8px rgba(22,163,74,0.3); }
-  .event-view-btn[data-status="Old"].active     { background: #444;    box-shadow: 0 2px 8px rgba(68,68,68,0.3); }
+  .event-view-btn[data-status="Aktiv"].active   { background: #16a34a; box-shadow: 0 2px 8px rgba(22,163,74,0.3); }
+  .event-view-btn[data-status="Vergangene"].active { background: #444; box-shadow: 0 2px 8px rgba(68,68,68,0.3); }
   .event-card.past-event { opacity: 0.55; }
   .event-card.past-event:hover { opacity: 1; }
 
@@ -940,8 +940,8 @@
       <div class="events-sidebar reveal">
         <div class="events-sidebar-title">Alle Termine im Überblick</div>
         <div class="event-toggle-bar">
-          <button class="event-view-btn active" data-status="Online">Online</button>
-          <button class="event-view-btn" data-status="Old">Old</button>
+          <button class="event-view-btn active" data-status="Aktiv">Aktiv</button>
+          <button class="event-view-btn" data-status="Vergangene">Vergangene</button>
         </div>
         <div id="event-list">
           <!-- JS generated -->
@@ -980,7 +980,7 @@ const MONTH_SHORT = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt
 const DAY_NAMES   = ['So','Mo','Di','Mi','Do','Fr','Sa'];
 const TODAY = new Date();
 
-function statusFromInt(n) { return n === 1 ? 'Online' : n === 2 ? 'Old' : 'Draft'; }
+function statusFromInt(n) { return n === 1 ? 'Aktiv' : n === 2 ? 'Vergangene' : 'Draft'; }
 
 async function loadEvents() {
   const { data, error } = await db.from('events').select('*').order('year').order('month').order('day');
@@ -1041,7 +1041,7 @@ let EVENTS = [];
 // ── Filter state (all active by default) ──
 let activeFormats = new Set();
 let activeTypes   = new Set();
-let activeStatus  = 'Online'; // 'Draft' | 'Online' | 'Old'
+let activeStatus  = 'Aktiv'; // 'Draft' | 'Aktiv' | 'Vergangene'
 
 function initFilters() {
   activeFormats.clear(); activeTypes.clear();
@@ -1221,42 +1221,16 @@ function renderEventList() {
   const sorted = [...getFilteredEvents()].sort((a,b) => new Date(a.year,a.month,a.day) - new Date(b.year,b.month,b.day));
 
   if (sorted.length === 0) {
-    container.innerHTML = '<p style="color:rgba(0,34,77,0.35);font-size:14px;font-style:italic;padding:16px 0;">Keine Events für die gewählten Filter. <a href="admin/admin-events.html" style="color:var(--orange);">→ Events verwalten</a></p>';
     return;
   }
 
   const todayMidnight = new Date(TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate());
-  const upcoming = sorted.filter(ev => new Date(ev.year, ev.month, ev.day) >= todayMidnight);
-  const past = [...sorted.filter(ev => new Date(ev.year, ev.month, ev.day) < todayMidnight)]
-    .sort((a,b) => new Date(b.year,b.month,b.day) - new Date(a.year,a.month,a.day));
-
-  const upcomingSection = document.createElement('div');
-  upcomingSection.id = 'event-section-upcoming';
-  if (upcoming.length > 0) {
-    upcoming.forEach(ev => {
-      const card = buildEventCard(ev, false);
-      upcomingSection.appendChild(card);
-      revealObserver.observe(card);
-    });
-  } else {
-    const hint = document.createElement('p');
-    hint.className = 'no-events-hint';
-    hint.textContent = 'Aktuell keine kommenden Events.';
-    upcomingSection.appendChild(hint);
-  }
-  container.appendChild(upcomingSection);
-
-  if (past.length > 0) {
-    const pastSection = document.createElement('div');
-    pastSection.id = 'event-section-past';
-    pastSection.style.marginTop = '14px';
-    past.forEach(ev => {
-      const card = buildEventCard(ev, true);
-      pastSection.appendChild(card);
-      revealObserver.observe(card);
-    });
-    container.appendChild(pastSection);
-  }
+  sorted.forEach(ev => {
+    const isPast = new Date(ev.year, ev.month, ev.day) < todayMidnight;
+    const card = buildEventCard(ev, isPast);
+    container.appendChild(card);
+    revealObserver.observe(card);
+  });
 }
 
 function renderFilterBar() {
