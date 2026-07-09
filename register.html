@@ -539,6 +539,14 @@
         <span class="field-error" id="err-handy">Bitte Handynummer eingeben</span>
       </div>
 
+      <div class="form-group">
+        <label class="form-label">Veranstaltungsort</label>
+        <div class="location-options" id="location-options"></div>
+        <span class="field-error" id="err-ort">Bitte einen Veranstaltungsort auswählen</span>
+      </div>
+
+      <hr class="form-divider">
+
       <button type="submit" class="btn-register" id="btn-register">
         <span class="spinner" id="btn-spinner"></span>
         <span class="btn-label" id="btn-label">Jetzt Registrieren →</span>
@@ -954,25 +962,29 @@
 
     setLoading(true);
 
-    // Save to Supabase
+    // Save to Supabase (Fehler hier dürfen Mailversand & Weiterleitung nicht blockieren)
     var participantFields = { vorname, nachname, email, ort };
     if (handy) participantFields.handy = handy;
-    var saveResult = handy
-      ? await db.from('participants').upsert(participantFields, { onConflict: 'handy' }).select('id').single()
-      : await db.from('participants').insert(participantFields).select('id').single();
+    try {
+      var saveResult = handy
+        ? await db.from('participants').upsert(participantFields, { onConflict: 'handy' }).select('id').single()
+        : await db.from('participants').insert(participantFields).select('id').single();
 
-    var dbError = saveResult.error;
-    if (!saveResult.error && saveResult.data) {
-      var ep = await db.from('event_participations').insert({
-        event_id:       eventId || (ev ? ev.id : null),
-        participant_id: saveResult.data.id,
-        ticket_name:    ticketName,
-        ticket_price:   priceNum > 0 ? '€' + priceNum : 'kostenlos',
-        payment_status: 'pending'
-      });
-      dbError = ep.error;
+      var dbError = saveResult.error;
+      if (!saveResult.error && saveResult.data) {
+        var ep = await db.from('event_participations').insert({
+          event_id:       eventId || (ev ? ev.id : null),
+          participant_id: saveResult.data.id,
+          ticket_name:    ticketName,
+          ticket_price:   priceNum > 0 ? '€' + priceNum : 'kostenlos',
+          payment_status: 'pending'
+        });
+        dbError = ep.error;
+      }
+      if (dbError) console.error('Supabase insert error:', dbError.message);
+    } catch (dbEx) {
+      console.error('Supabase save exception:', dbEx);
     }
-    if (dbError) console.error('Supabase insert error:', dbError.message);
 
     var paymentUrlFinal = priceNum > 0 ? vividUrl : '';
     var thankyouParams  = new URLSearchParams({
@@ -1001,7 +1013,7 @@
               to_name:           vorname + ' ' + nachname,
               to_email:          email,
               vorname:           vorname,
-              nachname:          nachname,
+              nachname:          nachname,  
               handy:             handy,
               ticket_name:       ticketName,
               ticket_price:      priceNum > 0 ? '€' + priceNum : 'kostenlos',
