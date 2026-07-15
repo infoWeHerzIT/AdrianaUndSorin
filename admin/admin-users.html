@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Zahlungslinks – Adriana und Sorin</title>
+<title>Admins – Adriana und Sorin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -45,21 +45,19 @@
   tr.view-row:hover td { background:rgba(255,99,0,0.03); }
   tr.edit-row td { background:rgba(255,99,0,0.04); padding-top:9px; padding-bottom:9px; }
 
-  .td-name { font-weight:600; max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .td-url  { color:rgba(0,34,77,0.55); font-size:13px; max-width:400px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .td-url a { color:rgba(0,34,77,0.6); text-decoration:none; }
-  .td-url a:hover { color:var(--orange); }
+  .td-email { font-weight:600; max-width:240px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .td-meta  { color:rgba(0,34,77,0.55); font-size:13px; white-space:nowrap; }
   .td-actions { white-space:nowrap; text-align:right; }
+  .you-badge { display:inline-block; margin-left:8px; font-family:'Orbitron',monospace; font-size:9px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; background:rgba(0,34,77,0.08); color:rgba(0,34,77,0.5); padding:2px 7px; border-radius:2px; vertical-align:middle; }
 
   .inp-inline { width:100%; padding:7px 10px; border:1px solid rgba(0,34,77,0.2); border-radius:4px; font-family:'DM Sans',sans-serif; font-size:14px; color:var(--navy); background:var(--white); outline:none; transition:border-color .15s, box-shadow .15s; }
   .inp-inline:focus { border-color:var(--orange); box-shadow:0 0 0 3px rgba(255,99,0,0.12); }
   .inp-inline.error { border-color:var(--red); }
 
   .btn-row { border:none; border-radius:3px; padding:5px 11px; font-size:12px; cursor:pointer; font-family:'DM Sans',sans-serif; font-weight:500; transition:background .15s; }
-  .btn-edit-row   { background:rgba(0,34,77,0.08); color:var(--navy); margin-right:5px; }
-  .btn-edit-row:hover { background:rgba(0,34,77,0.16); }
   .btn-del-row    { background:rgba(220,38,38,0.1); color:var(--red); }
   .btn-del-row:hover  { background:rgba(220,38,38,0.2); }
+  .btn-del-row:disabled { opacity:.4; cursor:default; pointer-events:none; }
   .btn-save-row   { background:var(--orange); color:var(--white); margin-right:5px; }
   .btn-save-row:hover { background:#e05700; }
   .btn-cancel-row { background:rgba(0,34,77,0.08); color:var(--navy); }
@@ -73,6 +71,7 @@
 
   @media(max-width:600px) {
     .admin-header-inner,.admin-main { padding-left:20px; padding-right:20px; }
+    .td-meta { display:none; }
   }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -86,8 +85,8 @@
     <div class="nav-links">
       <a href="admin-events.html" class="nav-link">Events</a>
       <a href="admin-teilnehmer.html" class="nav-link">Teilnehmer</a>
-      <a href="admin-payment-links.html" class="nav-link active">Zahlungslinks</a>
-      <a href="admin-users.html" class="nav-link">Admins</a>
+      <a href="admin-payment-links.html" class="nav-link">Zahlungslinks</a>
+      <a href="admin-users.html" class="nav-link active">Admins</a>
       <button id="btn-logout" class="nav-link" style="border-color:rgba(220,38,38,0.4);color:#f87171;">Ausloggen</button>
     </div>
   </div>
@@ -96,21 +95,21 @@
 <div class="admin-header">
   <div class="admin-header-inner">
     <span class="admin-page-label">Verwaltung</span>
-    <h1>Zahlungs<em>links</em></h1>
-    <p>Verwalte Zahlungslinks und weise sie Events zu.</p>
+    <h1>Admin<em>-Zugänge</em></h1>
+    <p>Admins hinzufügen oder entfernen. Jeder Admin hat vollen Zugriff auf Events, Teilnehmer und Zahlungslinks.</p>
   </div>
 </div>
 
 <div class="admin-main">
   <div class="list-header">
-    <div class="list-title">Alle Zahlungslinks</div>
-    <button class="btn-new" id="btn-new">+ Neuer Link</button>
+    <div class="list-title">Alle Admins</div>
+    <button class="btn-new" id="btn-new">+ Neuer Admin</button>
   </div>
   <div class="table-wrap">
-    <table id="links-table">
-      <thead><tr><th style="width:28%">Name</th><th>URL</th><th style="width:170px"></th></tr></thead>
-      <tbody id="links-tbody">
-        <tr id="empty-row"><td colspan="3">Wird geladen…</td></tr>
+    <table id="users-table">
+      <thead><tr><th style="width:32%">E-Mail</th><th>Erstellt</th><th>Letzter Login</th><th style="width:110px"></th></tr></thead>
+      <tbody id="users-tbody">
+        <tr id="empty-row"><td colspan="4">Wird geladen…</td></tr>
       </tbody>
     </table>
   </div>
@@ -136,9 +135,16 @@ function showToast(msg, type) {
   t.textContent = msg; t.className = type; t.style.display = 'block';
   clearTimeout(t._t); t._t = setTimeout(() => t.style.display = 'none', 3000);
 }
+function fmtDate(iso) {
+  if (!iso) return '–';
+  const d = new Date(iso);
+  return d.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' })
+    + ' ' + d.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+}
 
 // ── State ─────────────────────────────────────────────────────
-let links = [];
+let users = [];
+let currentUserId = null;
 
 function setNewBtnEnabled(on) {
   document.getElementById('btn-new').disabled = !on;
@@ -150,9 +156,9 @@ function showEmptyState(msg) {
   if (!row) {
     row = document.createElement('tr');
     row.id = 'empty-row';
-    document.getElementById('links-tbody').appendChild(row);
+    document.getElementById('users-tbody').appendChild(row);
   }
-  row.innerHTML = '<td colspan="3">' + msg + '</td>';
+  row.innerHTML = '<td colspan="4">' + msg + '</td>';
   row.style.display = '';
 }
 function hideEmptyState() {
@@ -161,71 +167,74 @@ function hideEmptyState() {
 }
 
 // ── Build a view row ──────────────────────────────────────────
-function createViewRow(link) {
+function createViewRow(u) {
   const tr = document.createElement('tr');
   tr.className = 'view-row';
-  tr.dataset.id = link.id;
+  tr.dataset.id = u.id;
+  const isSelf = u.id === currentUserId;
   tr.innerHTML = `
-    <td class="td-name" title="${esc(link.name)}">${esc(link.name)}</td>
-    <td class="td-url"  title="${esc(link.url)}"><a href="${esc(link.url)}" target="_blank" rel="noopener">${esc(link.url)}</a></td>
+    <td class="td-email" title="${esc(u.email)}">${esc(u.email)}${isSelf ? '<span class="you-badge">Du</span>' : ''}</td>
+    <td class="td-meta">${fmtDate(u.created_at)}</td>
+    <td class="td-meta">${fmtDate(u.last_sign_in_at)}</td>
     <td class="td-actions">
-      <button class="btn-row btn-edit-row">Bearbeiten</button>
-      <button class="btn-row btn-del-row">Löschen</button>
+      <button class="btn-row btn-del-row" ${isSelf ? 'disabled title="Du kannst dich nicht selbst löschen"' : ''}>Löschen</button>
     </td>`;
-  tr.querySelector('.btn-edit-row').addEventListener('click', () => startEdit(tr, link));
-  tr.querySelector('.btn-del-row').addEventListener('click',  () => deleteLink(link.id, tr));
+  const delBtn = tr.querySelector('.btn-del-row');
+  if (!isSelf) delBtn.addEventListener('click', () => deleteUser(u, tr));
   return tr;
 }
 
-// ── Build an edit row ─────────────────────────────────────────
-function createEditRow(link, onSave, onCancel) {
+// ── Build the "new admin" edit row ────────────────────────────
+function createEditRow(onSave, onCancel) {
   const tr = document.createElement('tr');
   tr.className = 'edit-row';
   tr.innerHTML = `
-    <td><input class="inp-inline inp-name" value="${link ? esc(link.name) : ''}" placeholder="Name" autocomplete="off"></td>
-    <td><input class="inp-inline inp-url"  value="${link ? esc(link.url)  : ''}" placeholder="https://..." autocomplete="off"></td>
+    <td><input class="inp-inline inp-email" type="email" placeholder="admin@beispiel.de" autocomplete="off"></td>
+    <td colspan="2"><input class="inp-inline inp-password" type="password" placeholder="Startpasswort (min. 8 Zeichen)" autocomplete="new-password"></td>
     <td class="td-actions">
       <button class="btn-row btn-save-row">Speichern</button>
       <button class="btn-row btn-cancel-row">Abbrechen</button>
     </td>`;
-  const nameInp = tr.querySelector('.inp-name');
-  const urlInp  = tr.querySelector('.inp-url');
+  const emailInp = tr.querySelector('.inp-email');
+  const passInp  = tr.querySelector('.inp-password');
 
   function validate() {
     let ok = true;
-    if (!nameInp.value.trim()) { nameInp.classList.add('error'); ok = false; } else nameInp.classList.remove('error');
-    if (!/^https?:\/\/.+/.test(urlInp.value.trim())) { urlInp.classList.add('error'); ok = false; } else urlInp.classList.remove('error');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInp.value.trim())) { emailInp.classList.add('error'); ok = false; } else emailInp.classList.remove('error');
+    if (passInp.value.length < 8) { passInp.classList.add('error'); ok = false; } else passInp.classList.remove('error');
     return ok;
   }
 
   tr.querySelector('.btn-save-row').addEventListener('click', () => {
-    if (validate()) onSave(nameInp.value.trim(), urlInp.value.trim());
+    if (validate()) onSave(emailInp.value.trim(), passInp.value);
   });
   tr.querySelector('.btn-cancel-row').addEventListener('click', onCancel);
-  [nameInp, urlInp].forEach(inp => inp.addEventListener('keydown', e => {
-    if (e.key === 'Enter')  { e.preventDefault(); if (validate()) onSave(nameInp.value.trim(), urlInp.value.trim()); }
+  [emailInp, passInp].forEach(inp => inp.addEventListener('keydown', e => {
+    if (e.key === 'Enter')  { e.preventDefault(); if (validate()) onSave(emailInp.value.trim(), passInp.value); }
     if (e.key === 'Escape') { e.preventDefault(); onCancel(); }
   }));
 
-  setTimeout(() => nameInp.focus(), 0);
+  setTimeout(() => emailInp.focus(), 0);
   return tr;
 }
 
 // ── Load & render ─────────────────────────────────────────────
-async function loadLinks() {
-  const tbody = document.getElementById('links-tbody');
-  const { data, error } = await db.from('payment_links').select('*').order('name');
-  if (error) { showToast('Fehler beim Laden: ' + error.message, 'error'); return; }
-  links = data || [];
+async function loadUsers() {
+  const tbody = document.getElementById('users-tbody');
+  const { data: sessionData } = await db.auth.getSession();
+  currentUserId = sessionData?.session?.user?.id || null;
 
-  // Clear all rows except empty-row
+  const { data, error } = await db.functions.invoke('admin-users', { body: { action: 'list' } });
+  if (error || data?.error) { showToast('Fehler beim Laden: ' + (data?.error || error.message), 'error'); return; }
+  users = data.users || [];
+
   Array.from(tbody.querySelectorAll('tr:not(#empty-row)')).forEach(r => r.remove());
 
-  if (links.length === 0) {
-    showEmptyState('Noch keine Zahlungslinks vorhanden. Klicke auf "+ Neuer Link".');
+  if (users.length === 0) {
+    showEmptyState('Noch keine Admins vorhanden.');
   } else {
     hideEmptyState();
-    links.forEach(link => tbody.appendChild(createViewRow(link)));
+    users.forEach(u => tbody.appendChild(createViewRow(u)));
   }
   setNewBtnEnabled(true);
 }
@@ -235,58 +244,37 @@ document.getElementById('btn-new').addEventListener('click', () => {
   setNewBtnEnabled(false);
   hideEmptyState();
 
-  const tbody = document.getElementById('links-tbody');
-  const editRow = createEditRow(null,
-    async (name, url) => {
-      const { error } = await db.from('payment_links').insert({ name, url });
-      if (error) { showToast('Fehler: ' + error.message, 'error'); return; }
-      showToast('Link gespeichert ✓', 'success');
+  const tbody = document.getElementById('users-tbody');
+  const editRow = createEditRow(
+    async (email, password) => {
+      const { data, error } = await db.functions.invoke('admin-users', { body: { action: 'create', email, password } });
+      if (error || data?.error) { showToast('Fehler: ' + (data?.error || error.message), 'error'); return; }
+      showToast('Admin angelegt ✓', 'success');
       editRow.remove();
-      await loadLinks();
+      await loadUsers();
     },
     () => {
       editRow.remove();
-      if (links.length === 0) showEmptyState('Noch keine Zahlungslinks vorhanden. Klicke auf "+ Neuer Link".');
+      if (users.length === 0) showEmptyState('Noch keine Admins vorhanden.');
       setNewBtnEnabled(true);
     }
   );
   tbody.insertBefore(editRow, tbody.firstChild);
 });
 
-// ── Edit existing ─────────────────────────────────────────────
-function startEdit(viewRow, link) {
-  setNewBtnEnabled(false);
-  const editRow = createEditRow(link,
-    async (name, url) => {
-      const { error } = await db.from('payment_links').update({ name, url }).eq('id', link.id);
-      if (error) { showToast('Fehler: ' + error.message, 'error'); return; }
-      showToast('Link aktualisiert ✓', 'success');
-      editRow.replaceWith(createViewRow({ ...link, name, url }));
-      links = links.map(l => l.id === link.id ? { ...l, name, url } : l);
-      setNewBtnEnabled(true);
-    },
-    () => {
-      editRow.replaceWith(viewRow);
-      setNewBtnEnabled(true);
-    }
-  );
-  viewRow.replaceWith(editRow);
-}
-
 // ── Delete ────────────────────────────────────────────────────
-async function deleteLink(id, row) {
-  const link = links.find(l => l.id === id);
-  if (!confirm('Zahlungslink "' + (link ? link.name : '') + '" löschen?')) return;
-  const { error } = await db.from('payment_links').delete().eq('id', id);
-  if (error) { showToast('Fehler: ' + error.message, 'error'); return; }
-  showToast('Link gelöscht.', 'success');
+async function deleteUser(u, row) {
+  if (!confirm('Admin "' + u.email + '" löschen? Diese Person kann sich danach nicht mehr einloggen.')) return;
+  const { data, error } = await db.functions.invoke('admin-users', { body: { action: 'delete', userId: u.id } });
+  if (error || data?.error) { showToast('Fehler: ' + (data?.error || error.message), 'error'); return; }
+  showToast('Admin gelöscht.', 'success');
   row.remove();
-  links = links.filter(l => l.id !== id);
-  if (links.length === 0) showEmptyState('Noch keine Zahlungslinks vorhanden. Klicke auf "+ Neuer Link".');
+  users = users.filter(x => x.id !== u.id);
+  if (users.length === 0) showEmptyState('Noch keine Admins vorhanden.');
 }
 
 // ── Init ──────────────────────────────────────────────────────
-loadLinks();
+loadUsers();
 </script>
 </body>
 </html>
