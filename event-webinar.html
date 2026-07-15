@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
+<script src="add-to-calendar.js"></script>
 <style>
   :root {
     --orange: #ff6300;
@@ -318,6 +319,9 @@
     transform: skewX(-20deg); transition: left .5s ease;
   }
   .facts-cta:hover::after { left: 120%; }
+
+  #add-to-calendar .atc-wrap { display: block; }
+  #add-to-calendar .atc-btn { width: 100%; box-sizing: border-box; justify-content: center; }
 
   /* ── VORTEILE ── */
   #vorteile {
@@ -666,6 +670,7 @@
       </div>
 
       <a href="#anmeldung" class="facts-cta" id="facts-cta-btn">Jetzt anmelden →</a>
+      <div id="add-to-calendar" style="margin-top:14px;"></div>
     </div>
   </div>
   <div class="wave-bottom" style="bottom:-1px;">
@@ -983,6 +988,19 @@ document.getElementById('footer-year').textContent = new Date().getFullYear();
       url:             event.url             || 'register.html',
       videoMeetingUrl: event.video_meeting_url || ''
     };
+
+    // Add-to-Calendar Button
+    renderAddToCalendarButton('add-to-calendar', {
+      title:       event.name || 'Webinar',
+      description: event.description || '',
+      location:    event.location || 'Online',
+      url:         event.video_meeting_url || '',
+      year:        event.year,
+      month:       event.month,
+      day:         event.day,
+      timeFrom:    event.time_from || '09:00',
+      timeTo:      event.time_to || ''
+    });
 
     // Extract numeric price value for the ticket card
     var priceRaw   = event.price || '';

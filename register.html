@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
+<script src="add-to-calendar.js"></script>
 <style>
   :root {
     --orange: #ff6300;
@@ -634,6 +635,29 @@
   var vividUrl     = paymentUrl || 'index.html#investment';
   var isTestTicket = ticketName.trim().toLowerCase().startsWith('test');
 
+  // ── Add-to-Calendar Links (für die Bestätigungs-E-Mail) ────────────────
+  var calendarLinks = (ev && ev.year != null && ev.month != null && ev.day != null)
+    ? buildAddToCalendarLinks({
+        title:       ev.name || 'Veranstaltung',
+        description: ev.description || '',
+        location:    ev.location || 'Online',
+        url:         videoMeetingUrl,
+        year:        ev.year,
+        month:       ev.month,
+        day:         ev.day,
+        timeFrom:    ev.time_from || '09:00',
+        timeTo:      ev.time_to || ''
+      })
+    : null;
+
+  // Data-URIs (Apple/iCal) werden von E-Mail-Sanitizern i.d.R. entfernt – daher
+  // stattdessen auf die Event-Seite verlinken, wo der echte Button (Blob-Download) läuft.
+  // Muss eine absolute URL sein – E-Mail-Clients lösen relative Links nicht auf und
+  // verwerfen den <a>-Tag sonst (nur der Text bleibt übrig).
+  var eventCalendarPageUrl = (ev && ev.id)
+    ? new URL((ev.type === 'Workshop' ? 'event-workshop.html' : 'event-webinar.html') + '?event_id=' + encodeURIComponent(ev.id), window.location.href).href
+    : '';
+
   // ── Ticket Card ───────────────────────────────────────────────────────
   document.getElementById('ticket-name').textContent = ticketName;
   document.getElementById('ticket-per').textContent  = ticketPer;
@@ -834,6 +858,16 @@
       payment_url:       paymentUrlFinal,
       video_meeting_url: videoMeetingUrl
     });
+    if (ev) {
+      thankyouParams.set('event_name', ev.name || '');
+      if (ev.year != null && ev.month != null && ev.day != null) {
+        thankyouParams.set('event_year',  String(ev.year));
+        thankyouParams.set('event_month', String(ev.month));
+        thankyouParams.set('event_day',   String(ev.day));
+        if (ev.time_from) thankyouParams.set('event_time_from', ev.time_from);
+        if (ev.time_to)   thankyouParams.set('event_time_to', ev.time_to);
+      }
+    }
     if (isTestTicket) thankyouParams.set('is_test', '1');
     var thankyouUrl = 'Templates/danke.html?' + thankyouParams.toString();
 
@@ -859,6 +893,11 @@
               payment_url:       paymentUrlFinal,
               video_meeting_url: videoMeetingUrl,
               payment_notice:    priceNum > 0 ? 'Beachten Sie, dass Sie an Event nur teilnehmen können, wenn die Bezahlung von uns bestätigt wurde und sie eine Bestätigungs E-Mail dafür bekommen.' : '',
+              google_calendar_url:      calendarLinks ? calendarLinks.google     : '',
+              outlook_calendar_url:     calendarLinks ? calendarLinks.outlookCom : '',
+              office365_calendar_url:   calendarLinks ? calendarLinks.office365  : '',
+              yahoo_calendar_url:       calendarLinks ? calendarLinks.yahoo      : '',
+              event_calendar_page_url:  eventCalendarPageUrl,
             }
           }
         }).then(goToDanke).catch(goToDanke);

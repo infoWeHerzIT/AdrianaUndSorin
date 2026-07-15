@@ -116,13 +116,35 @@
 
     {{^payment_url}}{{^video_meeting_url}}
     <div class="step">
-      <div class="step-num">1</div>
+      <div class="step-num">!</div>
       <div class="step-body">
-        <div class="step-label">Schritt 1</div>
         <div class="step-text">Wir melden uns bei dir<small>Du erhältst alle Details zur Veranstaltung per E-Mail.</small></div>
       </div>
     </div>
     {{/video_meeting_url}}{{/payment_url}}
+
+    {{#google_calendar_url}}
+    <div class="step">
+      <div class="step-num orange" style="font-size:14px;">📅</div>
+      <div class="step-body">
+        <div class="step-label">Termin merken</div>
+        <div class="step-text">Zum Kalender hinzufügen<small>Damit du den Termin nicht verpasst.</small></div>
+        <div style="margin-top:2px;">
+          <a href="{{google_calendar_url}}" style="color:#0078b4;text-decoration:none;font-size:13px;font-weight:600;">Google</a>
+          <span style="color:#ccc;"> &middot; </span>
+          <a href="{{outlook_calendar_url}}" style="color:#0078b4;text-decoration:none;font-size:13px;font-weight:600;">Outlook.com</a>
+          <span style="color:#ccc;"> &middot; </span>
+          <a href="{{office365_calendar_url}}" style="color:#0078b4;text-decoration:none;font-size:13px;font-weight:600;">Office 365</a>
+          <span style="color:#ccc;"> &middot; </span>
+          <a href="{{yahoo_calendar_url}}" style="color:#0078b4;text-decoration:none;font-size:13px;font-weight:600;">Yahoo</a>
+          {{#event_calendar_page_url}}
+          <span style="color:#ccc;"> &middot; </span>
+          <a href="{{event_calendar_page_url}}" style="color:#0078b4;text-decoration:none;font-size:13px;font-weight:600;">Apple / iCal ↗</a>
+          {{/event_calendar_page_url}}
+        </div>
+      </div>
+    </div>
+    {{/google_calendar_url}}
 
     <!-- REGISTRATION SUMMARY -->
     <div class="summary-box">

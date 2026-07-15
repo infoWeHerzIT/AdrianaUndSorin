@@ -315,6 +315,7 @@
 
 </div>
 
+<script src="../add-to-calendar.js"></script>
 <script>
 (function () {
   function esc(s) {
@@ -335,6 +336,13 @@
   var per     = p.get('per')              || '';
   var payUrl  = p.get('payment_url')      || '';
   var meetUrl = p.get('video_meeting_url')|| '';
+  var eventName      = p.get('event_name')       || '';
+  var eventYear      = p.get('event_year');
+  var eventMonth     = p.get('event_month');
+  var eventDay       = p.get('event_day');
+  var eventTimeFrom  = p.get('event_time_from')  || '';
+  var eventTimeTo    = p.get('event_time_to')    || '';
+  var hasEventDate   = eventYear !== null && eventMonth !== null && eventDay !== null;
   var priceNum= parseFloat(price) || 0;
   var priceDisplay = priceNum > 0 ? '€' + price : 'kostenlos';
 
@@ -378,15 +386,37 @@
 
   if (!payUrl && !meetUrl) {
     html += '<div class="step">'
-      + '<div class="step-num">1</div>'
+      + '<div class="step-num">!</div>'
       + '<div class="step-body">'
-      + '<div class="step-label">Schritt 1</div>'
       + '<div class="step-text">Wir melden uns bei dir'
       + '<small>Du erhältst alle Details zur Veranstaltung per E-Mail.</small></div>'
       + '</div></div>';
   }
 
+  if (hasEventDate) {
+    html += '<div class="step">'
+      + '<div class="step-num orange" style="font-size:14px;">📅</div>'
+      + '<div class="step-body">'
+      + '<div class="step-label">Termin merken</div>'
+      + '<div class="step-text">Zum Kalender hinzufügen<small>Damit du den Termin nicht verpasst.</small></div>'
+      + '<div id="add-to-calendar"></div>'
+      + '</div></div>';
+  }
+
   steps.innerHTML = html;
+
+  if (hasEventDate) {
+    renderAddToCalendarButton('add-to-calendar', {
+      title:    eventName || ticket || 'Veranstaltung',
+      location: ort || 'Online',
+      url:      meetUrl,
+      year:     parseInt(eventYear, 10),
+      month:    parseInt(eventMonth, 10),
+      day:      parseInt(eventDay, 10),
+      timeFrom: eventTimeFrom || '09:00',
+      timeTo:   eventTimeTo
+    });
+  }
 
   // Summary rows
   function row(key, val) {

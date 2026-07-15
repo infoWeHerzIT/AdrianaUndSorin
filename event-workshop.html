@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
+<script src="add-to-calendar.js"></script>
 <style>
   :root {
     --orange: #ff6300;
@@ -1191,6 +1192,7 @@
     <div style="margin-bottom:16px;">
       <a href="#investment" id="cta-btn" class="btn-cta-big">Jetzt Platz sichern →</a>
     </div>
+    <div id="add-to-calendar" style="margin-bottom:16px;"></div>
     <p class="cta-sub" id="cta-spots-note">Begrenzte Plätze · Tiefe statt Theorie</p>
   </div>
 </section>
@@ -1487,6 +1489,17 @@ document.getElementById('footer-year').textContent = new Date().getFullYear();
     if(ev.spots){
       setText('cta-spots-note', 'Begrenzte Plätze: ' + ev.spots + ' · Tiefe statt Theorie');
     }
+
+    renderAddToCalendarButton('add-to-calendar', {
+      title:       ev.name || 'Workshop',
+      description: ev.description || '',
+      location:    ev.location || 'Wird nach Anmeldung bekannt gegeben',
+      year:        ev.year,
+      month:       ev.month,
+      day:         ev.day,
+      timeFrom:    ev.time_from || '10:00',
+      timeTo:      ev.time_to || ''
+    });
 
     /* ── SHOW PAGE ── */
     document.getElementById('main-content').style.display = 'block';
