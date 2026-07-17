@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fast geschafft – Dein Architekten-Pass – Adriana und Sorin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root { --orange: #ff6300; --navy: #00224d; --white: #ffffff; --green: #16a34a; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #f0f2f5;
+    min-height: 100vh;
+    padding: 40px 16px 80px;
+  }
+
+  .card {
+    max-width: 640px;
+    margin: 0 auto;
+    background: var(--white);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 4px 32px rgba(0,0,0,0.10);
+  }
+
+  /* ── Header ── */
+  .hdr {
+    background: var(--navy);
+    padding: 40px 44px 32px;
+    position: relative;
+  }
+  .hdr::after {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 5px; background: var(--orange);
+  }
+  .hdr-logo {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 20px; font-weight: 700; color: var(--white);
+  }
+  .hdr-logo span { color: var(--orange); }
+  .hdr-badge {
+    display: inline-block;
+    margin-top: 16px;
+    background: rgba(34,197,94,0.18);
+    border: 1px solid rgba(34,197,94,0.4);
+    color: #22c55e;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 14px; font-weight: 700;
+    padding: 5px 14px; border-radius: 3px;
+  }
+  .hdr-eyebrow {
+    font-family: 'Orbitron', monospace;
+    font-size: 10px; font-weight: 700; letter-spacing: .18em;
+    text-transform: uppercase; color: var(--orange);
+    margin-top: 22px; display: block;
+  }
+  .hdr h1 {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 28px; font-weight: 700; color: var(--white);
+    margin-top: 8px; line-height: 1.25;
+  }
+  .hdr h1 em { font-style: normal; color: var(--orange); }
+  .hdr p {
+    color: rgba(255,255,255,0.6); font-size: 15px; line-height: 1.7;
+    margin-top: 12px;
+  }
+
+  /* ── Scarcity bar ── */
+  .scarcity {
+    background: #fff3cd;
+    border-bottom: 1px solid rgba(255,165,0,0.3);
+    padding: 13px 44px;
+    font-size: 13.5px; color: #664d00; font-weight: 500;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  /* ── Body ── */
+  .body { padding: 36px 44px 0; }
+  .body p.intro { color: #2d3748; font-size: 16px; line-height: 1.75; margin-bottom: 8px; }
+
+  /* ── Price box ── */
+  .price-box {
+    margin-top: 26px;
+    border: 2px solid var(--orange);
+    border-radius: 6px;
+    padding: 28px 26px;
+    text-align: center;
+    background: rgba(255,99,0,0.03);
+  }
+  .price-box .pass-name {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 21px; font-weight: 700; color: var(--navy);
+    margin-bottom: 12px;
+  }
+  .price-box .price-line { display: flex; align-items: baseline; justify-content: center; gap: 12px; flex-wrap: wrap; }
+  .price-box .price-old {
+    font-size: 18px; color: #999; text-decoration: line-through;
+  }
+  .price-box .price-new {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 36px; font-weight: 700; color: var(--orange);
+  }
+  .price-box .price-note { font-size: 12px; color: #999; margin-top: 4px; }
+  .btn-vip {
+    display: inline-block; margin-top: 20px;
+    background: var(--orange); color: var(--white);
+    border: none; border-radius: 3px;
+    padding: 16px 32px;
+    font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600;
+    text-decoration: none; cursor: pointer;
+    transition: background .2s, transform .15s;
+  }
+  .btn-vip:hover { background: #e55700; transform: translateY(-1px); }
+  .decline-link {
+    display: block; margin-top: 14px;
+    font-size: 13px; color: rgba(0,34,77,0.4);
+    text-decoration: none;
+  }
+  .decline-link:hover { color: rgba(0,34,77,0.65); text-decoration: underline; }
+
+  /* ── Bonus list ── */
+  .bonus-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 10px; font-weight: 700; letter-spacing: .16em;
+    text-transform: uppercase; color: #aaa;
+    margin: 34px 0 14px;
+  }
+  .bonus-item {
+    display: flex; align-items: flex-start; gap: 16px;
+    padding: 16px 0; border-top: 1px solid #eee;
+  }
+  .bonus-item:last-child { border-bottom: 1px solid #eee; }
+  .bonus-icon {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--navy-dim, rgba(0,34,77,0.06));
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 19px;
+  }
+  .bonus-body { flex: 1; }
+  .bonus-name { font-size: 15.5px; font-weight: 700; color: var(--navy); }
+  .bonus-desc { font-size: 13.5px; color: #666; margin-top: 3px; line-height: 1.6; }
+  .bonus-value { font-size: 12.5px; color: var(--orange); font-weight: 600; margin-top: 5px; }
+
+  /* ── Premium tier ── */
+  .plus-box {
+    margin: 30px 0 0;
+    background: var(--navy);
+    border-radius: 6px;
+    padding: 26px 28px;
+    color: var(--white);
+  }
+  .plus-badge {
+    display: inline-block;
+    font-family: 'Orbitron', monospace;
+    font-size: 9px; font-weight: 700; letter-spacing: .14em;
+    text-transform: uppercase;
+    background: rgba(255,99,0,0.2); border: 1px solid rgba(255,99,0,0.4);
+    color: var(--orange); padding: 3px 9px; border-radius: 2px;
+    margin-bottom: 10px;
+  }
+  .plus-box h3 {
+    font-family: 'Fredoka', sans-serif; font-size: 19px; font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .plus-box p { font-size: 14px; color: rgba(255,255,255,0.65); line-height: 1.7; margin-bottom: 16px; }
+  .plus-price { font-family: 'Fredoka', sans-serif; font-size: 22px; font-weight: 700; color: var(--orange); margin-bottom: 16px; }
+  .btn-plus {
+    display: inline-block;
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3);
+    color: var(--white); padding: 11px 22px; border-radius: 3px;
+    font-size: 14px; font-weight: 600; text-decoration: none;
+    transition: background .2s;
+  }
+  .btn-plus:hover { background: rgba(255,255,255,0.18); }
+
+  /* ── Footer ── */
+  .ftr { background: var(--navy); padding: 24px 44px; margin-top: 36px; }
+  .ftr p { color: rgba(255,255,255,0.5); font-size: 12px; line-height: 1.7; }
+  .ftr strong { color: var(--orange); }
+  .ftr a { color: rgba(255,255,255,0.5); text-decoration: none; }
+  .ftr a:hover { color: var(--white); }
+
+  /* ── Placeholder markers ── */
+  .ph { background: rgba(255,99,0,0.12); border-radius: 2px; padding: 0 4px; color: #b2470a; font-weight: 600; }
+
+  @media (max-width: 480px) {
+    body { padding: 0 0 60px; }
+    .card { border-radius: 0; }
+    .hdr, .body, .ftr { padding-left: 24px; padding-right: 24px; }
+    .scarcity { padding-left: 24px; padding-right: 24px; }
+    .price-box { padding: 22px 18px; }
+    .price-box .price-new { font-size: 30px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="card" id="card">
+
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="hdr-logo">Adriana &amp; <span>Sorin</span></div>
+    <span class="hdr-badge">Anmeldung bestätigt ✓</span>
+    <span class="hdr-eyebrow">Ein Schritt fehlt noch</span>
+    <h1>Fast geschafft, <span id="greeting-name">Teilnehmer/in</span> —<br>dein <em>Architekten-Pass</em> wartet.</h1>
+    <p id="hdr-sub">Deine Anmeldung ist bestätigt. Bevor es losgeht, haben wir ein einmaliges Angebot exklusiv für frisch angemeldete Teilnehmer:innen.</p>
+  </div>
+
+  <!-- SCARCITY -->
+  <div class="scarcity">
+    🔒 Nur <span class="ph">[ANZAHL]</span> Architekten-Pässe verfügbar — danach ist dieses Angebot weg.
+  </div>
+
+  <div class="body">
+    <p class="intro">
+      Der <strong>Architekt Deines Lebens</strong> beginnt nicht mit einem Zufall, sondern mit einem Plan.
+      Der Architekten-Pass gibt dir alles an die Hand, um das, was du hier lernst, sofort in dein Leben einzubauen — statt es nach dem Workshop wieder zu vergessen.
+    </p>
+
+    <!-- PRICE BOX -->
+    <div class="price-box">
+      <div class="pass-name">Der Architekten-Pass</div>
+      <div class="price-line">
+        <span class="price-old"><span class="ph">[GESAMTWERT]</span> €</span>
+        <span class="price-new"><span class="ph">[VIP-PREIS]</span> €</span>
+      </div>
+      <div class="price-note">Einmalig · nur jetzt, direkt nach deiner Anmeldung</div>
+      <a href="#" class="btn-vip" id="btn-vip-accept">Ja, ich will meinen Architekten-Pass →</a>
+      <a href="#" class="decline-link" id="btn-vip-decline">Nein danke, ich verzichte auf dieses Angebot</a>
+    </div>
+
+    <!-- BONUS LIST -->
+    <div class="bonus-title">Was im Architekten-Pass steckt</div>
+
+    <div class="bonus-item">
+      <div class="bonus-icon">📐</div>
+      <div class="bonus-body">
+        <div class="bonus-name">Der Bauplan</div>
+        <div class="bonus-desc">Die Aufzeichnung des Workshops — <span class="ph">[X]</span> Stunden unbegrenzten Zugriff, damit nichts verloren geht.</div>
+        <div class="bonus-value">Wert: <span class="ph">[WERT]</span> €</div>
+      </div>
+    </div>
+
+    <div class="bonus-item">
+      <div class="bonus-icon">🧱</div>
+      <div class="bonus-body">
+        <div class="bonus-name">Die Baustellen-Crew</div>
+        <div class="bonus-desc">Exklusive WhatsApp-Gruppe mit direktem Draht zu Adriana &amp; Sorin für deine Fragen.</div>
+        <div class="bonus-value">Wert: <span class="ph">[WERT]</span> €</div>
+      </div>
+    </div>
+
+    <div class="bonus-item">
+      <div class="bonus-icon">📘</div>
+      <div class="bonus-body">
+        <div class="bonus-name">Das Fundament-Workbook</div>
+        <div class="bonus-desc">Dein Arbeitsbuch zur Architekten-Methode — Schritt für Schritt dein Leben neu entwerfen.</div>
+        <div class="bonus-value">Wert: <span class="ph">[WERT]</span> €</div>
+      </div>
+    </div>
+
+    <div class="bonus-item">
+      <div class="bonus-icon">🎧</div>
+      <div class="bonus-body">
+        <div class="bonus-name">Die innere Statik</div>
+        <div class="bonus-desc">Geführte Audio-Session, um alte Blockaden zu lösen, die dir sonst im Weg stehen.</div>
+        <div class="bonus-value">Wert: <span class="ph">[WERT]</span> €</div>
+      </div>
+    </div>
+
+    <!-- PREMIUM TIER -->
+    <div class="plus-box">
+      <span class="plus-badge">Architekten-Pass PLUS</span>
+      <h3>Willst du es 1:1 begleitet?</h3>
+      <p>Alles aus dem Architekten-Pass — plus ein persönliches Strategie-Gespräch mit Adriana &amp; Sorin, in dem wir gemeinsam deinen Bauplan auf dich zuschneiden.</p>
+      <div class="plus-price"><span class="ph">[PREIS PLUS]</span> €</div>
+      <a href="#" class="btn-plus" id="btn-plus-accept">PLUS dazubuchen →</a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="ftr">
+    <p>
+      Adriana &amp; <strong>Sorin</strong> · Der Architekt Deines Lebens<br>
+      © <span id="footer-year">2026</span> · Alle Rechte vorbehalten
+    </p>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  var p = new URLSearchParams(window.location.search);
+  var vorname   = p.get('vorname') || '';
+  var eventName = p.get('event_name') || p.get('ticket') || '';
+
+  if (vorname) document.getElementById('greeting-name').textContent = vorname;
+  if (eventName) {
+    document.getElementById('hdr-sub').textContent =
+      'Deine Anmeldung zu „' + eventName + '“ ist bestätigt. Bevor es losgeht, haben wir ein einmaliges Angebot exklusiv für frisch angemeldete Teilnehmer:innen.';
+  }
+  document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+  // Beide Wege führen aktuell weiter zur regulären Danke-Seite (Zahlungslink/Meeting/Kalender),
+  // damit der Flow durchgängig funktioniert, auch bevor ein echtes VIP-Zahlungsprodukt existiert.
+  // TODO: Sobald ein echter Zahlungslink für den Architekten-Pass existiert, hier place hierhin verlinken
+  // statt direkt zu danke.html weiterzuleiten.
+  var forwardParams = p.toString();
+  var declineUrl = 'danke.html' + (forwardParams ? '?' + forwardParams : '');
+  var acceptUrl  = 'danke.html' + (forwardParams ? '?' + forwardParams + '&vip=yes' : '?vip=yes');
+
+  document.getElementById('btn-vip-decline').href = declineUrl;
+  document.getElementById('btn-vip-accept').href  = acceptUrl;
+  document.getElementById('btn-plus-accept').href = acceptUrl.replace('vip=yes', 'vip=plus');
+})();
+</script>
+</body>
+</html>

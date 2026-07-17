@@ -250,6 +250,26 @@
     width: 60px; height: 60px;
     border-top: 4px solid var(--orange); border-right: 4px solid var(--orange);
   }
+  .hero-countdown {
+    position: absolute; top: -52px; right: -36px; z-index: 3;
+    background: var(--navy);
+    border: 2px solid rgba(255,99,0,0.4);
+    border-top: 6px solid var(--orange);
+    box-shadow: 0 20px 50px rgba(0,0,0,.35);
+    padding: 28px 36px;
+    animation: fadeSlideUp .9s cubic-bezier(.16,1,.3,1) forwards;
+  }
+  .hero-countdown-label {
+    font-family: 'Orbitron', monospace;
+    font-size: 18px; font-weight: 700; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--orange);
+    text-align: center; margin-bottom: 16px;
+  }
+  .hero-countdown-numbers { display: flex; align-items: flex-start; gap: 8px; }
+  .cd-unit { display: flex; flex-direction: column; align-items: center; min-width: 56px; }
+  .cd-val { font-family: 'Fredoka', sans-serif; font-size: 40px; font-weight: 700; color: var(--white); line-height: 1; }
+  .cd-lbl { font-size: 16px; color: rgba(255,255,255,0.45); letter-spacing: .06em; text-transform: uppercase; margin-top: 6px; }
+  .cd-sep { font-size: 36px; font-weight: 700; color: rgba(255,255,255,0.25); margin-top: 2px; }
   .hero-name-badge {
     position: absolute; bottom: 160px; left: -20px;
     background: var(--white); padding: 14px 20px;
@@ -665,6 +685,11 @@
     .hero-inner { grid-template-columns: 1fr; }
     .hero-right { height: 65vw; max-height: 380px; padding: 0 5% 20px; }
     .hero-photo-frame { max-width: 100%; }
+    .hero-countdown { top: 16px; right: 16px; padding: 18px 24px; }
+    .hero-countdown-label { font-size: 14px; margin-bottom: 10px; }
+    .cd-val { font-size: 28px; }
+    .cd-unit { min-width: 40px; }
+    .cd-sep { font-size: 26px; }
     .price-card { padding: 24px 20px; }
     .price-amount { font-size: clamp(32px, 9vw, 48px); }
     #problem .content-wrap { grid-template-columns: 1fr; gap: 36px; }
@@ -761,6 +786,18 @@
       <div class="hero-photo-frame">
         <img src="Workshops/Bilder/Adriana%20und%20Sorin_hoch.png" alt="Adriana und Sorin">
         <div class="hero-corner-decor"></div>
+        <div class="hero-countdown" id="hero-countdown">
+          <div class="hero-countdown-label" id="cd-label">Start in</div>
+          <div class="hero-countdown-numbers">
+            <div class="cd-unit"><span class="cd-val" id="cd-days">00</span><span class="cd-lbl">Tage</span></div>
+            <div class="cd-sep">:</div>
+            <div class="cd-unit"><span class="cd-val" id="cd-hours">00</span><span class="cd-lbl">Std</span></div>
+            <div class="cd-sep">:</div>
+            <div class="cd-unit"><span class="cd-val" id="cd-mins">00</span><span class="cd-lbl">Min</span></div>
+            <div class="cd-sep">:</div>
+            <div class="cd-unit"><span class="cd-val" id="cd-secs">00</span><span class="cd-lbl">Sek</span></div>
+          </div>
+        </div>
         <div class="hero-name-badge">
           <div class="name">Adriana Vukin &amp; Sorin Ratiu</div>
           <div class="role">MENTAL COACH · NLP MASTER · DEEP COACHING</div>
@@ -1283,6 +1320,35 @@ document.getElementById('footer-year').textContent = new Date().getFullYear();
 
   function setText(id, val){ var el=document.getElementById(id); if(el) el.textContent=val; }
   function setHtml(id, val){ var el=document.getElementById(id); if(el) el.innerHTML=val; }
+
+  /* ── Countdown zum Workshop-Start ── */
+  function initCountdown(ev){
+    var box = document.getElementById('hero-countdown');
+    if(!box || ev.year == null || ev.month == null || ev.day == null) return;
+
+    var from   = (ev.time_from || '09:00').split(':');
+    var target = new Date(ev.year, ev.month, ev.day, parseInt(from[0],10) || 0, parseInt(from[1],10) || 0, 0);
+    var timer;
+
+    function pad(n){ return String(n).padStart(2, '0'); }
+
+    function tick(){
+      var diff = target.getTime() - Date.now();
+      if(diff <= 0){
+        setText('cd-label', 'Es läuft!');
+        ['cd-days','cd-hours','cd-mins','cd-secs'].forEach(function(id){ setText(id, '00'); });
+        clearInterval(timer);
+        return;
+      }
+      var sec = Math.floor(diff / 1000);
+      setText('cd-days',  pad(Math.floor(sec / 86400)));
+      setText('cd-hours', pad(Math.floor((sec % 86400) / 3600)));
+      setText('cd-mins',  pad(Math.floor((sec % 3600) / 60)));
+      setText('cd-secs',  pad(sec % 60));
+    }
+    tick();
+    timer = setInterval(tick, 1000);
+  }
   function showEl(id, display){ var el=document.getElementById(id); if(el) el.style.display=display||''; }
   function hideEl(id){ var el=document.getElementById(id); if(el) el.style.display='none'; }
 
@@ -1335,6 +1401,7 @@ document.getElementById('footer-year').textContent = new Date().getFullYear();
     var dateStr      = formatDate(ev);
     var dateShort    = formatDateShort(ev);
     var timeStr      = formatTime(ev);
+    initCountdown(ev);
     var format       = ev.format || 'Präsenz';
     var priceRaw     = ev.price  || '';
     var priceNum     = parsePriceNumber(priceRaw);

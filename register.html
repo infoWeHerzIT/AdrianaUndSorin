@@ -9,6 +9,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 <script src="add-to-calendar.js"></script>
+<script src="captcha.js"></script>
 <style>
   :root {
     --orange: #ff6300;
@@ -478,6 +479,11 @@
         <span class="field-error" id="err-handy">Bitte Handynummer eingeben</span>
       </div>
 
+      <div class="form-group">
+        <div class="g-recaptcha" data-sitekey="6LcGmVgtAAAAAPrMzw2nDjY7uWiL2oME8ALja2n5"></div>
+        <span class="field-error" id="err-captcha">Bitte bestätige, dass du kein Roboter bist</span>
+      </div>
+
       <button type="submit" class="btn-register" id="btn-register">
         <span class="spinner" id="btn-spinner"></span>
         <span class="btn-label" id="btn-label">Jetzt Registrieren →</span>
@@ -795,6 +801,14 @@
 
     var valid = true;
 
+    var captchaErr = document.getElementById('err-captcha');
+    if (typeof captchaIsSolved === 'function' && !captchaIsSolved()) {
+      captchaErr.classList.add('visible');
+      valid = false;
+    } else {
+      captchaErr.classList.remove('visible');
+    }
+
     var fields = [
       { id: 'vorname',  errId: 'err-vorname',  validate: function(v){ return v.trim().length > 0; } },
       { id: 'nachname', errId: 'err-nachname', validate: function(v){ return v.trim().length > 0; } },
@@ -874,6 +888,16 @@
     function goToDanke() { window.location.href = thankyouUrl; }
 
     if (!isTestTicket) {
+      // Dynamics CRM: läuft parallel, Fehler blockieren die Weiterleitung nicht
+      db.functions.invoke('crm-submit', {
+        body: {
+          firstname:   vorname,
+          lastname:    nachname,
+          email:       email,
+          mobilephone: handy
+        }
+      }).catch(function(err) { console.error('CRM submit error:', err); });
+
       try {
         db.functions.invoke('send-email', {
           body: {
