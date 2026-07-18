@@ -910,9 +910,9 @@ function updateEventButtons(ev) {
   if (thankBtn) {
     const today     = new Date(); today.setHours(0,0,0,0);
     const eventDate = new Date(ev.year, ev.month, ev.day);
-    const isPast    = eventDate < today;
+    const isPast    = eventDate <= today;
     thankBtn.disabled = !isPast;
-    thankBtn.title    = isPast ? '' : 'Wird freigeschaltet sobald das Event vorbei ist (' + ev.day + '.' + String(ev.month + 1).padStart(2,'0') + '.' + ev.year + ')';
+    thankBtn.title    = isPast ? '' : 'Wird freigeschaltet am Tag des Events (' + ev.day + '.' + String(ev.month + 1).padStart(2,'0') + '.' + ev.year + ')';
   }
 
   // "Feedback-Link" Button
