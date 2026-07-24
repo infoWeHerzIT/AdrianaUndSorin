@@ -32,12 +32,12 @@
     .box-webinar ul { margin: 0 0 22px; padding: 0; list-style: none; }
     .box-webinar li { color: rgba(255,255,255,0.78); font-size: 14px; line-height: 1.8; padding-left: 0; }
     .btn-action { display: inline-block; padding: 12px 26px; border-radius: 3px; font-size: 14px; font-weight: 700; text-decoration: none; }
-    .btn-webinar { background: #ff6300; color: #ffffff; }
+    .btn-webinar { background: #ff6300; color: #ffffff; text-align: center;}
 
-    .box-feedback { background: #fff8f0; border: 1px dashed rgba(255,99,0,0.45); text-align: center; }
+    .box-feedback { background: #fff8f0; border: 1px dashed rgba(255,99,0,0.45);  }
     .box-feedback p { color: #2d3748; font-size: 15px; line-height: 1.7; margin: 0 0 18px; }
     .btn-feedback { background: #00224d; color: #ffffff; }
-    .btn-trance { background: #ff6300; color: #ffffff; margin-top: 18px; }
+    .btn-trance { background: #ff6300; color: #ffffff;  }
 
     /* Signature & footer */
     .signature { padding: 28px 44px 36px; }
@@ -66,7 +66,7 @@
 
     <p>
       von Herzen möchten wir uns bei dir bedanken, dass du am Samstag bei unserem
-      <strong>ersten Präsenzseminar in Nürnberg</strong> dabei warst. 💛
+      <strong>Präsenzseminar</strong> dabei warst. 💛
     </p>
 
     <p>
@@ -85,31 +85,18 @@
     </div>
 
     <p>
-      Wir hoffen, dass du viele wertvolle Impulse zu <strong>Stressmanagement, innerer Balance und mentaler Stärke</strong>
+      Wir hoffen, dass du viele wertvolle Impulse zu <strong>Stress-freiheit, innerer Balance und mentaler Stärke</strong>
       für deinen Alltag mitnehmen konntest – und dass sich davon schon etwas in dir gesetzt hat.
     </p>
 
-    <!-- TRANCE ATTACHMENT -->
-    <div class="box box-trance">
-      <div class="box-title">🎧 Deine Bonus Ressourcen</div>
-      <p class="box-text">
-        Wie versprochen findest du <strong>unten deine Trance</strong> – damit du sie jederzeit nutzen
-        und die Entspannung ganz für dich vertiefen kannst.
-      </p>
-      <a class="btn-action btn-trance" href="{{ressourcen_url}}">Jetzt Ressourcen herunterladen →</a>
-    </div>
-
+    <!-- TRANCE ATTACHMENT (nur vorhanden wenn Ressourcen-Link gesetzt ist – siehe bonus_section in admin-event-detail.html) -->
+    {{{bonus_section}}}
     <!-- WEBINAR INVITE -->
     <div class="box box-webinar">
       <div class="box-title on-dark">Kostenfreies Online-Webinar</div>
-      <h3>Dauerstress – Die unterschätzte Stressfalle</h3>
-      <div class="meta-row">
-        <span class="meta-item">📅&nbsp; 23.06.</span>
-        <span class="meta-item">🕖&nbsp; 19:00 Uhr</span>
-      </div>
       <ul>
-        <li>✨ Wie Dauerstress entsteht</li>
-        <li>✨ Was Dauerstress im Gehirn und Körper bewirkt</li>
+        <li>✨ Wie Stress entsteht</li>
+        <li>✨ Was Stress im Gehirn und Körper bewirkt</li>
         <li>✨ Warum viele Menschen unbewusst im Funktionsmodus feststecken</li>
         <li>✨ Welche einfachen Werkzeuge dir helfen können, mehr Ruhe, Klarheit und Gelassenheit in deinen Alltag zu bringen</li>
       </ul>
@@ -123,8 +110,6 @@
 
   </div>
 
-  <hr class="divider">
-
   <!-- SIGNATURE -->
   <div class="signature">
     <p>Vielen Dank für dein Vertrauen und deine Teilnahme.</p>
@@ -135,7 +120,7 @@
   <div class="footer">
     <p>
       {{event_name}} &nbsp;·&nbsp; <strong>{{event_ort}}</strong><br>
-      Diese E-Mail wurde dir nach deiner Teilnahme am Präsenzseminar vom {{event_datum}} gesendet.
+      Diese E-Mail wurde dir nach deiner Teilnahme am Präsenzseminar vom <strong>{{event_datum}}</strong> gesendet.
     </p>
   </div>
 

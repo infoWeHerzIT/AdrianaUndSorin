@@ -1178,6 +1178,14 @@ async function sendThankYouEmails() {
     }
   } catch (e) { /* Fallback auf Origin */ }
 
+  const bonusSection = currentEvent.ressourcenUrl
+    ? '<div class="box box-trance">'
+      + '<div class="box-title">🎧 Deine Bonus Ressourcen</div>'
+      + '<p class="box-text">Wie versprochen findest du <strong>unten deine Trance</strong> – damit du sie jederzeit nutzen und die Entspannung ganz für dich vertiefen kannst.</p>'
+      + '<a class="btn-action btn-trance" href="' + currentEvent.ressourcenUrl + '">Jetzt Ressourcen herunterladen →</a>'
+      + '</div></br>'
+    : '';
+
   let success = 0, failed = 0;
   const errors = [];
   for (const p of confirmed) {
@@ -1192,7 +1200,7 @@ async function sendThankYouEmails() {
             to_email:       p.email,
             to_name:        (p.vorname || '') + ' ' + (p.nachname || ''),
             vorname:        p.vorname || '',
-            ressourcen_url: currentEvent.ressourcenUrl || '',
+            bonus_section:  bonusSection,
             event_name:     currentEvent.name,
             event_ort:      currentEvent.location || '',
             event_datum:    eventDatum,
