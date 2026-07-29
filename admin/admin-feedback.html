@@ -131,12 +131,12 @@
     <table id="feedback-table">
       <thead>
         <tr>
+          <th class="sortable" data-key="rating">Bewertung<span class="sort-arrow"></span></th>
           <th class="sortable" data-key="name">Name<span class="sort-arrow"></span></th>
           <th class="sortable" data-key="email">E-Mail<span class="sort-arrow"></span></th>
           <th class="sortable" data-key="handy">Telefon<span class="sort-arrow"></span></th>
           <th class="sortable" data-key="eventName">Event<span class="sort-arrow"></span></th>
           <th class="sortable" data-key="eventDate">Datum<span class="sort-arrow"></span></th>
-          <th>Bewertung</th>
         </tr>
       </thead>
       <tbody id="feedback-tbody">
@@ -323,12 +323,12 @@ function render() {
     const viewRow = document.createElement('tr');
     viewRow.className = 'view-row' + (isOpen ? ' open' : '');
     viewRow.innerHTML = `
+      <td>${renderStars(r.rating)}</td>
       <td class="td-name">${nameHtml}</td>
       <td>${r.email ? maskFromSecondChar(r.email) : '<span class="td-meta">–</span>'}</td>
       <td>${r.handy ? maskFromSecondChar(r.handy) : '<span class="td-meta">–</span>'}</td>
       <td class="td-event" title="${esc(r.eventName)}">${esc(r.eventName)}</td>
-      <td class="td-meta">${esc(r.eventDateLabel)}</td>
-      <td>${renderStars(r.rating)}</td>`;
+      <td class="td-meta">${esc(r.eventDateLabel)}</td>`;
     const nameCell = viewRow.querySelector('.td-name');
     nameCell.innerHTML = '<span class="expand-toggle">▶</span>' + nameCell.innerHTML;
 
