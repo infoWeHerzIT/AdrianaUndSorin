@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feedback – Adriana und Sorin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root { --orange:#ff6300; --navy:#00224d; --white:#ffffff; --green:#16a34a; --red:#dc2626; --yellow:#d97706; }
+  *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'DM Sans',sans-serif; font-size:16px; background:#f4f4f2; color:var(--navy); padding-bottom:80px; }
+
+  nav { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:center; padding:16px 5%; background:rgba(0,34,77,0.97); backdrop-filter:blur(8px); }
+  .nav-inner { max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; width:100%; }
+  .nav-logo { font-family:'Fredoka',sans-serif; color:var(--white); font-size:18px; font-weight:700; text-decoration:none; display:flex; align-items:center; gap:10px; }
+  .nav-logo span { color:var(--orange); }
+  .nav-admin-badge { font-family:'Orbitron',monospace; font-size:9px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; background:rgba(255,99,0,0.2); border:1px solid rgba(255,99,0,0.4); color:var(--orange); padding:3px 8px; border-radius:2px; }
+  .nav-links { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  .nav-link { color:rgba(255,255,255,0.6); font-size:13px; text-decoration:none; border:1px solid rgba(255,255,255,0.15); padding:7px 14px; border-radius:2px; background:transparent; cursor:pointer; transition:background .2s,color .2s; font-family:'DM Sans',sans-serif; }
+  .nav-link:hover { background:rgba(255,255,255,0.08); color:var(--white); }
+  .nav-link.active { border-color:rgba(255,99,0,0.5); color:var(--orange); }
+
+  .admin-header { background:var(--navy); padding:100px 0 60px; position:relative; overflow:hidden; }
+  .admin-header::before { content:''; position:absolute; inset:0; background-image:repeating-linear-gradient(90deg,rgba(255,99,0,0.04) 0px,rgba(255,99,0,0.04) 1px,transparent 1px,transparent 80px); pointer-events:none; }
+  .admin-header::after { content:''; position:absolute; left:0; top:0; bottom:0; width:5px; background:var(--orange); }
+  .admin-header-inner { max-width:1200px; margin:0 auto; padding:0 32px; position:relative; z-index:1; }
+  .admin-page-label { font-family:'Orbitron',monospace; font-size:10px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--orange); margin-bottom:14px; display:block; }
+  .admin-header h1 { font-family:'Fredoka',sans-serif; font-size:clamp(28px,3.5vw,44px); color:var(--white); line-height:1.1; margin-bottom:12px; }
+  .admin-header h1 em { font-style:normal; color:var(--orange); }
+  .admin-header p { font-size:15px; color:rgba(255,255,255,0.55); max-width:640px; line-height:1.7; }
+
+  .admin-main { max-width:1200px; margin:0 auto; padding:40px 32px 0; }
+  .list-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px; }
+  .list-title { font-family:'Fredoka',sans-serif; font-size:22px; }
+  .list-count { font-size:13px; color:rgba(0,34,77,0.5); }
+
+  .controls-row { display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:20px; }
+  .controls-row input[type=search] {
+    flex:1; min-width:240px; padding:9px 14px; border:1px solid rgba(0,34,77,0.18); border-radius:4px;
+    font-family:'DM Sans',sans-serif; font-size:14px; color:var(--navy); background:var(--white); outline:none; transition:border-color .2s;
+  }
+  .controls-row input[type=search]:focus { border-color:var(--orange); }
+  .btn-privacy {
+    background:var(--white); border:1px solid rgba(0,34,77,0.18); color:var(--navy); border-radius:4px;
+    padding:9px 16px; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; cursor:pointer;
+    transition:background .2s,border-color .2s,color .2s; white-space:nowrap;
+  }
+  .btn-privacy:hover { border-color:var(--orange); color:var(--orange); }
+  .btn-privacy.active { background:var(--navy); border-color:var(--navy); color:var(--white); }
+
+  .pv-rest { filter:none; transition:filter .15s; }
+  .table-wrap.privacy-on .pv-rest { filter:blur(4px); user-select:none; }
+
+  .table-wrap { background:var(--white); border:1px solid rgba(0,34,77,0.1); border-radius:8px; overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; min-width:900px; }
+  thead { background:rgba(0,34,77,0.04); }
+  th { padding:12px 16px; text-align:left; font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:rgba(0,34,77,0.5); white-space:nowrap; }
+  th.sortable { cursor:pointer; user-select:none; transition:color .15s; }
+  th.sortable:hover { color:var(--navy); }
+  th.sortable.active { color:var(--orange); }
+  .sort-arrow { display:inline-block; margin-left:4px; opacity:.6; font-size:10px; }
+  td { padding:13px 16px; border-top:1px solid rgba(0,34,77,0.06); font-size:14px; vertical-align:middle; }
+  tr.view-row { cursor:pointer; }
+  tr.view-row:hover td { background:rgba(255,99,0,0.03); }
+  tr.detail-row td { background:rgba(0,34,77,0.02); padding:18px 16px 22px; }
+  tr.detail-row { display:none; }
+  tr.detail-row.open { display:table-row; }
+
+  .td-name  { font-weight:600; }
+  .td-meta  { color:rgba(0,34,77,0.55); font-size:13px; white-space:nowrap; }
+  .td-event { max-width:220px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+  .stars { letter-spacing:1px; color:var(--orange); white-space:nowrap; }
+  .stars .off { color:rgba(0,34,77,0.15); }
+
+  .expand-toggle { display:inline-block; margin-right:8px; font-size:11px; color:rgba(0,34,77,0.35); transition:transform .15s; }
+  tr.view-row.open .expand-toggle { transform:rotate(90deg); }
+
+  .detail-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px 28px; }
+  .detail-block .dl { font-family:'Orbitron',monospace; font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:rgba(0,34,77,0.4); margin-bottom:6px; }
+  .detail-block .dv { font-size:14px; line-height:1.6; color:var(--navy); white-space:pre-wrap; }
+  .detail-block .dv.empty { color:rgba(0,34,77,0.35); }
+  .badge-ok  { display:inline-block; font-size:12px; font-weight:600; padding:2px 9px; border-radius:10px; background:rgba(22,163,74,0.12); color:var(--green); }
+  .badge-no  { display:inline-block; font-size:12px; font-weight:600; padding:2px 9px; border-radius:10px; background:rgba(0,34,77,0.07); color:rgba(0,34,77,0.45); }
+
+  #empty-row td, #error-row td { padding:48px; text-align:center; color:rgba(0,34,77,0.4); font-size:14px; }
+  #error-row td { color:var(--red); }
+
+  @media(max-width:700px) {
+    .admin-header-inner,.admin-main { padding-left:20px; padding-right:20px; }
+  }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase-config.js"></script>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">Adriana &amp; <span>Sorin</span><span class="nav-admin-badge">Admin</span></a>
+    <div class="nav-links">
+      <a href="admin-events.html" class="nav-link">Events</a>
+      <a href="admin-teilnehmer.html" class="nav-link">Teilnehmer</a>
+      <a href="admin-feedback.html" class="nav-link active">Feedback</a>
+      <a href="admin-payment-links.html" class="nav-link">Zahlungslinks</a>
+      <a href="admin-users.html" class="nav-link">Admins</a>
+      <button id="btn-logout" class="nav-link" style="border-color:rgba(220,38,38,0.4);color:#f87171;">Ausloggen</button>
+    </div>
+  </div>
+</nav>
+
+<div class="admin-header">
+  <div class="admin-header-inner">
+    <span class="admin-page-label">Auswertung</span>
+    <h1>Teilnehmer<em>-Feedback</em></h1>
+    <p>Alle eingereichten Rückmeldungen im Überblick – sortierbar nach Person (Name, E-Mail, Telefon) und nach Event (Name, Datum). Zeile anklicken für Details.</p>
+  </div>
+</div>
+
+<div class="admin-main">
+  <div class="list-header">
+    <div class="list-title">Alle Rückmeldungen</div>
+    <div class="list-count" id="list-count"></div>
+  </div>
+  <div class="controls-row">
+    <input type="search" id="filter-search" placeholder="Name oder Event suchen…">
+    <button type="button" id="btn-privacy" class="btn-privacy active">👁 Sensible Daten anzeigen</button>
+  </div>
+  <div class="table-wrap privacy-on">
+    <table id="feedback-table">
+      <thead>
+        <tr>
+          <th class="sortable" data-key="name">Name<span class="sort-arrow"></span></th>
+          <th class="sortable" data-key="email">E-Mail<span class="sort-arrow"></span></th>
+          <th class="sortable" data-key="handy">Telefon<span class="sort-arrow"></span></th>
+          <th class="sortable" data-key="eventName">Event<span class="sort-arrow"></span></th>
+          <th class="sortable" data-key="eventDate">Datum<span class="sort-arrow"></span></th>
+          <th>Bewertung</th>
+        </tr>
+      </thead>
+      <tbody id="feedback-tbody">
+        <tr id="empty-row"><td colspan="6">Wird geladen…</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+db.auth.getSession().then(({ data }) => {
+  if (!data.session) window.location.href = 'admin-login.html';
+});
+document.getElementById('btn-logout').addEventListener('click', async () => {
+  await db.auth.signOut();
+  window.location.href = 'admin-login.html';
+});
+
+// ── Helpers ───────────────────────────────────────────────────
+function esc(s) {
+  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function fmtDate(iso) {
+  if (!iso) return '–';
+  const d = new Date(iso);
+  return d.toLocaleDateString('de-DE', { day:'2-digit', month:'2-digit', year:'numeric' })
+    + ' ' + d.toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit' });
+}
+function fmtEventDate(ev) {
+  if (!ev || ev.year == null || ev.month == null || ev.day == null) return '–';
+  return String(ev.day).padStart(2,'0') + '.' + String(ev.month + 1).padStart(2,'0') + '.' + ev.year;
+}
+function renderStars(rating) {
+  if (!rating) return '<span class="td-meta">–</span>';
+  let s = '';
+  for (let i = 1; i <= 5; i++) s += i <= rating ? '★' : '<span class="off">★</span>';
+  return '<span class="stars" title="' + rating + '/5">' + s + '</span>';
+}
+// Erster Buchstabe bleibt sichtbar, alles ab dem 2. Buchstaben wird (bei aktivem Blur) verwischt.
+function maskFromSecondChar(value) {
+  const v = String(value ?? '');
+  if (!v) return '';
+  const first = esc(v.charAt(0));
+  const rest = esc(v.slice(1));
+  return rest ? first + '<span class="pv-rest">' + rest + '</span>' : first;
+}
+
+// ── State ─────────────────────────────────────────────────────
+let rows = [];
+let sortKey = 'eventDate';
+let sortDir = 'desc';
+const openIds = new Set();
+
+// ── Load ──────────────────────────────────────────────────────
+async function loadFeedback() {
+  const { data, error } = await db
+    .from('feedback')
+    .select('*, participants(vorname, nachname, email, handy), events(id, name, year, month, day)')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    document.getElementById('feedback-tbody').innerHTML =
+      '<tr id="error-row"><td colspan="6">Fehler beim Laden: ' + esc(error.message) + '</td></tr>';
+    return;
+  }
+
+  rows = (data || []).map(r => {
+    const p = r.participants || null;
+    const ev = r.events || null;
+    const name = (r.vorname && r.vorname.trim())
+      || ((p ? ((p.vorname || '') + ' ' + (p.nachname || '')).trim() : '') || '');
+    return {
+      id: r.id,
+      name: name,
+      email: r.email || (p && p.email) || '',
+      handy: r.handy || (p && p.handy) || '',
+      eventName: (ev && ev.name) || r.ort || 'Unbekanntes Event',
+      eventDate: ev ? new Date(ev.year, ev.month, ev.day) : null,
+      eventDateLabel: fmtEventDate(ev),
+      rating: r.rating,
+      recommend: r.recommend,
+      highlight: r.highlight,
+      improvement: r.improvement,
+      testimonial_ok: !!r.testimonial_ok,
+      created_at: r.created_at
+    };
+  });
+
+  render();
+}
+
+// ── Search ────────────────────────────────────────────────────
+function filteredRows() {
+  const q = document.getElementById('filter-search').value.trim().toLowerCase();
+  if (!q) return rows.slice();
+  return rows.filter(r =>
+    (r.name || '').toLowerCase().includes(q) ||
+    (r.eventName || '').toLowerCase().includes(q)
+  );
+}
+
+document.getElementById('filter-search').addEventListener('input', () => render());
+
+// ── Sort ──────────────────────────────────────────────────────
+function sortedRows() {
+  const list = filteredRows();
+  list.sort((a, b) => {
+    let res;
+    if (sortKey === 'eventDate') {
+      const at = a.eventDate ? a.eventDate.getTime() : -Infinity;
+      const bt = b.eventDate ? b.eventDate.getTime() : -Infinity;
+      res = at - bt;
+    } else {
+      const av = (a[sortKey] || '').toString().toLowerCase();
+      const bv = (b[sortKey] || '').toString().toLowerCase();
+      res = av < bv ? -1 : av > bv ? 1 : 0;
+    }
+    return sortDir === 'asc' ? res : -res;
+  });
+  return list;
+}
+
+document.querySelectorAll('th.sortable').forEach(th => {
+  th.addEventListener('click', () => {
+    const key = th.dataset.key;
+    if (sortKey === key) {
+      sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+    } else {
+      sortKey = key;
+      sortDir = 'asc';
+    }
+    render();
+  });
+});
+
+function updateSortIndicators() {
+  document.querySelectorAll('th.sortable').forEach(th => {
+    const arrow = th.querySelector('.sort-arrow');
+    if (th.dataset.key === sortKey) {
+      th.classList.add('active');
+      arrow.textContent = sortDir === 'asc' ? '▲' : '▼';
+    } else {
+      th.classList.remove('active');
+      arrow.textContent = '';
+    }
+  });
+}
+
+// ── Render ────────────────────────────────────────────────────
+function detailBlock(label, value) {
+  const v = value && String(value).trim();
+  return '<div class="detail-block"><div class="dl">' + esc(label) + '</div><div class="dv' + (v ? '' : ' empty') + '">'
+    + (v ? esc(v) : 'Keine Angabe') + '</div></div>';
+}
+
+function render() {
+  updateSortIndicators();
+  const tbody = document.getElementById('feedback-tbody');
+  tbody.innerHTML = '';
+  const list = sortedRows();
+
+  document.getElementById('list-count').textContent = list.length
+    ? list.length + (list.length === 1 ? ' Rückmeldung' : ' Rückmeldungen')
+    : '';
+
+  if (list.length === 0) {
+    const msg = rows.length === 0
+      ? 'Noch keine Rückmeldungen vorhanden.'
+      : 'Keine Rückmeldungen gefunden für diese Suche.';
+    tbody.innerHTML = '<tr id="empty-row"><td colspan="6">' + msg + '</td></tr>';
+    return;
+  }
+
+  list.forEach(r => {
+    const isOpen = openIds.has(r.id);
+
+    const nameParts = (r.name || '').trim().split(/\s+/).filter(Boolean);
+    const vorname = nameParts[0] || '';
+    const nachname = nameParts.slice(1).join(' ');
+    const nameHtml = vorname
+      ? esc(vorname) + (nachname ? ' ' + maskFromSecondChar(nachname) : '')
+      : '<span class="td-meta">Unbekannt</span>';
+
+    const viewRow = document.createElement('tr');
+    viewRow.className = 'view-row' + (isOpen ? ' open' : '');
+    viewRow.innerHTML = `
+      <td class="td-name">${nameHtml}</td>
+      <td>${r.email ? maskFromSecondChar(r.email) : '<span class="td-meta">–</span>'}</td>
+      <td>${r.handy ? maskFromSecondChar(r.handy) : '<span class="td-meta">–</span>'}</td>
+      <td class="td-event" title="${esc(r.eventName)}">${esc(r.eventName)}</td>
+      <td class="td-meta">${esc(r.eventDateLabel)}</td>
+      <td>${renderStars(r.rating)}</td>`;
+    const nameCell = viewRow.querySelector('.td-name');
+    nameCell.innerHTML = '<span class="expand-toggle">▶</span>' + nameCell.innerHTML;
+
+    const detailRow = document.createElement('tr');
+    detailRow.className = 'detail-row' + (isOpen ? ' open' : '');
+    const td = document.createElement('td');
+    td.colSpan = 6;
+    td.innerHTML = `
+      <div class="detail-grid">
+        ${detailBlock('Highlight', r.highlight)}
+        ${detailBlock('Verbesserungsvorschlag', r.improvement)}
+        ${detailBlock('Weiterempfehlung', r.recommend)}
+        <div class="detail-block">
+          <div class="dl">Testimonial-Erlaubnis</div>
+          <div class="dv">${r.testimonial_ok ? '<span class="badge-ok">Ja</span>' : '<span class="badge-no">Nein</span>'}</div>
+        </div>
+        <div class="detail-block">
+          <div class="dl">Eingereicht am</div>
+          <div class="dv">${esc(fmtDate(r.created_at))}</div>
+        </div>
+      </div>`;
+    detailRow.appendChild(td);
+
+    viewRow.addEventListener('click', () => {
+      if (openIds.has(r.id)) openIds.delete(r.id); else openIds.add(r.id);
+      viewRow.classList.toggle('open');
+      detailRow.classList.toggle('open');
+    });
+
+    tbody.appendChild(viewRow);
+    tbody.appendChild(detailRow);
+  });
+}
+
+// ── Privacy-Blur-Toggle ───────────────────────────────────────
+document.getElementById('btn-privacy').addEventListener('click', function () {
+  const on = document.querySelector('.table-wrap').classList.toggle('privacy-on');
+  this.textContent = on ? '👁 Sensible Daten anzeigen' : '🙈 Sensible Daten blurren';
+  this.classList.toggle('active', on);
+});
+
+// ── Init ──────────────────────────────────────────────────────
+loadFeedback();
+</script>
+</body>
+</html>
