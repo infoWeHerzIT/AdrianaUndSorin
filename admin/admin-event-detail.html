@@ -441,6 +441,7 @@
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../supabase-config.js"></script>
+<script src="../constants.js"></script>
 <script src="teilnehmer-table.js"></script>
 </head>
 <body>
@@ -1185,7 +1186,7 @@ async function sendThankYouEmails() {
       + '<p class="box-text">Wie versprochen findest du <strong>unten deine Trance</strong> – damit du sie jederzeit nutzen und die Entspannung ganz für dich vertiefen kannst.</p>'
       + '<a class="btn-action btn-trance" href="' + currentEvent.ressourcenUrl + '">Jetzt Ressourcen herunterladen →</a>'
       + '</div></br>'
-    : '';
+    : '<p style="color:#ff6300;font-weight:bold;text-align:center;">🎁 Bevor du deine exklusive Bonus-Trance erhältst, verrate uns: Was war dein größtes Aha-Erlebnis aus dem Seminar? Dein Feedback schaltet den Bonus frei.</p>';
 
   let success = 0, failed = 0;
   const errors = [];
@@ -1199,6 +1200,7 @@ async function sendThankYouEmails() {
           params: {
             title:          'Dankeschön + BONUS',
             to_email:       p.email,
+            cc_email:       CC_NOTIFICATION_EMAILS,
             to_name:        (p.vorname || '') + ' ' + (p.nachname || ''),
             vorname:        p.vorname || '',
             bonus_section:  bonusSection,
