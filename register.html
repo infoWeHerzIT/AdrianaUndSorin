@@ -889,17 +889,21 @@
 
     function goToDanke() { window.location.href = thankyouUrl; }
 
-    if (!isTestTicket) {
-      // Dynamics CRM: läuft parallel, Fehler blockieren die Weiterleitung nicht
-      dynamicsCRM.submitContact({
-        firstname:   vorname,
-        lastname:    nachname,
-        email:       email,
-        mobilephone: handy
-      });
+    // Dynamics CRM: Fehler blockieren die Weiterleitung nicht — die Weiterleitung
+    // muss aber warten, bis der Request wirklich abgeschlossen ist (nicht nur
+    // "gestartet"), sonst bricht der Browser ihn beim Navigieren mitten in der
+    // Preflight-Anfrage ab, bevor die eigentliche Anfrage je rausgeht.
+    var crmDone = dynamicsCRM.submitContact({
+      firstname:   vorname,
+      lastname:    nachname,
+      email:       email,
+      mobilephone: handy
+    });
 
+    if (!isTestTicket) {
+      var emailDone;
       try {
-        db.functions.invoke('send-email', {
+        emailDone = db.functions.invoke('send-email', {
           body: {
             action: 'registration',
             params: {
@@ -908,7 +912,7 @@
               cc:                CC_NOTIFICATION_EMAILS,
               bcc:               '',
               vorname:           vorname,
-              nachname:          nachname,  
+              nachname:          nachname,
               handy:             handy,
               ticket_name:       ticketName,
               ticket_price:      priceNum > 0 ? '€' + priceNum : 'kostenlos',
@@ -924,10 +928,13 @@
               event_calendar_page_url:  eventCalendarPageUrl,
             }
           }
-        }).then(goToDanke).catch(goToDanke);
-      } catch(e) { goToDanke(); }
+        }).catch(function () {});
+      } catch (e) {
+        emailDone = Promise.resolve();
+      }
+      Promise.all([crmDone, emailDone]).then(goToDanke);
     } else {
-      goToDanke();
+      Promise.resolve(crmDone).then(goToDanke);
     }
   });
 

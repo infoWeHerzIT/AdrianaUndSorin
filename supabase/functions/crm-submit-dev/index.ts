@@ -1,15 +1,20 @@
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 
-// PROD-Variante: schreibt gegen die Dynamics-PROD-Umgebung. Eigene, klar
-// benannte Secrets — getrennt von den DYNAMICS_*-Secrets der DEV-Function
-// "crm-submit-dev", damit lokale Tests nie echte Kontakte in Dynamics PROD
-// anlegen und Produktions-Traffic nie versehentlich in Dynamics DEV landet.
-const TENANT_ID     = Deno.env.get("DYNAMICS_PROD_TENANT_ID")!;
-const CLIENT_ID     = Deno.env.get("DYNAMICS_PROD_CLIENT_ID")!;
-const CLIENT_SECRET = Deno.env.get("DYNAMICS_PROD_CLIENT_SECRET")!;
-const RESOURCE      = Deno.env.get("DYNAMICS_PROD_RESOURCE")!; // https://<org>.crm4.dynamics.com
+// DEV-Variante von crm-submit: schreibt gegen die Dynamics-DEV-Umgebung.
+// Nutzt die bereits vorhandenen DYNAMICS_*-Secrets (das sind die DEV-
+// Zugangsdaten) — getrennt von den DYNAMICS_PROD_*-Secrets der PROD-
+// Function "crm-submit", damit lokale Tests niemals versehentlich echte
+// Kontakte in Dynamics PROD anlegen.
+const TENANT_ID     = Deno.env.get("DYNAMICS_TENANT_ID")!;
+const CLIENT_ID     = Deno.env.get("DYNAMICS_CLIENT_ID")!;
+const CLIENT_SECRET = Deno.env.get("DYNAMICS_CLIENT_SECRET")!;
+const RESOURCE      = Deno.env.get("DYNAMICS_RESOURCE")!; // https://<org>.crm4.dynamics.com
 
-const ALLOWED_ORIGIN = Deno.env.get("ALLOWED_ORIGIN") || "*";
+// DEV: Der Origin variiert beim lokalen Testen (file://, localhost:PORT,
+// 127.0.0.1:PORT …) — deshalb hier bewusst NICHT wie bei PROD auf das feste
+// ALLOWED_ORIGIN-Secret (Produktions-Domain) eingeschränkt, sonst blockt der
+// Browser jede lokale Anfrage schon in der CORS-Preflight-Prüfung.
+const ALLOWED_ORIGIN = "*";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": ALLOWED_ORIGIN,

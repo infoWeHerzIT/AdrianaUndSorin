@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s -i -X OPTIONS https://vtdekigorlwlarvlshpp.supabase.co/functions/v1/crm-submit-dev -H 'Origin: http://localhost:5500' -H 'Access-Control-Request-Method: POST' -H 'Access-Control-Request-Headers: authorization,apikey,content-type,x-client-info')",
+      "Bash(curl -s -i -X OPTIONS https://vtdekigorlwlarvlshpp.supabase.co/functions/v1/send-email -H 'Origin: http://localhost:5500' -H 'Access-Control-Request-Method: POST' -H 'Access-Control-Request-Headers: authorization,apikey,content-type,x-client-info')"
+    ]
+  }
+}

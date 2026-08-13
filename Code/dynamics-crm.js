@@ -13,17 +13,47 @@
 // Alle Methoden sind fire-and-forget: Fehler werden geloggt, aber nie
 // geworfen, damit ein CRM-Ausfall nie die Registrierung/Weiterleitung
 // des Nutzers blockiert.
+//
+// ── DEV/PROD-Routing ────────────────────────────────────────────
+// Welche Dynamics-Umgebung angesprochen wird, entscheidet NICHT der Client
+// (der hat gar keinen Zugriff auf Secrets), sondern welche Edge Function
+// aufgerufen wird: "crm-submit" schreibt gegen Dynamics PROD (eigene
+// DYNAMICS_PROD_*-Secrets), "crm-submit-dev" gegen Dynamics DEV (die
+// bereits vorhandenen DYNAMICS_*-Secrets) — siehe supabase/functions/crm-submit(-dev).
+// Diese Klasse wählt nur den Funktionsnamen anhand der Umgebung, in der
+// die Seite gerade läuft:
+//   - localhost/127.0.0.1/file:// oder ?dynamics_env=dev  → *-dev (DEV)
+//   - alles andere (z. B. infoweherzit.github.io)         → * (PROD)
 // ================================================================
 
 class DynamicsCRM {
-  constructor(client) {
+  constructor(client, environment) {
     this.client = client || (typeof db !== 'undefined' ? db : null);
+    this.environment = environment || DynamicsCRM.detectEnvironment();
+    console.info('[DynamicsCRM] Ziel-Umgebung:', this.environment);
   }
 
-  // Legt einen Kontakt an/aktualisiert ihn (supabase/functions/crm-submit).
+  static detectEnvironment() {
+    try {
+      var override = new URLSearchParams(window.location.search).get('dynamics_env');
+      if (override === 'dev' || override === 'prod') return override;
+
+      var host = window.location.hostname;
+      var isLocal = window.location.protocol === 'file:' || host === 'localhost' || host === '127.0.0.1' || host === '';
+      return isLocal ? 'dev' : 'prod';
+    } catch (e) {
+      return 'prod';
+    }
+  }
+
+  _functionName(base) {
+    return this.environment === 'dev' ? base + '-dev' : base;
+  }
+
+  // Legt einen Kontakt an/aktualisiert ihn (supabase/functions/crm-submit[-dev]).
   submitContact(fields) {
     fields = fields || {};
-    return this.client.functions.invoke('crm-submit', {
+    return this.client.functions.invoke(this._functionName('crm-submit'), {
       body: {
         firstname:   fields.firstname   || '',
         lastname:    fields.lastname    || '',
@@ -36,10 +66,10 @@ class DynamicsCRM {
   }
 
   // Wie submitContact, hängt zusätzlich die übergebenen Antworten als
-  // JSON-Notiz an den Kontakt (supabase/functions/crm-survey-submit).
+  // JSON-Notiz an den Kontakt (supabase/functions/crm-survey-submit[-dev]).
   submitSurvey(fields) {
     fields = fields || {};
-    return this.client.functions.invoke('crm-survey-submit', {
+    return this.client.functions.invoke(this._functionName('crm-survey-submit'), {
       body: {
         firstname:   fields.firstname   || '',
         lastname:    fields.lastname    || '',
