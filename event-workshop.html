@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
+<script src="Code/dynamics-crm.js"></script>
 <script src="Code/add-to-calendar.js"></script>
 <style>
   :root {
@@ -1378,24 +1379,27 @@ document.getElementById('footer-year').textContent = new Date().getFullYear();
   }
 
   try {
+    // Events kommen jetzt aus Dynamics, nicht mehr aus Supabase — die ID ist
+    // die Dynamics-GUID (wht_eventid), siehe Code/dynamics-crm.js
     var params  = new URLSearchParams(window.location.search);
     var eventId = params.get('event_id') || params.get('id');
     var ev;
 
+    var allEvents = await dynamicsCRM.listEvents();
+    if(!allEvents || allEvents.length === 0){ showError(); return; }
+
     if(eventId){
-      var res = await db.from('events').select('*').eq('id', eventId).single();
-      if(res.error || !res.data){ showError(); return; }
-      ev = res.data;
+      ev = allEvents.find(function(e){ return e.id === eventId; });
+      if(!ev){ showError(); return; }
     } else {
+      // allEvents ist bereits nach Datum sortiert
       var today = new Date();
-      var res = await db.from('events').select('*')
-        .eq('type', 'Workshop')
-        .order('year').order('month').order('day');
-      if(res.error || !res.data || !res.data.length){ showError(); return; }
-      var future = res.data.filter(function(e){
+      var workshops = allEvents.filter(function(e){ return e.type === 'Workshop'; });
+      if(!workshops.length){ showError(); return; }
+      var future = workshops.filter(function(e){
         return new Date(e.year, e.month, e.day) >= new Date(today.getFullYear(), today.getMonth(), today.getDate());
       });
-      ev = future.length ? future[0] : res.data[res.data.length - 1];
+      ev = future.length ? future[0] : workshops[workshops.length - 1];
     }
 
     var dateStr      = formatDate(ev);

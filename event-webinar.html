@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
+<script src="Code/dynamics-crm.js"></script>
 <script src="Code/add-to-calendar.js"></script>
 <style>
   :root {
@@ -883,27 +884,27 @@ document.getElementById('footer-year').textContent = new Date().getFullYear();
 
   try {
     // 1. Determine event_id from URL or find next upcoming webinar
+    // (Events kommen jetzt aus Dynamics, nicht mehr aus Supabase — die
+    // ID ist die Dynamics-GUID (wht_eventid), siehe Code/dynamics-crm.js)
     var params  = new URLSearchParams(window.location.search);
     var eventId = params.get('event_id') || params.get('id');
 
     var event;
+    var allEvents = await dynamicsCRM.listEvents();
+    if(!allEvents || allEvents.length === 0){ showError(); return; }
 
     if(eventId){
-      var res = await db.from('events').select('*').eq('id', eventId).single();
-      if(res.error || !res.data){ showError(); return; }
-      event = res.data;
+      event = allEvents.find(function(e){ return e.id === eventId; });
+      if(!event){ showError(); return; }
     } else {
-      // Auto: find next upcoming Webinar
+      // Auto: find next upcoming Webinar (allEvents ist bereits nach Datum sortiert)
       var today = new Date();
-      var res = await db.from('events').select('*')
-        .eq('type', 'Webinar')
-        .order('year').order('month').order('day');
-      if(res.error || !res.data || res.data.length === 0){ showError(); return; }
-      // Pick first event that is today or in the future
-      var future = res.data.filter(function(e){
+      var webinars = allEvents.filter(function(e){ return e.type === 'Webinar'; });
+      if(webinars.length === 0){ showError(); return; }
+      var future = webinars.filter(function(e){
         return new Date(e.year, e.month, e.day) >= new Date(today.getFullYear(), today.getMonth(), today.getDate());
       });
-      event = future.length ? future[0] : res.data[res.data.length - 1];
+      event = future.length ? future[0] : webinars[webinars.length - 1];
     }
 
     // 2. Populate page

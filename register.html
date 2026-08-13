@@ -562,20 +562,20 @@
   }
   function esc(v) { return String(v||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-  // ── Load from Supabase ────────────────────────────────────────────────
+  // ── Load from Dynamics ──────────────────────────────────────────────────
   var ev = null;   // specific event (loaded by event_id)
 
   try {
     if (eventId) {
-      var r1 = await db.from('events').select('*, payment_link:payment_link_id(name,url), duo_payment_link:duo_payment_link_id(name,url), eb_payment_link:eb_payment_link_id(name,url), eb_duo_payment_link:eb_duo_payment_link_id(name,url)').eq('id', eventId).single();
-      if (!r1.error && r1.data) ev = r1.data;
+      var allEvents = await dynamicsCRM.listEvents();
+      ev = allEvents.find(function (e) { return e.id === eventId; }) || null;
     }
   } catch (err) {
-    console.error('DB load error:', err);
+    console.error('Events load error:', err);
   }
 
   // ── Build ticket data from DB (URL params only as last-resort fallback) ──
-  var priceRaw, priceNum, paymentUrl, paymentLinkObj, videoMeetingUrl, ticketName, ticketPer, ticketDesc;
+  var priceRaw, priceNum, paymentUrl, paymentLinkLabel, videoMeetingUrl, ticketName, ticketPer, ticketDesc;
 
   if (ev) {
     // Primary: Supabase – all prices stored as direct numbers, no calculations
@@ -613,15 +613,18 @@
     }
     priceRaw = priceNum > 0 ? String(priceNum) : (ev.price || '');
     if (isEB && isDuo) {
-      paymentLinkObj = ev.eb_duo_payment_link;
+      paymentUrl = ev.eb_duo_payment_url || '';
+      paymentLinkLabel = 'Early Bird Duo';
     } else if (isEB) {
-      paymentLinkObj = ev.eb_payment_link;
+      paymentUrl = ev.eb_payment_url || '';
+      paymentLinkLabel = 'Early Bird';
     } else if (isDuo) {
-      paymentLinkObj = ev.duo_payment_link;
+      paymentUrl = ev.duo_payment_url || '';
+      paymentLinkLabel = 'Duo';
     } else {
-      paymentLinkObj = ev.payment_link;
+      paymentUrl = ev.payment_url || '';
+      paymentLinkLabel = 'Standard';
     }
-    paymentUrl = (paymentLinkObj && paymentLinkObj.url) || '';
     videoMeetingUrl = ev.video_meeting_url || '';
     ticketName      = ticketLabel || ev.name || 'Workshop-Ticket';
     if (isEB && ticketName.toLowerCase().indexOf('early bird') === -1) {
@@ -758,7 +761,7 @@
       var payUrlEl  = document.getElementById('test-payment-url');
       var payBtn    = document.getElementById('test-payment-btn');
       if (payBox && payNameEl && payUrlEl && payBtn) {
-        payNameEl.textContent = (paymentLinkObj && paymentLinkObj.name) ? paymentLinkObj.name : '–';
+        payNameEl.textContent = paymentLinkLabel || '–';
         payUrlEl.innerHTML = '<a href="' + esc(paymentUrl) + '" target="_blank" rel="noopener">' + esc(paymentUrl) + '</a>';
         payBtn.href = paymentUrl;
         payBox.style.display = 'flex';

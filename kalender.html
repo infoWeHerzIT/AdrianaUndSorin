@@ -991,7 +991,12 @@ async function loadEvents() {
     location: r.location, format: r.format,
     price: r.price, spots: r.spots, description: r.description,
     url: r.url, videoMeetingUrl: r.video_meeting_url,
-    status: r.status || 'Draft'
+    resourcesUrl: r.resources_url,
+    status: r.status || 'Draft',
+    ebData: r.eb_data, duoDiscount: r.duo_discount,
+    paymentUrl: r.payment_url, duoPaymentUrl: r.duo_payment_url,
+    ebPaymentUrl: r.eb_payment_url, ebDuoPaymentUrl: r.eb_duo_payment_url,
+    paymentLinks: r.payment_links
   }));
 }
 
@@ -1014,7 +1019,15 @@ function normalizeEvent(ev) {
     description: ev.description || '',
     url:             ev.url             || 'register.html',
     videoMeetingUrl: ev.videoMeetingUrl || '',
-    status:          ev.status          || 'Draft'
+    resourcesUrl:    ev.resourcesUrl    || '',
+    status:          ev.status          || 'Draft',
+    ebData:          ev.ebData          || '',
+    duoDiscount:     ev.duoDiscount,
+    paymentUrl:      ev.paymentUrl      || '',
+    duoPaymentUrl:   ev.duoPaymentUrl   || '',
+    ebPaymentUrl:    ev.ebPaymentUrl    || '',
+    ebDuoPaymentUrl: ev.ebDuoPaymentUrl || '',
+    paymentLinks:    ev.paymentLinks    || []
   };
 }
 
@@ -1167,7 +1180,10 @@ function buildEventCard(ev, isPast) {
     year: 'Jahr', month: 'Monat', day: 'Tag',
     timeFrom: 'Von', timeTo: 'Bis', location: 'Ort',
     price: 'Preis', spots: 'Plätze', description: 'Beschreibung',
-    url: 'Anmelde-URL', videoMeetingUrl: 'Video-Meeting'
+    url: 'Anmelde-URL', videoMeetingUrl: 'Video-Meeting', resourcesUrl: 'Ressourcen-Link (Bonus)',
+    status: 'Status', ebData: 'Early-Bird-Daten', duoDiscount: 'Duo-Rabatt',
+    paymentUrl: 'Zahlungslink (Primary)', duoPaymentUrl: 'Zahlungslink (Duo)',
+    ebPaymentUrl: 'Zahlungslink (Early Bird)', ebDuoPaymentUrl: 'Zahlungslink (Early Bird Duo)'
   };
   const debugRows = isTestEvent
     ? Object.entries(DEBUG_LABELS).map(([k, lbl]) => {
@@ -1175,6 +1191,14 @@ function buildEventCard(ev, isPast) {
         return `<span class="event-debug-key">${lbl}</span><span class="event-debug-val">${val}</span>`;
       }).join('')
     : '';
+
+  const paymentLinksRows = isTestEvent && ev.paymentLinks && ev.paymentLinks.length
+    ? ev.paymentLinks.map(function (pl) {
+        var label = (pl.name || '–').replace(/</g,'&lt;') + ' · ' + (pl.typeLabel || '–').replace(/</g,'&lt;');
+        var val   = (pl.url || '–').replace(/</g,'&lt;');
+        return `<span class="event-debug-key">${label}</span><span class="event-debug-val">${val}</span>`;
+      }).join('')
+    : '<span class="event-debug-key">–</span><span class="event-debug-val">Keine verknüpften Zahlungslinks</span>';
 
   card.innerHTML = `
     <div class="event-card-header">
@@ -1199,9 +1223,18 @@ function buildEventCard(ev, isPast) {
       <span class="event-card-meeting-label">📹 Video-Meeting</span>
       <a href="${ev.videoMeetingUrl}" target="_blank" rel="noopener" class="event-card-meeting-btn">Meeting beitreten →</a>
     </div>` : ''}
+    ${isTestEvent && ev.resourcesUrl ? `
+    <div class="event-card-meeting-link" onclick="event.stopPropagation()">
+      <span class="event-card-meeting-label">📎 Ressourcen (Bonus)</span>
+      <a href="${ev.resourcesUrl}" target="_blank" rel="noopener" class="event-card-meeting-btn">Öffnen →</a>
+    </div>` : ''}
     ${isTestEvent ? `<details class="event-card-test-debug" open onclick="event.stopPropagation()">
       <summary>Test · Alle Event-Daten</summary>
       <div class="event-debug-grid">${debugRows}</div>
+    </details>` : ''}
+    ${isTestEvent ? `<details class="event-card-test-debug" open onclick="event.stopPropagation()">
+      <summary>Test · Alle Payment-Links (${(ev.paymentLinks || []).length})</summary>
+      <div class="event-debug-grid">${paymentLinksRows}</div>
     </details>` : ''}
   `;
 
