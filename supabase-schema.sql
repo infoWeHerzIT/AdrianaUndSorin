@@ -71,11 +71,36 @@ create table if not exists feedback (
   created_at      timestamptz default now()
 );
 
--- ── 5. ROW LEVEL SECURITY ────────────────────────────────────────
+-- ── 5. AUDIENCE SURVEY (Zielgruppen-Umfrage) ─────────────────────
+create table if not exists audience_survey (
+  id                    uuid default gen_random_uuid() primary key,
+  situation             text[],   -- Frage 1: Mehrfachauswahl
+  situation_main        text,     -- Frage 2: Einfachauswahl
+  challenge             text,     -- Frage 3
+  themen                text[],   -- Frage 4: Mehrfachauswahl
+  moment                text,     -- Frage 5
+  versucht              text[],   -- Frage 6: Mehrfachauswahl
+  versucht_nicht        text,     -- Frage 7
+  hindernis             text[],   -- Frage 8: Mehrfachauswahl
+  unterstuetzung        text,     -- Frage 9: Einfachauswahl
+  veraenderung          text,     -- Frage 10
+  quelle                text,     -- Frage 11: Einfachauswahl
+  kommentar             text,     -- Frage 12 (optional)
+  zoom_wunsch           text,     -- Frage 13: Einfachauswahl (Pflichtfrage)
+  ergebnisse_wunsch     text,     -- Frage 14: Einfachauswahl
+  vollstaendiger_name   text,     -- Frage 15 (optional, nur bei Ja bei 13/14)
+  email                 text,
+  telefon               text,
+  newsletter_opt_in     boolean default false,
+  created_at            timestamptz default now()
+);
+
+-- ── 6. ROW LEVEL SECURITY ────────────────────────────────────────
 alter table events              enable row level security;
 alter table participants        enable row level security;
 alter table event_participations enable row level security;
 alter table feedback            enable row level security;
+alter table audience_survey     enable row level security;
 
 -- Events: jeder kann lesen (Kalender & Startseite)
 create policy "events_public_read"
@@ -121,6 +146,16 @@ create policy "feedback_public_insert"
 create policy "feedback_admin_read" on feedback for select
   using (auth.role() = 'authenticated');
 create policy "feedback_admin_delete" on feedback for delete
+  using (auth.role() = 'authenticated');
+
+-- Audience Survey: jeder darf die Umfrage absenden
+create policy "audience_survey_public_insert"
+  on audience_survey for insert with check (true);
+
+-- Audience Survey: nur eingeloggte Admins dürfen lesen/löschen
+create policy "audience_survey_admin_read" on audience_survey for select
+  using (auth.role() = 'authenticated');
+create policy "audience_survey_admin_delete" on audience_survey for delete
   using (auth.role() = 'authenticated');
 
 

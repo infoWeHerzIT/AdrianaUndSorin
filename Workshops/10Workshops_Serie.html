@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="10 kostenlose Live-Webinare gegen Dauerstress mit Adriana & Sorin. Jeden Dienstag 19:30 Uhr, ab 08.09.2026 — bewährte Sprachmuster, Gedankenreisen und praktische Techniken für Führungskräfte und Selbstständige.">
+<title>STRESSFREI — Kostenlose Live-Webinar-Reihe</title>
+
+<!-- ===== SEO: strukturierte Daten für die Webinar-Reihe (schema.org) ===== -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "EducationEvent",
+  "name": "STRESSFREI – Webinar-Reihe gegen Dauerstress",
+  "description": "10 kostenlose Live-Webinare mit Adriana & Sorin: Verstehen, was Stress mit dir macht. Verändern, was dich stresst.",
+  "startDate": "2026-09-08T19:30:00+02:00",
+  "endDate": "2026-11-10T20:30:00+01:00",
+  "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
+  "eventStatus": "https://schema.org/EventScheduled",
+  "location": {
+    "@type": "VirtualLocation",
+    "url": "PLATZHALTER: URL der Landingpage"
+  },
+  "organizer": [
+    {"@type": "Person", "name": "Adriana"},
+    {"@type": "Person", "name": "Sorin"}
+  ],
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "EUR",
+    "availability": "https://schema.org/InStock",
+    "url": "PLATZHALTER: URL der Landingpage#anmeldung"
+  }
+}
+</script>
+
+<!--
+  BILD-PLATZHALTER: Social-Share-Vorschaubild (Open Graph)
+  Wird angezeigt, wenn dieser Link in WhatsApp-Status, Facebook, LinkedIn oder Instagram-Bio geteilt wird.
+  Format: 1200x630px. Inhalt: STRESSFREI-Branding, Titel "Raus aus dem Dauerstress. Zurück zu dir.",
+  Termine "08.09.–10.11.2026", ggf. Duo-Foto oder Breathing-Orb-Motiv im Navy/Orange-Look.
+  Datei ersetzen und Pfad unten eintragen, sobald das Bild existiert.
+-->
+<meta property="og:title" content="STRESSFREI — Kostenlose Live-Webinar-Reihe">
+<meta property="og:description" content="10 kostenlose Live-Webinare gegen Dauerstress. Jeden Dienstag 19:30 Uhr, ab 08.09.2026.">
+<meta property="og:image" content="PLATZHALTER-social-share-bild.jpg">
+<meta property="og:type" content="website">
+
+<!-- ===== TRACKING: Meta-Pixel — ID eintragen und Kommentar entfernen, um zu aktivieren =====
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', 'PLATZHALTER-PIXEL-ID');
+fbq('track', 'PageView');
+</script>
+-->
+
+<!-- ===== TRACKING: LinkedIn Insight Tag — Partner-ID eintragen und Kommentar entfernen =====
+<script type="text/javascript">
+_linkedin_partner_id = "PLATZHALTER-PARTNER-ID";
+window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+window._linkedin_data_partner_ids.push(_linkedin_partner_id);
+</script>
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,500;1,9..144,600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase-config.js"></script>
+<script src="../Code/dynamics-crm.js"></script>
+
+<style>
+  :root{
+    --navy-deep:#001531;
+    --navy:#00224d;
+    --navy-soft:#0a3d73;
+    --orange:#ff6300;
+    --orange-soft:#ffb27a;
+    --orange-pale:#ffe1c7;
+    --white:#ffffff;
+    --paper:#F5F7FA;
+    --paper-alt:#EDF0F5;
+    --ink:#00224d;
+    --ink-soft:#51607e;
+    --line:#dde2eb;
+    --radius:14px;
+    --shadow:0 20px 45px -20px rgba(0,21,49,0.35);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Space Grotesk', sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  img{max-width:100%;display:block;}
+  a{color:inherit;}
+  .accent{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-weight:500;
+  }
+  .wrap{max-width:1120px;margin:0 auto;padding:0 28px;}
+  :focus-visible{outline:3px solid var(--orange);outline-offset:3px;}
+
+  /* NAV */
+  header.nav{
+    position:sticky;top:0;z-index:50;
+    background:rgba(0,21,49,0.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+  }
+  .nav-inner{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 28px;max-width:1120px;margin:0 auto;
+  }
+  .brand{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;letter-spacing:0.06em;
+    color:var(--white);font-size:1.05rem;
+    display:flex;align-items:center;gap:10px;
+  }
+  .brand-dot{width:9px;height:9px;border-radius:50%;background:var(--orange);
+    box-shadow:0 0 0 6px rgba(255,99,0,0.18);}
+  .nav-links{display:flex;gap:28px;align-items:center;}
+  .nav-links a{
+    color:rgba(255,255,255,0.78);text-decoration:none;font-size:0.92rem;
+    margin-left:28px;
+  }
+  .nav-links a:first-child{margin-left:0;}
+  .nav-links a:hover{color:var(--white);}
+  .nav-cta{
+    background:var(--orange);color:var(--navy-deep)!important;
+    padding:9px 18px;border-radius:100px;font-weight:600;font-size:0.88rem!important;
+  }
+  @media(max-width:680px){ .nav-links a:not(.nav-cta){display:none;} }
+
+  /* HERO */
+  .hero{
+    position:relative;overflow:hidden;
+    background:radial-gradient(120% 140% at 15% 0%, var(--navy-soft) 0%, var(--navy) 45%, var(--navy-deep) 100%);
+    color:var(--white);
+    padding:88px 0 96px;
+  }
+  .breath-orb{
+    position:absolute;
+    top:50%;right:6%;
+    width:560px;height:560px;
+    transform:translateY(-50%);
+    border-radius:50%;
+    background:radial-gradient(circle at 40% 35%, rgba(255,99,0,0.55), rgba(255,99,0,0.06) 60%, transparent 72%);
+    filter:blur(2px);
+    animation:breathe 7s ease-in-out infinite;
+    pointer-events:none;
+  }
+  @keyframes breathe{
+    0%,100%{transform:translateY(-50%) scale(0.92);opacity:0.7;}
+    50%{transform:translateY(-50%) scale(1.06);opacity:1;}
+  }
+  @media (prefers-reduced-motion: reduce){ .breath-orb{animation:none;} }
+  .hero-inner{position:relative;z-index:2;max-width:660px;}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.16);
+    padding:7px 14px;border-radius:100px;
+    font-size:0.82rem;letter-spacing:0.03em;color:var(--orange-soft);
+    margin-bottom:26px;
+  }
+  .eyebrow-admin-badge{
+    font-size:0.68rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;
+    background:rgba(255,99,0,0.25);color:var(--orange-soft);
+    padding:2px 7px;border-radius:100px;flex-shrink:0;
+  }
+  #eyebrow-event-select{
+    background:transparent;border:none;color:var(--orange-soft);
+    font-family:'Space Grotesk',sans-serif;font-size:0.82rem;letter-spacing:0.03em;
+    cursor:pointer;outline:none;max-width:340px;
+  }
+  #eyebrow-event-select option{color:#111;}
+  h1.hero-title{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:clamp(2.3rem, 5vw, 3.4rem);
+    line-height:1.08;
+    margin:0 0 18px;
+    letter-spacing:-0.01em;
+  }
+  h1.hero-title em{
+    font-family:'Fraunces', serif;
+    font-style:italic;font-weight:500;
+    color:var(--orange-soft);
+  }
+  .hero-sub{
+    font-size:1.18rem;
+    color:rgba(255,255,255,0.82);
+    max-width:520px;margin:0 0 34px;
+  }
+  .hero-meta{
+    display:flex;flex-wrap:wrap;gap:14px;margin-bottom:38px;
+  }
+  .meta-pill{
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:12px;padding:12px 16px;
+    font-size:0.88rem;color:rgba(255,255,255,0.85);
+    display:flex;flex-direction:column;gap:2px;min-width:150px;
+  }
+  .meta-pill b{color:var(--white);font-size:0.98rem;}
+  .btn{
+    display:inline-flex;align-items:center;gap:10px;
+    background:var(--orange);color:var(--navy-deep);
+    font-family:'Space Grotesk',sans-serif;font-weight:700;
+    padding:16px 30px;border-radius:100px;border:none;
+    font-size:1.02rem;cursor:pointer;text-decoration:none;
+    box-shadow:0 14px 30px -12px rgba(255,99,0,0.55);
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn:hover{transform:translateY(-2px);box-shadow:0 18px 36px -12px rgba(255,99,0,0.65);}
+  .btn-ghost{
+    background:transparent;color:var(--white);
+    border:1px solid rgba(255,255,255,0.35);
+    box-shadow:none;font-weight:600;
+  }
+  .btn-ghost:hover{background:rgba(255,255,255,0.08);transform:none;}
+  .hero-actions{display:flex;gap:14px;flex-wrap:wrap;}
+
+  /* SECTION HEADERS */
+  .section{padding:88px 0;}
+  .section-alt{background:var(--paper-alt);}
+  .kicker{
+    font-size:0.82rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;
+    color:var(--orange);margin-bottom:14px;
+  }
+  h2{
+    font-family:'Space Grotesk',sans-serif;font-weight:700;
+    font-size:clamp(1.7rem,3vw,2.3rem);
+    margin:0 0 14px;letter-spacing:-0.01em;
+  }
+  .section-lede{color:var(--ink-soft);font-size:1.08rem;max-width:620px;margin-bottom:48px;}
+
+  /* VALUE PROPS */
+  .props{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+  @media(max-width:900px){.props{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:560px){.props{grid-template-columns:1fr;}}
+  .prop-card{
+    background:var(--white);border:1px solid var(--line);
+    border-radius:var(--radius);padding:26px 22px;
+  }
+  .prop-num{
+    font-family:'Fraunces',serif;font-style:italic;font-weight:500;
+    color:var(--orange);font-size:1.6rem;margin-bottom:10px;display:block;
+  }
+  .prop-card h3{font-size:1.02rem;margin:0 0 8px;font-weight:700;}
+  .prop-card p{margin:0;color:var(--ink-soft);font-size:0.92rem;}
+
+  /* SCHEDULE */
+  .schedule{border-top:1px solid var(--line);}
+  .week-row{
+    display:grid;
+    grid-template-columns:64px 150px 1fr auto;
+    align-items:center;gap:20px;
+    padding:20px 0;border-bottom:1px solid var(--line);
+  }
+  .week-row:last-child{border-bottom:none;}
+  @media(max-width:720px){
+    .week-row{grid-template-columns:44px 1fr;grid-template-areas:"num date" "num title" "num badge";row-gap:4px;}
+    .week-date{grid-area:date;}
+    .week-title{grid-area:title;}
+    .week-badge{grid-area:badge;}
+  }
+  .week-num{
+    font-family:'Fraunces',serif;font-style:italic;font-weight:500;
+    color:var(--orange);font-size:1.5rem;
+  }
+  .week-date{font-size:0.86rem;color:var(--ink-soft);font-weight:500;}
+  .week-title{font-weight:600;font-size:1.02rem;}
+  .week-title span{display:block;font-weight:400;color:var(--ink-soft);font-size:0.86rem;margin-top:2px;}
+  .badge{
+    font-size:0.72rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;
+    background:var(--orange-pale);color:#b33a00;
+    padding:6px 11px;border-radius:100px;white-space:nowrap;
+  }
+
+  /* DUO */
+  .duo{display:grid;grid-template-columns:1fr 1fr;gap:0;border-radius:20px;overflow:hidden;box-shadow:var(--shadow);}
+  @media(max-width:760px){.duo{grid-template-columns:1fr;}}
+  .duo-panel{padding:46px 40px;}
+  .duo-panel.adriana{background:var(--navy);color:var(--white);}
+  .duo-panel.sorin{background:var(--white);color:var(--ink);border:1px solid var(--line);}
+  .duo-role{
+    font-size:0.78rem;letter-spacing:0.1em;text-transform:uppercase;
+    opacity:0.65;margin-bottom:10px;
+  }
+  .duo-panel h3{font-family:'Space Grotesk',sans-serif;font-size:1.35rem;margin:0 0 12px;}
+  .duo-panel p{margin:0;font-size:0.95rem;}
+  .duo-panel.adriana p{color:rgba(255,255,255,0.82);}
+  .duo-panel.sorin p{color:var(--ink-soft);}
+
+  /* IMAGE PLACEHOLDERS */
+  .img-placeholder{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:8px;text-align:center;
+    background:repeating-linear-gradient(135deg, rgba(255,99,0,0.06) 0 10px, rgba(255,99,0,0.02) 10px 20px);
+    border:1.5px dashed rgba(255,99,0,0.45);
+    color:var(--ink-soft);
+  }
+  .duo-panel .img-placeholder{
+    width:96px;height:96px;border-radius:50%;margin-bottom:10px;
+  }
+  .duo-panel .ph-caption{
+    display:block;font-size:0.72rem;line-height:1.4;margin-bottom:18px;max-width:220px;
+  }
+  .duo-panel.adriana .ph-caption{color:rgba(255,255,255,0.55);}
+  .duo-panel.sorin .ph-caption{color:var(--ink-soft);}
+  .duo-panel.adriana .img-placeholder{border-color:rgba(255,255,255,0.35);color:rgba(255,255,255,0.65);}
+  .img-placeholder svg{opacity:0.7;}
+  .img-placeholder .ph-label{font-size:0.62rem;line-height:1.35;padding:0 8px;letter-spacing:0.01em;}
+  .hero-avatars{
+    display:flex;align-items:center;gap:12px;margin-bottom:28px;
+  }
+  .avatar-cluster{display:flex;}
+  .avatar-cluster .img-placeholder{
+    width:44px;height:44px;border-radius:50%;
+    border-color:rgba(255,255,255,0.35);color:rgba(255,255,255,0.7);
+  }
+  .avatar-cluster .img-placeholder:nth-child(2){margin-left:-14px;}
+  .avatar-cluster .img-placeholder svg{width:16px;height:16px;}
+  .hero-avatars .avatar-caption{font-size:0.82rem;color:rgba(255,255,255,0.65);}
+
+  /* TESTIMONIALS */
+  .testimonials{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  @media(max-width:900px){.testimonials{grid-template-columns:1fr;}}
+  .testi-card{
+    background:var(--white);border:1.5px dashed rgba(255,99,0,0.4);
+    border-radius:var(--radius);padding:26px 22px;
+    display:flex;flex-direction:column;gap:14px;
+  }
+  .testi-quote{
+    font-family:'Fraunces',serif;font-style:italic;font-weight:500;
+    font-size:1.05rem;color:var(--ink);margin:0;line-height:1.45;
+  }
+  .testi-meta{display:flex;align-items:center;gap:10px;}
+  .testi-avatar{
+    width:34px;height:34px;border-radius:50%;flex-shrink:0;
+    background:var(--paper-alt);border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;color:var(--ink-soft);
+  }
+  .testi-meta b{display:block;font-size:0.85rem;}
+  .testi-ph-note{font-size:0.72rem;color:var(--orange);font-weight:600;letter-spacing:0.02em;}
+  .duo-quote{
+    text-align:center;margin-top:36px;
+    font-family:'Fraunces',serif;font-style:italic;font-weight:500;
+    font-size:1.3rem;color:var(--navy);max-width:640px;margin-left:auto;margin-right:auto;
+  }
+
+  /* FORM */
+  .form-shell{
+    background:var(--navy-deep);
+    border-radius:24px;
+    padding:56px;
+    color:var(--white);
+    position:relative;overflow:hidden;
+  }
+  @media(max-width:640px){.form-shell{padding:32px 22px;}}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:8px;}
+  @media(max-width:640px){.form-grid{grid-template-columns:1fr;}}
+  .field{display:flex;flex-direction:column;gap:7px;}
+  .field.full{grid-column:1/-1;}
+  label{font-size:0.86rem;font-weight:500;color:rgba(255,255,255,0.85);}
+  input[type=text], input[type=email], select{
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.18);
+    border-radius:10px;padding:13px 14px;
+    color:var(--white);font-family:'Space Grotesk',sans-serif;font-size:0.95rem;
+  }
+  input::placeholder{color:rgba(255,255,255,0.4);}
+  select{appearance:none;cursor:pointer;}
+  select option{color:#111;}
+  .check-row{
+    display:flex;gap:12px;align-items:flex-start;
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:12px;padding:16px 16px;
+  }
+  .check-row input{margin-top:3px;width:17px;height:17px;accent-color:var(--orange);flex-shrink:0;}
+  .check-row .check-text b{display:block;font-size:0.92rem;margin-bottom:3px;}
+  .check-row .check-text span{font-size:0.84rem;color:rgba(255,255,255,0.68);}
+  .form-submit{margin-top:26px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+  .form-note{font-size:0.8rem;color:rgba(255,255,255,0.55);}
+  .confirm-msg{
+    display:none;margin-top:22px;background:rgba(255,99,0,0.14);
+    border:1px solid rgba(255,99,0,0.4);border-radius:12px;
+    padding:16px 18px;font-size:0.92rem;color:var(--orange-soft);
+  }
+  input.field-invalid, select.field-invalid{border-color:#ff6b6b;}
+  .field-error{display:none;font-size:0.78rem;color:#ffb3b3;margin-top:2px;}
+  .field-error.visible{display:block;}
+  .btn[disabled]{opacity:0.65;cursor:not-allowed;transform:none;}
+  .btn-spinner{
+    display:inline-block;width:15px;height:15px;border-radius:50%;
+    border:2px solid rgba(0,21,49,0.3);border-top-color:var(--navy-deep);
+    animation:spin .7s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  /* FOOTER */
+  footer{background:var(--navy-deep);color:rgba(255,255,255,0.6);padding:40px 0;font-size:0.85rem;}
+  .footer-inner{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;align-items:center;}
+  footer a{color:rgba(255,255,255,0.75);text-decoration:none;margin-left:18px;}
+  footer a:hover{color:var(--white);}
+  .footer-links{display:flex;flex-wrap:wrap;}
+  /* PROBLEM MIRROR */
+  .mirror{background:var(--navy-deep);color:var(--white);}
+  .mirror .kicker{color:var(--orange-soft);}
+  .mirror h2{color:var(--white);}
+  .mirror .section-lede{color:rgba(255,255,255,0.7);}
+  .mirror-list{
+    display:grid;grid-template-columns:1fr 1fr;gap:16px 32px;margin-top:36px;
+  }
+  @media(max-width:720px){.mirror-list{grid-template-columns:1fr;}}
+  .mirror-item{
+    display:flex;gap:14px;align-items:flex-start;
+    padding:18px 0;border-bottom:1px solid rgba(255,255,255,0.12);
+  }
+  .mirror-item .mirror-check{margin-right:14px;}
+  .mirror-check{
+    flex-shrink:0;width:26px;height:26px;border-radius:50%;
+    background:rgba(255,99,0,0.16);border:1px solid rgba(255,99,0,0.5);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--orange-soft);font-size:0.85rem;margin-top:2px;
+  }
+  .mirror-item p{margin:0;font-size:1.02rem;color:rgba(255,255,255,0.9);}
+  .mirror-outro{
+    margin-top:36px;font-family:'Fraunces',serif;font-style:italic;font-weight:500;
+    font-size:1.25rem;color:var(--orange-soft);max-width:560px;
+  }
+
+  /* FAQ */
+  .faq-list{max-width:760px;}
+  .faq-item{border-bottom:1px solid var(--line);}
+  .faq-q{
+    width:100%;text-align:left;background:none;border:none;cursor:pointer;
+    padding:22px 0;display:flex;justify-content:space-between;align-items:center;gap:20px;
+    font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1.02rem;color:var(--ink);
+  }
+  .faq-icon{
+    flex-shrink:0;width:26px;height:26px;border-radius:50%;
+    border:1px solid var(--line);color:var(--orange);
+    display:flex;align-items:center;justify-content:center;font-size:1rem;
+    transition:transform .2s ease;
+  }
+  .faq-item.open .faq-icon{transform:rotate(45deg);}
+  .faq-a{
+    max-height:0;overflow:hidden;transition:max-height .25s ease;
+  }
+  .faq-a p{margin:0 0 22px;color:var(--ink-soft);font-size:0.95rem;max-width:640px;}
+  .faq-item.open .faq-a{max-height:220px;}
+
+  /* CALENDAR DOWNLOAD */
+  .calendar-cta{
+    margin-top:18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+    background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.16);
+    border-radius:12px;padding:14px 16px;
+  }
+  .calendar-cta svg{flex-shrink:0;}
+  .calendar-cta .cal-text{flex:1;min-width:180px;}
+  .calendar-cta .cal-text b{display:block;font-size:0.92rem;}
+  .calendar-cta .cal-text span{font-size:0.8rem;color:rgba(255,255,255,0.6);}
+  .btn-cal{
+    background:transparent;border:1px solid var(--orange);color:var(--orange-soft);
+    padding:10px 18px;border-radius:100px;font-weight:600;font-size:0.85rem;
+    cursor:pointer;font-family:'Space Grotesk',sans-serif;white-space:nowrap;
+  }
+  .btn-cal:hover{background:rgba(255,99,0,0.12);}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <div class="brand"><span class="brand-dot"></span>STRESSFREI</div>
+    <nav class="nav-links">
+      <a href="#ablauf">Ablauf</a>
+      <a href="#duo">Adriana &amp; Sorin</a>
+      <a href="#anmeldung" class="nav-cta">Jetzt anmelden</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="breath-orb" aria-hidden="true"></div>
+  <div class="wrap hero-inner">
+    <div class="eyebrow" id="eyebrow">
+      <span id="eyebrow-text">10 kostenlose Live-Webinare · ab 08.09.2026</span>
+      <select id="eyebrow-event-select" style="display:none;" aria-label="Event auswählen (Admin)"></select>
+      <span class="eyebrow-admin-badge" id="eyebrow-admin-badge" style="display:none;">Admin</span>
+    </div>
+    <h1 class="hero-title">Raus aus dem Dauerstress.<br><em>Zurück zu dir.</em></h1>
+    <p class="hero-sub">Verstehen, was Stress wirklich mit dir macht. Verändern, was dich stresst — mit bewährten Sprachmustern, Gedankenreisen und praktischen Techniken, live und kostenlos, jeden Dienstagabend.</p>
+    <div class="hero-meta">
+      <div class="meta-pill"><b>Jeden Dienstag</b>19:30 – 20:30 Uhr</div>
+      <div class="meta-pill"><b>08.09. – 10.11.2026</b>10 Termine · live via Zoom</div>
+      <div class="meta-pill"><b>Kostenlos</b>Aufzeichnung inklusive</div>
+    </div>
+    <div class="hero-avatars">
+      <div class="avatar-cluster">
+        <div class="img-placeholder" role="img" aria-label="Platzhalter Porträtfoto Adriana">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-6 8-6s8 2 8 6"/></svg>
+        </div>
+        <div class="img-placeholder" role="img" aria-label="Platzhalter Porträtfoto Sorin">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-6 8-6s8 2 8 6"/></svg>
+        </div>
+      </div>
+      <span class="avatar-caption">Live begleitet von Adriana &amp; Sorin</span>
+    </div>
+    <div class="hero-actions">
+      <a href="#anmeldung" class="btn">Kostenlosen Platz sichern →</a>
+      <a href="#ablauf" class="btn btn-ghost">Alle 10 Themen ansehen</a>
+    </div>
+  </div>
+</section>
+
+<section class="section mirror">
+  <div class="wrap">
+    <div class="kicker">Kommt dir das bekannt vor?</div>
+    <h2>Du funktionierst. Aber fühlst du dich auch noch?</h2>
+    <p class="section-lede">Bevor es um Techniken geht — ein kurzer ehrlicher Check. Wenn du dich hier wiedererkennst, bist du in dieser Webinar-Reihe genau richtig.</p>
+    <div class="mirror-list">
+      <div class="mirror-item"><span class="mirror-check">✓</span><p>Dein Kopf dreht sich abends weiter, obwohl der Tag längst vorbei ist.</p></div>
+      <div class="mirror-item"><span class="mirror-check">✓</span><p>Du schläfst genug — und bist trotzdem nie wirklich erholt.</p></div>
+      <div class="mirror-item"><span class="mirror-check">✓</span><p>Du sagst fast automatisch Ja, obwohl dein Kalender längst voll ist.</p></div>
+      <div class="mirror-item"><span class="mirror-check">✓</span><p>Nach außen wirkst du stark — innerlich fühlst du dich zunehmend leer.</p></div>
+      <div class="mirror-item"><span class="mirror-check">✓</span><p>Du hältst Durchhalten für Stärke, auch wenn es dich langsam auslaugt.</p></div>
+      <div class="mirror-item"><span class="mirror-check">✓</span><p>Du trägst Verantwortung für fast alles — auch für Dinge, die nicht deine sind.</p></div>
+    </div>
+    <p class="mirror-outro">Genau diese Muster nehmen wir in den 10 Webinaren auseinander — mit Techniken, nicht nur mit Erklärungen.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="kicker">Warum mitmachen</div>
+    <h2>Kein Motivations-Video. Ein echtes System.</h2>
+    <p class="section-lede">Jedes Webinar liefert eine Technik, die du sofort im Alltag nutzen kannst — keine Theorie ohne Praxis, kein Praxis-Trick ohne Erklärung, warum er wirkt.</p>
+    <div class="props">
+      <div class="prop-card">
+        <span class="prop-num">01</span>
+        <h3>Sofort anwendbar</h3>
+        <p>Jede Woche eine konkrete Technik aus bewährten Sprachmustern, Atemarbeit oder Gedankenreisen — direkt zum Mitmachen, kein Warten auf „irgendwann“.</p>
+      </div>
+      <div class="prop-card">
+        <span class="prop-num">02</span>
+        <h3>Verständlich erklärt</h3>
+        <p>Was im Gehirn und Körper bei Stress wirklich passiert — fundiert, aber ohne Fachchinesisch.</p>
+      </div>
+      <div class="prop-card">
+        <span class="prop-num">03</span>
+        <h3>Live statt Aufzeichnung</h3>
+        <p>Echte Fragen, echte Coaching-Momente mit Teilnehmern aus der Gruppe — kein Video von der Stange.</p>
+      </div>
+      <div class="prop-card">
+        <span class="prop-num">04</span>
+        <h3>Für Menschen mit Verantwortung</h3>
+        <p>Entwickelt für Führungskräfte, Unternehmer:innen und alle, die viel tragen — und trotzdem klar bleiben wollen.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt schedule" id="ablauf">
+  <div class="wrap">
+    <div class="kicker">Der Ablauf</div>
+    <h2>10 Termine, ein roter Faden</h2>
+    <p class="section-lede">Jeden Dienstag 19:30–20:30 Uhr geht es eine Schicht tiefer — vom ersten Ruhe-Reflex bis zur eigenen Zukunftsvision.</p>
+
+    <div class="week-row"><div class="week-num">01</div><div class="week-date">08.09.2026</div><div class="week-title">Gedankenkarussell stoppen<span>Warum dein Kopf abends nicht abschaltet</span></div><div></div></div>
+    <div class="week-row"><div class="week-num">02</div><div class="week-date">15.09.2026</div><div class="week-title">Stress im Kopf — was passiert eigentlich mit mir?<span>Gehirn, Stresshormone &amp; Überlebensmodus</span></div><div></div></div>
+    <div class="week-row"><div class="week-num">03</div><div class="week-date">22.09.2026</div><div class="week-title">Ich muss nicht alles schaffen<span>Perfektionismus &amp; innere Antreiber</span></div><div></div></div>
+    <div class="week-row"><div class="week-num">04</div><div class="week-date">29.09.2026</div><div class="week-title">Überverantwortung loslassen<span>Warum du dich für alles verantwortlich fühlst</span></div><div class="week-badge"><span class="badge">Live-Coaching</span></div></div>
+    <div class="week-row"><div class="week-num">05</div><div class="week-date">06.10.2026</div><div class="week-title">Wenn der Körper STOPP sagt<span>Stresssignale erkennen, bevor es zu viel wird</span></div><div></div></div>
+    <div class="week-row"><div class="week-num">06</div><div class="week-date">13.10.2026</div><div class="week-title">Nein sagen ohne schlechtes Gewissen<span>Grenzen setzen, ohne andere zu enttäuschen</span></div><div class="week-badge"><span class="badge">Live-Coaching</span></div></div>
+    <div class="week-row"><div class="week-num">07</div><div class="week-date">20.10.2026</div><div class="week-title">Raus aus dem Funktionieren<span>Warum du weitermachst, obwohl du müde bist</span></div><div></div></div>
+    <div class="week-row"><div class="week-num">08</div><div class="week-date">27.10.2026</div><div class="week-title">Die Trigger-Spirale<span>Wie alte Prägungen deine Reaktionen steuern</span></div><div></div></div>
+    <div class="week-row"><div class="week-num">09</div><div class="week-date">03.11.2026</div><div class="week-title">Stark bleiben, ohne auszubrennen<span>Leistungsfähig bleiben, ohne dich zu verlieren</span></div><div></div></div>
+    <div class="week-row"><div class="week-num">10</div><div class="week-date">10.11.2026</div><div class="week-title">Vom Überleben ins Leben<span>Serienabschluss &amp; Brücke zum Seminar</span></div><div class="week-badge"><span class="badge">Live-Coaching</span></div></div>
+  </div>
+</section>
+
+<section class="section" id="duo">
+  <div class="wrap">
+    <div class="kicker">Eure Begleitung</div>
+    <h2>Zwei Perspektiven, ein Weg</h2>
+    <div class="duo">
+      <div class="duo-panel adriana">
+        <div class="img-placeholder" role="img" aria-label="Platzhalter Porträtfoto Adriana">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-6 8-6s8 2 8 6"/></svg>
+        </div>
+        <span class="ph-caption">Foto-Platzhalter: Adriana — warm, nahbar, z. B. im Coaching-Moment</span>
+        <div class="duo-role">Emotion &amp; Transformation</div>
+        <h3>Adriana</h3>
+        <p>Begleitet dich mit bewährten Sprachmustern, Hypnose und Gedankenreisen durch echte Veränderung — empathisch, persönlich, immer nah an dem, was du gerade wirklich brauchst.</p>
+      </div>
+      <div class="duo-panel sorin">
+        <div class="img-placeholder" role="img" aria-label="Platzhalter Porträtfoto Sorin">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-6 8-6s8 2 8 6"/></svg>
+        </div>
+        <span class="ph-caption">Foto-Platzhalter: Sorin — seriös, erklärend, z. B. beim Präsentieren</span>
+        <div class="duo-role">Wissen &amp; Struktur</div>
+        <h3>Sorin</h3>
+        <p>Erklärt verständlich, was in Gehirn und Nervensystem bei Stress passiert — und liefert das strukturelle Werkzeug dazu, Coach &amp; Experte für bewährte Sprachmuster.</p>
+      </div>
+    </div>
+    <p class="duo-quote">„Verstehen, was Stress mit dir macht. Verändern, was dich stresst.“</p>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="wrap">
+    <div class="kicker">Stimmen aus 1:1-Coaching &amp; Seminar</div>
+    <h2>Das sagen Menschen, die mit uns gearbeitet haben</h2>
+    <p class="section-lede">Platzhalter-Bereich — hier kommen 3 echte Stimmen aus euren bisherigen 1:1-Coachings oder dem Rodgau-Seminar rein, sobald ihr sie ausgewählt habt.</p>
+    <div class="testimonials">
+      <div class="testi-card">
+        <span class="testi-ph-note">PLATZHALTER-ZITAT</span>
+        <p class="testi-quote">„Kurzes, konkretes Zitat — was hat sich für diese Person spürbar verändert?“</p>
+        <div class="testi-meta">
+          <div class="testi-avatar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-6 8-6s8 2 8 6"/></svg></div>
+          <div><b>Name, Rolle/Kontext</b></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <span class="testi-ph-note">PLATZHALTER-ZITAT</span>
+        <p class="testi-quote">„Zweites Zitat — idealerweise mit einem anderen Schwerpunkt als das erste (z. B. Grenzen setzen statt Erschöpfung).“</p>
+        <div class="testi-meta">
+          <div class="testi-avatar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-6 8-6s8 2 8 6"/></svg></div>
+          <div><b>Name, Rolle/Kontext</b></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <span class="testi-ph-note">PLATZHALTER-ZITAT</span>
+        <p class="testi-quote">„Drittes Zitat — im Idealfall von jemandem aus dem Rodgau-Seminar, damit die Reihe nicht nur nach 1:1-Coaching aussieht.“</p>
+        <div class="testi-meta">
+          <div class="testi-avatar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-6 8-6s8 2 8 6"/></svg></div>
+          <div><b>Name, Rolle/Kontext</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="kicker">Häufige Fragen</div>
+    <h2>Bevor du dich anmeldest</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">Ist die Teilnahme wirklich komplett kostenlos?<span class="faq-icon">+</span></button>
+        <div class="faq-a"><p>Ja. Alle 10 Webinare sind kostenlos — es gibt keinen versteckten Haken. Am Ende der Reihe stellen wir dir unser kostenpflichtiges 3-Tages-Seminar vor, aber du entscheidest völlig frei, ob das etwas für dich ist.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">Was, wenn ich nicht bei jedem Termin live dabei sein kann?<span class="faq-icon">+</span></button>
+        <div class="faq-a"><p>Jedes Webinar wird aufgezeichnet. Ob die Aufzeichnung kostenlos oder gegen eine kleine Gebühr verfügbar ist, entscheiden wir noch — du erfährst es rechtzeitig vor dem Start der Reihe.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">Ersetzt dieses Format eine Therapie?<span class="faq-icon">+</span></button>
+        <div class="faq-a"><p>Nein. Dieses Format ersetzt keine Therapie oder Heilbehandlung. Es ist Coaching-Arbeit mit bewährten Sprachmustern für den Alltag — bei tiefergehenden Anliegen empfehlen wir immer professionelle therapeutische Unterstützung.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">Wie funktioniert das Live-Coaching — muss ich mitmachen?<span class="faq-icon">+</span></button>
+        <div class="faq-a"><p>Komplett freiwillig. Bei 3 der 10 Webinare coachen wir live eine Person aus der Gruppe. Nur wenn du im Anmeldeformular dein Interesse angibst, melden wir uns vorab persönlich bei dir — ungefragt passiert nichts.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">Was passiert nach der Anmeldung?<span class="faq-icon">+</span></button>
+        <div class="faq-a"><p>Du bekommst eine Bestätigungsmail mit dem Zugangslink für alle 10 Termine — und kannst dir direkt danach alle Termine mit einem Klick in deinen eigenen Kalender speichern.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="anmeldung">
+  <div class="wrap">
+    <div class="kicker">Jetzt anmelden</div>
+    <h2>Sichere dir deinen kostenlosen Platz</h2>
+    <p class="section-lede">Du erhältst automatisch den Zugangslink für alle 10 Webinare und die Aufzeichnung, falls du live nicht dabei sein kannst.</p>
+
+    <form class="form-shell" id="signup-form">
+      <div class="form-grid">
+        <div class="field">
+          <label for="vorname">Vorname *</label>
+          <input type="text" id="vorname" name="vorname" placeholder="Dein Vorname" required>
+        </div>
+        <div class="field">
+          <label for="nachname">Nachname *</label>
+          <input type="text" id="nachname" name="nachname" placeholder="Dein Nachname" required>
+        </div>
+        <div class="field full">
+          <label for="email">E-Mail-Adresse *</label>
+          <input type="email" id="email" name="email" placeholder="du@beispiel.de" required>
+        </div>
+        <div class="field full">
+          <label for="telefon">Telefonnummer <span style="font-weight:400;color:rgba(255,255,255,0.5);">(optional)</span></label>
+          <input type="text" id="telefon" name="telefon" placeholder="Für die persönliche Absprache, z. B. beim Live-Coaching">
+        </div>
+        <div class="field full">
+          <label for="quelle">Wie hast du von uns erfahren? *</label>
+          <select id="quelle" name="quelle" required>
+            <option value="" disabled selected>Bitte auswählen …</option>
+            <option value="meetup">Meetup</option>
+            <option value="instagram">Instagram</option>
+            <option value="facebook">Facebook</option>
+            <option value="facebook-gruppe">Facebook-Gruppe</option>
+            <option value="linkedin">LinkedIn</option>
+            <option value="whatsapp">WhatsApp</option>
+            <option value="empfehlung">Empfehlung von einer Person</option>
+            <option value="kooperation">Kooperationspartner (Studio, Unternehmen, Netzwerk)</option>
+            <option value="google">Google-Suche</option>
+            <option value="sonstiges">Sonstiges</option>
+          </select>
+        </div>
+
+        <div class="field full">
+          <label class="check-row" for="live-coaching">
+            <input type="checkbox" id="live-coaching" name="live_coaching">
+            <span class="check-text">
+              <b>Ich hätte Interesse an einem Live-Coaching</b>
+              <span>Bei 3 der 10 Webinare coachen wir live eine Person aus der Gruppe. Bei Interesse melden wir uns vorab persönlich bei dir — z. B. über die oben angegebene Telefonnummer — um alles gemeinsam abzusprechen. Nichts passiert ungefragt.</span>
+            </span>
+          </label>
+        </div>
+
+        <div class="field full">
+          <label class="check-row" for="datenschutz">
+            <input type="checkbox" id="datenschutz" name="datenschutz" required>
+            <span class="check-text">
+              <b>Einwilligung zur Datenverarbeitung *</b>
+              <span>Ich habe die <a href="#" style="color:var(--orange-soft);text-decoration:underline;">Datenschutzerklärung</a> gelesen und bin mit der Verarbeitung meiner Daten zur Anmeldung einverstanden. Widerruf jederzeit möglich.</span>
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-submit">
+        <button type="submit" class="btn" id="submit-btn"><span id="submit-btn-label">Kostenlos anmelden →</span></button>
+        <span class="form-note">Kein Spam. Abmeldung jederzeit mit einem Klick.</span>
+      </div>
+
+      <div class="confirm-msg" id="confirm-msg">
+        Fast geschafft — bitte bestätige deine Anmeldung über den Link, den wir dir gleich per E-Mail schicken.
+        <div class="calendar-cta">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>
+          <div class="cal-text">
+            <b>Alle 10 Termine im eigenen Kalender</b>
+            <span>Eine Datei, ein Klick — funktioniert mit Google, Outlook, Apple Kalender</span>
+          </div>
+          <button type="button" class="btn-cal" id="add-to-calendar">Kalender-Datei laden</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap footer-inner">
+    <div>© 2026 STRESSFREI — Adriana &amp; Sorin</div>
+    <div class="footer-links">
+      <a href="#">Impressum</a>
+      <a href="#">Datenschutz</a>
+      <a href="#">Kontakt</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const form = document.getElementById('signup-form');
+  const confirmMsg = document.getElementById('confirm-msg');
+  const submitBtn = document.getElementById('submit-btn');
+  const submitBtnLabel = document.getElementById('submit-btn-label');
+
+  // Pre-fill "Wie hast du von uns erfahren?" from a ?quelle= URL parameter, if present.
+  const params = new URLSearchParams(window.location.search);
+  const quelleParam = params.get('quelle');
+  if (quelleParam) {
+    const select = document.getElementById('quelle');
+    const match = [...select.options].find(o => o.value === quelleParam);
+    if (match) select.value = quelleParam;
+  }
+
+  // ── Event-Zuordnung ──────────────────────────────────────────────────
+  // Anmeldungen dieser Seite werden immer einem Event zugeordnet (für die
+  // Supabase-Speicherung im Hintergrund). Standard ist DEFAULT_EVENT_ID.
+  // Für eingeloggte Admins wird oben im Eyebrow ein Auswahlfeld angezeigt,
+  // mit dem sich ein anderes Event auswählen lässt (Auswahl wird lokal
+  // gemerkt); für alle anderen Besucher erscheint dort nur Name + Termin
+  // des aktuell zugeordneten Events, rein lesend.
+  const DEFAULT_EVENT_ID = 'evt_1783634695960_6106';
+  const EVENT_ID_STORAGE_KEY = 'stressfrei_selected_event_id';
+  let EVENT_ID = localStorage.getItem(EVENT_ID_STORAGE_KEY) || DEFAULT_EVENT_ID;
+
+  (function initEventEyebrow(){
+    var MONTH_NAMES = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+    var eyebrowText   = document.getElementById('eyebrow-text');
+    var eyebrowSelect = document.getElementById('eyebrow-event-select');
+    var eyebrowBadge  = document.getElementById('eyebrow-admin-badge');
+    var STATUS_LABEL  = { 0: ' (Entwurf)', 2: ' (vergangen)' };
+
+    function esc(v) { return String(v || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    function fmtEvent(ev) {
+      if (!ev) return '10 kostenlose Live-Webinare · ab 08.09.2026';
+      var label = ev.name || 'Event';
+      if (ev.year != null && ev.month != null && ev.day != null) {
+        label += ' · ab ' + String(ev.day).padStart(2,'0') + '.' + String(ev.month + 1).padStart(2,'0') + '.' + ev.year;
+      }
+      return label;
+    }
+
+    db.from('events').select('id,name,year,month,day,time_from,status').order('year').order('month').order('day')
+      .then(function (res) {
+        var events = (!res.error && res.data) ? res.data : [];
+        var active = events.find(function (e) { return e.id === EVENT_ID; }) || null;
+
+        eyebrowText.textContent = fmtEvent(active);
+
+        // Nur eingeloggte Admins (Supabase-Auth-Session) dürfen das Event wechseln.
+        db.auth.getSession().then(function (sessionRes) {
+          if (!sessionRes.data.session || !events.length) return;
+
+          eyebrowSelect.innerHTML = events.map(function (ev) {
+            var optLabel = fmtEvent(ev) + (STATUS_LABEL[ev.status] || '');
+            return '<option value="' + esc(ev.id) + '"' + (ev.id === EVENT_ID ? ' selected' : '') + '>' + esc(optLabel) + '</option>';
+          }).join('');
+
+          eyebrowText.style.display   = 'none';
+          eyebrowSelect.style.display = 'inline-block';
+          eyebrowBadge.style.display  = 'inline-block';
+
+          eyebrowSelect.addEventListener('change', function () {
+            EVENT_ID = this.value;
+            localStorage.setItem(EVENT_ID_STORAGE_KEY, EVENT_ID);
+          });
+        }).catch(function (err) { console.error('Auth session check error:', err); });
+      })
+      .catch(function (err) { console.error('Events load error:', err); });
+  })();
+
+  // ---------- Inline-Validierung ----------
+  function showFieldError(input, message){
+    input.classList.add('field-invalid');
+    let err = input.parentElement.querySelector('.field-error');
+    if (!err){
+      err = document.createElement('span');
+      err.className = 'field-error';
+      input.insertAdjacentElement('afterend', err);
+    }
+    err.textContent = message;
+    err.classList.add('visible');
+  }
+  function clearFieldError(input){
+    input.classList.remove('field-invalid');
+    const err = input.parentElement.querySelector('.field-error');
+    if (err) err.classList.remove('visible');
+  }
+  function validateForm(){
+    let valid = true;
+    let firstInvalid = null;
+    const requiredFields = [
+      {el: document.getElementById('vorname'), msg: 'Bitte gib deinen Vornamen ein.'},
+      {el: document.getElementById('nachname'), msg: 'Bitte gib deinen Nachnamen ein.'},
+      {el: document.getElementById('quelle'), msg: 'Bitte wähle eine Option aus.'},
+    ];
+    const emailField = document.getElementById('email');
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    requiredFields.forEach(({el, msg}) => {
+      if (!el.value || !el.value.trim()){
+        showFieldError(el, msg); valid = false; firstInvalid = firstInvalid || el;
+      } else { clearFieldError(el); }
+    });
+    if (!emailField.value || !emailPattern.test(emailField.value)){
+      showFieldError(emailField, 'Bitte gib eine gültige E-Mail-Adresse ein.');
+      valid = false; firstInvalid = firstInvalid || emailField;
+    } else { clearFieldError(emailField); }
+    const datenschutz = document.getElementById('datenschutz');
+    if (!datenschutz.checked){
+      showFieldError(datenschutz, 'Bitte bestätige die Einwilligung.');
+      valid = false; firstInvalid = firstInvalid || datenschutz;
+    } else { clearFieldError(datenschutz); }
+    if (firstInvalid) firstInvalid.focus();
+    return valid;
+  }
+  // Fehler beim Tippen sofort wieder entfernen
+  ['vorname','nachname','email','quelle'].forEach(id => {
+    document.getElementById(id).addEventListener('input', function(){ clearFieldError(this); });
+  });
+
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    const vorname = document.getElementById('vorname').value.trim();
+    const nachname = document.getElementById('nachname').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const telefon = document.getElementById('telefon').value.trim();
+
+    submitBtn.disabled = true;
+    submitBtnLabel.innerHTML = '<span class="btn-spinner"></span> Wird gesendet …';
+
+    // Supabase: Anmeldung im Hintergrund speichern und dem Event zuordnen
+    // (Fehler dürfen die Anmeldung nicht blockieren)
+    var participantFields = { vorname: vorname, nachname: nachname, email: email, ort: 'Online' };
+    if (telefon) participantFields.handy = telefon;
+    try {
+      var saveResult = telefon
+        ? await db.from('participants').upsert(participantFields, { onConflict: 'handy' }).select('id').single()
+        : await db.from('participants').insert(participantFields).select('id').single();
+
+      if (!saveResult.error && saveResult.data) {
+        var ep = await db.from('event_participations').insert({
+          event_id:       EVENT_ID,
+          participant_id: saveResult.data.id,
+          ticket_name:    'Webinar-Serie · 10 Termine',
+          ticket_price:   'kostenlos',
+          payment_status: 'pending'
+        });
+        if (ep.error) console.error('Supabase insert error:', ep.error.message);
+      } else if (saveResult.error) {
+        console.error('Supabase insert error:', saveResult.error.message);
+      }
+    } catch (dbEx) {
+      console.error('Supabase save exception:', dbEx);
+    }
+
+    // Dynamics CRM: läuft parallel, Fehler blockieren die Anmeldung nicht
+    dynamicsCRM.submitContact({
+      firstname:   vorname,
+      lastname:    nachname,
+      email:       email,
+      mobilephone: telefon
+    });
+
+    // ---- Tracking: Conversion-Event feuern (Pixel/Insight-Tag oben im <head> aktivieren) ----
+    if (typeof fbq === 'function') fbq('track', 'Lead');
+    if (typeof lintrk === 'function') lintrk('track', { conversion_id: 'PLATZHALTER-CONVERSION-ID' });
+
+    confirmMsg.style.display = 'block';
+    confirmMsg.scrollIntoView({behavior:'smooth', block:'nearest'});
+    form.querySelectorAll('input, select').forEach(el => { if (el.type !== 'checkbox') el.disabled = true; });
+    submitBtnLabel.textContent = 'Angemeldet ✓';
+  });
+
+  // ---------- FAQ accordion ----------
+  document.querySelectorAll('.faq-item').forEach(item => {
+    const btn = item.querySelector('.faq-q');
+    btn.addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(o => {
+        o.classList.remove('open');
+        o.querySelector('.faq-q').setAttribute('aria-expanded','false');
+      });
+      if (!isOpen){
+        item.classList.add('open');
+        btn.setAttribute('aria-expanded','true');
+      }
+    });
+  });
+
+  // ---------- Calendar (.ics) download for all 10 webinar dates ----------
+  // UTC times account for the CEST->CET switch on 25.10.2026 (Europe/Berlin).
+  const webinarEvents = [
+    ["20260908T173000Z","20260908T183000Z","Webinar 1: Gedankenkarussell stoppen"],
+    ["20260915T173000Z","20260915T183000Z","Webinar 2: Stress im Kopf – was passiert eigentlich mit mir?"],
+    ["20260922T173000Z","20260922T183000Z","Webinar 3: Ich muss nicht alles schaffen"],
+    ["20260929T173000Z","20260929T183000Z","Webinar 4: Überverantwortung loslassen (Live-Coaching)"],
+    ["20261006T173000Z","20261006T183000Z","Webinar 5: Wenn der Körper STOPP sagt"],
+    ["20261013T173000Z","20261013T183000Z","Webinar 6: Nein sagen ohne schlechtes Gewissen (Live-Coaching)"],
+    ["20261020T173000Z","20261020T183000Z","Webinar 7: Raus aus dem Funktionieren"],
+    ["20261027T183000Z","20261027T193000Z","Webinar 8: Die Trigger-Spirale"],
+    ["20261103T183000Z","20261103T193000Z","Webinar 9: Stark bleiben, ohne auszubrennen"],
+    ["20261110T183000Z","20261110T193000Z","Webinar 10: Vom Überleben ins Leben (Live-Coaching, Serienabschluss)"]
+  ];
+
+  function buildIcs(){
+    const now = new Date().toISOString().replace(/[-:]/g,'').split('.')[0] + 'Z';
+    let ics = "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//STRESSFREI//Webinar-Serie//DE\r\nCALSCALE:GREGORIAN\r\n";
+    webinarEvents.forEach(([start, end, title], idx) => {
+      ics += "BEGIN:VEVENT\r\n";
+      ics += `UID:stressfrei-webinar-${idx+1}-2026@stressfrei\r\n`;
+      ics += `DTSTAMP:${now}\r\n`;
+      ics += `DTSTART:${start}\r\n`;
+      ics += `DTEND:${end}\r\n`;
+      ics += `SUMMARY:STRESSFREI – ${title}\r\n`;
+      ics += `DESCRIPTION:Live-Webinar mit Adriana & Sorin. Zugangslink erhältst du separat per E-Mail.\r\n`;
+      ics += `LOCATION:Online (Zoom)\r\n`;
+      ics += "END:VEVENT\r\n";
+    });
+    ics += "END:VCALENDAR\r\n";
+    return ics;
+  }
+
+  const calBtn = document.getElementById('add-to-calendar');
+  if (calBtn){
+    calBtn.addEventListener('click', () => {
+      const blob = new Blob([buildIcs()], {type:'text/calendar;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'stressfrei-termine.ics';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      // Tracking: eigenes Event, nützlich um Engagement nach der Anmeldung zu messen
+      if (typeof fbq === 'function') fbq('trackCustom', 'KalenderDownload');
+    });
+  }
+</script>
+
+</body>
+</html>

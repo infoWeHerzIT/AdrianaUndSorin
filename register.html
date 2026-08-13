@@ -8,9 +8,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
-<script src="constants.js"></script>
-<script src="add-to-calendar.js"></script>
-<script src="captcha.js"></script>
+<script src="Code/dynamics-crm.js"></script>
+<script src="Code/constants.js"></script>
+<script src="Code/add-to-calendar.js"></script>
+<script src="Code/captcha.js"></script>
 <style>
   :root {
     --orange: #ff6300;
@@ -890,14 +891,12 @@
 
     if (!isTestTicket) {
       // Dynamics CRM: läuft parallel, Fehler blockieren die Weiterleitung nicht
-      db.functions.invoke('crm-submit', {
-        body: {
-          firstname:   vorname,
-          lastname:    nachname,
-          email:       email,
-          mobilephone: handy
-        }
-      }).catch(function(err) { console.error('CRM submit error:', err); });
+      dynamicsCRM.submitContact({
+        firstname:   vorname,
+        lastname:    nachname,
+        email:       email,
+        mobilephone: handy
+      });
 
       try {
         db.functions.invoke('send-email', {

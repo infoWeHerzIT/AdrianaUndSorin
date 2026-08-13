@@ -4,8 +4,8 @@
  * davon, in welchem Formular es steckt) und stellt eine einfache Prüf-
  * funktion bereit, um vor dem Absenden zu prüfen, ob es gelöst wurde.
  *
- * Einbindung: <script src="captcha.js"></script> (bzw. "../captcha.js" aus
- * Unterordnern) einmal pro Seite, dann irgendwo im Markup:
+ * Einbindung: <script src="Code/captcha.js"></script> (bzw. "../Code/captcha.js"
+ * aus Unterordnern) einmal pro Seite, dann irgendwo im Markup:
  *   <div class="g-recaptcha" data-sitekey="…"></div>
  *
  * Vor dem Absenden prüfen: if (!captchaIsSolved()) { … Fehler anzeigen … }

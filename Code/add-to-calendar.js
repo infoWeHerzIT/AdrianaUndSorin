@@ -6,7 +6,7 @@
  *
  * Verwendung:
  *   <div id="add-to-calendar"></div>
- *   <script src="add-to-calendar.js"></script>
+ *   <script src="Code/add-to-calendar.js"></script>
  *   <script>
  *     renderAddToCalendarButton('add-to-calendar', {
  *       title: 'Das Webinar',
@@ -135,14 +135,9 @@
     return desc;
   }
 
-  function buildIcs(opts, times) {
+  function buildVEvent(opts, times) {
     var uid = (global.crypto && global.crypto.randomUUID ? global.crypto.randomUUID() : (Date.now() + '-' + Math.random().toString(36).slice(2))) + '@adrianaundsorin';
-    var lines = [
-      'BEGIN:VCALENDAR',
-      'VERSION:2.0',
-      'PRODID:-//Adriana & Sorin//Add to Calendar//DE',
-      'CALSCALE:GREGORIAN',
-      'METHOD:PUBLISH',
+    return [
       'BEGIN:VEVENT',
       'UID:' + uid,
       'DTSTAMP:' + formatUtcCompact(new Date()),
@@ -151,23 +146,55 @@
       'SUMMARY:' + escapeIcs(opts.title),
       'DESCRIPTION:' + escapeIcs(buildDescription(opts)),
       'LOCATION:' + escapeIcs(opts.location),
-      'END:VEVENT',
-      'END:VCALENDAR'
+      'END:VEVENT'
     ];
+  }
+
+  function buildIcs(opts, times) {
+    var lines = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Adriana & Sorin//Add to Calendar//DE',
+      'CALSCALE:GREGORIAN',
+      'METHOD:PUBLISH'
+    ].concat(buildVEvent(opts, times), ['END:VCALENDAR']);
     return lines.map(foldIcsLine).join('\r\n');
   }
 
-  function downloadIcs(opts, times) {
-    var ics = buildIcs(opts, times);
-    var blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+  // Baut eine einzelne .ics-Datei mit mehreren VEVENT-Blöcken (ein Termin je Eintrag in `eventsList`).
+  function buildIcsMulti(eventsList) {
+    var body = [];
+    eventsList.forEach(function (opts) {
+      body = body.concat(buildVEvent(opts, buildEventTimes(opts)));
+    });
+    var lines = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Adriana & Sorin//Add to Calendar//DE',
+      'CALSCALE:GREGORIAN',
+      'METHOD:PUBLISH'
+    ].concat(body, ['END:VCALENDAR']);
+    return lines.map(foldIcsLine).join('\r\n');
+  }
+
+  function downloadBlob(text, filename) {
+    var blob = new Blob([text], { type: 'text/calendar;charset=utf-8' });
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
     a.href = url;
-    a.download = (opts.title || 'termin').replace(/[^\w\-]+/g, '_') + '.ics';
+    a.download = filename;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+  }
+
+  function downloadIcs(opts, times) {
+    downloadBlob(buildIcs(opts, times), (opts.title || 'termin').replace(/[^\w\-]+/g, '_') + '.ics');
+  }
+
+  function downloadIcsMulti(eventsList, filename) {
+    downloadBlob(buildIcsMulti(eventsList), (filename || 'termine').replace(/[^\w\-]+/g, '_') + '.ics');
   }
 
   function googleUrl(opts, times) {
@@ -288,9 +315,36 @@
     return wrap;
   }
 
+  // Einzelner Button (kein Dropdown) zum Download einer .ics-Datei mit mehreren Terminen —
+  // Web-Kalender (Google/Outlook.com/Yahoo) unterstützen nur einen Termin pro Deeplink,
+  // daher hier nur der universelle .ics-Download (funktioniert mit Apple Kalender, Outlook, Google-Import).
+  function renderAddAllToCalendarButton(target, eventsList, opts) {
+    injectStyles();
+    var container = typeof target === 'string' ? document.getElementById(target) : target;
+    if (!container) return;
+
+    opts = opts || {};
+    var label = opts.label || 'Alle Termine zum Kalender hinzufügen';
+
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'atc-btn';
+    btn.innerHTML = ICONS.calendar + '<span>' + label + '</span>';
+
+    container.innerHTML = '';
+    container.appendChild(btn);
+
+    btn.addEventListener('click', function () {
+      downloadIcsMulti(eventsList, opts.filename);
+    });
+
+    return btn;
+  }
+
   document.addEventListener('click', closeAll);
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeAll(); });
 
   global.renderAddToCalendarButton = renderAddToCalendarButton;
+  global.renderAddAllToCalendarButton = renderAddAllToCalendarButton;
   global.buildAddToCalendarLinks = buildAddToCalendarLinks;
 })(window);
