@@ -893,11 +893,12 @@
     // muss aber warten, bis der Request wirklich abgeschlossen ist (nicht nur
     // "gestartet"), sonst bricht der Browser ihn beim Navigieren mitten in der
     // Preflight-Anfrage ab, bevor die eigentliche Anfrage je rausgeht.
-    var crmDone = dynamicsCRM.submitContact({
+    var crmDone = dynamicsCRM.submitLead({
       firstname:   vorname,
       lastname:    nachname,
       email:       email,
-      mobilephone: handy
+      mobilephone: handy,
+      eventId:     eventId || (ev ? ev.id : '')
     });
 
     if (!isTestTicket) {

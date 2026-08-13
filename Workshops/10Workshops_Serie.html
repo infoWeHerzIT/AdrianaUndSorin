@@ -714,16 +714,16 @@ window._linkedin_data_partner_ids.push(_linkedin_partner_id);
           <label for="quelle">Wie hast du von uns erfahren? *</label>
           <select id="quelle" name="quelle" required>
             <option value="" disabled selected>Bitte auswählen …</option>
-            <option value="meetup">Meetup</option>
-            <option value="instagram">Instagram</option>
-            <option value="facebook">Facebook</option>
-            <option value="facebook-gruppe">Facebook-Gruppe</option>
-            <option value="linkedin">LinkedIn</option>
-            <option value="whatsapp">WhatsApp</option>
-            <option value="empfehlung">Empfehlung von einer Person</option>
-            <option value="kooperation">Kooperationspartner (Studio, Unternehmen, Netzwerk)</option>
-            <option value="google">Google-Suche</option>
-            <option value="sonstiges">Sonstiges</option>
+            <option value="0">Meetup</option>
+            <option value="1">Instagram</option>
+            <option value="2">Facebook</option>
+            <option value="3">Facebook-Gruppe</option>
+            <option value="4">LinkedIn</option>
+            <option value="5">WhatsApp</option>
+            <option value="6">Empfehlung von einer Person</option>
+            <option value="7">Kooperationspartner (Studio, Unternehmen, Netzwerk)</option>
+            <option value="8">Google-Suche</option>
+            <option value="9">Sonstiges</option>
           </select>
         </div>
 
@@ -908,6 +908,9 @@ window._linkedin_data_partner_ids.push(_linkedin_partner_id);
     const nachname = document.getElementById('nachname').value.trim();
     const email = document.getElementById('email').value.trim();
     const telefon = document.getElementById('telefon').value.trim();
+    const quelle = document.getElementById('quelle').value;
+    const liveCoaching = document.getElementById('live-coaching').checked;
+    const datenschutz = document.getElementById('datenschutz').checked;
 
     submitBtn.disabled = true;
     submitBtnLabel.innerHTML = '<span class="btn-spinner"></span> Wird gesendet …';
@@ -938,11 +941,15 @@ window._linkedin_data_partner_ids.push(_linkedin_partner_id);
     }
 
     // Dynamics CRM: läuft parallel, Fehler blockieren die Anmeldung nicht
-    dynamicsCRM.submitContact({
-      firstname:   vorname,
-      lastname:    nachname,
-      email:       email,
-      mobilephone: telefon
+    dynamicsCRM.submitLead({
+      firstname:           vorname,
+      lastname:            nachname,
+      email:               email,
+      mobilephone:         telefon,
+      eventId:             EVENT_ID,
+      quelle:              quelle,
+      interesseAnCoaching: liveCoaching,
+      einwilligung:        datenschutz
     });
 
     // ---- Tracking: Conversion-Event feuern (Pixel/Insight-Tag oben im <head> aktivieren) ----

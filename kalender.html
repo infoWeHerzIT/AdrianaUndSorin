@@ -868,6 +868,7 @@
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
+<script src="Code/dynamics-crm.js"></script>
 </head>
 <body>
 
@@ -980,11 +981,9 @@ const MONTH_SHORT = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt
 const DAY_NAMES   = ['So','Mo','Di','Mi','Do','Fr','Sa'];
 const TODAY = new Date();
 
-function statusFromInt(n) { return n === 1 ? 'Aktiv' : n === 2 ? 'Vergangene' : 'Draft'; }
-
 async function loadEvents() {
-  const { data, error } = await db.from('events').select('*').order('year').order('month').order('day');
-  if (error || !data || data.length === 0) return [];
+  const data = await dynamicsCRM.listEvents();
+  if (!data || data.length === 0) return [];
   return data.map(r => normalizeEvent({
     id: r.id, name: r.name, type: r.type,
     year: r.year, month: r.month, day: r.day,
@@ -992,7 +991,7 @@ async function loadEvents() {
     location: r.location, format: r.format,
     price: r.price, spots: r.spots, description: r.description,
     url: r.url, videoMeetingUrl: r.video_meeting_url,
-    status: statusFromInt(r.status)
+    status: r.status || 'Draft'
   }));
 }
 

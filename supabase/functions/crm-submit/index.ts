@@ -4,6 +4,8 @@ import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 // benannte Secrets — getrennt von den DYNAMICS_*-Secrets der DEV-Function
 // "crm-submit-dev", damit lokale Tests nie echte Kontakte in Dynamics PROD
 // anlegen und Produktions-Traffic nie versehentlich in Dynamics DEV landet.
+//
+// Legt IMMER einen neuen Lead an (Entität "wht_lead"), keinen Contact.
 const TENANT_ID     = Deno.env.get("DYNAMICS_PROD_TENANT_ID")!;
 const CLIENT_ID     = Deno.env.get("DYNAMICS_PROD_CLIENT_ID")!;
 const CLIENT_SECRET = Deno.env.get("DYNAMICS_PROD_CLIENT_SECRET")!;
@@ -50,18 +52,42 @@ serve(async (req) => {
     const payload = await req.json();
 
     // Whitelist: nur diese Felder werden angenommen, alles andere im Body wird ignoriert
-    const firstname   = String(payload.firstname ?? "").trim();
-    const lastname    = String(payload.lastname ?? "").trim();
-    const email       = String(payload.email ?? "").trim();
-    const mobilephone = String(payload.mobilephone ?? "").trim();
+    const firstname           = String(payload.firstname ?? "").trim();
+    const lastname            = String(payload.lastname ?? "").trim();
+    const email                = String(payload.email ?? "").trim();
+    const mobilephone          = String(payload.mobilephone ?? "").trim();
+    const eventId               = String(payload.eventId ?? "").trim();
+    const quelleRaw             = payload.quelle;
+    const interesseAnCoaching   = !!payload.interesseAnCoaching;
+    const einwilligung          = !!payload.einwilligung;
 
     if (!lastname || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return jsonResponse({ error: "Pflichtfelder fehlen oder ungültig" }, 400);
     }
 
     const token = await getAccessToken();
+    const nowIso = new Date().toISOString();
 
-    const contactRes = await fetch(`${RESOURCE}/api/data/v9.2/contacts`, {
+    // Dataverse Web API verlangt Attribut-Logical-Names IMMER in Kleinschreibung,
+    // unabhängig davon, wie der Schema-Name im Studio angezeigt wird
+    // (wht_Vorname → wht_vorname usw.).
+    const leadFields: Record<string, unknown> = {
+      wht_vorname: firstname,
+      wht_name:    lastname,
+      wht_email1:  email,
+    };
+    if (mobilephone) leadFields.wht_phone1 = mobilephone;
+    if (eventId) leadFields.wht_eventguid = eventId;
+    if (quelleRaw !== null && quelleRaw !== undefined && quelleRaw !== "") {
+      const quelleNum = Number(quelleRaw);
+      if (!Number.isNaN(quelleNum)) leadFields.wht_quelle = quelleNum;
+    }
+    // Zustimmungs-/Interessefelder speichern den Zeitpunkt der Anmeldung als
+    // Datum, nicht true/false — nur gesetzt, wenn die Checkbox aktiv war.
+    if (interesseAnCoaching) leadFields.wht_interesseancoaching = nowIso;
+    if (einwilligung)        leadFields.wht_einwilligungzurdatenverarbeitung = nowIso;
+
+    const leadRes = await fetch(`${RESOURCE}/api/data/v9.2/wht_leads`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -70,16 +96,11 @@ serve(async (req) => {
         "OData-MaxVersion": "4.0",
         "OData-Version": "4.0",
       },
-      body: JSON.stringify({
-        firstname,
-        lastname,
-        emailaddress1: email,
-        ...(mobilephone ? { mobilephone } : {}),
-      }),
+      body: JSON.stringify(leadFields),
     });
 
-    if (!contactRes.ok) {
-      console.error("Dataverse error:", contactRes.status, await contactRes.text());
+    if (!leadRes.ok) {
+      console.error("Dataverse error:", leadRes.status, await leadRes.text());
       return jsonResponse({ error: "CRM-Anfrage fehlgeschlagen" }, 502);
     }
 
