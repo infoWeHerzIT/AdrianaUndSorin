@@ -95,12 +95,25 @@ create table if not exists audience_survey (
   created_at            timestamptz default now()
 );
 
+-- ── 5b. SURVEY EVENT LINKS ────────────────────────────────────────
+-- Ordnet einer Umfrage-Seite (page_key = URL-Pfad, z. B. "/Templates/umfrage_zg0826.html")
+-- optional ein Dynamics-Event zu (event_id = wht_event-GUID aus Dynamics,
+-- nicht die Supabase-events-Tabelle). Serverseitig statt localStorage, damit
+-- ALLE Besucher dieselbe vom Admin gewählte Zuordnung sehen, nicht nur der
+-- Browser, in dem die Auswahl getroffen wurde.
+create table if not exists survey_event_links (
+  page_key   text primary key,
+  event_id   text,
+  updated_at timestamptz default now()
+);
+
 -- ── 6. ROW LEVEL SECURITY ────────────────────────────────────────
 alter table events              enable row level security;
 alter table participants        enable row level security;
 alter table event_participations enable row level security;
 alter table feedback            enable row level security;
 alter table audience_survey     enable row level security;
+alter table survey_event_links  enable row level security;
 
 -- Events: jeder kann lesen (Kalender & Startseite)
 create policy "events_public_read"
@@ -156,6 +169,16 @@ create policy "audience_survey_public_insert"
 create policy "audience_survey_admin_read" on audience_survey for select
   using (auth.role() = 'authenticated');
 create policy "audience_survey_admin_delete" on audience_survey for delete
+  using (auth.role() = 'authenticated');
+
+-- Survey Event Links: jeder darf lesen (Anzeige des Event-Namens für alle Besucher)
+create policy "survey_event_links_public_read"
+  on survey_event_links for select using (true);
+
+-- Survey Event Links: nur eingeloggte Admins dürfen die Zuordnung setzen/ändern
+create policy "survey_event_links_admin_insert" on survey_event_links for insert
+  with check (auth.role() = 'authenticated');
+create policy "survey_event_links_admin_update" on survey_event_links for update
   using (auth.role() = 'authenticated');
 
 

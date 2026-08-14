@@ -616,11 +616,16 @@ src="https://www.facebook.com/tr?id=1054896624101426&ev=PageView&noscript=1"
   // Für normale Besucher wird (falls zugeordnet) nur der Event-Name ohne
   // Datum angezeigt; nur eingeloggte Admins (Supabase-Auth-Session) sehen
   // stattdessen ein Auswahlfeld mit allen Events (Format "yyyyMMdd HHmmss
-  // Name"), über das sich die Zuordnung ändern lässt. Die Auswahl wird pro
-  // Seite (URL-Pfad) in localStorage gemerkt, damit dieses Muster 1:1 in
+  // Name"), über das sich die Zuordnung ändern lässt.
+  // Die Zuordnung liegt serverseitig in Supabase (Tabelle
+  // survey_event_links, ein Datensatz pro page_key = URL-Pfad) — NICHT in
+  // localStorage, weil localStorage nur im Browser sichtbar ist, in dem die
+  // Auswahl getroffen wurde. Alle Besucher (auch im privaten Modus, auch in
+  // einem anderen Browser) müssen dieselbe vom Admin gewählte Zuordnung
+  // sehen. page_key basiert auf dem URL-Pfad, damit dieses Muster 1:1 in
   // weitere Umfrage-Seiten kopiert werden kann, ohne Keys zu kollidieren.
-  var EVENT_ID_STORAGE_KEY = 'survey_selected_event_id__' + window.location.pathname;
-  var SELECTED_EVENT_ID = localStorage.getItem(EVENT_ID_STORAGE_KEY) || '';
+  var PAGE_KEY = window.location.pathname;
+  var SELECTED_EVENT_ID = '';
 
   (function initEventEyebrow() {
     var eyebrow       = document.getElementById('event-eyebrow');
@@ -637,8 +642,14 @@ src="https://www.facebook.com/tr?id=1054896624101426&ev=PageView&noscript=1"
 
     if (typeof dynamicsCRM === 'undefined') return;
 
-    dynamicsCRM.listEvents().then(function (events) {
-      events = events || [];
+    Promise.all([
+      dynamicsCRM.listEvents(),
+      db.from('survey_event_links').select('event_id').eq('page_key', PAGE_KEY).maybeSingle()
+    ]).then(function (results) {
+      var events = results[0] || [];
+      var linkRes = results[1] || {};
+      SELECTED_EVENT_ID = (linkRes.data && linkRes.data.event_id) || '';
+
       var active = events.find(function (e) { return e.id === SELECTED_EVENT_ID; }) || null;
 
       if (active) {
@@ -670,8 +681,10 @@ src="https://www.facebook.com/tr?id=1054896624101426&ev=PageView&noscript=1"
 
         eyebrowSelect.addEventListener('change', function () {
           SELECTED_EVENT_ID = this.value;
-          localStorage.setItem(EVENT_ID_STORAGE_KEY, SELECTED_EVENT_ID);
           renderOptions();
+          db.from('survey_event_links')
+            .upsert({ page_key: PAGE_KEY, event_id: SELECTED_EVENT_ID, updated_at: new Date().toISOString() }, { onConflict: 'page_key' })
+            .then(function (res) { if (res.error) console.error('Survey event link save error:', res.error.message); });
         });
       }).catch(function (err) { console.error('Auth session check error:', err); });
     }).catch(function (err) { console.error('Events load error:', err); });
