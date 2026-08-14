@@ -942,14 +942,14 @@ window._linkedin_data_partner_ids.push(_linkedin_partner_id);
 
     // Dynamics CRM: läuft parallel, Fehler blockieren die Anmeldung nicht
     dynamicsCRM.submitLead({
-      firstname:           vorname,
-      lastname:            nachname,
-      email:               email,
-      mobilephone:         telefon,
-      eventId:             EVENT_ID,
-      quelle:              quelle,
-      interesseAnCoaching: liveCoaching,
-      einwilligung:        datenschutz
+      firstname:                          vorname,
+      lastname:                           nachname,
+      email:                              email,
+      mobilephone:                        telefon,
+      eventId:                            EVENT_ID,
+      quelle:                             quelle,
+      interesseAnCoachingOptIn:           liveCoaching,
+      einwilligungDatenverarbeitungOptIn: datenschutz
     });
 
     // ---- Tracking: Conversion-Event feuern (Pixel/Insight-Tag oben im <head> aktivieren) ----

@@ -444,10 +444,17 @@
           <div class="pr-hint">Deine Daten wurden vorab eingetragen und können hier nicht geändert werden.</div>
         </div>
 
-        <div class="form-group" id="fg-vorname" style="display:none">
-          <label class="form-label" for="vorname">Vollständiger Name <span class="req">*</span></label>
-          <input class="form-input" type="text" id="vorname" name="vorname" placeholder="Max Mustermann" autocomplete="name">
-          <span class="field-error" id="err-vorname">Bitte gib deinen vollständigen Namen ein</span>
+        <div class="form-row" id="fg-vorname" style="display:none">
+          <div class="form-group">
+            <label class="form-label" for="vorname">Vorname <span class="req">*</span></label>
+            <input class="form-input" type="text" id="vorname" name="vorname" placeholder="Max" autocomplete="given-name">
+            <span class="field-error" id="err-vorname">Bitte gib deinen Vornamen ein</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="nachname">Nachname <span class="req">*</span></label>
+            <input class="form-input" type="text" id="nachname" name="nachname" placeholder="Mustermann" autocomplete="family-name">
+            <span class="field-error" id="err-nachname">Bitte gib deinen Nachnamen ein</span>
+          </div>
         </div>
 
         <div class="form-row" id="fg-contact" style="display:none">
@@ -575,8 +582,9 @@
         document.getElementById('pr-email').textContent = p.email  || '';
 
         // Felder für Payload befüllen
-        document.getElementById('vorname').value = name;
-        document.getElementById('email').value   = p.email || '';
+        document.getElementById('vorname').value  = p.vorname || '';
+        document.getElementById('nachname').value = p.nachname || '';
+        document.getElementById('email').value    = p.email || '';
 
         // Felder sofort ausblenden – Participant ist bekannt
         document.getElementById('fg-vorname').style.display = 'none';
@@ -595,7 +603,7 @@
       document.getElementById('err-rating').classList.remove('visible');
     });
   });
-  ['vorname','email','handy'].forEach(function (id) {
+  ['vorname','nachname','email','handy'].forEach(function (id) {
     document.getElementById(id).addEventListener('input', function () {
       this.classList.remove('error');
       document.getElementById('err-' + id).classList.remove('visible');
@@ -643,6 +651,13 @@
       valid = false;
     }
 
+    var nachnameVal = document.getElementById('nachname').value.trim();
+    if (!contactHidden && !nachnameVal) {
+      document.getElementById('nachname').classList.add('error');
+      document.getElementById('err-nachname').classList.add('visible');
+      valid = false;
+    }
+
     var emailVal = document.getElementById('email').value.trim();
     if (!contactHidden && (!emailVal || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal))) {
       document.getElementById('email').classList.add('error');
@@ -676,7 +691,7 @@
       event_id:       resolvedEventId || null,
       participant_id: presetParticipantId || null,
       ort:            eventLabel,
-      vorname:        vornameVal,
+      vorname:        (vornameVal + ' ' + nachnameVal).trim(),
       email:          emailVal,
       handy:          handyVal,
       rating:         parseInt(ratingInput.value, 10),

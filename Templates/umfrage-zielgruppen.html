@@ -507,11 +507,18 @@
             <label class="question-label">15. Wie heißt du und wie erreiche ich dich am besten? <span class="question-meta" style="display:inline;">(optional)</span></label>
           </div>
 
-          <div class="form-row-3">
+          <div class="form-row">
             <div class="form-group">
-              <label class="form-label" for="q15-name">Vollständiger Name</label>
-              <input class="form-input" type="text" id="q15-name" placeholder="Max Mustermann" autocomplete="name">
+              <label class="form-label" for="q15-vorname">Vorname</label>
+              <input class="form-input" type="text" id="q15-vorname" placeholder="Max" autocomplete="given-name">
             </div>
+            <div class="form-group">
+              <label class="form-label" for="q15-nachname">Nachname</label>
+              <input class="form-input" type="text" id="q15-nachname" placeholder="Mustermann" autocomplete="family-name">
+            </div>
+          </div>
+
+          <div class="form-row">
             <div class="form-group">
               <label class="form-label" for="q15-email">E-Mail</label>
               <input class="form-input" type="email" id="q15-email" placeholder="max@beispiel.de" autocomplete="email">
@@ -663,7 +670,7 @@
       kommentar:          document.getElementById('q12').value.trim(),
       zoom_wunsch:        checkedValue('q13'),
       ergebnisse_wunsch:  checkedValue('q14'),
-      vollstaendiger_name: document.getElementById('q15-name').value.trim(),
+      vollstaendiger_name: (document.getElementById('q15-vorname').value.trim() + ' ' + document.getElementById('q15-nachname').value.trim()).trim(),
       email:              document.getElementById('q15-email').value.trim(),
       telefon:            document.getElementById('q15-phone').value.trim(),
       newsletter_opt_in:  document.getElementById('q15-newsletter').checked
@@ -688,13 +695,9 @@
     // Wenn E-Mail oder Telefon angegeben wurde: Kontakt in Dynamics anlegen/aktualisieren
     // und die Umfrage-Antworten als JSON-Notiz an den Kontakt hängen (läuft parallel, blockiert nicht).
     if (payload.email || payload.telefon) {
-      var nameParts = payload.vollstaendiger_name.split(/\s+/).filter(Boolean);
-      var firstname = nameParts.shift() || '';
-      var lastname  = nameParts.join(' ');
-
       dynamicsCRM.submitSurvey({
-        firstname:   firstname,
-        lastname:    lastname,
+        firstname:   document.getElementById('q15-vorname').value.trim(),
+        lastname:    document.getElementById('q15-nachname').value.trim(),
         email:       payload.email,
         mobilephone: payload.telefon,
         survey:      payload

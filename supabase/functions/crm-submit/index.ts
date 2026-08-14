@@ -58,8 +58,10 @@ serve(async (req) => {
     const mobilephone          = String(payload.mobilephone ?? "").trim();
     const eventId               = String(payload.eventId ?? "").trim();
     const quelleRaw             = payload.quelle;
-    const interesseAnCoaching   = !!payload.interesseAnCoaching;
-    const einwilligung          = !!payload.einwilligung;
+    const interesseAnCoachingOptIn           = !!payload.interesseAnCoachingOptIn;
+    const einwilligungDatenverarbeitungOptIn = !!payload.einwilligungDatenverarbeitungOptIn;
+    const newsletterOptIn                    = !!payload.newsletterOptIn;
+    const testimonialOptIn                   = !!payload.testimonialOptIn;
 
     if (!lastname || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return jsonResponse({ error: "Pflichtfelder fehlen oder ungültig" }, 400);
@@ -77,15 +79,22 @@ serve(async (req) => {
       wht_email1:  email,
     };
     if (mobilephone) leadFields.wht_phone1 = mobilephone;
-    if (eventId) leadFields.wht_eventguid = eventId;
+    // wht_eventid ist ein Lookup (Verknüpfung zu wht_event), kein Textfeld —
+    // Dataverse verlangt dafür die @odata.bind-Syntax. Der Navigation-Property-
+    // Name ist NICHT der Attribut-Logical-Name (wht_eventid), sondern
+    // "wht_EventId" (per ManyToOneRelationships-Metadaten ermittelt:
+    // ReferencingAttribute=wht_eventid, ReferencingEntityNavigationPropertyName=wht_EventId).
+    if (eventId) leadFields["wht_EventId@odata.bind"] = `/wht_events(${eventId})`;
     if (quelleRaw !== null && quelleRaw !== undefined && quelleRaw !== "") {
       const quelleNum = Number(quelleRaw);
       if (!Number.isNaN(quelleNum)) leadFields.wht_quelle = quelleNum;
     }
     // Zustimmungs-/Interessefelder speichern den Zeitpunkt der Anmeldung als
     // Datum, nicht true/false — nur gesetzt, wenn die Checkbox aktiv war.
-    if (interesseAnCoaching) leadFields.wht_interesseancoaching = nowIso;
-    if (einwilligung)        leadFields.wht_einwilligungzurdatenverarbeitung = nowIso;
+    if (interesseAnCoachingOptIn)           leadFields.wht_interesseancoaching = nowIso;
+    if (einwilligungDatenverarbeitungOptIn) leadFields.wht_einwilligungzurdatenverarbeitung = nowIso;
+    if (newsletterOptIn)                    leadFields.wht_interesseannewsletterperemail = nowIso;
+    if (testimonialOptIn)                   leadFields.wht_zustimmungfurtestimonials = nowIso;
 
     const leadRes = await fetch(`${RESOURCE}/api/data/v9.2/wht_leads`, {
       method: "POST",

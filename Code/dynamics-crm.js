@@ -52,23 +52,28 @@ class DynamicsCRM {
 
   // Legt einen Lead (wht_lead) an (supabase/functions/crm-submit[-dev]).
   // eventId: Supabase-Event-ID (z. B. "evt_..."), der die Anmeldung zugeordnet
-  // ist — wird als wht_eventguid mitgeschickt (optional).
+  // ist — wird als wht_eventid mitgeschickt (optional).
   // quelle: numerische ID aus dem "Wie hast du von uns erfahren?"-Feld (optional).
-  // interesseAnCoaching / einwilligung: true, wenn die jeweilige Checkbox beim
-  // Absenden gesetzt war — die Function trägt dafür serverseitig das aktuelle
-  // Datum ein (Dynamics speichert dort den Zeitpunkt der Zustimmung, kein Bool).
+  // interesseAnCoachingOptIn / einwilligungDatenverarbeitungOptIn /
+  // newsletterOptIn / testimonialOptIn: true, wenn die jeweilige Checkbox
+  // beim Absenden gesetzt war — die Function trägt dafür serverseitig das
+  // aktuelle Datum ein (Dynamics speichert dort den Zeitpunkt der
+  // Zustimmung, kein Bool). Alle vier sind optional; wird ein Feld nicht
+  // angegeben, bleibt es in Dynamics einfach leer.
   submitLead(fields) {
     fields = fields || {};
     return this.client.functions.invoke(this._functionName('crm-submit'), {
       body: {
-        firstname:           fields.firstname   || '',
-        lastname:            fields.lastname    || '',
-        email:               fields.email       || '',
-        mobilephone:         fields.mobilephone || '',
-        eventId:             fields.eventId      || '',
-        quelle:              fields.quelle != null && fields.quelle !== '' ? fields.quelle : null,
-        interesseAnCoaching: !!fields.interesseAnCoaching,
-        einwilligung:        !!fields.einwilligung
+        firstname:                          fields.firstname   || '',
+        lastname:                           fields.lastname    || '',
+        email:                              fields.email       || '',
+        mobilephone:                        fields.mobilephone || '',
+        eventId:                            fields.eventId      || '',
+        quelle:                             fields.quelle != null && fields.quelle !== '' ? fields.quelle : null,
+        interesseAnCoachingOptIn:           !!fields.interesseAnCoachingOptIn,
+        einwilligungDatenverarbeitungOptIn: !!fields.einwilligungDatenverarbeitungOptIn,
+        newsletterOptIn:                    !!fields.newsletterOptIn,
+        testimonialOptIn:                   !!fields.testimonialOptIn
       }
     }).catch(function (err) {
       console.error('CRM submit error:', err);
