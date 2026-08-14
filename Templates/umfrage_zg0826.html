@@ -531,7 +531,7 @@
 
         <hr class="form-divider">
 
-        <p class="privacy-note">Deine Angaben behandeln wir vertraulich und verwenden sie ausschließlich für das, wofür du dich gerade entschieden hast. Mit dem Absenden stimmst du unserer <a href="../datenschutz.html" target="_blank" rel="noopener">Datenschutzerklärung</a> zu.</p>
+        <p class="privacy-note">Deine Angaben behandeln wir vertraulich und verwenden sie ausschließlich für das, wofür du dich gerade entschieden hast. Mit dem Absenden stimmst du unserer <a href="https://sorin-ratiu.com/de/rechtliches" target="_blank" rel="noopener">Datenschutzerklärung</a> zu.</p>
 
         <button type="submit" class="btn-submit" id="btn-submit">
           <span class="spinner" id="btn-spinner"></span>
@@ -648,6 +648,17 @@
       return;
     }
 
+    // Wenn weder Vorname noch Nachname angegeben wurde: Platzhalter verwenden,
+    // damit die Antwort trotzdem eindeutig zuordenbar bleibt.
+    var vornameVal  = document.getElementById('q15-vorname').value.trim();
+    var nachnameVal = document.getElementById('q15-nachname').value.trim();
+    if (!vornameVal && !nachnameVal) {
+      var pad = function (n) { return String(n).padStart(2, '0'); };
+      var now = new Date();
+      vornameVal  = 'anonymous';
+      nachnameVal = now.getFullYear() + pad(now.getMonth() + 1) + pad(now.getDate()) + '_' + pad(now.getHours()) + pad(now.getMinutes()) + pad(now.getSeconds());
+    }
+
     var payload = {
       situation:          checkedValues('q1', 'q1-other'),
       situation_main:     checkedValue('q2'),
@@ -663,7 +674,7 @@
       kommentar:          document.getElementById('q12').value.trim(),
       zoom_wunsch:        checkedValue('q13'),
       ergebnisse_wunsch:  checkedValue('q14'),
-      vollstaendiger_name: (document.getElementById('q15-vorname').value.trim() + ' ' + document.getElementById('q15-nachname').value.trim()).trim(),
+      vollstaendiger_name: (vornameVal + ' ' + nachnameVal).trim(),
       email:              document.getElementById('q15-email').value.trim(),
       telefon:            document.getElementById('q15-phone').value.trim(),
       newsletter_opt_in:  document.getElementById('q15-newsletter').checked
@@ -689,8 +700,8 @@
     // und die Umfrage-Antworten als JSON-Notiz an den Kontakt hängen (läuft parallel, blockiert nicht).
     if (payload.email || payload.telefon) {
       dynamicsCRM.submitSurvey({
-        firstname:   document.getElementById('q15-vorname').value.trim(),
-        lastname:    document.getElementById('q15-nachname').value.trim(),
+        firstname:   vornameVal,
+        lastname:    nachnameVal,
         email:       payload.email,
         mobilephone: payload.telefon,
         survey:      payload
