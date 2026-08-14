@@ -58,6 +58,7 @@ serve(async (req) => {
     const lastnameRaw  = String(payload.lastname ?? "").trim();
     const emailRaw     = String(payload.email ?? "").trim();
     const mobilephone  = String(payload.mobilephone ?? "").trim();
+    const eventId       = String(payload.eventId ?? "").trim();
     const survey        = payload.survey ?? {};
 
     const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailRaw);
@@ -80,6 +81,9 @@ serve(async (req) => {
     if (firstname) leadFields.wht_vorname = firstname;
     if (email)     leadFields.wht_email1  = email;
     if (mobilephone) leadFields.wht_phone1 = mobilephone;
+    // wht_eventid ist ein Lookup (Verknüpfung zu wht_event) — Navigation-
+    // Property-Name ist "wht_EventId" (siehe crm-submit für die Herleitung).
+    if (eventId) leadFields["wht_EventId@odata.bind"] = `/wht_events(${eventId})`;
 
     const leadRes = await fetch(`${RESOURCE}/api/data/v9.2/wht_leads`, {
       method: "POST",

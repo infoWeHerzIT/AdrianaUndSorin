@@ -80,8 +80,10 @@ class DynamicsCRM {
     });
   }
 
-  // Wie submitLead, hängt zusätzlich die übergebenen Antworten als
-  // JSON-Notiz an den Kontakt (supabase/functions/crm-survey-submit[-dev]).
+  // Legt einen Lead (wht_lead) mit den übergebenen Umfrage-Antworten als JSON
+  // (wht_jsoncontent) an (supabase/functions/crm-survey-submit[-dev]).
+  // eventId: Dynamics-Event-GUID (wht_eventid), der die Umfrage zugeordnet
+  // ist — wird als wht_EventId-Lookup mitgeschickt (optional).
   submitSurvey(fields) {
     fields = fields || {};
     return this.client.functions.invoke(this._functionName('crm-survey-submit'), {
@@ -90,6 +92,7 @@ class DynamicsCRM {
         lastname:    fields.lastname    || '',
         email:       fields.email       || '',
         mobilephone: fields.mobilephone || '',
+        eventId:     fields.eventId     || '',
         survey:      fields.survey      || {}
       }
     }).catch(function (err) {

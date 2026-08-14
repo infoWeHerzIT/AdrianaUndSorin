@@ -93,6 +93,29 @@
     color: rgba(255,255,255,0.65); line-height: 1.7;
   }
 
+  /* ─── EVENT-EYEBROW (nur sichtbar, wenn ein Event zugeordnet ist) ─── */
+  .event-eyebrow {
+    display: none;
+    align-items: center; justify-content: center; gap: 8px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.16);
+    padding: 7px 14px; border-radius: 100px;
+    font-size: 13px; letter-spacing: .03em; color: rgba(255,255,255,0.85);
+    margin: 0 auto 22px; width: fit-content;
+  }
+  .event-eyebrow.visible { display: inline-flex; }
+  .event-eyebrow-admin-badge {
+    font-size: 10px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+    background: rgba(255,99,0,0.25); color: var(--orange);
+    padding: 2px 7px; border-radius: 100px; flex-shrink: 0;
+  }
+  #event-eyebrow-select {
+    background: transparent; border: none; color: rgba(255,255,255,0.85);
+    font-family: 'DM Sans', sans-serif; font-size: 13px; letter-spacing: .03em;
+    cursor: pointer; outline: none; max-width: 360px;
+  }
+  #event-eyebrow-select option { color: #111; }
+
   /* ─── FORM SECTION ─── */
   .fb-form-section {
     background: var(--white);
@@ -339,6 +362,11 @@ src="https://www.facebook.com/tr?id=1054896624101426&ev=PageView&noscript=1"
   <div class="fb-hero-bg"></div>
   <div class="hero-accent-bar"></div>
   <div class="fb-hero-inner">
+    <div class="event-eyebrow" id="event-eyebrow">
+      <span id="event-eyebrow-text"></span>
+      <select id="event-eyebrow-select" style="display:none;" aria-label="Event zuordnen (Admin)"></select>
+      <span class="event-eyebrow-admin-badge" id="event-eyebrow-admin-badge" style="display:none;">Admin</span>
+    </div>
     <span class="section-label" style="text-align:center;"><h1><em>Umfrage</em></h1></span>
     <h1>Was <em>belastet</em> dich gerade wirklich?</h1>
     <p>Diese Umfrage hilft uns zu verstehen, was Frauen zwischen 35 und 55 im Alltag wirklich belastet – und was ihnen tatsächlich helfen würde. Sie ist anonym und dauert etwa 5 Minuten. Es gibt keine richtigen oder falschen Antworten. Je ehrlicher du antwortest, desto wertvoller ist es.</p>
@@ -581,6 +609,66 @@ src="https://www.facebook.com/tr?id=1054896624101426&ev=PageView&noscript=1"
 
 <script>
 (function () {
+  // ── Event-Zuordnung (Grundlage für alle Umfragen-Seiten) ──────────────
+  // Jede Umfrage kann optional einem Dynamics-Event (wht_event) zugeordnet
+  // werden — die GUID wird beim Absenden als eventId an submitSurvey
+  // mitgegeben und landet dort im Lookup wht_EventId auf dem Umfrage-Lead.
+  // Für normale Besucher wird (falls zugeordnet) nur der Event-Name ohne
+  // Datum angezeigt; nur eingeloggte Admins (Supabase-Auth-Session) sehen
+  // stattdessen ein Auswahlfeld mit allen Events (Format "yyyyMMdd HHmmss
+  // Name"), über das sich die Zuordnung ändern lässt. Die Auswahl wird pro
+  // Seite (URL-Pfad) in localStorage gemerkt, damit dieses Muster 1:1 in
+  // weitere Umfrage-Seiten kopiert werden kann, ohne Keys zu kollidieren.
+  var EVENT_ID_STORAGE_KEY = 'survey_selected_event_id__' + window.location.pathname;
+  var SELECTED_EVENT_ID = localStorage.getItem(EVENT_ID_STORAGE_KEY) || '';
+
+  (function initEventEyebrow() {
+    var eyebrow       = document.getElementById('event-eyebrow');
+    var eyebrowText   = document.getElementById('event-eyebrow-text');
+    var eyebrowSelect = document.getElementById('event-eyebrow-select');
+    var eyebrowBadge  = document.getElementById('event-eyebrow-admin-badge');
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+    function dateTimeStamp(ev) {
+      if (ev.year == null || ev.month == null || ev.day == null) return '';
+      var time = (ev.time_from || '00:00').split(':');
+      return '' + ev.year + pad(ev.month + 1) + pad(ev.day) + ' ' + pad(time[0] || '00') + pad(time[1] || '00') + '00';
+    }
+
+    if (typeof dynamicsCRM === 'undefined') return;
+
+    dynamicsCRM.listEvents().then(function (events) {
+      events = events || [];
+      var active = events.find(function (e) { return e.id === SELECTED_EVENT_ID; }) || null;
+
+      if (active) {
+        eyebrowText.textContent = active.name || '';
+        eyebrow.classList.add('visible');
+      }
+
+      // Nur eingeloggte Admins dürfen die Event-Zuordnung ändern.
+      db.auth.getSession().then(function (sessionRes) {
+        if (!sessionRes.data.session || !events.length) return;
+
+        var options = '<option value="">– kein Event –</option>' + events.map(function (ev) {
+          var label = (dateTimeStamp(ev) + ' ' + (ev.name || '')).trim();
+          return '<option value="' + ev.id + '"' + (ev.id === SELECTED_EVENT_ID ? ' selected' : '') + '>' + label + '</option>';
+        }).join('');
+        eyebrowSelect.innerHTML = options;
+
+        eyebrowText.style.display   = 'none';
+        eyebrowSelect.style.display = 'inline-block';
+        eyebrowBadge.style.display  = 'inline-block';
+        eyebrow.classList.add('visible');
+
+        eyebrowSelect.addEventListener('change', function () {
+          SELECTED_EVENT_ID = this.value;
+          localStorage.setItem(EVENT_ID_STORAGE_KEY, SELECTED_EVENT_ID);
+        });
+      }).catch(function (err) { console.error('Auth session check error:', err); });
+    }).catch(function (err) { console.error('Events load error:', err); });
+  })();
+
   // ── "Anderes" Textfelder ein-/ausblenden ──
   document.querySelectorAll('[data-other-toggle]').forEach(function (input) {
     input.addEventListener('change', function () {
@@ -729,6 +817,7 @@ src="https://www.facebook.com/tr?id=1054896624101426&ev=PageView&noscript=1"
       lastname:    nachnameVal,
       email:       payload.email,
       mobilephone: payload.telefon,
+      eventId:     SELECTED_EVENT_ID,
       survey:      payload
     });
 
