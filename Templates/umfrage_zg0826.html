@@ -113,8 +113,9 @@
     background: transparent; border: none; color: rgba(255,255,255,0.85);
     font-family: 'DM Sans', sans-serif; font-size: 13px; letter-spacing: .03em;
     cursor: pointer; outline: none; max-width: 360px;
+    text-align: center; text-align-last: center;
   }
-  #event-eyebrow-select option { color: #111; }
+  #event-eyebrow-select option { color: #111; text-align: center; }
 
   /* ─── FORM SECTION ─── */
   .fb-form-section {
@@ -367,7 +368,6 @@ src="https://www.facebook.com/tr?id=1054896624101426&ev=PageView&noscript=1"
       <select id="event-eyebrow-select" style="display:none;" aria-label="Event zuordnen (Admin)"></select>
       <span class="event-eyebrow-admin-badge" id="event-eyebrow-admin-badge" style="display:none;">Admin</span>
     </div>
-    <span class="section-label" style="text-align:center;"><h1><em>Umfrage</em></h1></span>
     <h1>Was <em>belastet</em> dich gerade wirklich?</h1>
     <p>Diese Umfrage hilft uns zu verstehen, was Frauen zwischen 35 und 55 im Alltag wirklich belastet – und was ihnen tatsächlich helfen würde. Sie ist anonym und dauert etwa 5 Minuten. Es gibt keine richtigen oder falschen Antworten. Je ehrlicher du antwortest, desto wertvoller ist es.</p>
   </div>
@@ -650,11 +650,18 @@ src="https://www.facebook.com/tr?id=1054896624101426&ev=PageView&noscript=1"
       db.auth.getSession().then(function (sessionRes) {
         if (!sessionRes.data.session || !events.length) return;
 
-        var options = '<option value="">– kein Event –</option>' + events.map(function (ev) {
-          var label = (dateTimeStamp(ev) + ' ' + (ev.name || '')).trim();
-          return '<option value="' + ev.id + '"' + (ev.id === SELECTED_EVENT_ID ? ' selected' : '') + '>' + label + '</option>';
-        }).join('');
-        eyebrowSelect.innerHTML = options;
+        // Die aktuell ausgewählte Option zeigt (geschlossen wie auch im
+        // Dropdown) nur den Event-Namen — alle anderen Optionen zeigen
+        // zusätzlich Datum/Uhrzeit, um Events mit gleichem Namen zu
+        // unterscheiden. Wird bei jeder Auswahl neu aufgebaut.
+        function renderOptions() {
+          eyebrowSelect.innerHTML = '<option value="">– kein Event –</option>' + events.map(function (ev) {
+            var isSelected = ev.id === SELECTED_EVENT_ID;
+            var label = isSelected ? (ev.name || '') : (dateTimeStamp(ev) + ' ' + (ev.name || '')).trim();
+            return '<option value="' + ev.id + '"' + (isSelected ? ' selected' : '') + '>' + label + '</option>';
+          }).join('');
+        }
+        renderOptions();
 
         eyebrowText.style.display   = 'none';
         eyebrowSelect.style.display = 'inline-block';
@@ -664,6 +671,7 @@ src="https://www.facebook.com/tr?id=1054896624101426&ev=PageView&noscript=1"
         eyebrowSelect.addEventListener('change', function () {
           SELECTED_EVENT_ID = this.value;
           localStorage.setItem(EVENT_ID_STORAGE_KEY, SELECTED_EVENT_ID);
+          renderOptions();
         });
       }).catch(function (err) { console.error('Auth session check error:', err); });
     }).catch(function (err) { console.error('Events load error:', err); });
