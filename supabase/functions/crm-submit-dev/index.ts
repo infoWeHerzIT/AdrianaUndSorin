@@ -79,9 +79,10 @@ serve(async (req) => {
     // unabhängig davon, wie der Schema-Name im Studio angezeigt wird
     // (wht_Vorname → wht_vorname usw.).
     const leadFields: Record<string, unknown> = {
-      wht_vorname: firstname,
-      wht_name:    lastname,
-      wht_email1:  email,
+      wht_vorname:  firstname,
+      wht_name:     lastname,
+      wht_leadname: (firstname + " " + lastname).trim(),
+      wht_email1:   email,
     };
     if (mobilephone) leadFields.wht_phone1 = mobilephone;
     // wht_eventid ist ein Lookup (Verknüpfung zu wht_event), kein Textfeld —

@@ -352,7 +352,7 @@ src="https://www.facebook.com/tr?id=1054896624101426&ev=PageView&noscript=1"
     <div id="form-state">
       <span class="section-label">Zielgruppen-Umfrage</span>
       <h2>Erzähl uns von deiner Situation</h2>
-      <p class="form-subtitle">Alle Fragen sind freiwillig – nur Frage 13 ist ein Pflichtfeld.</p>
+      <p class="form-subtitle">Alle Fragen sind freiwillig – nur Frage 13 und 14 sind Pflichtfelder.</p>
 
       <form id="survey-form" novalidate>
 
@@ -374,7 +374,6 @@ src="https://www.facebook.com/tr?id=1054896624101426&ev=PageView&noscript=1"
         <!-- Q2 -->
         <div class="form-group">
           <label class="question-label">2. Und was davon trifft am stärksten zu?</label>
-          <span class="question-meta">(Einfachauswahl)</span>
           <div class="option-list" id="q2-options">
             <label class="option-item"><input type="radio" name="q2" value="Ich funktioniere im Alltag, aber innerlich fühle ich mich leer und erschöpft"> Ich funktioniere im Alltag, aber innerlich fühle ich mich leer und erschöpft</label>
             <label class="option-item"><input type="radio" name="q2" value="Ich merke, dass ich meine eigenen Wünsche und Bedürfnisse seit Jahren ignoriere"> Ich merke, dass ich meine eigenen Wünsche und Bedürfnisse seit Jahren ignoriere</label>
@@ -456,7 +455,6 @@ src="https://www.facebook.com/tr?id=1054896624101426&ev=PageView&noscript=1"
         <!-- Q9 -->
         <div class="form-group">
           <label class="question-label">9. Welche Form der Unterstützung würde zu deinem Leben passen?</label>
-          <span class="question-meta">(Einfachauswahl)</span>
           <div class="option-list" id="q9-options">
             <label class="option-item"><input type="radio" name="q9" value="Einzelbegleitung – ich brauche jemanden, der mich persönlich führt"> Einzelbegleitung – ich brauche jemanden, der mich persönlich führt</label>
             <label class="option-item"><input type="radio" name="q9" value="Eine feste kleine Gruppe mit persönlicher Begleitung"> Eine feste kleine Gruppe mit persönlicher Begleitung</label>
@@ -474,7 +472,6 @@ src="https://www.facebook.com/tr?id=1054896624101426&ev=PageView&noscript=1"
         <!-- Q11 -->
         <div class="form-group">
           <label class="question-label">11. Wie hast du von mir erfahren?</label>
-          <span class="question-meta">(Einfachauswahl)</span>
           <div class="option-list" id="q11-options">
             <label class="option-item"><input type="radio" name="q11" value="Instagram"> Instagram</label>
             <label class="option-item"><input type="radio" name="q11" value="Facebook"> Facebook</label>
@@ -494,7 +491,6 @@ src="https://www.facebook.com/tr?id=1054896624101426&ev=PageView&noscript=1"
         <!-- Q13 (getauscht: vormals Zoom-Frage) - einzige Pflichtfrage -->
         <div class="form-group">
           <label class="question-label">13. Hättest du Lust auf ein kurzes, unverbindliches Zoom-Gespräch, in dem wir gemeinsam schauen, was dich gerade wirklich weiterbringt? <span class="req">*</span></label>
-          <span class="question-meta">(Einfachauswahl)</span>
           <div class="option-list" id="q13-options">
             <label class="option-item"><input type="radio" name="q13" value="Ja, das klingt gut"> Ja, das klingt gut</label>
             <label class="option-item"><input type="radio" name="q13" value="Nein, danke"> Nein, danke</label>
@@ -504,13 +500,13 @@ src="https://www.facebook.com/tr?id=1054896624101426&ev=PageView&noscript=1"
 
         <!-- Q14 (getauscht: vormals Ergebnisse-Frage) -->
         <div class="form-group">
-          <label class="question-label">14. Möchtest du die Ergebnisse dieser Umfrage bekommen?</label>
-          <span class="question-meta">(Einfachauswahl)</span>
+          <label class="question-label">14. Möchtest du die Ergebnisse dieser Umfrage bekommen? <span class="req">*</span></label>
           <p class="question-intro">Wir werten alle Antworten aus und schicken dir eine Zusammenfassung: Was Frauen zwischen 35 und 55 gerade am meisten belastet, was sie schon versucht haben – und was tatsächlich etwas verändert hat. Du wirst wahrscheinlich überrascht sein, wie viele es genauso erleben wie du.</p>
           <div class="option-list" id="q14-options">
             <label class="option-item"><input type="radio" name="q14" value="Ja, gerne"> Ja, gerne</label>
             <label class="option-item"><input type="radio" name="q14" value="Nein, danke"> Nein, danke</label>
           </div>
+          <span class="field-error" id="err-q14">Bitte wähle eine Option</span>
         </div>
 
         <!-- Q15 - conditional -->
@@ -545,7 +541,7 @@ src="https://www.facebook.com/tr?id=1054896624101426&ev=PageView&noscript=1"
 
           <label class="form-checkbox">
             <input type="checkbox" id="q15-newsletter">
-            <span>Ja, schick mir gerne ab und zu Impulse per E-Mail – kurze Gedanken zu Stress, Grenzen und dem eigenen Weg. Jederzeit mit einem Klick abbestellbar.</span>
+            <span>Ja, schick mir gerne ab und zu Impulse per E-Mail (Newsletter) – kurze Gedanken zu Stress, Grenzen und dem eigenen Weg. Jederzeit mit einem Klick abbestellbar.</span>
           </label>
         </div>
 
@@ -566,7 +562,7 @@ src="https://www.facebook.com/tr?id=1054896624101426&ev=PageView&noscript=1"
     <div class="fb-thanks" id="fb-thanks">
       <div class="fb-thanks-icon">✓</div>
       <h2>Danke für deine Offenheit!</h2>
-      <p>Wir lesen jede Antwort mit Aufmerksamkeit. Deine Perspektive hilft uns zu verstehen, was Frauen wie dich gerade wirklich brauchen.</p>
+      <p>Wir lesen jede Antwort mit Aufmerksamkeit. Deine Perspektive hilft uns zu verstehen, was Frauen wie dich gerade wirklich brauchen. </br>Passenderweise dreht sich genau darum auch eines unserer Online-Seminare – wirf gerne einen Blick auf die aktuellen Termine.</p>
       <div class="fb-thanks-links">
         <a href="../kalender.html" class="btn-ghost-link">Termine ansehen</a>
       </div>
@@ -612,11 +608,17 @@ src="https://www.facebook.com/tr?id=1054896624101426&ev=PageView&noscript=1"
     r.addEventListener('change', updateQ15Visibility);
   });
 
-  // ── Fehler bei Frage 13 (einzige Pflichtfrage) beim Interagieren entfernen ──
+  // ── Fehler bei Frage 13/14 (Pflichtfragen) beim Interagieren entfernen ──
   document.querySelectorAll('input[name="q13"]').forEach(function (r) {
     r.addEventListener('change', function () {
       document.getElementById('q13-options').classList.remove('error');
       document.getElementById('err-q13').classList.remove('visible');
+    });
+  });
+  document.querySelectorAll('input[name="q14"]').forEach(function (r) {
+    r.addEventListener('change', function () {
+      document.getElementById('q14-options').classList.remove('error');
+      document.getElementById('err-q14').classList.remove('visible');
     });
   });
 
@@ -661,12 +663,14 @@ src="https://www.facebook.com/tr?id=1054896624101426&ev=PageView&noscript=1"
     e.preventDefault();
     submitErr.classList.remove('visible');
 
-    // Einzige Pflichtfrage: 13 (Zoom-Gespräch)
-    if (!document.querySelector('input[name="q13"]:checked')) {
-      document.getElementById('q13-options').classList.add('error');
-      document.getElementById('err-q13').classList.add('visible');
-      return;
-    }
+    // Pflichtfragen: 13 (Zoom-Gespräch) und 14 (Ergebnisse)
+    var q13valid = !!document.querySelector('input[name="q13"]:checked');
+    var q14valid = !!document.querySelector('input[name="q14"]:checked');
+    document.getElementById('q13-options').classList.toggle('error', !q13valid);
+    document.getElementById('err-q13').classList.toggle('visible', !q13valid);
+    document.getElementById('q14-options').classList.toggle('error', !q14valid);
+    document.getElementById('err-q14').classList.toggle('visible', !q14valid);
+    if (!q13valid || !q14valid) return;
 
     // Wenn weder Vorname noch Nachname angegeben wurde: Platzhalter verwenden,
     // damit die Antwort trotzdem eindeutig zuordenbar bleibt.
@@ -716,17 +720,17 @@ src="https://www.facebook.com/tr?id=1054896624101426&ev=PageView&noscript=1"
       return;
     }
 
-    // Wenn E-Mail oder Telefon angegeben wurde: Kontakt in Dynamics anlegen/aktualisieren
-    // und die Umfrage-Antworten als JSON-Notiz an den Kontakt hängen (läuft parallel, blockiert nicht).
-    if (payload.email || payload.telefon) {
-      dynamicsCRM.submitSurvey({
-        firstname:   vornameVal,
-        lastname:    nachnameVal,
-        email:       payload.email,
-        mobilephone: payload.telefon,
-        survey:      payload
-      });
-    }
+    // Kontakt in Dynamics anlegen/aktualisieren und die Umfrage-Antworten als
+    // JSON-Notiz an den Kontakt hängen (läuft parallel, blockiert nicht). Läuft
+    // auch ohne E-Mail/Telefon – dann trägt firstname/lastname den anonymous-
+    // Platzhalter (siehe oben), damit der Kontakt trotzdem eindeutig ist.
+    dynamicsCRM.submitSurvey({
+      firstname:   vornameVal,
+      lastname:    nachnameVal,
+      email:       payload.email,
+      mobilephone: payload.telefon,
+      survey:      payload
+    });
 
     document.getElementById('form-state').style.display = 'none';
     document.getElementById('fb-thanks').classList.add('visible');
