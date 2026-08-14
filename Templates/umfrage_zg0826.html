@@ -547,8 +547,9 @@ src="https://www.facebook.com/tr?id=1054896624101426&ev=PageView&noscript=1"
 
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label" for="q15-vorname">Vorname</label>
+              <label class="form-label" for="q15-vorname">Vorname <span id="q15-vorname-req" style="display:none;color:#e53e3e;">*</span></label>
               <input class="form-input" type="text" id="q15-vorname" placeholder="Max" autocomplete="given-name">
+              <span class="field-error" id="err-q15-vorname">Bitte gib deinen Vornamen an.</span>
             </div>
             <div class="form-group">
               <label class="form-label" for="q15-nachname">Nachname</label>
@@ -558,8 +559,9 @@ src="https://www.facebook.com/tr?id=1054896624101426&ev=PageView&noscript=1"
 
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label" for="q15-email">E-Mail</label>
+              <label class="form-label" for="q15-email">E-Mail <span id="q15-email-req" style="display:none;color:#e53e3e;">*</span></label>
               <input class="form-input" type="email" id="q15-email" placeholder="max@beispiel.de" autocomplete="email">
+              <span class="field-error" id="err-q15-email">Bitte gib eine gültige E-Mail-Adresse an.</span>
             </div>
             <div class="form-group">
               <label class="form-label" for="q15-phone">Telefon</label>
@@ -706,15 +708,38 @@ src="https://www.facebook.com/tr?id=1054896624101426&ev=PageView&noscript=1"
   });
 
   // ── Frage 15 nur einblenden, wenn Frage 13 (Zoom) oder Frage 14 (Ergebnisse) mit "Ja" beantwortet wurde ──
-  var q15Block = document.getElementById('q15-block');
-  function updateQ15Visibility() {
+  // In diesem Fall wird die E-Mail-Adresse zur Pflichtangabe (wir brauchen sie,
+  // um Zoom-Termin bzw. Ergebnisse tatsächlich zusenden zu können).
+  var q15Block      = document.getElementById('q15-block');
+  var q15EmailReq   = document.getElementById('q15-email-req');
+  var q15VornameReq = document.getElementById('q15-vorname-req');
+  function isEmailRequired() {
     var q13 = document.querySelector('input[name="q13"]:checked');
     var q14 = document.querySelector('input[name="q14"]:checked');
-    var showIt = (q13 && q13.value === 'Ja, das klingt gut') || (q14 && q14.value === 'Ja, gerne');
-    q15Block.style.display = showIt ? '' : 'none';
+    return !!((q13 && q13.value === 'Ja, das klingt gut') || (q14 && q14.value === 'Ja, gerne'));
+  }
+  function updateQ15Visibility() {
+    var showIt = isEmailRequired();
+    q15Block.style.display      = showIt ? '' : 'none';
+    q15EmailReq.style.display   = showIt ? '' : 'none';
+    q15VornameReq.style.display = showIt ? '' : 'none';
+    if (!showIt) {
+      document.getElementById('q15-email').classList.remove('error');
+      document.getElementById('err-q15-email').classList.remove('visible');
+      document.getElementById('q15-vorname').classList.remove('error');
+      document.getElementById('err-q15-vorname').classList.remove('visible');
+    }
   }
   document.querySelectorAll('input[name="q13"], input[name="q14"]').forEach(function (r) {
     r.addEventListener('change', updateQ15Visibility);
+  });
+  document.getElementById('q15-email').addEventListener('input', function () {
+    this.classList.remove('error');
+    document.getElementById('err-q15-email').classList.remove('visible');
+  });
+  document.getElementById('q15-vorname').addEventListener('input', function () {
+    this.classList.remove('error');
+    document.getElementById('err-q15-vorname').classList.remove('visible');
   });
 
   // ── Fehler bei Frage 13/14 (Pflichtfragen) beim Interagieren entfernen ──
@@ -780,6 +805,22 @@ src="https://www.facebook.com/tr?id=1054896624101426&ev=PageView&noscript=1"
     document.getElementById('q14-options').classList.toggle('error', !q14valid);
     document.getElementById('err-q14').classList.toggle('visible', !q14valid);
     if (!q13valid || !q14valid) return;
+
+    // Wenn Frage 13 oder 14 mit "Ja" beantwortet wurde, sind Vorname und E-Mail Pflicht
+    if (isEmailRequired()) {
+      var vornameInp = document.getElementById('q15-vorname');
+      var vornameOk  = vornameInp.value.trim().length > 0;
+      vornameInp.classList.toggle('error', !vornameOk);
+      document.getElementById('err-q15-vorname').classList.toggle('visible', !vornameOk);
+
+      var emailInp = document.getElementById('q15-email');
+      var emailOk  = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInp.value.trim());
+      emailInp.classList.toggle('error', !emailOk);
+      document.getElementById('err-q15-email').classList.toggle('visible', !emailOk);
+
+      if (!vornameOk) { vornameInp.focus(); return; }
+      if (!emailOk)   { emailInp.focus(); return; }
+    }
 
     // Wenn weder Vorname noch Nachname angegeben wurde: Platzhalter verwenden,
     // damit die Antwort trotzdem eindeutig zuordenbar bleibt.

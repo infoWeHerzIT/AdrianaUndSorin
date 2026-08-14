@@ -840,29 +840,8 @@
 
     setLoading(true);
 
-    // Save to Supabase (Fehler hier dürfen Mailversand & Weiterleitung nicht blockieren)
-    var participantFields = { vorname, nachname, email, ort };
-    if (handy) participantFields.handy = handy;
-    try {
-      var saveResult = handy
-        ? await db.from('participants').upsert(participantFields, { onConflict: 'handy' }).select('id').single()
-        : await db.from('participants').insert(participantFields).select('id').single();
-
-      var dbError = saveResult.error;
-      if (!saveResult.error && saveResult.data) {
-        var ep = await db.from('event_participations').insert({
-          event_id:       eventId || (ev ? ev.id : null),
-          participant_id: saveResult.data.id,
-          ticket_name:    ticketName,
-          ticket_price:   priceNum > 0 ? '€' + priceNum : 'kostenlos',
-          payment_status: 'pending'
-        });
-        dbError = ep.error;
-      }
-      if (dbError) console.error('Supabase insert error:', dbError.message);
-    } catch (dbEx) {
-      console.error('Supabase save exception:', dbEx);
-    }
+    // Kontaktdaten werden ausschließlich in Dynamics gespeichert (siehe
+    // dynamicsCRM.submitLead weiter unten) — kein Supabase-Write mehr hier.
 
     var paymentUrlFinal = priceNum > 0 ? vividUrl : '';
     var thankyouParams  = new URLSearchParams({

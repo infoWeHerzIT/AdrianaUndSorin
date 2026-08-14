@@ -795,22 +795,26 @@ window._linkedin_data_partner_ids.push(_linkedin_partner_id);
   }
 
   // ── Event-Zuordnung ──────────────────────────────────────────────────
-  // Anmeldungen dieser Seite werden immer einem Event zugeordnet (für die
-  // Supabase-Speicherung im Hintergrund). Standard ist DEFAULT_EVENT_ID.
-  // Für eingeloggte Admins wird oben im Eyebrow ein Auswahlfeld angezeigt,
-  // mit dem sich ein anderes Event auswählen lässt (Auswahl wird lokal
-  // gemerkt); für alle anderen Besucher erscheint dort nur Name + Termin
-  // des aktuell zugeordneten Events, rein lesend.
-  const DEFAULT_EVENT_ID = 'evt_1783634695960_6106';
-  const EVENT_ID_STORAGE_KEY = 'stressfrei_selected_event_id';
-  let EVENT_ID = localStorage.getItem(EVENT_ID_STORAGE_KEY) || DEFAULT_EVENT_ID;
+  // Anmeldungen dieser Seite werden immer einem Dynamics-Event zugeordnet
+  // (die GUID geht als eventId an dynamicsCRM.submitLead → wht_EventId).
+  // Events kommen aus Dynamics (dynamicsCRM.listEvents()), NICHT aus der
+  // Supabase-events-Tabelle — eine Supabase-ID wäre keine gültige Dynamics-
+  // GUID und die Lookup-Verknüpfung am Lead würde stillschweigend fehlschlagen.
+  // Die Zuordnung liegt serverseitig in Supabase (Tabelle survey_event_links,
+  // ein Datensatz pro page_key = URL-Pfad) statt in localStorage, damit ALLE
+  // Besucher dieselbe vom Admin gewählte Zuordnung sehen, nicht nur der
+  // Browser, in dem die Auswahl getroffen wurde. Für eingeloggte Admins wird
+  // oben im Eyebrow ein Auswahlfeld angezeigt, mit dem sich ein anderes Event
+  // auswählen lässt; für alle anderen Besucher erscheint dort nur Name +
+  // Termin des aktuell zugeordneten Events, rein lesend.
+  const PAGE_KEY = window.location.pathname;
+  let EVENT_ID = '';
 
   (function initEventEyebrow(){
-    var MONTH_NAMES = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
     var eyebrowText   = document.getElementById('eyebrow-text');
     var eyebrowSelect = document.getElementById('eyebrow-event-select');
     var eyebrowBadge  = document.getElementById('eyebrow-admin-badge');
-    var STATUS_LABEL  = { 0: ' (Entwurf)', 2: ' (vergangen)' };
+    var STATUS_LABEL  = { 'Draft': ' (Entwurf)', 'Vergangene': ' (vergangen)' };
 
     function esc(v) { return String(v || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
     function fmtEvent(ev) {
@@ -822,9 +826,14 @@ window._linkedin_data_partner_ids.push(_linkedin_partner_id);
       return label;
     }
 
-    db.from('events').select('id,name,year,month,day,time_from,status').order('year').order('month').order('day')
-      .then(function (res) {
-        var events = (!res.error && res.data) ? res.data : [];
+    Promise.all([
+      dynamicsCRM.listEvents(),
+      db.from('survey_event_links').select('event_id').eq('page_key', PAGE_KEY).maybeSingle()
+    ]).then(function (results) {
+        var events  = results[0] || [];
+        var linkRes = results[1] || {};
+        EVENT_ID = (linkRes.data && linkRes.data.event_id) || '';
+
         var active = events.find(function (e) { return e.id === EVENT_ID; }) || null;
 
         eyebrowText.textContent = fmtEvent(active);
@@ -844,7 +853,10 @@ window._linkedin_data_partner_ids.push(_linkedin_partner_id);
 
           eyebrowSelect.addEventListener('change', function () {
             EVENT_ID = this.value;
-            localStorage.setItem(EVENT_ID_STORAGE_KEY, EVENT_ID);
+            eyebrowText.textContent = fmtEvent(events.find(function (e) { return e.id === EVENT_ID; }) || null);
+            db.from('survey_event_links')
+              .upsert({ page_key: PAGE_KEY, event_id: EVENT_ID, updated_at: new Date().toISOString() }, { onConflict: 'page_key' })
+              .then(function (res) { if (res.error) console.error('Survey event link save error:', res.error.message); });
           });
         }).catch(function (err) { console.error('Auth session check error:', err); });
       })
@@ -915,30 +927,8 @@ window._linkedin_data_partner_ids.push(_linkedin_partner_id);
     submitBtn.disabled = true;
     submitBtnLabel.innerHTML = '<span class="btn-spinner"></span> Wird gesendet …';
 
-    // Supabase: Anmeldung im Hintergrund speichern und dem Event zuordnen
-    // (Fehler dürfen die Anmeldung nicht blockieren)
-    var participantFields = { vorname: vorname, nachname: nachname, email: email, ort: 'Online' };
-    if (telefon) participantFields.handy = telefon;
-    try {
-      var saveResult = telefon
-        ? await db.from('participants').upsert(participantFields, { onConflict: 'handy' }).select('id').single()
-        : await db.from('participants').insert(participantFields).select('id').single();
-
-      if (!saveResult.error && saveResult.data) {
-        var ep = await db.from('event_participations').insert({
-          event_id:       EVENT_ID,
-          participant_id: saveResult.data.id,
-          ticket_name:    'Webinar-Serie · 10 Termine',
-          ticket_price:   'kostenlos',
-          payment_status: 'pending'
-        });
-        if (ep.error) console.error('Supabase insert error:', ep.error.message);
-      } else if (saveResult.error) {
-        console.error('Supabase insert error:', saveResult.error.message);
-      }
-    } catch (dbEx) {
-      console.error('Supabase save exception:', dbEx);
-    }
+    // Kontaktdaten werden ausschließlich in Dynamics gespeichert (siehe
+    // dynamicsCRM.submitLead weiter unten) — kein Supabase-Write mehr hier.
 
     // Dynamics CRM: läuft parallel, Fehler blockieren die Anmeldung nicht
     dynamicsCRM.submitLead({
