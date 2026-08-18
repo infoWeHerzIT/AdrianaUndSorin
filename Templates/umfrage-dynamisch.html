@@ -509,8 +509,12 @@
 
     setLoading(false);
 
-    // Dynamics: läuft parallel, Fehler blockieren die Anzeige nicht (fire-and-forget).
-    dynamicsCRM.submitSurveyResponse({
+    // Dynamics: Fehler blockieren die Weiterleitung nicht — die Weiterleitung
+    // muss aber warten, bis der Request wirklich abgeschlossen ist (nicht nur
+    // "gestartet"), sonst bricht der Browser ihn beim Navigieren mitten in der
+    // Preflight-Anfrage ab, bevor die eigentliche Anfrage je rausgeht (gleiches
+    // Muster wie in register.html).
+    var crmDone = dynamicsCRM.submitSurveyResponse({
       firstname:   vornameVal,
       lastname:    nachnameVal,
       email:       emailVal,
@@ -524,7 +528,8 @@
     // Kanal, um uns zu melden — sonst würde "danke-optin.html" (das auf die
     // Mail-Zustellung hinweist) für anonyme Antworten irreführend sein.
     var thanksPage = (emailVal || phoneVal) ? 'danke-optin.html' : 'danke-umfrage-nooptin.html';
-    window.location.href = thanksPage + '?' + new URLSearchParams({ vorname: vornameVal }).toString();
+    var thanksUrl  = thanksPage + '?' + new URLSearchParams({ vorname: vornameVal }).toString();
+    Promise.resolve(crmDone).then(function () { window.location.href = thanksUrl; });
   });
 })();
 </script>

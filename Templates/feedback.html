@@ -676,8 +676,12 @@
     }
 
     // Kontakt in Dynamics anlegen (Lead mit den Feedback-Antworten als JSON,
-    // wht_jsoncontent) — läuft parallel, blockiert nicht.
-    dynamicsCRM.submitSurvey({
+    // wht_jsoncontent). Fehler blockieren die Weiterleitung nicht — die
+    // Weiterleitung muss aber warten, bis der Request wirklich abgeschlossen
+    // ist (nicht nur "gestartet"), sonst bricht der Browser ihn beim
+    // Navigieren mitten in der Preflight-Anfrage ab, bevor die eigentliche
+    // Anfrage je rausgeht (gleiches Muster wie in register.html).
+    var crmDone = dynamicsCRM.submitSurvey({
       firstname:   vornameVal,
       lastname:    nachnameVal,
       email:       emailVal,
@@ -685,7 +689,8 @@
       survey:      payload
     });
 
-    window.location.href = 'danke-optin.html?' + new URLSearchParams({ vorname: vornameVal }).toString();
+    var thanksUrl = 'danke-optin.html?' + new URLSearchParams({ vorname: vornameVal }).toString();
+    Promise.resolve(crmDone).then(function () { window.location.href = thanksUrl; });
   });
 })();
 </script>
