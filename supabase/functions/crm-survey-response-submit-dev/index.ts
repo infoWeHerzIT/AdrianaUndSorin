@@ -101,26 +101,31 @@ serve(async (req) => {
 
     const token = await getAccessToken();
 
-    // ── Stufe 1: Lead anlegen ──────────────────────────────────────
-    const leadFields: Record<string, unknown> = {
-      wht_name:     lastname,
-      wht_leadname: leadNameTrimmed,
-    };
-    if (firstname) leadFields.wht_vorname = firstname;
-    if (email)     leadFields.wht_email1  = email;
-    if (mobilephone) leadFields.wht_phone1 = mobilephone;
-    if (eventId) leadFields["wht_EventId@odata.bind"] = `/wht_events(${eventId})`;
+    // ── Stufe 1: Lead anlegen — NUR wenn E-Mail oder Telefon vorliegt.
+    // Ohne Kontaktweg ist ein Lead in Dynamics nutzlos; Response+Answers
+    // werden trotzdem angelegt (siehe unten), nur ohne Lead-Verknüpfung.
+    let leadId: string | null = null;
+    if (email || mobilephone) {
+      const leadFields: Record<string, unknown> = {
+        wht_name:     lastname,
+        wht_leadname: leadNameTrimmed,
+      };
+      if (firstname) leadFields.wht_vorname = firstname;
+      if (email)     leadFields.wht_email1  = email;
+      if (mobilephone) leadFields.wht_phone1 = mobilephone;
+      if (eventId) leadFields["wht_EventId@odata.bind"] = `/wht_events(${eventId})`;
 
-    const leadRes = await fetch(`${RESOURCE}/api/data/v9.2/wht_leads`, {
-      method: "POST",
-      headers: dataverseHeaders(token),
-      body: JSON.stringify(leadFields),
-    });
-    if (!leadRes.ok) {
-      console.error("Dataverse error (lead):", leadRes.status, await leadRes.text());
-      return jsonResponse({ error: "CRM-Anfrage fehlgeschlagen (Lead)" }, 502);
+      const leadRes = await fetch(`${RESOURCE}/api/data/v9.2/wht_leads`, {
+        method: "POST",
+        headers: dataverseHeaders(token),
+        body: JSON.stringify(leadFields),
+      });
+      if (!leadRes.ok) {
+        console.error("Dataverse error (lead):", leadRes.status, await leadRes.text());
+        return jsonResponse({ error: "CRM-Anfrage fehlgeschlagen (Lead)" }, 502);
+      }
+      leadId = extractIdFromEntityIdHeader(leadRes);
     }
-    const leadId = extractIdFromEntityIdHeader(leadRes);
 
     // ── Stufe 2: Survey-Response anlegen ────────────────────────────
     // wht_responsename ist das Primary-Name-Feld von wht_surveyresponse

@@ -509,15 +509,15 @@
 
     setLoading(false);
 
-    // Ohne E-Mail und Telefon legen wir in Dynamics gar keinen Lead an — ohne
-    // Kontaktweg ist ein Lead dort nutzlos, die Antwort liegt trotzdem sicher
-    // im Supabase-Sicherheitsnetz (survey_responses_raw). Fehler blockieren
-    // die Weiterleitung nicht, sie muss aber warten, bis der Request wirklich
-    // abgeschlossen ist (nicht nur "gestartet"), sonst bricht der Browser ihn
-    // beim Navigieren mitten in der Preflight-Anfrage ab, bevor die
-    // eigentliche Anfrage je rausgeht (gleiches Muster wie in register.html).
-    var hasContact = !!(emailVal || phoneVal);
-    var crmDone = hasContact ? dynamicsCRM.submitSurveyResponse({
+    // Response + Answers werden immer angelegt — ob dabei auch ein Lead
+    // entsteht, entscheidet crm-survey-response-submit[-dev] serverseitig
+    // anhand von email/mobilephone (kein Lead ohne Kontaktweg). Fehler
+    // blockieren die Weiterleitung nicht, sie muss aber warten, bis der
+    // Request wirklich abgeschlossen ist (nicht nur "gestartet"), sonst
+    // bricht der Browser ihn beim Navigieren mitten in der Preflight-Anfrage
+    // ab, bevor die eigentliche Anfrage je rausgeht (gleiches Muster wie in
+    // register.html).
+    var crmDone = dynamicsCRM.submitSurveyResponse({
       firstname:   vornameVal,
       lastname:    nachnameVal,
       email:       emailVal,
@@ -525,9 +525,9 @@
       surveyId:    surveyId,
       eventId:     eventId,
       answers:     answers
-    }) : Promise.resolve();
+    });
 
-    var thanksPage = hasContact ? 'danke-optin.html' : 'danke-umfrage-nooptin.html';
+    var thanksPage = (emailVal || phoneVal) ? 'danke-optin.html' : 'danke-umfrage-nooptin.html';
     var thanksUrl  = thanksPage + '?' + new URLSearchParams({ vorname: vornameVal }).toString();
     Promise.resolve(crmDone).then(function () { window.location.href = thanksUrl; });
   });
