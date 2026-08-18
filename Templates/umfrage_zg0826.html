@@ -830,28 +830,24 @@ src="https://www.facebook.com/tr?id=1054896624101426&ev=PageView&noscript=1"
       return;
     }
 
-    // Kontakt in Dynamics anlegen/aktualisieren und die Umfrage-Antworten als
-    // JSON-Notiz an den Kontakt hängen. Läuft auch ohne E-Mail/Telefon – dann
-    // trägt firstname/lastname den anonymous-Platzhalter (siehe oben), damit
-    // der Kontakt trotzdem eindeutig ist.
-    // Fehler blockieren die Weiterleitung nicht — die Weiterleitung muss aber
-    // warten, bis der Request wirklich abgeschlossen ist (nicht nur
-    // "gestartet"), sonst bricht der Browser ihn beim Navigieren mitten in
-    // der Preflight-Anfrage ab, bevor die eigentliche Anfrage je rausgeht
-    // (gleiches Muster wie in register.html).
-    var crmDone = dynamicsCRM.submitSurvey({
+    // Ohne E-Mail und Telefon legen wir in Dynamics gar keinen Lead an — ohne
+    // Kontaktweg ist ein Lead dort nutzlos, die Antwort liegt trotzdem sicher
+    // in der Supabase-Tabelle "audience_survey". Fehler blockieren die
+    // Weiterleitung nicht, sie muss aber warten, bis der Request wirklich
+    // abgeschlossen ist (nicht nur "gestartet"), sonst bricht der Browser ihn
+    // beim Navigieren mitten in der Preflight-Anfrage ab, bevor die
+    // eigentliche Anfrage je rausgeht (gleiches Muster wie in register.html).
+    var hasContact = !!(payload.email || payload.telefon);
+    var crmDone = hasContact ? dynamicsCRM.submitSurvey({
       firstname:   vornameVal,
       lastname:    nachnameVal,
       email:       payload.email,
       mobilephone: payload.telefon,
       eventId:     SELECTED_EVENT_ID,
       survey:      payload
-    });
+    }) : Promise.resolve();
 
-    // Nur wenn E-Mail oder Telefon angegeben wurde, haben wir überhaupt einen
-    // Kanal, um uns zu melden — sonst würde "danke-optin.html" (das auf die
-    // Mail-Zustellung hinweist) für anonyme Antworten irreführend sein.
-    var thanksPage = (payload.email || payload.telefon) ? 'danke-optin.html' : 'danke-umfrage-nooptin.html';
+    var thanksPage = hasContact ? 'danke-optin.html' : 'danke-umfrage-nooptin.html';
     var thanksUrl  = thanksPage + '?' + new URLSearchParams({ vorname: vornameVal }).toString();
     Promise.resolve(crmDone).then(function () { window.location.href = thanksUrl; });
   });
