@@ -186,6 +186,14 @@
 
   .form-divider { border: none; border-top: 1px solid rgba(0,34,77,0.08); margin: 32px 0; }
 
+  /* ─── CHECKBOX ─── */
+  .form-checkbox {
+    display: flex; align-items: flex-start; gap: 12px;
+    font-size: 14px; color: rgba(0,34,77,0.7); line-height: 1.6;
+    cursor: pointer;
+  }
+  .form-checkbox input { margin-top: 3px; flex-shrink: 0; accent-color: var(--orange); width: 16px; height: 16px; }
+
   /* ─── PRIVACY NOTE ─── */
   .privacy-note {
     font-size: 13px; color: rgba(0,34,77,0.5);
@@ -314,6 +322,11 @@
           </div>
         </div>
 
+        <label class="form-checkbox">
+          <input type="checkbox" id="c-newsletter">
+          <span>Ja, schick mir gerne ab und zu Impulse per E-Mail (Newsletter) – kurze Gedanken zu Stress, Grenzen und dem eigenen Weg. Jederzeit mit einem Klick abbestellbar.</span>
+        </label>
+
         <hr class="form-divider">
 
         <p class="privacy-note">Deine Angaben behandeln wir vertraulich und verwenden sie ausschließlich für das, wofür du dich gerade entschieden hast. Mit dem Absenden stimmst du unserer <a href="https://sorin-ratiu.com/de/rechtliches" target="_blank" rel="noopener">Datenschutzerklärung</a> zu.</p>
@@ -407,8 +420,24 @@
   var CONTACT_FIELD_IDS = Object.keys(CONTACT_FIELD_MAP);
   var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  function updateContactRequiredUI() {
+  // Neben den antwortabhängigen Pflichten (siehe oben) macht auch die
+  // Newsletter-Zustimmung die E-Mail-Adresse pflicht — wir können sonst
+  // keine Impulse verschicken, die wir gerade zugesagt bekommen haben.
+  function getEffectiveRequiredContactFields() {
     var req = renderer.getRequiredContactFields();
+    var newsletterChecked = document.getElementById('c-newsletter').checked;
+    return {
+      name:    req.name,
+      surname: req.surname,
+      email:   req.email || newsletterChecked,
+      phone:   req.phone
+    };
+  }
+
+  document.getElementById('c-newsletter').addEventListener('change', updateContactRequiredUI);
+
+  function updateContactRequiredUI() {
+    var req = getEffectiveRequiredContactFields();
     CONTACT_FIELD_IDS.forEach(function (id) {
       var isReq = req[CONTACT_FIELD_MAP[id]];
       document.getElementById(id + '-req').style.display = isReq ? '' : 'none';
@@ -425,7 +454,7 @@
   }
 
   function validateContactFields(vorname, nachname, email, phone) {
-    var req = renderer.getRequiredContactFields();
+    var req = getEffectiveRequiredContactFields();
     var values = { 'c-vorname': vorname, 'c-nachname': nachname, 'c-email': email, 'c-phone': phone };
     var ok = {};
     CONTACT_FIELD_IDS.forEach(function (id) {
@@ -473,7 +502,7 @@
     var emailVal    = document.getElementById('c-email').value.trim();
     var phoneVal    = document.getElementById('c-phone').value.trim();
 
-    var requiredContact = renderer.getRequiredContactFields();
+    var requiredContact = getEffectiveRequiredContactFields();
     var anyContactRequired = requiredContact.name || requiredContact.surname || requiredContact.email || requiredContact.phone;
 
     if (anyContactRequired) {
@@ -498,6 +527,7 @@
         survey_id: surveyId,
         payload: {
           vorname: vornameVal, nachname: nachnameVal, email: emailVal, telefon: phoneVal,
+          newsletter_opt_in: document.getElementById('c-newsletter').checked,
           answers: answers
         }
       });
