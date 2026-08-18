@@ -307,10 +307,10 @@
   // Beide Wege führen aktuell weiter zur regulären Danke-Seite (Zahlungslink/Meeting/Kalender),
   // damit der Flow durchgängig funktioniert, auch bevor ein echtes VIP-Zahlungsprodukt existiert.
   // TODO: Sobald ein echter Zahlungslink für den Architekten-Pass existiert, hier place hierhin verlinken
-  // statt direkt zu danke.html weiterzuleiten.
+  // statt direkt zu danke-OptIn weiterzuleiten.
   var forwardParams = p.toString();
-  var declineUrl = 'danke.html' + (forwardParams ? '?' + forwardParams : '');
-  var acceptUrl  = 'danke.html' + (forwardParams ? '?' + forwardParams + '&vip=yes' : '?vip=yes');
+  var declineUrl = 'danke-OptIn' + (forwardParams ? '?' + forwardParams : '');
+  var acceptUrl  = 'danke-OptIn' + (forwardParams ? '?' + forwardParams + '&vip=yes' : '?vip=yes');
 
   document.getElementById('btn-vip-decline').href = declineUrl;
   document.getElementById('btn-vip-accept').href  = acceptUrl;
