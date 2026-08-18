@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../supabase-config.js"></script>
+<script src="../Code/dynamics-crm.js"></script>
 <style>
   :root {
     --orange: #ff6300;
@@ -523,12 +524,10 @@
   var select = document.getElementById('event');
   var events = [];
 
-  // ── Events aus Supabase laden ──
-  db.from('events')
-    .select('id, name, type, year, month, day, location')
-    .order('year').order('month').order('day')
-    .then(function (res) {
-      events = (res.data || [])
+  // ── Events aus Dynamics laden ──
+  dynamicsCRM.listEvents()
+    .then(function (data) {
+      events = (data || [])
         .sort(function (a, b) { return new Date(b.year, b.month, b.day) - new Date(a.year, a.month, a.day); });
 
       if (presetEventId) {
@@ -716,6 +715,16 @@
       submitErr.classList.add('visible');
       return;
     }
+
+    // Kontakt in Dynamics anlegen (Lead mit den Feedback-Antworten als JSON,
+    // wht_jsoncontent) — läuft parallel, blockiert nicht.
+    dynamicsCRM.submitSurvey({
+      firstname:   vornameVal,
+      lastname:    nachnameVal,
+      email:       emailVal,
+      mobilephone: handyVal,
+      survey:      payload
+    });
 
     document.getElementById('form-state').style.display = 'none';
     document.getElementById('fb-thanks').classList.add('visible');

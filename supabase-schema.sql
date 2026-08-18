@@ -4,6 +4,13 @@
 -- ================================================================
 
 -- ── 1. EVENTS ────────────────────────────────────────────────────
+-- UNUSED seit der Dynamics-Migration: kalender.html, register.html,
+-- event-webinar.html, event-workshop.html, 10Workshops_Serie.html und
+-- Templates/feedback.html lesen Events inzwischen alle aus Dynamics
+-- (wht_event über dynamicsCRM.listEvents()). admin-events.html/
+-- admin-event-detail.html (die einzigen Schreiber) wurden entfernt.
+-- Tabelle bewusst NICHT gelöscht (Altdaten als Archiv), aber von keiner
+-- Seite mehr gelesen/geschrieben.
 create table if not exists events (
   id               text primary key,
   name             text not null,
@@ -30,6 +37,12 @@ create table if not exists events (
 alter table events add column if not exists status integer not null default 0; -- 0 = Draft, 1 = Aktiv, 2 = Vergangene
 
 -- ── 2. PARTICIPANTS ──────────────────────────────────────────────
+-- UNUSED seit der Dynamics-Migration: register.html und
+-- 10Workshops_Serie.html schreiben Kontaktdaten inzwischen ausschließlich
+-- als Dynamics-Lead (wht_lead), nicht mehr hierher. Nur noch von
+-- Templates/feedback.html gelesen (presetParticipantId-Pfad ist seit dem
+-- Löschen von admin-event-detail.html unerreichbar, da das der einzige
+-- Erzeuger solcher Links war). Tabelle bewusst NICHT gelöscht (Altdaten).
 -- Einmalige Kontaktdaten je Person. Unique Key = Handynummer.
 create table if not exists participants (
   id         uuid default gen_random_uuid() primary key,
@@ -42,6 +55,11 @@ create table if not exists participants (
 );
 
 -- ── 3. EVENT_PARTICIPATIONS ──────────────────────────────────────
+-- UNUSED seit der Dynamics-Migration: register.html und
+-- 10Workshops_Serie.html schreiben nicht mehr hierher (Event-Teilnahme
+-- ergibt sich jetzt aus wht_lead.wht_EventId in Dynamics). Tabelle
+-- bewusst NICHT gelöscht (Altdaten), admin-teilnehmer.html (einziger
+-- Leser) wurde entfernt.
 -- N:M Beziehung zwischen Events und Participants.
 -- 1 Participant kann an mehreren Events teilnehmen.
 -- 1 Event kann mehrere Participants haben.
@@ -57,9 +75,13 @@ create table if not exists event_participations (
 );
 
 -- ── 4. FEEDBACK ──────────────────────────────────────────────────
+-- event_id enthält seit der Dynamics-Migration von Templates/feedback.html
+-- eine Dynamics-Event-GUID (wht_eventid), keine Supabase-events.id mehr —
+-- der frühere "references events(id)"-Foreign-Key wurde deshalb entfernt
+-- (sonst schlägt jeder Insert mit einem Foreign-Key-Fehler fehl).
 create table if not exists feedback (
   id              uuid default gen_random_uuid() primary key,
-  event_id        text references events(id) on delete set null,
+  event_id        text, -- Dynamics-GUID (wht_eventid), kein Supabase-FK mehr
   ort             text,
   vorname         text,
   email           text,
@@ -107,6 +129,19 @@ create table if not exists survey_event_links (
   updated_at timestamptz default now()
 );
 
+-- ── 5c. SURVEY RESPONSES RAW (Sicherheitsnetz) ────────────────────
+-- Gehört zum dynamischen Umfrage-System (wht_survey/wht_surveyquestion/
+-- wht_surveyanswer in Dynamics). Roher Antwort-Payload wird HIER
+-- gespeichert, bevor die mehrstufige Dynamics-Schreibkette (Lead →
+-- Response → N Answer-Zeilen, bis zu ~15 sequenzielle Requests) läuft —
+-- bricht die Kette mittendrin ab, ist die Antwort trotzdem nicht verloren.
+create table if not exists survey_responses_raw (
+  id           uuid default gen_random_uuid() primary key,
+  survey_id    text,        -- Dynamics wht_surveyid (GUID)
+  payload      jsonb not null,
+  created_at   timestamptz default now()
+);
+
 -- ── 6. ROW LEVEL SECURITY ────────────────────────────────────────
 alter table events              enable row level security;
 alter table participants        enable row level security;
@@ -114,6 +149,7 @@ alter table event_participations enable row level security;
 alter table feedback            enable row level security;
 alter table audience_survey     enable row level security;
 alter table survey_event_links  enable row level security;
+alter table survey_responses_raw enable row level security;
 
 -- Events: jeder kann lesen (Kalender & Startseite)
 create policy "events_public_read"
@@ -179,6 +215,14 @@ create policy "survey_event_links_public_read"
 create policy "survey_event_links_admin_insert" on survey_event_links for insert
   with check (auth.role() = 'authenticated');
 create policy "survey_event_links_admin_update" on survey_event_links for update
+  using (auth.role() = 'authenticated');
+
+-- Survey Responses Raw: jeder darf eine Antwort ablegen (Sicherheitsnetz)
+create policy "survey_responses_raw_public_insert"
+  on survey_responses_raw for insert with check (true);
+
+-- Survey Responses Raw: nur eingeloggte Admins dürfen lesen
+create policy "survey_responses_raw_admin_read" on survey_responses_raw for select
   using (auth.role() = 'authenticated');
 
 

@@ -115,6 +115,68 @@ class DynamicsCRM {
       return [];
     });
   }
+
+  // Liest eine dynamische Umfrage-Definition (wht_survey + wht_surveyquestion
+  // + wht_surveyquestionoption, read-only) anhand ihres Slugs —
+  // supabase/functions/dynamics-survey-get[-dev]. Gibt bei Fehlern ODER wenn
+  // keine Umfrage mit diesem Slug existiert bewusst "null" zurück (nicht ein
+  // leeres Array/Objekt) — "nicht gefunden/Ladefehler" und "Umfrage ohne
+  // Fragen" sind unterschiedliche Zustände, die die aufrufende Seite
+  // unterschiedlich behandeln muss.
+  getSurvey(slug) {
+    var fnName = this._functionName('dynamics-survey-get') + '?slug=' + encodeURIComponent(slug || '');
+    return this.client.functions.invoke(fnName, {
+      method: 'GET'
+    }).then(function (res) {
+      if (res.error) throw res.error;
+      return res.data || null;
+    }).catch(function (err) {
+      console.error('CRM get survey error:', err);
+      return null;
+    });
+  }
+
+  // Legt eine Umfrage-Einreichung normalisiert in Dynamics an: 1 Lead
+  // (Kontaktdaten) + 1 wht_surveyresponse (Klammer der Einreichung) + je
+  // beantworteter Frage 1 (oder bei Mehrfachauswahl mehrere)
+  // wht_surveyanswer-Zeile(n) — supabase/functions/crm-survey-response-submit[-dev].
+  // fields.surveyId: Dynamics wht_surveyid-GUID (Pflicht).
+  // fields.answers: Array aus { questionId, value } (Text/E-Mail/Telefon/
+  // Nummer) ODER { questionId, optionIds: [...] } (Einmal-/Mehrfachauswahl).
+  submitSurveyResponse(fields) {
+    fields = fields || {};
+    return this.client.functions.invoke(this._functionName('crm-survey-response-submit'), {
+      body: {
+        firstname:   fields.firstname   || '',
+        lastname:    fields.lastname    || '',
+        email:       fields.email       || '',
+        mobilephone: fields.mobilephone || '',
+        eventId:     fields.eventId     || '',
+        surveyId:    fields.surveyId    || '',
+        answers:     fields.answers     || []
+      }
+    }).catch(function (err) {
+      console.error('CRM submit survey response error:', err);
+    });
+  }
+
+  // Bestätigt die Double-Opt-In-E-Mail eines Leads: prüft, ob "token"
+  // (die Lead-GUID) zu einem Lead mit der übergebenen E-Mail-Adresse
+  // gehört, und setzt bei Erfolg statuscode=Active + wht_doubleoptinam —
+  // supabase/functions/crm-lead-confirm[-dev]. Anders als die übrigen
+  // Methoden hier NICHT silent-catch: verify-email.html muss das Ergebnis
+  // (Erfolg/bereits bestätigt/Fehler) anzeigen.
+  confirmLead(email, token) {
+    return this.client.functions.invoke(this._functionName('crm-lead-confirm'), {
+      body: { email: email || '', token: token || '' }
+    }).then(function (res) {
+      if (res.error) throw res.error;
+      return res.data;
+    }).catch(function (err) {
+      console.error('CRM confirm lead error:', err);
+      return { success: false, error: String(err) };
+    });
+  }
 }
 
 var dynamicsCRM = new DynamicsCRM();

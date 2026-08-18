@@ -128,7 +128,7 @@
 <script>
   // Bereits eingeloggt? → direkt weiterleiten
   db.auth.getSession().then(({ data }) => {
-    if (data.session) window.location.href = 'admin-events.html';
+    if (data.session) window.location.href = 'admin-feedback.html';
   });
 
   document.getElementById('login-form').addEventListener('submit', async function(e) {
@@ -157,7 +157,7 @@
       btn.classList.remove('loading');
       document.getElementById('btn-label').textContent = 'Einloggen →';
     } else {
-      window.location.href = 'admin-events.html';
+      window.location.href = 'admin-feedback.html';
     }
   });
 </script>

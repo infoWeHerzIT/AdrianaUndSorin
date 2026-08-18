@@ -93,6 +93,7 @@
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../supabase-config.js"></script>
+<script src="../Code/dynamics-crm.js"></script>
 </head>
 <body>
 
@@ -100,10 +101,7 @@
   <div class="nav-inner">
     <a href="../index.html" class="nav-logo">Adriana &amp; <span>Sorin</span><span class="nav-admin-badge">Admin</span></a>
     <div class="nav-links">
-      <a href="admin-events.html" class="nav-link">Events</a>
-      <a href="admin-teilnehmer.html" class="nav-link">Teilnehmer</a>
       <a href="admin-feedback.html" class="nav-link active">Feedback</a>
-      <a href="admin-payment-links.html" class="nav-link">Zahlungslinks</a>
       <a href="admin-users.html" class="nav-link">Admins</a>
       <button id="btn-logout" class="nav-link" style="border-color:rgba(220,38,38,0.4);color:#f87171;">Ausloggen</button>
     </div>
@@ -192,20 +190,31 @@ const openIds = new Set();
 
 // ── Load ──────────────────────────────────────────────────────
 async function loadFeedback() {
-  const { data, error } = await db
-    .from('feedback')
-    .select('*, participants(vorname, nachname, email, handy), events(id, name, year, month, day)')
-    .order('created_at', { ascending: false });
+  // feedback.event_id ist eine Dynamics-GUID (kein Supabase-Foreign-Key mehr),
+  // deshalb kein PostgREST-Embed für events mehr möglich — Event-Namen kommen
+  // separat aus Dynamics und werden client-seitig per ID gematcht. Feedback
+  // ohne (oder mit unbekannter) Event-Zuordnung wird trotzdem angezeigt,
+  // nur mit Fallback-Label statt Event-Namen.
+  const [feedbackRes, dynamicsEvents] = await Promise.all([
+    db.from('feedback')
+      .select('*, participants(vorname, nachname, email, handy)')
+      .order('created_at', { ascending: false }),
+    dynamicsCRM.listEvents()
+  ]);
 
+  const { data, error } = feedbackRes;
   if (error) {
     document.getElementById('feedback-tbody').innerHTML =
       '<tr id="error-row"><td colspan="6">Fehler beim Laden: ' + esc(error.message) + '</td></tr>';
     return;
   }
 
+  const eventsById = {};
+  (dynamicsEvents || []).forEach(ev => { eventsById[ev.id] = ev; });
+
   rows = (data || []).map(r => {
     const p = r.participants || null;
-    const ev = r.events || null;
+    const ev = (r.event_id && eventsById[r.event_id]) || null;
     const name = (r.vorname && r.vorname.trim())
       || ((p ? ((p.vorname || '') + ' ' + (p.nachname || '')).trim() : '') || '');
     return {

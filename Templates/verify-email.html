@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E-Mail bestätigen – Adriana und Sorin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase-config.js"></script>
+<script src="../Code/dynamics-crm.js"></script>
+<style>
+  :root { --orange: #ff6300; --navy: #00224d; --white: #ffffff; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #f0f2f5;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 16px;
+  }
+
+  .card {
+    max-width: 480px;
+    width: 100%;
+    background: var(--white);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 4px 32px rgba(0,0,0,0.10);
+  }
+
+  .hdr {
+    background: var(--navy);
+    padding: 36px 40px 30px;
+    position: relative;
+  }
+  .hdr::after {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 5px; background: var(--orange);
+  }
+  .hdr-logo {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 22px; font-weight: 700; color: var(--white);
+  }
+  .hdr-logo span { color: var(--orange); }
+  .hdr-sub { color: rgba(255,255,255,0.5); font-size: 13px; margin-top: 6px; }
+
+  .body { padding: 32px 40px 40px; }
+  .body p { color: #2d3748; font-size: 16px; line-height: 1.7; margin: 0 0 20px; }
+  .email-highlight { color: var(--navy); font-weight: 600; }
+
+  .icon {
+    width: 52px; height: 52px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; margin: 0 0 20px;
+  }
+  .icon.pending { background: rgba(0,120,180,0.12); }
+  .icon.success { background: rgba(34,197,94,0.15); }
+  .icon.error   { background: rgba(220,38,38,0.12); }
+
+  .spinner {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 4px solid rgba(0,34,77,0.12);
+    border-top-color: var(--orange);
+    margin: 0 0 20px;
+    animation: spin .8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .state { display: none; }
+  .state.visible { display: block; }
+
+  .status-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 19px; font-weight: 700; color: var(--navy);
+    margin-bottom: 10px;
+  }
+  .status-title.error { color: #dc2626; }
+  .status-title.success { color: #16a34a; }
+
+  @media (max-width: 480px) {
+    .card { border-radius: 0; }
+    .hdr, .body { padding-left: 24px; padding-right: 24px; }
+  }
+</style>
+</head>
+<body>
+<div class="card">
+
+  <div class="hdr">
+    <div class="hdr-logo">Adriana &amp; <span>Sorin</span></div>
+    <div class="hdr-sub">E-Mail-Bestätigung</div>
+  </div>
+
+  <div class="body">
+
+    <!-- Fehlende/ungültige Parameter -->
+    <div class="state" id="state-missing">
+      <div class="icon error">⚠️</div>
+      <div class="status-title error">Ungültiger Bestätigungslink</div>
+      <p>Diesem Link fehlen die nötigen Angaben. Bitte verwende den vollständigen Link aus deiner E-Mail.</p>
+    </div>
+
+    <!-- Prüfung läuft -->
+    <div class="state" id="state-checking">
+      <div class="spinner"></div>
+      <div class="status-title">Bitte warten …</div>
+      <p>Deine E-Mail-Adresse <span class="email-highlight" id="email-display"></span> wird gerade bestätigt.</p>
+    </div>
+
+    <!-- Erfolg -->
+    <div class="state" id="state-success">
+      <div class="icon success">✓</div>
+      <div class="status-title success">E-Mail bestätigt!</div>
+      <p>Danke, deine E-Mail-Adresse wurde erfolgreich bestätigt.</p>
+    </div>
+
+    <!-- Fehler bei der Bestätigung -->
+    <div class="state" id="state-error">
+      <div class="icon error">⚠️</div>
+      <div class="status-title error">Bestätigung fehlgeschlagen</div>
+      <p>Der Link ist ungültig oder abgelaufen. Bitte melde dich bei uns, falls das Problem bestehen bleibt.</p>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+(function () {
+  function esc(s) {
+    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function showState(id) {
+    ['state-missing', 'state-checking', 'state-success', 'state-error'].forEach(function (s) {
+      document.getElementById(s).classList.toggle('visible', s === id);
+    });
+  }
+
+  var params = new URLSearchParams(window.location.search);
+  var email  = (params.get('email') || '').trim();
+  var token  = (params.get('token') || '').trim();
+
+  if (!email || !token) {
+    showState('state-missing');
+    return;
+  }
+
+  document.getElementById('email-display').textContent = email;
+  showState('state-checking');
+
+  dynamicsCRM.confirmLead(email, token).then(function (result) {
+    if (result && result.success) {
+      showState('state-success');
+    } else {
+      showState('state-error');
+    }
+  });
+})();
+</script>
+</body>
+</html>

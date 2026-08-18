@@ -75,9 +75,6 @@ serve(async (req) => {
     const token = await getAccessToken();
     const nowIso = new Date().toISOString();
 
-    // Dataverse Web API verlangt Attribut-Logical-Names IMMER in Kleinschreibung,
-    // unabhängig davon, wie der Schema-Name im Studio angezeigt wird
-    // (wht_Vorname → wht_vorname usw.).
     const leadFields: Record<string, unknown> = {
       wht_vorname:  firstname,
       wht_name:     lastname,
@@ -85,18 +82,11 @@ serve(async (req) => {
       wht_email1:   email,
     };
     if (mobilephone) leadFields.wht_phone1 = mobilephone;
-    // wht_eventid ist ein Lookup (Verknüpfung zu wht_event), kein Textfeld —
-    // Dataverse verlangt dafür die @odata.bind-Syntax. Der Navigation-Property-
-    // Name ist NICHT der Attribut-Logical-Name (wht_eventid), sondern
-    // "wht_EventId" (per ManyToOneRelationships-Metadaten ermittelt:
-    // ReferencingAttribute=wht_eventid, ReferencingEntityNavigationPropertyName=wht_EventId).
     if (eventId) leadFields["wht_EventId@odata.bind"] = `/wht_events(${eventId})`;
     if (quelleRaw !== null && quelleRaw !== undefined && quelleRaw !== "") {
       const quelleNum = Number(quelleRaw);
       if (!Number.isNaN(quelleNum)) leadFields.wht_quelle = quelleNum;
     }
-    // Zustimmungs-/Interessefelder speichern den Zeitpunkt der Anmeldung als
-    // Datum, nicht true/false — nur gesetzt, wenn die Checkbox aktiv war.
     if (interesseAnCoachingOptIn)           leadFields.wht_interesseancoaching = nowIso;
     if (einwilligungDatenverarbeitungOptIn) leadFields.wht_einwilligungzurdatenverarbeitung = nowIso;
     if (newsletterOptIn)                    leadFields.wht_interesseannewsletterperemail = nowIso;

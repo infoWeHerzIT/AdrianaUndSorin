@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Umfrage – Adriana &amp; Sorin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase-config.js"></script>
+<script src="../Code/dynamics-crm.js"></script>
+<script src="../Code/dynamic-survey-renderer.js"></script>
+<style>
+  :root {
+    --orange: #ff6300;
+    --navy: #00224d;
+    --white: #ffffff;
+    --orange-dim: rgba(255,99,0,0.12);
+    --navy-dim: rgba(0,34,77,0.06);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 17px;
+    background: var(--white);
+    color: var(--navy);
+    overflow-x: hidden;
+  }
+
+  .section-label {
+    font-family: 'Orbitron', monospace;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: .22em; text-transform: uppercase;
+    color: var(--orange); margin-bottom: 14px; display: block;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: center;
+    padding: 18px 5%;
+    background: rgba(0,34,77,0.97);
+    backdrop-filter: blur(8px);
+  }
+  .nav-inner {
+    max-width: 1200px; margin: 0 auto; width: 100%;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo {
+    font-family: 'Fredoka', sans-serif;
+    color: var(--white); font-size: 18px; font-weight: 700;
+    letter-spacing: -.01em; text-decoration: none;
+  }
+  .nav-logo span { color: var(--orange); }
+
+  /* ─── HERO ─── */
+  .fb-hero {
+    background: var(--navy);
+    padding: 130px 5% 70px;
+    position: relative; overflow: hidden;
+  }
+  .fb-hero-bg {
+    position: absolute; inset: 0; pointer-events: none;
+    background-image: repeating-linear-gradient(90deg, rgba(255,99,0,0.04) 0px, rgba(255,99,0,0.04) 1px, transparent 1px, transparent 80px);
+  }
+  .hero-accent-bar {
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 5px; background: var(--orange);
+  }
+  .fb-hero-inner {
+    max-width: 700px; margin: 0 auto;
+    position: relative; z-index: 2; text-align: center;
+  }
+  .fb-hero h1 {
+    font-family: 'Fredoka', sans-serif;
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 700; color: var(--white);
+    line-height: 1.15; margin-bottom: 16px;
+  }
+  .fb-hero p {
+    font-size: 16px; font-weight: 300;
+    color: rgba(255,255,255,0.65); line-height: 1.7;
+  }
+
+  /* ─── FORM SECTION ─── */
+  .fb-form-section {
+    background: var(--white);
+    padding: 72px 5% 100px;
+  }
+  .fb-form-inner { max-width: 620px; margin: 0 auto; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 22px; }
+  .form-group { display: flex; flex-direction: column; gap: 7px; margin-bottom: 30px; }
+  .form-row .form-group { margin-bottom: 0; }
+
+  .question-label {
+    display: block;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 19px; font-weight: 700;
+    color: var(--navy); line-height: 1.4; margin-bottom: 2px;
+  }
+  .question-label .req { color: #e53e3e; font-size: 15px; }
+
+  .form-label {
+    font-size: 12px; font-weight: 500;
+    letter-spacing: .1em; text-transform: uppercase;
+    color: rgba(0,34,77,0.55); line-height: 1.5;
+  }
+
+  .form-input, .form-textarea {
+    border: 1px solid rgba(0,34,77,0.18);
+    border-radius: 2px;
+    padding: 14px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; color: var(--navy);
+    background: var(--white);
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+    width: 100%;
+  }
+  .form-textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
+  .form-input:focus, .form-textarea:focus {
+    border-color: var(--orange);
+    box-shadow: 0 0 0 3px rgba(255,99,0,0.1);
+  }
+  .field-error { font-size: 12px; color: #e53e3e; display: none; margin-top: -4px; }
+  .field-error.visible { display: block; }
+
+  .option-list { display: flex; flex-direction: column; gap: 13px; padding: 2px; border-radius: 8px; transition: box-shadow .2s; }
+  .option-list.error { box-shadow: 0 0 0 3px rgba(229,62,62,0.12); padding: 10px; }
+  .option-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    font-size: 15px; color: var(--navy); line-height: 1.55;
+    cursor: pointer;
+  }
+  .option-item input[type="checkbox"], .option-item input[type="radio"] {
+    margin-top: 4px; flex-shrink: 0;
+    accent-color: var(--orange);
+    width: 18px; height: 18px;
+    cursor: pointer;
+  }
+
+  .form-group.error .question-label { color: #e53e3e; }
+
+  .btn-submit {
+    background: var(--orange);
+    color: var(--white);
+    border: none;
+    padding: 18px 44px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px; font-weight: 500;
+    cursor: pointer; border-radius: 2px;
+    letter-spacing: .04em;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    width: 100%; margin-top: 14px;
+    transition: background .2s, transform .15s, opacity .2s;
+  }
+  .btn-submit:hover:not(:disabled) { background: #e55700; transform: translateY(-1px); }
+  .btn-submit:disabled { opacity: .7; cursor: not-allowed; transform: none; }
+  .spinner {
+    width: 18px; height: 18px; border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    animation: spin .7s linear infinite;
+    display: none; flex-shrink: 0;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .btn-submit.loading .spinner { display: block; }
+
+  .form-divider { border: none; border-top: 1px solid rgba(0,34,77,0.08); margin: 32px 0; }
+
+  .submit-error {
+    display: none;
+    background: rgba(229,62,62,0.08);
+    border: 1px solid rgba(229,62,62,0.3);
+    border-radius: 4px;
+    padding: 14px 16px;
+    font-size: 14px; color: #c53030;
+    margin-top: 16px;
+  }
+  .submit-error.visible { display: block; }
+
+  .fb-thanks, .fb-unavailable, .fb-loading {
+    display: none;
+    text-align: center;
+    padding: 20px 0 10px;
+  }
+  .fb-thanks.visible, .fb-unavailable.visible, .fb-loading.visible { display: block; }
+  .fb-thanks-icon {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: rgba(34,197,94,0.12);
+    border: 1px solid rgba(34,197,94,0.4);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 30px; margin: 0 auto 24px;
+    color: #16a34a;
+  }
+  .fb-thanks p, .fb-unavailable p { font-size: 16px; color: rgba(0,34,77,0.6); line-height: 1.7; max-width: 460px; margin: 0 auto 32px; }
+  .btn-ghost-link {
+    display: inline-block;
+    padding: 13px 26px;
+    border: 1px solid rgba(0,34,77,0.18);
+    border-radius: 2px;
+    color: var(--navy);
+    font-size: 14px; font-weight: 500;
+    text-decoration: none;
+    transition: border-color .2s, background .2s;
+  }
+  .btn-ghost-link:hover { border-color: var(--orange); background: rgba(255,99,0,0.04); }
+
+  footer {
+    background: #000d1f;
+    padding: 36px 8%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .footer-inner {
+    max-width: 1200px; margin: 0 auto; width: 100%;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 16px;
+  }
+  footer .f-logo { font-family: 'Fredoka', sans-serif; font-size: 16px; color: rgba(255,255,255,0.5); }
+  footer .f-logo span { color: var(--orange); }
+  footer p { font-size: 12px; color: rgba(255,255,255,0.25); letter-spacing: .04em; }
+
+  @media (max-width: 600px) {
+    .form-row { grid-template-columns: 1fr; }
+    .fb-form-section { padding: 48px 5% 72px; }
+    .fb-hero { padding: 110px 5% 48px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">Adriana &amp; <span>Sorin</span></a>
+  </div>
+</nav>
+
+<div class="fb-hero">
+  <div class="fb-hero-bg"></div>
+  <div class="hero-accent-bar"></div>
+  <div class="fb-hero-inner">
+    <span class="section-label">Umfrage</span>
+    <h1 id="survey-title">Wird geladen …</h1>
+    <p id="survey-intro"></p>
+  </div>
+</div>
+
+<section class="fb-form-section">
+  <div class="fb-form-inner">
+
+    <div class="fb-loading visible" id="fb-loading">
+      <p>Umfrage wird geladen …</p>
+    </div>
+
+    <div class="fb-unavailable" id="fb-unavailable">
+      <h2>Diese Umfrage ist gerade nicht verfügbar</h2>
+      <p>Entweder existiert sie nicht (mehr) oder ist aktuell nicht aktiv. Bitte prüfe den Link oder versuche es später noch einmal.</p>
+      <a href="../index.html" class="btn-ghost-link">Zur Startseite</a>
+    </div>
+
+    <div id="form-state" style="display:none;">
+      <form id="survey-form" novalidate>
+        <div id="questions-root"></div>
+
+        <hr class="form-divider">
+
+        <div class="form-group">
+          <label class="question-label">Wie heißt du und wie erreiche ich dich am besten? <span class="question-meta" style="display:inline;font-size:13px;font-weight:400;color:rgba(0,34,77,0.45);">(optional)</span></label>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="c-vorname">Vorname</label>
+            <input class="form-input" type="text" id="c-vorname" autocomplete="given-name">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="c-nachname">Nachname</label>
+            <input class="form-input" type="text" id="c-nachname" autocomplete="family-name">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="c-email">E-Mail</label>
+            <input class="form-input" type="email" id="c-email" autocomplete="email">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="c-phone">Telefon</label>
+            <input class="form-input" type="tel" id="c-phone" autocomplete="tel">
+          </div>
+        </div>
+
+        <hr class="form-divider">
+
+        <button type="submit" class="btn-submit" id="btn-submit">
+          <span class="spinner" id="btn-spinner"></span>
+          <span class="btn-label" id="btn-label">Umfrage absenden →</span>
+        </button>
+
+        <div class="submit-error" id="submit-error">Etwas ist schiefgelaufen. Bitte versuche es gleich noch einmal.</div>
+      </form>
+    </div>
+
+    <div class="fb-thanks" id="fb-thanks">
+      <div class="fb-thanks-icon">✓</div>
+      <h2>Danke für deine Antworten!</h2>
+      <p>Wir lesen jede Antwort mit Aufmerksamkeit.</p>
+      <a href="../index.html" class="btn-ghost-link">Zur Startseite</a>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="f-logo">Adriana <span>Vukin</span> &amp; Sorin <span>Ratiu</span> · Deep Coaching</div>
+    <p>© 2026 · Alle Rechte vorbehalten</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var params = new URLSearchParams(window.location.search);
+  var slug = (params.get('survey') || '').trim();
+
+  var elLoading     = document.getElementById('fb-loading');
+  var elUnavailable = document.getElementById('fb-unavailable');
+  var elFormState    = document.getElementById('form-state');
+  var elThanks       = document.getElementById('fb-thanks');
+
+  function showUnavailable() {
+    elLoading.classList.remove('visible');
+    elUnavailable.classList.add('visible');
+    document.getElementById('survey-title').textContent = 'Umfrage nicht verfügbar';
+  }
+
+  if (!slug) { showUnavailable(); return; }
+
+  var renderer = new DynamicSurveyRenderer(document.getElementById('questions-root'));
+  var surveyId = '';
+
+  dynamicsCRM.getSurvey(slug).then(function (result) {
+    // "null" (Ladefehler ODER nicht gefunden) UND "Umfrage ohne Fragen"
+    // werden beide als "nicht verfügbar" behandelt — ein leeres Formular
+    // mit Absenden-Knopf ohne jede Frage wäre für den Besucher verwirrend.
+    if (!result || !result.survey || !Array.isArray(result.questions) || result.questions.length === 0) {
+      showUnavailable();
+      return;
+    }
+
+    surveyId = result.survey.id;
+    document.getElementById('survey-title').textContent = result.survey.title || 'Umfrage';
+    document.getElementById('survey-intro').textContent = result.survey.intro || '';
+
+    renderer.renderQuestions(result.questions);
+
+    elLoading.classList.remove('visible');
+    elFormState.style.display = '';
+  });
+
+  // ── Submit handling ──
+  var form      = document.getElementById('survey-form');
+  var btn       = document.getElementById('btn-submit');
+  var spinner   = document.getElementById('btn-spinner');
+  var btnLabel  = document.getElementById('btn-label');
+  var submitErr = document.getElementById('submit-error');
+
+  function setLoading(on) {
+    btn.disabled = on;
+    btn.classList.toggle('loading', on);
+    spinner.style.display = on ? 'block' : 'none';
+    btnLabel.textContent  = on ? 'Wird gesendet …' : 'Umfrage absenden →';
+  }
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    submitErr.classList.remove('visible');
+
+    if (!renderer.validate()) return;
+
+    var answers = renderer.getAnswers();
+
+    // Wenn weder Vorname noch Nachname angegeben wurde: Platzhalter
+    // verwenden, damit die Antwort trotzdem eindeutig zuordenbar bleibt
+    // (gleiches Muster wie bei umfrage_zg0826.html).
+    var vornameVal  = document.getElementById('c-vorname').value.trim();
+    var nachnameVal = document.getElementById('c-nachname').value.trim();
+    if (!vornameVal && !nachnameVal) {
+      var pad = function (n) { return String(n).padStart(2, '0'); };
+      var now = new Date();
+      vornameVal  = 'anonymous';
+      nachnameVal = now.getFullYear() + pad(now.getMonth() + 1) + pad(now.getDate()) + '_' + pad(now.getHours()) + pad(now.getMinutes()) + pad(now.getSeconds());
+    }
+    var emailVal = document.getElementById('c-email').value.trim();
+    var phoneVal = document.getElementById('c-phone').value.trim();
+
+    setLoading(true);
+
+    // Sicherheitsnetz: roher Antwort-Payload zuerst nach Supabase, BEVOR die
+    // mehrstufige Dynamics-Kette (Lead -> Response -> N Antworten) läuft —
+    // bricht die Kette mittendrin ab, ist die Antwort trotzdem nicht verloren.
+    try {
+      await db.from('survey_responses_raw').insert({
+        survey_id: surveyId,
+        payload: {
+          vorname: vornameVal, nachname: nachnameVal, email: emailVal, telefon: phoneVal,
+          answers: answers
+        }
+      });
+    } catch (err) {
+      console.error('Supabase safety-net insert error:', err);
+      // Kein "return" hier — das Sicherheitsnetz ist ein Zusatz, kein
+      // Blocker fürs eigentliche Absenden.
+    }
+
+    setLoading(false);
+
+    // Dynamics: läuft parallel, Fehler blockieren die Anzeige nicht (fire-and-forget).
+    dynamicsCRM.submitSurveyResponse({
+      firstname:   vornameVal,
+      lastname:    nachnameVal,
+      email:       emailVal,
+      mobilephone: phoneVal,
+      surveyId:    surveyId,
+      answers:     answers
+    });
+
+    elFormState.style.display = 'none';
+    elThanks.classList.add('visible');
+  });
+})();
+</script>
+
+</body>
+</html>
