@@ -176,6 +176,21 @@ class DynamicsCRM {
     });
   }
 
+  // Listet alle aktiven Umfragen (wht_survey, read-only) —
+  // supabase/functions/dynamics-surveys-list[-dev]. Gibt bei Fehlern ein
+  // leeres Array zurück statt zu werfen, analog zu listEvents().
+  listSurveys() {
+    return this.client.functions.invoke(this._functionName('dynamics-surveys-list'), {
+      method: 'GET'
+    }).then(function (res) {
+      if (res.error) throw res.error;
+      return res.data || [];
+    }).catch(function (err) {
+      console.error('CRM list surveys error:', err);
+      return [];
+    });
+  }
+
   // Liest und aggregiert die Ergebnisse einer Umfrage anhand ihrer
   // Dynamics-GUID — supabase/functions/dynamics-survey-results[-dev].
   // Anders als getSurvey()/getSurveyById() (fürs Formular) liefert das hier

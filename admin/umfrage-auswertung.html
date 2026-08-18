@@ -36,7 +36,20 @@
   .admin-main { max-width:1000px; margin:0 auto; padding:36px 32px 0; }
 
   .state-box { background:var(--white); border:1px solid rgba(0,34,77,0.1); border-radius:8px; padding:48px; text-align:center; color:rgba(0,34,77,0.45); font-size:14px; }
-  .state-box.error { color:var(--red); }
+  .state-box.error { color:var(--red); margin-bottom:24px; }
+
+  .list-title { font-family:'Fredoka',sans-serif; font-size:16px; margin-bottom:12px; }
+  .survey-list { background:var(--white); border:1px solid rgba(0,34,77,0.1); border-radius:8px; overflow:hidden; margin-bottom:24px; }
+  .survey-list-item {
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+    padding:14px 20px; border-top:1px solid rgba(0,34,77,0.06);
+    color:var(--navy); text-decoration:none; transition:background .15s;
+  }
+  .survey-list-item:first-child { border-top:none; }
+  .survey-list-item:hover { background:rgba(255,99,0,0.04); }
+  .survey-list-item-title { font-weight:600; font-size:14px; }
+  .survey-list-item-arrow { color:rgba(0,34,77,0.3); font-size:14px; flex-shrink:0; }
+  .survey-list-empty { padding:24px 20px; color:rgba(0,34,77,0.4); font-size:14px; }
 
   .q-card { background:var(--white); border:1px solid rgba(0,34,77,0.1); border-radius:8px; padding:26px 28px; margin-bottom:18px; }
   .q-head { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:18px; }
@@ -101,6 +114,10 @@
 <div class="admin-main">
   <div class="state-box" id="state-loading">Wird geladen …</div>
   <div class="state-box error" id="state-error" style="display:none;">Diese Umfrage konnte nicht gefunden werden. Bitte prüfe die ID im Link.</div>
+  <div id="survey-picker" style="display:none;">
+    <div class="list-title">Aktive Umfragen</div>
+    <div class="survey-list" id="survey-list"></div>
+  </div>
   <div id="questions-root"></div>
 </div>
 
@@ -129,6 +146,30 @@ function esc(s) {
     elLoading.style.display = 'none';
     elError.style.display = 'block';
     document.getElementById('survey-title').textContent = 'Umfrage nicht gefunden';
+    loadSurveyPicker();
+  }
+
+  // Zeigt unter der Fehlermeldung eine Auswahlliste aller aktiven Umfragen,
+  // damit man sich zur richtigen ID durchklicken kann, statt sie von Hand
+  // im Link nachschlagen zu müssen.
+  function loadSurveyPicker() {
+    var elPicker = document.getElementById('survey-picker');
+    var elList   = document.getElementById('survey-list');
+    dynamicsCRM.listSurveys().then(function (surveys) {
+      elPicker.style.display = 'block';
+      if (!surveys || surveys.length === 0) {
+        elList.innerHTML = '<div class="survey-list-empty">Keine aktiven Umfragen gefunden.</div>';
+        return;
+      }
+      elList.innerHTML = surveys.map(function (s) {
+        return (
+          '<a class="survey-list-item" href="umfrage-auswertung.html?id=' + encodeURIComponent(s.id) + '">' +
+            '<span class="survey-list-item-title">' + esc(s.title || s.slug || s.id) + '</span>' +
+            '<span class="survey-list-item-arrow">Auswerten →</span>' +
+          '</a>'
+        );
+      }).join('');
+    });
   }
 
   if (!surveyId) { showError(); return; }
