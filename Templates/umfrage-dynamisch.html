@@ -120,6 +120,9 @@
     letter-spacing: .1em; text-transform: uppercase;
     color: rgba(0,34,77,0.55); line-height: 1.5;
   }
+  .form-label .req { color: #e53e3e; font-size: 13px; text-transform: none; letter-spacing: normal; }
+
+  .form-input.error, .form-textarea.error { border-color: #e53e3e; box-shadow: 0 0 0 3px rgba(229,62,62,0.1); }
 
   .form-input, .form-textarea {
     border: 1px solid rgba(0,34,77,0.18);
@@ -182,6 +185,13 @@
   .btn-submit.loading .spinner { display: block; }
 
   .form-divider { border: none; border-top: 1px solid rgba(0,34,77,0.08); margin: 32px 0; }
+
+  /* ─── PRIVACY NOTE ─── */
+  .privacy-note {
+    font-size: 13px; color: rgba(0,34,77,0.5);
+    line-height: 1.6; margin-top: 24px;
+  }
+  .privacy-note a { color: var(--orange); text-decoration: underline; }
 
   .submit-error {
     display: none;
@@ -280,27 +290,33 @@
 
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label" for="c-vorname">Vorname</label>
+            <label class="form-label" for="c-vorname">Vorname <span class="req" id="c-vorname-req" style="display:none;">*</span></label>
             <input class="form-input" type="text" id="c-vorname" autocomplete="given-name">
+            <span class="field-error" id="err-c-vorname">Bitte gib deinen Vornamen an.</span>
           </div>
           <div class="form-group">
-            <label class="form-label" for="c-nachname">Nachname</label>
+            <label class="form-label" for="c-nachname">Nachname <span class="req" id="c-nachname-req" style="display:none;">*</span></label>
             <input class="form-input" type="text" id="c-nachname" autocomplete="family-name">
+            <span class="field-error" id="err-c-nachname">Bitte gib deinen Nachnamen an.</span>
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label" for="c-email">E-Mail</label>
+            <label class="form-label" for="c-email">E-Mail <span class="req" id="c-email-req" style="display:none;">*</span></label>
             <input class="form-input" type="email" id="c-email" autocomplete="email">
+            <span class="field-error" id="err-c-email">Bitte gib eine gültige E-Mail-Adresse an.</span>
           </div>
           <div class="form-group">
-            <label class="form-label" for="c-phone">Telefon</label>
+            <label class="form-label" for="c-phone">Telefon <span class="req" id="c-phone-req" style="display:none;">*</span></label>
             <input class="form-input" type="tel" id="c-phone" autocomplete="tel">
+            <span class="field-error" id="err-c-phone">Bitte gib deine Telefonnummer an.</span>
           </div>
         </div>
 
         <hr class="form-divider">
+
+        <p class="privacy-note">Deine Angaben behandeln wir vertraulich und verwenden sie ausschließlich für das, wofür du dich gerade entschieden hast. Mit dem Absenden stimmst du unserer <a href="https://sorin-ratiu.com/de/rechtliches" target="_blank" rel="noopener">Datenschutzerklärung</a> zu.</p>
 
         <button type="submit" class="btn-submit" id="btn-submit">
           <span class="spinner" id="btn-spinner"></span>
@@ -360,7 +376,8 @@
     document.getElementById('survey-title').textContent = result.survey.title || 'Umfrage';
     document.getElementById('survey-intro').textContent = result.survey.intro || '';
 
-    renderer.renderQuestions(result.questions);
+    renderer.renderQuestions(result.questions, updateContactRequiredUI);
+    updateContactRequiredUI();
 
     elLoading.classList.remove('visible');
     elFormState.style.display = '';
@@ -379,6 +396,54 @@
         }
       });
     }
+  });
+
+  // ── Kontaktfelder dynamisch pflicht machen ──────────────────────────
+  // Manche Antworten (z. B. "Ja" auf die Zoom- oder Ergebnisse-Frage) machen
+  // einzelne Kontaktfelder pflicht — pro Auswahl-Option einzeln steuerbar
+  // über wht_surveyquestionoption.wht_make{Name,Surname,Email,Phone}Required,
+  // damit z. B. eine Option nur E-Mail verlangen kann, eine andere alle vier.
+  var CONTACT_FIELD_MAP = { 'c-vorname': 'name', 'c-nachname': 'surname', 'c-email': 'email', 'c-phone': 'phone' };
+  var CONTACT_FIELD_IDS = Object.keys(CONTACT_FIELD_MAP);
+  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  function updateContactRequiredUI() {
+    var req = renderer.getRequiredContactFields();
+    CONTACT_FIELD_IDS.forEach(function (id) {
+      var isReq = req[CONTACT_FIELD_MAP[id]];
+      document.getElementById(id + '-req').style.display = isReq ? '' : 'none';
+      if (!isReq) {
+        document.getElementById(id).classList.remove('error');
+        document.getElementById('err-' + id).classList.remove('visible');
+      }
+    });
+  }
+
+  function setFieldError(id, hasError) {
+    document.getElementById(id).classList.toggle('error', hasError);
+    document.getElementById('err-' + id).classList.toggle('visible', hasError);
+  }
+
+  function validateContactFields(vorname, nachname, email, phone) {
+    var req = renderer.getRequiredContactFields();
+    var values = { 'c-vorname': vorname, 'c-nachname': nachname, 'c-email': email, 'c-phone': phone };
+    var ok = {};
+    CONTACT_FIELD_IDS.forEach(function (id) {
+      var key = CONTACT_FIELD_MAP[id];
+      if (!req[key]) { ok[id] = true; return; }
+      ok[id] = key === 'email' ? EMAIL_RE.test(values[id]) : !!values[id];
+    });
+    CONTACT_FIELD_IDS.forEach(function (id) { setFieldError(id, !ok[id]); });
+    var allOk = CONTACT_FIELD_IDS.every(function (id) { return ok[id]; });
+    if (!allOk) {
+      var firstInvalidId = CONTACT_FIELD_IDS.find(function (id) { return !ok[id]; });
+      document.getElementById(firstInvalidId).scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    return allOk;
+  }
+
+  CONTACT_FIELD_IDS.forEach(function (id) {
+    document.getElementById(id).addEventListener('input', function () { setFieldError(id, false); });
   });
 
   // ── Submit handling ──
@@ -403,19 +468,25 @@
 
     var answers = renderer.getAnswers();
 
-    // Wenn weder Vorname noch Nachname angegeben wurde: Platzhalter
-    // verwenden, damit die Antwort trotzdem eindeutig zuordenbar bleibt
-    // (gleiches Muster wie bei umfrage_zg0826.html).
     var vornameVal  = document.getElementById('c-vorname').value.trim();
     var nachnameVal = document.getElementById('c-nachname').value.trim();
-    if (!vornameVal && !nachnameVal) {
+    var emailVal    = document.getElementById('c-email').value.trim();
+    var phoneVal    = document.getElementById('c-phone').value.trim();
+
+    var requiredContact = renderer.getRequiredContactFields();
+    var anyContactRequired = requiredContact.name || requiredContact.surname || requiredContact.email || requiredContact.phone;
+
+    if (anyContactRequired) {
+      if (!validateContactFields(vornameVal, nachnameVal, emailVal, phoneVal)) return;
+    } else if (!vornameVal && !nachnameVal) {
+      // Wenn weder Vorname noch Nachname angegeben wurde: Platzhalter
+      // verwenden, damit die Antwort trotzdem eindeutig zuordenbar bleibt
+      // (gleiches Muster wie bei umfrage_zg0826.html).
       var pad = function (n) { return String(n).padStart(2, '0'); };
       var now = new Date();
       vornameVal  = 'anonymous';
       nachnameVal = now.getFullYear() + pad(now.getMonth() + 1) + pad(now.getDate()) + '_' + pad(now.getHours()) + pad(now.getMinutes()) + pad(now.getSeconds());
     }
-    var emailVal = document.getElementById('c-email').value.trim();
-    var phoneVal = document.getElementById('c-phone').value.trim();
 
     setLoading(true);
 

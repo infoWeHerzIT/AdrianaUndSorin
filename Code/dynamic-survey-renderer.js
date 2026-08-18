@@ -29,7 +29,10 @@ class DynamicSurveyRenderer {
     return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
-  renderQuestions(questions) {
+  // onAnyChange: optionaler Callback, der bei jeder Interaktion mit einer
+  // Frage aufgerufen wird (change/input) — z. B. um Kontaktfelder abhängig
+  // von der Antwort dynamisch pflicht zu machen (siehe requiresContact()).
+  renderQuestions(questions, onAnyChange) {
     this.questions = questions || [];
     var esc = DynamicSurveyRenderer.esc;
     var html = this.questions.map(function (q, idx) {
@@ -84,9 +87,36 @@ class DynamicSurveyRenderer {
       var fieldId = 'dq-' + q.id;
       var group = self.container.querySelector('[data-question-id="' + q.id.replace(/"/g, '') + '"]');
       if (!group) return;
-      group.addEventListener('change', function () { self._clearError(q.id); });
-      group.addEventListener('input', function () { self._clearError(q.id); });
+      group.addEventListener('change', function () { self._clearError(q.id); if (onAnyChange) onAnyChange(); });
+      group.addEventListener('input', function () { self._clearError(q.id); if (onAnyChange) onAnyChange(); });
     });
+  }
+
+  // Prüft für die aktuell gewählten Auswahl-Optionen, welche Kontaktfelder
+  // dadurch pflicht werden (je Option einzeln steuerbar über
+  // wht_surveyquestionoption.wht_make{Name,Surname,Email,Phone}Required) —
+  // z. B. macht "Ja, das klingt gut" bei der Zoom-Frage Vorname+E-Mail
+  // pflicht, ohne Telefon zu verlangen. Wird von der aufrufenden Seite
+  // genutzt, um die Kontaktfelder dynamisch pflicht zu machen.
+  getRequiredContactFields() {
+    var self = this;
+    var result = { name: false, surname: false, email: false, phone: false };
+    this.questions.forEach(function (q) {
+      if (q.type !== 'mehrfachauswahl' && q.type !== 'einmalauswahl') return;
+      var fieldId = 'dq-' + q.id;
+      var checkedIds = Array.prototype.slice
+        .call(self.container.querySelectorAll('input[name="' + fieldId + '"]:checked'))
+        .map(function (inp) { return inp.value; });
+      checkedIds.forEach(function (id) {
+        var opt = (q.options || []).find(function (o) { return o.id === id; });
+        if (!opt) return;
+        if (opt.requiresName)    result.name = true;
+        if (opt.requiresSurname) result.surname = true;
+        if (opt.requiresEmail)   result.email = true;
+        if (opt.requiresPhone)   result.phone = true;
+      });
+    });
+    return result;
   }
 
   _clearError(questionId) {

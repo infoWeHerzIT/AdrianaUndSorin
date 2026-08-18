@@ -162,6 +162,10 @@ serve(async (req) => {
             id: o.wht_surveyquestionoptionid,
             label: o.wht_labeltext ?? "",
             order: o.wht_order ?? 0,
+            requiresName: !!o.wht_makenamerequired,
+            requiresSurname: !!o.wht_makesurnamerequired,
+            requiresEmail: !!o.wht_makeemailrequired,
+            requiresPhone: !!o.wht_makephonerequired,
           }));
         return {
           id: qId,
