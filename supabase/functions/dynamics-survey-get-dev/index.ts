@@ -59,6 +59,13 @@ function typeLabel(n: unknown): string {
   return "text"; // unbekannter Wert: sicherer Fallback
 }
 
+const GUID_RE = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+
+// wht_survey-Felder, die für beide Lookup-Wege (per "id" oder per "slug")
+// gebraucht werden. "_wht_eventid_value" ist die Schatten-FK-Property des
+// Lookups wht_eventid — liefert die rohe Event-GUID ohne $expand.
+const SURVEY_SELECT = "wht_surveyid,wht_title,wht_intro,wht_slug,_wht_eventid_value,statecode";
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (req.method !== "GET" && req.method !== "POST") return jsonResponse({ error: "Method not allowed" }, 405);
@@ -66,7 +73,9 @@ serve(async (req) => {
   try {
     const url = new URL(req.url);
     const slug = (url.searchParams.get("slug") || "").trim();
-    if (!slug) return jsonResponse({ error: "Parameter 'slug' fehlt" }, 400);
+    const idParam = (url.searchParams.get("id") || "").trim();
+    if (!slug && !idParam) return jsonResponse({ error: "Parameter 'slug' oder 'id' fehlt" }, 400);
+    if (idParam && !GUID_RE.test(idParam)) return jsonResponse({ error: "Ungültige 'id'" }, 400);
 
     const token = await getAccessToken();
     const headers = {
@@ -79,15 +88,30 @@ serve(async (req) => {
     // Entity-Set-Name laut Dataverse-Metadaten ist "wht_surveies" (nicht
     // "wht_surveys" — Dataverse pluralisiert "survey" eigenwillig, wie
     // schon bei wht_paymentlinks -> wht_paymentlinkses).
-    const slugEscaped = slug.replace(/'/g, "''");
-    const surveyUrl = `${RESOURCE}/api/data/v9.2/wht_surveies?$select=wht_surveyid,wht_title,wht_intro,wht_slug&$filter=wht_slug eq '${slugEscaped}' and statecode eq 0`;
-    const surveyRes = await fetch(surveyUrl, { headers });
-    if (!surveyRes.ok) {
-      console.error("Dataverse error (survey):", surveyRes.status, await surveyRes.text());
-      return jsonResponse({ error: "CRM-Anfrage fehlgeschlagen" }, 502);
+    let survey: Record<string, unknown> | undefined;
+    if (idParam) {
+      const surveyUrl = `${RESOURCE}/api/data/v9.2/wht_surveies(${idParam})?$select=${SURVEY_SELECT}`;
+      const surveyRes = await fetch(surveyUrl, { headers });
+      if (surveyRes.status === 404) return jsonResponse(null, 404);
+      if (!surveyRes.ok) {
+        console.error("Dataverse error (survey by id):", surveyRes.status, await surveyRes.text());
+        return jsonResponse({ error: "CRM-Anfrage fehlgeschlagen" }, 502);
+      }
+      const surveyRow = await surveyRes.json();
+      // Deaktivierte Umfragen sollen genauso "nicht verfügbar" sein wie per
+      // Slug — direkter Key-Zugriff kennt kein $filter, daher hier geprüft.
+      survey = Number(surveyRow.statecode) === 0 ? surveyRow : undefined;
+    } else {
+      const slugEscaped = slug.replace(/'/g, "''");
+      const surveyUrl = `${RESOURCE}/api/data/v9.2/wht_surveies?$select=${SURVEY_SELECT}&$filter=wht_slug eq '${slugEscaped}' and statecode eq 0`;
+      const surveyRes = await fetch(surveyUrl, { headers });
+      if (!surveyRes.ok) {
+        console.error("Dataverse error (survey by slug):", surveyRes.status, await surveyRes.text());
+        return jsonResponse({ error: "CRM-Anfrage fehlgeschlagen" }, 502);
+      }
+      const surveyData = await surveyRes.json();
+      survey = (surveyData.value || [])[0];
     }
-    const surveyData = await surveyRes.json();
-    const survey = (surveyData.value || [])[0];
     if (!survey) return jsonResponse(null, 404);
 
     const surveyId = survey.wht_surveyid as string;
@@ -156,6 +180,7 @@ serve(async (req) => {
           title: survey.wht_title ?? "",
           intro: survey.wht_intro ?? "",
           slug: survey.wht_slug ?? "",
+          eventId: survey["_wht_eventid_value"] || null,
         },
         questions,
       },

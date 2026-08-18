@@ -136,6 +136,22 @@ class DynamicsCRM {
     });
   }
 
+  // Wie getSurvey(), aber Lookup per Dynamics-GUID (wht_surveyid) statt per
+  // Slug — für Seiten, die per "?id=<guid>" statt "?survey=<slug>" verlinkt
+  // werden. Gleiches "null bei Fehler/nicht gefunden"-Verhalten wie getSurvey().
+  getSurveyById(id) {
+    var fnName = this._functionName('dynamics-survey-get') + '?id=' + encodeURIComponent(id || '');
+    return this.client.functions.invoke(fnName, {
+      method: 'GET'
+    }).then(function (res) {
+      if (res.error) throw res.error;
+      return res.data || null;
+    }).catch(function (err) {
+      console.error('CRM get survey by id error:', err);
+      return null;
+    });
+  }
+
   // Legt eine Umfrage-Einreichung normalisiert in Dynamics an: 1 Lead
   // (Kontaktdaten) + 1 wht_surveyresponse (Klammer der Einreichung) + je
   // beantworteter Frage 1 (oder bei Mehrfachauswahl mehrere)
