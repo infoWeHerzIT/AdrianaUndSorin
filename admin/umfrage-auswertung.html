@@ -71,6 +71,48 @@
   .text-item { background:#f8f9fc; border-radius:4px; padding:10px 14px; font-size:14px; line-height:1.6; color:var(--navy); white-space:pre-wrap; }
   .text-empty { font-size:13px; color:rgba(0,34,77,0.4); padding:8px 0; }
 
+  /* ── Diagramm-Umschalter ── */
+  .chart-switcher { display:flex; gap:6px; margin-bottom:18px; }
+  .chart-switch-btn {
+    width:30px; height:30px; display:flex; align-items:center; justify-content:center;
+    border:1px solid rgba(0,34,77,0.15); border-radius:4px; background:var(--white);
+    color:rgba(0,34,77,0.4); cursor:pointer; padding:0;
+    transition:border-color .15s,color .15s,background .15s;
+  }
+  .chart-switch-btn svg { width:16px; height:16px; display:block; }
+  .chart-switch-btn:hover { border-color:rgba(255,99,0,0.4); color:var(--orange); }
+  .chart-switch-btn.active { border-color:var(--orange); background:rgba(255,99,0,0.08); color:var(--orange); }
+
+  /* ── Säulendiagramm ── */
+  .col-chart { display:flex; align-items:flex-end; gap:14px; height:180px; padding-top:20px; }
+  .col-item { flex:1; display:flex; flex-direction:column; align-items:center; height:100%; min-width:0; }
+  .col-track { flex:1; width:100%; max-width:44px; display:flex; align-items:flex-end; }
+  .col-fill { width:100%; background:var(--orange); border-radius:3px 3px 0 0; min-height:2px; transition:height .4s ease; }
+  .col-count { font-size:12px; color:rgba(0,34,77,0.5); margin-top:6px; font-variant-numeric:tabular-nums; }
+  .col-label { font-size:11px; color:var(--navy); text-align:center; margin-top:2px; line-height:1.3; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:3; line-clamp:3; -webkit-box-orient:vertical; }
+
+  /* ── Kreisdiagramm ── */
+  .pie-wrap { display:flex; align-items:center; gap:28px; flex-wrap:wrap; }
+  .pie-chart { width:150px; height:150px; border-radius:50%; flex-shrink:0; }
+  .pie-legend { display:flex; flex-direction:column; gap:8px; min-width:180px; flex:1; }
+  .pie-legend-item { display:flex; align-items:center; gap:9px; font-size:13px; }
+  .pie-swatch { width:11px; height:11px; border-radius:3px; flex-shrink:0; }
+  .pie-legend-label { flex:1; color:var(--navy); }
+  .pie-legend-val { color:rgba(0,34,77,0.5); white-space:nowrap; font-variant-numeric:tabular-nums; }
+
+  /* ── Liniendiagramm ── */
+  .line-svg { width:100%; height:120px; display:block; overflow:visible; }
+  .line-labels { display:flex; gap:8px; margin-top:8px; }
+  .line-labels > div { flex:1; text-align:center; min-width:0; }
+  .line-label { font-size:11px; color:var(--navy); line-height:1.3; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; line-clamp:2; -webkit-box-orient:vertical; }
+  .line-count { font-size:11px; color:rgba(0,34,77,0.45); margin-top:2px; font-variant-numeric:tabular-nums; }
+
+  /* ── Wortwolke ── */
+  .word-cloud { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:10px 16px; padding:12px 4px; }
+  .cloud-word { font-family:'Fredoka',sans-serif; font-weight:600; color:var(--navy); line-height:1; white-space:nowrap; }
+  .cloud-word:nth-child(3n+1) { color:var(--orange); }
+  .cloud-word:nth-child(5n+2) { color:#0078b4; }
+
   @media(max-width:700px) {
     .admin-header-inner,.admin-main { padding-left:20px; padding-right:20px; }
     .q-card { padding:20px; }
@@ -133,6 +175,198 @@ document.getElementById('btn-logout').addEventListener('click', async () => {
 function esc(s) {
   return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
+
+// ── Diagramm-Icons (kompakte Inline-SVGs, keine externe Icon-Bibliothek) ──
+var CHART_ICONS = {
+  bar:       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="12" height="3.2" rx="1"></rect><rect x="3" y="10.4" width="18" height="3.2" rx="1"></rect><rect x="3" y="16.8" width="8" height="3.2" rx="1"></rect></svg>',
+  column:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="3.2" height="10" rx="1"></rect><rect x="10.4" y="4" width="3.2" height="16" rx="1"></rect><rect x="16.8" y="13" width="3.2" height="7" rx="1"></rect></svg>',
+  pie:       '<svg viewBox="0 0 24 24"><path d="M12 2 A10 10 0 0 1 22 12 L12 12 Z" fill="currentColor"></path><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"></circle></svg>',
+  line:      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><polyline points="3,17 9,10 14,14 21,5"></polyline><circle cx="3" cy="17" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="9" cy="10" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="14" cy="14" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="21" cy="5" r="1.4" fill="currentColor" stroke="none"></circle></svg>',
+  list:      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><circle cx="3.5" cy="6" r="1.3" fill="currentColor" stroke="none"></circle><circle cx="3.5" cy="12" r="1.3" fill="currentColor" stroke="none"></circle><circle cx="3.5" cy="18" r="1.3" fill="currentColor" stroke="none"></circle></svg>',
+  wordcloud: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M7 18a4 4 0 1 1 .7-7.94A5 5 0 0 1 17 11a3.5 3.5 0 0 1-.5 7H7Z"></path></svg>'
+};
+var CHART_TITLES = { bar: 'Balken', column: 'Säulen', pie: 'Kreis', line: 'Linie', list: 'Liste', wordcloud: 'Wortwolke' };
+var CHOICE_CHARTS = ['bar', 'column', 'pie', 'line'];
+var TEXT_CHARTS    = ['list', 'wordcloud'];
+var PIE_COLORS = ['#ff6300','#00224d','#16a34a','#0078b4','#d97706','#7c3aed','#dc2626','#0891b2','#be185d','#65a30d'];
+var STOPWORDS = ['der','die','das','und','ist','ich','du','er','sie','es','wir','ihr','ein','eine','einen','einem',
+  'einer','zu','in','im','auf','mit','für','von','dem','den','des','nicht','auch','aber','oder','als','am','an',
+  'bin','bist','sind','war','wäre','habe','hast','hat','haben','wird','werden','so','noch','nur','schon','sehr',
+  'mehr','man','mich','mir','mein','meine','dass','wie','was','wenn','dann','kann','können','muss','müssen',
+  'soll','sollte','bei','aus','über','unter','nach','vor','zum','zur','durch','ohne','um','this','the','and'];
+
+// currentChart[questionId] hält die aktuell gewählte Diagrammart pro Frage
+// (Default wird beim ersten Rendern automatisch bestimmt, siehe pickDefaultChart()).
+var currentChart = {};
+var questionsById = {};
+
+// Automatische Wahl: Mehrfachauswahl summiert sich nicht zu 100% (mehrere
+// Antworten pro Person möglich) — ein Kreisdiagramm würde dort fälschlich
+// "Anteile vom Ganzen" suggerieren, deshalb dort immer Balken. Einmalauswahl
+// mit wenigen Optionen eignet sich gut als Kreis, mit vielen Optionen bleibt
+// Balken lesbarer. Freitext startet immer als Liste (robust für jede Länge),
+// Wortwolke ist die manuell wählbare Alternative.
+function pickDefaultChart(q) {
+  var isChoice = q.type === 'mehrfachauswahl' || q.type === 'einmalauswahl';
+  if (!isChoice) return 'list';
+  if (q.type === 'einmalauswahl' && q.options.length <= 6) return 'pie';
+  return 'bar';
+}
+
+function renderBar(q) {
+  var maxCount = q.options.reduce(function (m, o) { return Math.max(m, o.count); }, 0);
+  var sorted = q.options.slice().sort(function (a, b) { return b.count - a.count; });
+  return '<div class="bar-list">' + sorted.map(function (o) {
+    var pct = maxCount > 0 ? Math.round((o.count / maxCount) * 100) : 0;
+    return (
+      '<div class="bar-row">' +
+        '<div class="bar-top"><span class="bar-option-label">' + esc(o.label) + '</span>' +
+        '<span class="bar-count">' + o.count + '</span></div>' +
+        '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%;"></div></div>' +
+      '</div>'
+    );
+  }).join('') + '</div>';
+}
+
+function renderColumn(q) {
+  var maxCount = q.options.reduce(function (m, o) { return Math.max(m, o.count); }, 0);
+  return '<div class="col-chart">' + q.options.map(function (o) {
+    var pct = maxCount > 0 ? Math.round((o.count / maxCount) * 100) : 0;
+    return (
+      '<div class="col-item">' +
+        '<div class="col-track"><div class="col-fill" style="height:' + Math.max(pct, 2) + '%;"></div></div>' +
+        '<div class="col-count">' + o.count + '</div>' +
+        '<div class="col-label">' + esc(o.label) + '</div>' +
+      '</div>'
+    );
+  }).join('') + '</div>';
+}
+
+function renderPie(q) {
+  var total = q.options.reduce(function (s, o) { return s + o.count; }, 0);
+  if (total === 0) return '<div class="text-empty">Noch keine Antworten.</div>';
+  var sorted = q.options.slice().sort(function (a, b) { return b.count - a.count; });
+  var acc = 0;
+  var stops = sorted.map(function (o, i) {
+    var start = (acc / total) * 360;
+    acc += o.count;
+    var end = (acc / total) * 360;
+    return PIE_COLORS[i % PIE_COLORS.length] + ' ' + start.toFixed(1) + 'deg ' + end.toFixed(1) + 'deg';
+  }).join(', ');
+  var legend = sorted.map(function (o, i) {
+    var pct = total > 0 ? Math.round((o.count / total) * 100) : 0;
+    return (
+      '<div class="pie-legend-item">' +
+        '<span class="pie-swatch" style="background:' + PIE_COLORS[i % PIE_COLORS.length] + ';"></span>' +
+        '<span class="pie-legend-label">' + esc(o.label) + '</span>' +
+        '<span class="pie-legend-val">' + o.count + ' (' + pct + '%)</span>' +
+      '</div>'
+    );
+  }).join('');
+  return (
+    '<div class="pie-wrap">' +
+      '<div class="pie-chart" style="background:conic-gradient(' + stops + ');"></div>' +
+      '<div class="pie-legend">' + legend + '</div>' +
+    '</div>'
+  );
+}
+
+function renderLine(q) {
+  var opts = q.options;
+  var maxCount = Math.max(opts.reduce(function (m, o) { return Math.max(m, o.count); }, 0), 1);
+  var W = 100, H = 60, pad = 6;
+  var n = opts.length;
+  var points = opts.map(function (o, i) {
+    var x = n > 1 ? pad + (i / (n - 1)) * (W - 2 * pad) : W / 2;
+    var y = H - pad - (o.count / maxCount) * (H - 2 * pad);
+    return x.toFixed(1) + ',' + y.toFixed(1);
+  });
+  var dots = points.map(function (p) {
+    var xy = p.split(',');
+    return '<circle cx="' + xy[0] + '" cy="' + xy[1] + '" r="1.8" fill="#ff6300"></circle>';
+  }).join('');
+  var labels = opts.map(function (o) {
+    return '<div><div class="line-label">' + esc(o.label) + '</div><div class="line-count">' + o.count + '</div></div>';
+  }).join('');
+  return (
+    '<svg class="line-svg" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none">' +
+      '<polyline points="' + points.join(' ') + '" fill="none" stroke="#ff6300" stroke-width="1.5" vector-effect="non-scaling-stroke"></polyline>' +
+      dots +
+    '</svg>' +
+    '<div class="line-labels">' + labels + '</div>'
+  );
+}
+
+function renderTextList(q) {
+  if (q.textAnswers.length === 0) return '<div class="text-empty">Noch keine Antworten.</div>';
+  return '<div class="text-list">' + q.textAnswers.map(function (t) {
+    return '<div class="text-item">' + esc(t) + '</div>';
+  }).join('') + '</div>';
+}
+
+function renderWordCloud(q) {
+  var freq = {};
+  q.textAnswers.forEach(function (t) {
+    t.toLowerCase().replace(/[.,!?;:()"„“‚''\-–—]/g, ' ').split(/\s+/).forEach(function (w) {
+      w = w.trim();
+      if (w.length < 3 || STOPWORDS.indexOf(w) !== -1) return;
+      freq[w] = (freq[w] || 0) + 1;
+    });
+  });
+  var words = Object.keys(freq).map(function (w) { return { word: w, count: freq[w] }; })
+    .sort(function (a, b) { return b.count - a.count; })
+    .slice(0, 40);
+  if (words.length === 0) return '<div class="text-empty">Nicht genug Text für eine Wortwolke.</div>';
+  var maxCount = words[0].count;
+  var minCount = words[words.length - 1].count;
+  words.sort(function () { return Math.random() - 0.5; });
+  return '<div class="word-cloud">' + words.map(function (w) {
+    var scale = maxCount > minCount ? (w.count - minCount) / (maxCount - minCount) : 1;
+    var size = 13 + scale * 22;
+    var opacity = 0.55 + scale * 0.45;
+    return '<span class="cloud-word" style="font-size:' + size.toFixed(0) + 'px;opacity:' + opacity.toFixed(2) + ';" title="' + w.count + '×">' + esc(w.word) + '</span>';
+  }).join('') + '</div>';
+}
+
+var CHART_RENDERERS = { bar: renderBar, column: renderColumn, pie: renderPie, line: renderLine, list: renderTextList, wordcloud: renderWordCloud };
+
+function renderQuestionBody(q) {
+  var type = currentChart[q.id];
+  var isChoice = q.type === 'mehrfachauswahl' || q.type === 'einmalauswahl';
+  if (isChoice && q.options.every(function (o) { return o.count === 0; })) {
+    return '<div class="text-empty">Noch keine Antworten.</div>';
+  }
+  return CHART_RENDERERS[type](q);
+}
+
+function renderSwitcher(q) {
+  var isChoice = q.type === 'mehrfachauswahl' || q.type === 'einmalauswahl';
+  var types = isChoice ? CHOICE_CHARTS : TEXT_CHARTS;
+  var active = currentChart[q.id];
+  return '<div class="chart-switcher" data-qid="' + esc(q.id) + '">' + types.map(function (t) {
+    return (
+      '<button type="button" class="chart-switch-btn' + (t === active ? ' active' : '') + '" data-type="' + t + '" title="' + CHART_TITLES[t] + '">' +
+        CHART_ICONS[t] +
+      '</button>'
+    );
+  }).join('') + '</div>';
+}
+
+document.getElementById('questions-root').addEventListener('click', function (e) {
+  var btn = e.target.closest('.chart-switch-btn');
+  if (!btn) return;
+  var switcher = btn.closest('.chart-switcher');
+  var qId = switcher.getAttribute('data-qid');
+  var type = btn.getAttribute('data-type');
+  var q = questionsById[qId];
+  if (!q || currentChart[qId] === type) return;
+
+  currentChart[qId] = type;
+  switcher.querySelectorAll('.chart-switch-btn').forEach(function (b) {
+    b.classList.toggle('active', b.getAttribute('data-type') === type);
+  });
+  document.getElementById('qbody-' + qId).innerHTML = renderQuestionBody(q);
+});
 
 (function () {
   var params   = new URLSearchParams(window.location.search);
@@ -201,29 +435,8 @@ function esc(s) {
     };
 
     var html = questions.map(function (q, idx) {
-      var isChoice = q.type === 'mehrfachauswahl' || q.type === 'einmalauswahl';
-      var body;
-
-      if (isChoice) {
-        var maxCount = q.options.reduce(function (m, o) { return Math.max(m, o.count); }, 0);
-        var sortedOptions = q.options.slice().sort(function (a, b) { return b.count - a.count; });
-        body = '<div class="bar-list">' + sortedOptions.map(function (o) {
-          var pct = maxCount > 0 ? Math.round((o.count / maxCount) * 100) : 0;
-          return (
-            '<div class="bar-row">' +
-              '<div class="bar-top"><span class="bar-option-label">' + esc(o.label) + '</span>' +
-              '<span class="bar-count">' + o.count + '</span></div>' +
-              '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%;"></div></div>' +
-            '</div>'
-          );
-        }).join('') + '</div>';
-      } else if (q.textAnswers.length > 0) {
-        body = '<div class="text-list">' + q.textAnswers.map(function (t) {
-          return '<div class="text-item">' + esc(t) + '</div>';
-        }).join('') + '</div>';
-      } else {
-        body = '<div class="text-empty">Noch keine Antworten.</div>';
-      }
+      questionsById[q.id] = q;
+      currentChart[q.id] = pickDefaultChart(q);
 
       return (
         '<div class="q-card">' +
@@ -231,7 +444,8 @@ function esc(s) {
             '<div class="q-label">' + (idx + 1) + '. ' + esc(q.label) + (q.required ? '<span class="q-req">Pflicht</span>' : '') + '</div>' +
             '<div class="q-meta">' + (typeLabels[q.type] || q.type) + ' · ' + q.totalAnswered + ' Antworten</div>' +
           '</div>' +
-          body +
+          renderSwitcher(q) +
+          '<div id="qbody-' + esc(q.id) + '">' + renderQuestionBody(q) + '</div>' +
         '</div>'
       );
     }).join('');
