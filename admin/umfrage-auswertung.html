@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Umfrage-Auswertung – Adriana und Sorin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root { --orange:#ff6300; --navy:#00224d; --white:#ffffff; --green:#16a34a; --red:#dc2626; }
+  *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'DM Sans',sans-serif; font-size:16px; background:#f4f4f2; color:var(--navy); padding-bottom:80px; }
+
+  nav { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:center; padding:16px 5%; background:rgba(0,34,77,0.97); backdrop-filter:blur(8px); }
+  .nav-inner { max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; width:100%; }
+  .nav-logo { font-family:'Fredoka',sans-serif; color:var(--white); font-size:18px; font-weight:700; text-decoration:none; display:flex; align-items:center; gap:10px; }
+  .nav-logo span { color:var(--orange); }
+  .nav-admin-badge { font-family:'Orbitron',monospace; font-size:9px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; background:rgba(255,99,0,0.2); border:1px solid rgba(255,99,0,0.4); color:var(--orange); padding:3px 8px; border-radius:2px; }
+  .nav-links { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  .nav-link { color:rgba(255,255,255,0.6); font-size:13px; text-decoration:none; border:1px solid rgba(255,255,255,0.15); padding:7px 14px; border-radius:2px; background:transparent; cursor:pointer; transition:background .2s,color .2s; font-family:'DM Sans',sans-serif; }
+  .nav-link:hover { background:rgba(255,255,255,0.08); color:var(--white); }
+
+  .admin-header { background:var(--navy); padding:100px 0 50px; position:relative; overflow:hidden; }
+  .admin-header::before { content:''; position:absolute; inset:0; background-image:repeating-linear-gradient(90deg,rgba(255,99,0,0.04) 0px,rgba(255,99,0,0.04) 1px,transparent 1px,transparent 80px); pointer-events:none; }
+  .admin-header::after { content:''; position:absolute; left:0; top:0; bottom:0; width:5px; background:var(--orange); }
+  .admin-header-inner { max-width:1000px; margin:0 auto; padding:0 32px; position:relative; z-index:1; }
+  .admin-page-label { font-family:'Orbitron',monospace; font-size:10px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--orange); margin-bottom:14px; display:block; }
+  .admin-header h1 { font-family:'Fredoka',sans-serif; font-size:clamp(24px,3.2vw,38px); color:var(--white); line-height:1.15; margin-bottom:12px; }
+  .admin-header p { font-size:15px; color:rgba(255,255,255,0.55); max-width:680px; line-height:1.7; margin-bottom:18px; }
+
+  .stat-row { display:flex; gap:28px; flex-wrap:wrap; }
+  .stat { }
+  .stat-num { font-family:'Fredoka',sans-serif; font-size:28px; font-weight:700; color:var(--white); line-height:1; }
+  .stat-label { font-size:12px; color:rgba(255,255,255,0.5); margin-top:4px; }
+
+  .admin-main { max-width:1000px; margin:0 auto; padding:36px 32px 0; }
+
+  .state-box { background:var(--white); border:1px solid rgba(0,34,77,0.1); border-radius:8px; padding:48px; text-align:center; color:rgba(0,34,77,0.45); font-size:14px; }
+  .state-box.error { color:var(--red); }
+
+  .q-card { background:var(--white); border:1px solid rgba(0,34,77,0.1); border-radius:8px; padding:26px 28px; margin-bottom:18px; }
+  .q-head { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:18px; }
+  .q-label { font-family:'Fredoka',sans-serif; font-size:17px; font-weight:600; line-height:1.4; }
+  .q-meta { font-size:12px; color:rgba(0,34,77,0.4); white-space:nowrap; margin-top:3px; }
+  .q-req { color:var(--orange); font-size:12px; font-weight:700; margin-left:4px; }
+
+  /* ── Balken (Auswahl-Fragen) ── */
+  .bar-row { margin-bottom:12px; }
+  .bar-row:last-child { margin-bottom:0; }
+  .bar-top { display:flex; justify-content:space-between; align-items:baseline; gap:12px; margin-bottom:5px; }
+  .bar-option-label { font-size:14px; color:var(--navy); }
+  .bar-count { font-size:13px; color:rgba(0,34,77,0.5); white-space:nowrap; font-variant-numeric:tabular-nums; }
+  .bar-track { background:rgba(0,34,77,0.06); border-radius:3px; height:10px; overflow:hidden; }
+  .bar-fill { background:var(--orange); height:100%; border-radius:3px; transition:width .4s ease; }
+
+  /* ── Freitext-Antworten ── */
+  .text-list { display:flex; flex-direction:column; gap:8px; max-height:360px; overflow-y:auto; }
+  .text-item { background:#f8f9fc; border-radius:4px; padding:10px 14px; font-size:14px; line-height:1.6; color:var(--navy); white-space:pre-wrap; }
+  .text-empty { font-size:13px; color:rgba(0,34,77,0.4); padding:8px 0; }
+
+  @media(max-width:700px) {
+    .admin-header-inner,.admin-main { padding-left:20px; padding-right:20px; }
+    .q-card { padding:20px; }
+  }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase-config.js"></script>
+<script src="../Code/dynamics-crm.js"></script>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">Adriana &amp; <span>Sorin</span><span class="nav-admin-badge">Admin</span></a>
+    <div class="nav-links">
+      <a href="admin-feedback.html" class="nav-link">Feedback</a>
+      <a href="admin-users.html" class="nav-link">Admins</a>
+      <button id="btn-logout" class="nav-link" style="border-color:rgba(220,38,38,0.4);color:#f87171;">Ausloggen</button>
+    </div>
+  </div>
+</nav>
+
+<div class="admin-header">
+  <div class="admin-header-inner">
+    <span class="admin-page-label">Auswertung</span>
+    <h1 id="survey-title">Wird geladen …</h1>
+    <p id="survey-intro"></p>
+    <div class="stat-row" id="stat-row" style="display:none;">
+      <div class="stat">
+        <div class="stat-num" id="stat-responses">–</div>
+        <div class="stat-label">Teilnehmer:innen</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="stat-questions">–</div>
+        <div class="stat-label">Fragen</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="admin-main">
+  <div class="state-box" id="state-loading">Wird geladen …</div>
+  <div class="state-box error" id="state-error" style="display:none;">Diese Umfrage konnte nicht gefunden werden. Bitte prüfe die ID im Link.</div>
+  <div id="questions-root"></div>
+</div>
+
+<script>
+db.auth.getSession().then(({ data }) => {
+  if (!data.session) window.location.href = 'admin-login.html';
+});
+document.getElementById('btn-logout').addEventListener('click', async () => {
+  await db.auth.signOut();
+  window.location.href = 'admin-login.html';
+});
+
+function esc(s) {
+  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+(function () {
+  var params   = new URLSearchParams(window.location.search);
+  var surveyId = (params.get('id') || '').trim();
+
+  var elLoading = document.getElementById('state-loading');
+  var elError   = document.getElementById('state-error');
+  var elRoot    = document.getElementById('questions-root');
+
+  function showError() {
+    elLoading.style.display = 'none';
+    elError.style.display = 'block';
+    document.getElementById('survey-title').textContent = 'Umfrage nicht gefunden';
+  }
+
+  if (!surveyId) { showError(); return; }
+
+  dynamicsCRM.getSurveyResults(surveyId).then(function (result) {
+    if (!result || !result.survey) { showError(); return; }
+
+    elLoading.style.display = 'none';
+
+    document.getElementById('survey-title').textContent = result.survey.title || 'Umfrage';
+    document.getElementById('survey-intro').textContent = result.survey.intro || '';
+    document.getElementById('stat-responses').textContent = result.responseCount;
+    document.getElementById('stat-questions').textContent = (result.questions || []).length;
+    document.getElementById('stat-row').style.display = 'flex';
+
+    var questions = result.questions || [];
+    if (questions.length === 0) {
+      elRoot.innerHTML = '<div class="state-box">Diese Umfrage hat noch keine Fragen.</div>';
+      return;
+    }
+
+    var typeLabels = {
+      mehrfachauswahl: 'Mehrfachauswahl',
+      einmalauswahl:   'Einmalauswahl',
+      text:            'Freitext',
+      email:           'E-Mail',
+      telefon:         'Telefon',
+      nummer:          'Nummer'
+    };
+
+    var html = questions.map(function (q, idx) {
+      var isChoice = q.type === 'mehrfachauswahl' || q.type === 'einmalauswahl';
+      var body;
+
+      if (isChoice) {
+        var maxCount = q.options.reduce(function (m, o) { return Math.max(m, o.count); }, 0);
+        var sortedOptions = q.options.slice().sort(function (a, b) { return b.count - a.count; });
+        body = '<div class="bar-list">' + sortedOptions.map(function (o) {
+          var pct = maxCount > 0 ? Math.round((o.count / maxCount) * 100) : 0;
+          return (
+            '<div class="bar-row">' +
+              '<div class="bar-top"><span class="bar-option-label">' + esc(o.label) + '</span>' +
+              '<span class="bar-count">' + o.count + '</span></div>' +
+              '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%;"></div></div>' +
+            '</div>'
+          );
+        }).join('') + '</div>';
+      } else if (q.textAnswers.length > 0) {
+        body = '<div class="text-list">' + q.textAnswers.map(function (t) {
+          return '<div class="text-item">' + esc(t) + '</div>';
+        }).join('') + '</div>';
+      } else {
+        body = '<div class="text-empty">Noch keine Antworten.</div>';
+      }
+
+      return (
+        '<div class="q-card">' +
+          '<div class="q-head">' +
+            '<div class="q-label">' + (idx + 1) + '. ' + esc(q.label) + (q.required ? '<span class="q-req">Pflicht</span>' : '') + '</div>' +
+            '<div class="q-meta">' + (typeLabels[q.type] || q.type) + ' · ' + q.totalAnswered + ' Antworten</div>' +
+          '</div>' +
+          body +
+        '</div>'
+      );
+    }).join('');
+
+    elRoot.innerHTML = html;
+  }).catch(function (err) {
+    console.error('Survey results load error:', err);
+    showError();
+  });
+})();
+</script>
+</body>
+</html>

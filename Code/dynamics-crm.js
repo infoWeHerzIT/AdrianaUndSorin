@@ -176,6 +176,25 @@ class DynamicsCRM {
     });
   }
 
+  // Liest und aggregiert die Ergebnisse einer Umfrage anhand ihrer
+  // Dynamics-GUID — supabase/functions/dynamics-survey-results[-dev].
+  // Anders als getSurvey()/getSurveyById() (fürs Formular) liefert das hier
+  // pro Frage bereits ausgewertete Daten: Häufigkeiten pro Option bei
+  // Auswahl-Fragen, die Liste der Einzelantworten bei Text-Fragen. Gleiches
+  // "null bei Fehler/nicht gefunden"-Verhalten wie getSurvey().
+  getSurveyResults(id) {
+    var fnName = this._functionName('dynamics-survey-results') + '?id=' + encodeURIComponent(id || '');
+    return this.client.functions.invoke(fnName, {
+      method: 'GET'
+    }).then(function (res) {
+      if (res.error) throw res.error;
+      return res.data || null;
+    }).catch(function (err) {
+      console.error('CRM get survey results error:', err);
+      return null;
+    });
+  }
+
   // Bestätigt die Double-Opt-In-E-Mail eines Leads: prüft, ob "token"
   // (die Lead-GUID) zu einem Lead mit der übergebenen E-Mail-Adresse
   // gehört, und setzt bei Erfolg statuscode=Active + wht_doubleoptinam —
