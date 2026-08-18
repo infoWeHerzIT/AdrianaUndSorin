@@ -800,7 +800,7 @@
 
     // Honeypot: Bots füllen dieses Feld aus, echte Nutzer nicht
     if (document.getElementById('hp-website').value) {
-      window.location.href = 'Templates/danke-OptIn?' + new URLSearchParams({ vorname: document.getElementById('vorname').value.trim() || 'Besucher' }).toString();
+      window.location.href = 'Templates/danke-optin.html?' + new URLSearchParams({ vorname: document.getElementById('vorname').value.trim() || 'Besucher' }).toString();
       return;
     }
 
@@ -867,7 +867,7 @@
       }
     }
     if (isTestTicket) thankyouParams.set('is_test', '1');
-    var thankyouUrl = 'Templates/danke-OptIn?' + thankyouParams.toString();
+    var thankyouUrl = 'Templates/danke-optin.html?' + thankyouParams.toString();
 
     function goToDanke() { window.location.href = thankyouUrl; }
 

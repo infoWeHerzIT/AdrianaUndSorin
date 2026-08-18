@@ -843,7 +843,11 @@ src="https://www.facebook.com/tr?id=1054896624101426&ev=PageView&noscript=1"
       survey:      payload
     });
 
-    window.location.href = 'danke-OptIn?' + new URLSearchParams({ vorname: vornameVal }).toString();
+    // Nur wenn E-Mail oder Telefon angegeben wurde, haben wir überhaupt einen
+    // Kanal, um uns zu melden — sonst würde "danke-optin.html" (das auf die
+    // Mail-Zustellung hinweist) für anonyme Antworten irreführend sein.
+    var thanksPage = (payload.email || payload.telefon) ? 'danke-optin.html' : 'danke-umfrage-nooptin.html';
+    window.location.href = thanksPage + '?' + new URLSearchParams({ vorname: vornameVal }).toString();
   });
 })();
 </script>

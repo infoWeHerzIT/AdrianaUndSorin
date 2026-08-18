@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Danke – Adriana und Sorin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --orange: #ff6300; --navy: #00224d; --white: #ffffff; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #f0f2f5;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 16px;
+  }
+
+  .card {
+    max-width: 480px;
+    width: 100%;
+    background: var(--white);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 4px 32px rgba(0,0,0,0.10);
+  }
+
+  .hdr {
+    background: var(--navy);
+    padding: 36px 40px 30px;
+    position: relative;
+  }
+  .hdr::after {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 5px; background: var(--orange);
+  }
+  .hdr-logo {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 22px; font-weight: 700; color: var(--white);
+  }
+  .hdr-logo span { color: var(--orange); }
+  .hdr-sub { color: rgba(255,255,255,0.5); font-size: 13px; margin-top: 6px; }
+
+  .body { padding: 32px 40px 40px; }
+  .body p { color: #2d3748; font-size: 16px; line-height: 1.7; margin: 0 0 20px; }
+
+  .icon {
+    width: 52px; height: 52px; border-radius: 50%;
+    background: rgba(34,197,94,0.15);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; margin: 0 0 20px;
+    color: #16a34a;
+  }
+
+  .status-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 19px; font-weight: 700; color: var(--navy);
+    margin-bottom: 10px;
+  }
+
+  .links { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 8px; }
+  .links a {
+    font-size: 14px; font-weight: 500; color: #0078b4; text-decoration: none;
+  }
+  .links a:hover { text-decoration: underline; }
+
+  @media (max-width: 480px) {
+    .card { border-radius: 0; }
+    .hdr, .body { padding-left: 24px; padding-right: 24px; }
+  }
+</style>
+</head>
+<body>
+<div class="card">
+
+  <div class="hdr">
+    <div class="hdr-logo">Adriana &amp; <span>Sorin</span></div>
+    <div class="hdr-sub">Deep Coaching</div>
+  </div>
+
+  <div class="body">
+    <div class="icon">✓</div>
+    <div class="status-title" id="status-title">Danke für deine Antworten!</div>
+    <p>Wir lesen jede Antwort mit Aufmerksamkeit — und nehmen sie mit in die Gestaltung der nächsten Angebote. Schön, dass du dabei warst.</p>
+    <div class="links">
+      <a href="../kalender.html">Weitere Termine ansehen</a>
+      <a href="../index.html">Zur Startseite</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  var params  = new URLSearchParams(window.location.search);
+  var vorname = (params.get('vorname') || '').trim();
+
+  if (vorname && vorname.toLowerCase() !== 'anonymous') {
+    document.getElementById('status-title').textContent = 'Danke, ' + vorname + '!';
+  }
+})();
+</script>
+</body>
+</html>

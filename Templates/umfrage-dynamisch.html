@@ -520,7 +520,11 @@
       answers:     answers
     });
 
-    window.location.href = 'danke-OptIn?' + new URLSearchParams({ vorname: vornameVal }).toString();
+    // Nur wenn E-Mail oder Telefon angegeben wurde, haben wir überhaupt einen
+    // Kanal, um uns zu melden — sonst würde "danke-optin.html" (das auf die
+    // Mail-Zustellung hinweist) für anonyme Antworten irreführend sein.
+    var thanksPage = (emailVal || phoneVal) ? 'danke-optin.html' : 'danke-umfrage-nooptin.html';
+    window.location.href = thanksPage + '?' + new URLSearchParams({ vorname: vornameVal }).toString();
   });
 })();
 </script>
