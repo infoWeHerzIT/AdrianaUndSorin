@@ -167,7 +167,12 @@ serve(async (req) => {
         return {
           id: qId,
           order: q.wht_order ?? 0,
-          label: q.wht_label ?? "",
+          // wht_surveyquestion1 (Primary-Name-Feld) trägt die eigentliche
+          // Frage, wht_label ist ein optionaler Hinweistext daneben (z. B.
+          // "Erzähl es mir mit deinen eigenen Worten.") — nur gefüllt, wenn
+          // beim Anlegen der Frage ein solcher Hinweis vergeben wurde.
+          label: q.wht_surveyquestion1 ?? "",
+          hint: q.wht_label ?? "",
           type: typeLabel(q.wht_type),
           required: !!q.wht_isrequired,
           options: opts,

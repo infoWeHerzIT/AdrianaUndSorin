@@ -56,6 +56,7 @@
   .q-label { font-family:'Fredoka',sans-serif; font-size:17px; font-weight:600; line-height:1.4; }
   .q-meta { font-size:12px; color:rgba(0,34,77,0.4); white-space:nowrap; margin-top:3px; }
   .q-req { color:var(--orange); font-size:12px; font-weight:700; margin-left:4px; }
+  .q-hint { font-size:13px; color:rgba(0,34,77,0.45); line-height:1.6; margin-top:6px; }
 
   /* ── Balken (Auswahl-Fragen) ── */
   .bar-row { margin-bottom:12px; }
@@ -438,10 +439,15 @@ document.getElementById('questions-root').addEventListener('click', function (e)
       questionsById[q.id] = q;
       currentChart[q.id] = pickDefaultChart(q);
 
+      var hintHtml = q.hint ? '<p class="q-hint">' + esc(q.hint) + '</p>' : '';
+
       return (
         '<div class="q-card">' +
           '<div class="q-head">' +
-            '<div class="q-label">' + (idx + 1) + '. ' + esc(q.label) + (q.required ? '<span class="q-req">Pflicht</span>' : '') + '</div>' +
+            '<div>' +
+              '<div class="q-label">' + (idx + 1) + '. ' + esc(q.label) + (q.required ? '<span class="q-req">Pflicht</span>' : '') + '</div>' +
+              hintHtml +
+            '</div>' +
             '<div class="q-meta">' + (typeLabels[q.type] || q.type) + ' · ' + q.totalAnswered + ' Antworten</div>' +
           '</div>' +
           renderSwitcher(q) +

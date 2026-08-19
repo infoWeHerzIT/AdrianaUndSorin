@@ -70,9 +70,12 @@ class DynamicSurveyRenderer {
         body = '<input class="form-input" type="text" id="' + fieldId + '">';
       }
 
+      var hintHtml = q.hint ? '<p class="question-hint">' + esc(q.hint) + '</p>' : '';
+
       return (
         '<div class="form-group" data-question-id="' + esc(q.id) + '" data-question-type="' + esc(q.type) + '">' +
         '<label class="question-label">' + (idx + 1) + '. ' + esc(q.label) + reqBadge + '</label>' +
+        hintHtml +
         body +
         '<span class="field-error" id="' + errId + '">Bitte beantworte diese Frage.</span>' +
         '</div>'

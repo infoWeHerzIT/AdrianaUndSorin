@@ -190,7 +190,8 @@ serve(async (req) => {
           return {
             id: qId,
             order: q.wht_order ?? 0,
-            label: q.wht_label ?? "",
+            label: q.wht_surveyquestion1 ?? "",
+            hint: q.wht_label ?? "",
             type,
             required: !!q.wht_isrequired,
             totalAnswered: respondentIds.size,
@@ -205,7 +206,8 @@ serve(async (req) => {
         return {
           id: qId,
           order: q.wht_order ?? 0,
-          label: q.wht_label ?? "",
+          label: q.wht_surveyquestion1 ?? "",
+          hint: q.wht_label ?? "",
           type,
           required: !!q.wht_isrequired,
           totalAnswered: textAnswers.length,
