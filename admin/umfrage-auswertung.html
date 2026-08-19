@@ -165,7 +165,8 @@
 </div>
 
 <script>
-db.auth.getSession().then(({ data }) => {
+var sessionPromise = db.auth.getSession();
+sessionPromise.then(({ data }) => {
   if (!data.session) window.location.href = 'admin-login.html';
 });
 document.getElementById('btn-logout').addEventListener('click', async () => {
@@ -386,24 +387,31 @@ document.getElementById('questions-root').addEventListener('click', function (e)
 
   // Zeigt unter der Fehlermeldung eine Auswahlliste aller aktiven Umfragen,
   // damit man sich zur richtigen ID durchklicken kann, statt sie von Hand
-  // im Link nachschlagen zu müssen.
+  // im Link nachschlagen zu müssen — aber nur im Admin-Modus (bestätigte
+  // Supabase-Auth-Session): ohne Session läuft ohnehin schon die
+  // Weiterleitung zu admin-login.html, der Picker soll dabei nicht kurz
+  // aufblitzen.
   function loadSurveyPicker() {
-    var elPicker = document.getElementById('survey-picker');
-    var elList   = document.getElementById('survey-list');
-    dynamicsCRM.listSurveys().then(function (surveys) {
-      elPicker.style.display = 'block';
-      if (!surveys || surveys.length === 0) {
-        elList.innerHTML = '<div class="survey-list-empty">Keine aktiven Umfragen gefunden.</div>';
-        return;
-      }
-      elList.innerHTML = surveys.map(function (s) {
-        return (
-          '<a class="survey-list-item" href="umfrage-auswertung.html?id=' + encodeURIComponent(s.id) + '">' +
-            '<span class="survey-list-item-title">' + esc(s.title || s.slug || s.id) + '</span>' +
-            '<span class="survey-list-item-arrow">Auswerten →</span>' +
-          '</a>'
-        );
-      }).join('');
+    sessionPromise.then(function (res) {
+      if (!res.data.session) return;
+
+      var elPicker = document.getElementById('survey-picker');
+      var elList   = document.getElementById('survey-list');
+      dynamicsCRM.listSurveys().then(function (surveys) {
+        elPicker.style.display = 'block';
+        if (!surveys || surveys.length === 0) {
+          elList.innerHTML = '<div class="survey-list-empty">Keine aktiven Umfragen gefunden.</div>';
+          return;
+        }
+        elList.innerHTML = surveys.map(function (s) {
+          return (
+            '<a class="survey-list-item" href="umfrage-auswertung.html?id=' + encodeURIComponent(s.id) + '">' +
+              '<span class="survey-list-item-title">' + esc(s.title || s.slug || s.id) + '</span>' +
+              '<span class="survey-list-item-arrow">Auswerten →</span>' +
+            '</a>'
+          );
+        }).join('');
+      });
     });
   }
 
