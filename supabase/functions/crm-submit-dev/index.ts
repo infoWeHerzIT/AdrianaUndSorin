@@ -68,7 +68,10 @@ serve(async (req) => {
     const newsletterOptIn                    = !!payload.newsletterOptIn;
     const testimonialOptIn                   = !!payload.testimonialOptIn;
 
-    if (!lastname || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    // Nachname ist NICHT (mehr) zwingend — manche Formulare (z. B. die
+    // Lead-Magnet-Landingpages in /lanpag) fragen bewusst nur Vorname +
+    // E-Mail ab, um die Hürde zur Anmeldung niedrig zu halten.
+    if (!(firstname || lastname) || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return jsonResponse({ error: "Pflichtfelder fehlen oder ungültig" }, 400);
     }
 

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Der 4-Schritte-Fahrplan: Vom Funktionieren zum Gestalten</title>
+<meta name="description" content="Kostenloser Fahrplan von Der Architekt deines Lebens: In 4 Schritten vom Funktionieren zum bewussten Gestalten deines Lebens.">
+<style>
+  :root {
+    --navy: #00224D;
+    --navy-light: #0b2f61;
+    --orange: #FF6300;
+    --cream: #fff4ec;
+    --grey: #555;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #1a1a1a;
+    background: #ffffff;
+    line-height: 1.6;
+  }
+  .serif { font-family: Georgia, 'Times New Roman', serif; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 24px; }
+
+  /* ---------- HERO ---------- */
+  .hero { background: var(--navy); color: #fff; padding: 64px 0 56px 0; }
+  .kicker { color: var(--orange); font-weight: bold; letter-spacing: 3px; font-size: 12px; margin-bottom: 18px; }
+  .hero h1 { font-family: Georgia, 'Times New Roman', serif; font-size: 40px; line-height: 1.2; font-weight: normal; margin-bottom: 10px; }
+  .hero .subtitle { color: var(--orange); font-weight: bold; font-size: 19px; margin-bottom: 22px; }
+  .hero p.body { color: #cfd9ea; font-size: 16px; max-width: 560px; margin-bottom: 30px; }
+  .cta-btn {
+    display: inline-block;
+    background: var(--orange);
+    color: var(--navy);
+    font-weight: bold;
+    font-size: 16px;
+    padding: 15px 30px;
+    border-radius: 4px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+  }
+  .cta-btn:hover { opacity: 0.92; }
+
+  /* ---------- WHAT'S INSIDE ---------- */
+  .inside { padding: 56px 0; }
+  .inside .eyebrow { color: var(--orange); font-weight: bold; letter-spacing: 2px; font-size: 12px; margin-bottom: 10px; }
+  .inside h2 { font-family: Georgia, 'Times New Roman', serif; color: var(--navy); font-size: 28px; font-weight: normal; margin-bottom: 26px; }
+  .bullets { list-style: none; }
+  .bullets li {
+    display: flex;
+    gap: 14px;
+    padding: 16px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 15.5px;
+  }
+  .bullets .num {
+    flex: 0 0 auto;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: var(--navy);
+    color: var(--orange);
+    font-weight: bold;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+  .bullets strong { color: var(--navy); }
+  .meta-line { margin-top: 22px; color: var(--grey); font-size: 14.5px; font-style: italic; }
+
+  /* ---------- CREDIBILITY ---------- */
+  .credibility { background: #f4f6fa; padding: 40px 0; }
+  .credibility .wrap { display: flex; align-items: center; gap: 20px; }
+  .avatar-badge {
+    flex: 0 0 auto; width: 56px; height: 56px; border-radius: 50%;
+    background: var(--navy); color: var(--orange); font-weight: bold;
+    display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  .credibility p { font-size: 14.5px; color: #333; }
+  .credibility strong { color: var(--navy); }
+
+  /* ---------- FORM ---------- */
+  .formsection { background: var(--navy); padding: 56px 0 64px 0; color: #fff; }
+  .formsection h2 { font-family: Georgia, 'Times New Roman', serif; font-size: 26px; font-weight: normal; margin-bottom: 10px; }
+  .formsection .sub { color: #cfd9ea; font-size: 15px; margin-bottom: 26px; }
+  form { max-width: 420px; }
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-size: 13px; color: #cfd9ea; margin-bottom: 6px; }
+  .field input {
+    width: 100%;
+    padding: 13px 14px;
+    border-radius: 4px;
+    border: none;
+    font-size: 15px;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  .privacy { font-size: 12.5px; color: #9fb0cc; margin-top: 12px; }
+  .submit-row { margin-top: 20px; }
+  .error-msg { color: #ffb199; font-size: 13.5px; margin-top: 10px; display: none; }
+
+  /* ---------- THANK YOU STATE ---------- */
+  #thankyou { display: none; }
+  #thankyou .box {
+    background: var(--cream);
+    border: 1.5px solid var(--orange);
+    border-radius: 6px;
+    padding: 30px 28px;
+    color: #3a2a1a;
+  }
+  #thankyou h3 { color: var(--navy); font-family: Georgia, 'Times New Roman', serif; font-size: 22px; margin-bottom: 10px; font-weight: normal; }
+  #thankyou p { font-size: 15px; margin-bottom: 18px; }
+  .download-btn {
+    display: inline-block;
+    background: var(--orange);
+    color: var(--navy);
+    font-weight: bold;
+    padding: 13px 24px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 15px;
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer { padding: 28px 0; text-align: center; color: #9aa3b2; font-size: 13px; }
+  footer .handle { color: var(--orange); }
+
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 30px; }
+    .credibility .wrap { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="wrap">
+    <div class="kicker">DER ARCHITEKT DEINES LEBENS</div>
+    <h1 class="serif">Dein 4-Schritte-Fahrplan</h1>
+    <div class="subtitle">Vom Funktionieren zum Gestalten</div>
+    <p class="body">Du hältst gerade alles zusammen – und funktionierst trotzdem nur noch, statt wirklich zu leben. Dieser kostenlose Fahrplan zeigt dir in vier klaren Schritten, wie du dein Leben wieder bewusst gestaltest, statt es nur zu verwalten.</p>
+    <a href="#anmelden" class="cta-btn">Jetzt kostenlos herunterladen</a>
+  </div>
+</section>
+
+<!-- ================= WAS DICH ERWARTET ================= -->
+<section class="inside">
+  <div class="wrap">
+    <div class="eyebrow">WAS DICH ERWARTET</div>
+    <h2 class="serif">4 Schritte, die alles verändern</h2>
+    <ul class="bullets">
+      <li><div class="num">1</div><div><strong>Fundament prüfen</strong> — Deine Ist-Situation ehrlich sehen</div></li>
+      <li><div class="num">2</div><div><strong>Baupläne lesen</strong> — Deine Muster und Glaubenssätze verstehen</div></li>
+      <li><div class="num">3</div><div><strong>Wände einziehen</strong> — Grenzen setzen und Raum für dich schaffen</div></li>
+      <li><div class="num">4</div><div><strong>Dein Haus entwerfen</strong> — Vision und erster Schritt</div></li>
+    </ul>
+    <p class="meta-line">Mit Reflexionsfragen, Mini-Übungen und einer kurzen Erklärung, warum jeder Schritt wichtig ist — in ca. 15 Minuten durchzuarbeiten.</p>
+  </div>
+</section>
+
+<!-- ================= CREDIBILITY ================= -->
+<section class="credibility">
+  <div class="wrap">
+    <div class="avatar-badge">L&amp;S</div>
+    <p><strong>Lili &amp; Sorin Ratiu</strong> — Der Architekt deines Lebens. NLP-Coaching, Selbstführung und ein neues Gruppenprogramm für Frauen, die aufhören wollen, nur zu funktionieren.</p>
+  </div>
+</section>
+
+<!-- ================= FORM ================= -->
+<section class="formsection" id="anmelden">
+  <div class="wrap">
+    <h2 class="serif">Sichere dir deinen Fahrplan</h2>
+    <div class="sub">Kostenlos als PDF — sofort nach der Anmeldung zum Download.</div>
+
+    <form id="leadForm">
+      <div class="field">
+        <label for="vorname">Vorname</label>
+        <input type="text" id="vorname" name="vorname" required>
+      </div>
+      <div class="field">
+        <label for="email">E-Mail-Adresse</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      <div class="submit-row">
+        <button type="submit" class="cta-btn" id="submitBtn">Jetzt kostenlos herunterladen</button>
+      </div>
+      <div class="privacy">Kein Spam. Deine Daten werden ausschließlich zum Versand dieses Freebies und gelegentlicher Updates von Der Architekt deines Lebens genutzt. Abmeldung jederzeit möglich.</div>
+      <div class="error-msg" id="errorMsg">Da ist etwas schiefgelaufen. Bitte versuch es gleich noch einmal oder schreib uns direkt auf Instagram @der_architekt_deines_lebens.</div>
+    </form>
+
+    <div id="thankyou">
+      <div class="box">
+        <h3 class="serif">Fast geschafft, ${vornameDisplay} 🎉</h3>
+        <p>Dein „4-Schritte-Fahrplan" ist bereit. Klick unten, um es direkt herunterzuladen.</p>
+        <a href="REPLACE_WITH_SHAREPOINT_LINK_FAHRPLAN.pdf?download=1" class="download-btn" download>PDF jetzt herunterladen</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  DER ARCHITEKT DEINES LEBENS — Lili &amp; Sorin Ratiu — <span class="handle">@der_architekt_deines_lebens</span>
+</footer>
+
+<script src="../supabase-config.js"></script>
+<script src="../Code/dynamics-crm.js"></script>
+<script>
+  // ============================================================
+  // KONFIGURATION — VOR VERÖFFENTLICHUNG AUSFÜLLEN
+  // ============================================================
+  // Echten SharePoint-Link zur PDF-Datei eintragen.
+  // WICHTIG bei SharePoint/OneDrive-Freigabelinks: Der normale "Teilen"-Link
+  // öffnet meist eine Vorschauseite statt direkt herunterzuladen. Damit der
+  // Button-Klick sofort die Datei lädt, an den Link "&download=1" anhängen,
+  // z. B.: https://euretenant.sharepoint.com/:b:/g/.../Fahrplan.pdf?download=1
+  // (Freigabe-Einstellung des Links auf "Jeder mit dem Link" bzw. "Öffentlich" prüfen,
+  // sonst müssen Besucher sich erst bei Microsoft anmelden, bevor sie den Download sehen.)
+  const PDF_DOWNLOAD_URL = "REPLACE_WITH_SHAREPOINT_LINK_FAHRPLAN.pdf?download=1";
+  // ============================================================
+
+  const form = document.getElementById("leadForm");
+  const thankyou = document.getElementById("thankyou");
+  const errorMsg = document.getElementById("errorMsg");
+  const submitBtn = document.getElementById("submitBtn");
+  const downloadBtn = thankyou.querySelector(".download-btn");
+  downloadBtn.href = PDF_DOWNLOAD_URL;
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    errorMsg.style.display = "none";
+    const vorname = document.getElementById("vorname").value.trim();
+    const email = document.getElementById("email").value.trim();
+    if (!vorname || !email) return;
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Einen Moment …";
+
+    try {
+      // Legt den Lead in Dynamics 365 an (supabase/functions/crm-submit[-dev])
+      // — fire-and-forget: ein CRM-Fehler blockiert nie den Download.
+      await dynamicsCRM.submitLead({ firstname: vorname, email: email });
+
+      const heading = thankyou.querySelector("h3");
+      heading.textContent = "Fast geschafft, " + vorname + " 🎉";
+      form.style.display = "none";
+      thankyou.style.display = "block";
+    } catch (err) {
+      console.error(err);
+      errorMsg.style.display = "block";
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Jetzt kostenlos herunterladen";
+    }
+  });
+</script>
+
+</body>
+</html>

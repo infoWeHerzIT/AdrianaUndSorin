@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Landingpages – Adriana und Sorin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root { --orange:#ff6300; --navy:#00224d; --white:#ffffff; --green:#16a34a; --red:#dc2626; --yellow:#d97706; }
+  *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'DM Sans',sans-serif; font-size:16px; background:#f4f4f2; color:var(--navy); padding-bottom:80px; }
+
+  nav { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:center; padding:16px 5%; background:rgba(0,34,77,0.97); backdrop-filter:blur(8px); }
+  .nav-inner { max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; width:100%; }
+  .nav-logo { font-family:'Fredoka',sans-serif; color:var(--white); font-size:18px; font-weight:700; text-decoration:none; display:flex; align-items:center; gap:10px; }
+  .nav-logo span { color:var(--orange); }
+  .nav-admin-badge { font-family:'Orbitron',monospace; font-size:9px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; background:rgba(255,99,0,0.2); border:1px solid rgba(255,99,0,0.4); color:var(--orange); padding:3px 8px; border-radius:2px; }
+  .nav-links { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  .nav-link { color:rgba(255,255,255,0.6); font-size:13px; text-decoration:none; border:1px solid rgba(255,255,255,0.15); padding:7px 14px; border-radius:2px; background:transparent; cursor:pointer; transition:background .2s,color .2s; font-family:'DM Sans',sans-serif; }
+  .nav-link:hover { background:rgba(255,255,255,0.08); color:var(--white); }
+  .nav-link.active { border-color:rgba(255,99,0,0.5); color:var(--orange); }
+
+  .admin-header { background:var(--navy); padding:100px 0 60px; position:relative; overflow:hidden; }
+  .admin-header::before { content:''; position:absolute; inset:0; background-image:repeating-linear-gradient(90deg,rgba(255,99,0,0.04) 0px,rgba(255,99,0,0.04) 1px,transparent 1px,transparent 80px); pointer-events:none; }
+  .admin-header::after { content:''; position:absolute; left:0; top:0; bottom:0; width:5px; background:var(--orange); }
+  .admin-header-inner { max-width:1200px; margin:0 auto; padding:0 32px; position:relative; z-index:1; }
+  .admin-page-label { font-family:'Orbitron',monospace; font-size:10px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--orange); margin-bottom:14px; display:block; }
+  .admin-header h1 { font-family:'Fredoka',sans-serif; font-size:clamp(28px,3.5vw,44px); color:var(--white); line-height:1.1; margin-bottom:12px; }
+  .admin-header p { font-size:15px; color:rgba(255,255,255,0.55); max-width:640px; line-height:1.7; }
+
+  .admin-main { max-width:1200px; margin:0 auto; padding:40px 32px 0; }
+  .list-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px; }
+  .list-title { font-family:'Fredoka',sans-serif; font-size:22px; }
+  .list-count { font-size:13px; color:rgba(0,34,77,0.5); }
+
+  .lp-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:18px; }
+  .lp-card { background:var(--white); border:1px solid rgba(0,34,77,0.1); border-radius:8px; padding:24px 26px; display:flex; flex-direction:column; gap:12px; }
+  .lp-card-title { font-family:'Fredoka',sans-serif; font-size:18px; font-weight:600; line-height:1.35; }
+  .lp-card-desc { font-size:13.5px; color:rgba(0,34,77,0.6); line-height:1.6; flex:1; }
+  .lp-card-path { font-size:11.5px; color:rgba(0,34,77,0.35); font-family:monospace; word-break:break-all; }
+  .lp-badges { display:flex; gap:8px; flex-wrap:wrap; }
+  .badge-ok { display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; padding:3px 10px; border-radius:10px; background:rgba(22,163,74,0.12); color:var(--green); }
+  .badge-warn { display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; padding:3px 10px; border-radius:10px; background:rgba(217,119,6,0.12); color:var(--yellow); }
+  .badge-checking { display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; padding:3px 10px; border-radius:10px; background:rgba(0,34,77,0.06); color:rgba(0,34,77,0.4); }
+  .lp-card-actions { display:flex; gap:10px; margin-top:4px; }
+  .btn-open {
+    flex:1; text-align:center; background:transparent; border:1px solid rgba(0,34,77,0.18); border-radius:4px;
+    padding:10px 14px; font-family:'DM Sans',sans-serif; font-size:13.5px; font-weight:500; color:var(--navy);
+    text-decoration:none; cursor:pointer; transition:border-color .2s, background .2s;
+  }
+  .btn-open:hover { border-color:var(--orange); background:rgba(255,99,0,0.04); }
+  .btn-open.primary { background:var(--navy); border-color:var(--navy); color:var(--white); }
+  .btn-open.primary:hover { background:#0b2f61; }
+
+  #empty-state { display:none; padding:48px; text-align:center; color:rgba(0,34,77,0.4); font-size:14px; background:var(--white); border:1px solid rgba(0,34,77,0.1); border-radius:8px; }
+
+  @media(max-width:700px) {
+    .admin-header-inner,.admin-main { padding-left:20px; padding-right:20px; }
+  }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase-config.js"></script>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">Adriana &amp; <span>Sorin</span><span class="nav-admin-badge">Admin</span></a>
+    <div class="nav-links">
+      <a href="admin-feedback.html" class="nav-link">Feedback</a>
+      <a href="umfrage-auswertung.html" class="nav-link">Umfragen</a>
+      <a href="landingpages.html" class="nav-link active">Landingpages</a>
+      <a href="admin-users.html" class="nav-link">Admins</a>
+      <button id="btn-logout" class="nav-link" style="border-color:rgba(220,38,38,0.4);color:#f87171;">Ausloggen</button>
+    </div>
+  </div>
+</nav>
+
+<div class="admin-header">
+  <div class="admin-header-inner">
+    <span class="admin-page-label">Landingpages</span>
+    <h1>Lead-Magnet-<em style="font-style:normal;color:var(--orange);">Landingpages</em></h1>
+    <p>Alle Landingpages aus /lanpag im Überblick. Die Formulare legen bei Anmeldung direkt einen Lead in Dynamics 365 an (supabase/functions/crm-submit).</p>
+  </div>
+</div>
+
+<div class="admin-main">
+  <div class="list-header">
+    <div class="list-title">Landingpages</div>
+    <div class="list-count" id="lp-count"></div>
+  </div>
+
+  <div class="lp-grid" id="lp-grid"></div>
+  <div id="empty-state">Keine Landingpages gefunden.</div>
+</div>
+
+<script>
+var sessionPromise = db.auth.getSession();
+sessionPromise.then(({ data }) => {
+  if (!data.session) window.location.href = 'admin-login.html';
+});
+document.getElementById('btn-logout').addEventListener('click', async () => {
+  await db.auth.signOut();
+  window.location.href = 'admin-login.html';
+});
+
+function esc(s) {
+  return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// Statische Liste — /lanpag enthält reine HTML-Dateien ohne eigenes Backend,
+// es gibt also keine Quelle, aus der sich diese Liste automatisch ableiten
+// ließe. Bei einer neuen Landingpage hier einen Eintrag ergänzen.
+var LANDING_PAGES = [
+  {
+    file: '13-Anzeichen-Mental-Load.html',
+    title: '13 Anzeichen von Mental Load',
+    desc: 'Guide: 13 Anzeichen von Mental Load, die dir keiner sagt — und was du heute Abend als Erstes ändern kannst.'
+  },
+  {
+    file: '4-Schritte-Fahrplan.html',
+    title: 'Der 4-Schritte-Fahrplan',
+    desc: 'Vom Funktionieren zum bewussten Gestalten deines Lebens — in 4 Schritten.'
+  },
+  {
+    file: '5-Minuten-Grenzen-Check.html',
+    title: 'Der 5-Minuten-Grenzen-Check',
+    desc: 'Selbsttest: 12 Fragen, um endlich Nein zu sagen, ohne dich schuldig zu fühlen.'
+  }
+];
+
+var elGrid  = document.getElementById('lp-grid');
+var elCount = document.getElementById('lp-count');
+var elEmpty = document.getElementById('empty-state');
+
+if (LANDING_PAGES.length === 0) {
+  elEmpty.style.display = 'block';
+} else {
+  elCount.textContent = LANDING_PAGES.length + (LANDING_PAGES.length === 1 ? ' Landingpage' : ' Landingpages');
+
+  elGrid.innerHTML = LANDING_PAGES.map(function (lp, idx) {
+    var href = '../lanpag/' + encodeURIComponent(lp.file);
+    return (
+      '<div class="lp-card" data-idx="' + idx + '">' +
+        '<div class="lp-card-title">' + esc(lp.title) + '</div>' +
+        '<div class="lp-card-desc">' + esc(lp.desc) + '</div>' +
+        '<div class="lp-card-path">lanpag/' + esc(lp.file) + '</div>' +
+        '<div class="lp-badges" id="lp-badges-' + idx + '"><span class="badge-checking">wird geprüft …</span></div>' +
+        '<div class="lp-card-actions">' +
+          '<a class="btn-open primary" href="' + href + '" target="_blank" rel="noopener">Seite öffnen</a>' +
+        '</div>' +
+      '</div>'
+    );
+  }).join('');
+
+  // Prüft je Landingpage, ob der SharePoint-PDF-Link noch der Platzhalter
+  // ist (REPLACE_WITH_SHAREPOINT_LINK...) — hilft, vor Veröffentlichung
+  // vergessene Konfiguration zu erkennen, ohne jede Seite einzeln öffnen
+  // zu müssen.
+  LANDING_PAGES.forEach(function (lp, idx) {
+    fetch('../lanpag/' + encodeURIComponent(lp.file))
+      .then(function (res) { return res.text(); })
+      .then(function (html) {
+        var elBadges = document.getElementById('lp-badges-' + idx);
+        var pdfMissing = html.indexOf('REPLACE_WITH_SHAREPOINT_LINK') !== -1;
+        elBadges.innerHTML = pdfMissing
+          ? '<span class="badge-warn">⚠ PDF-Link fehlt</span>'
+          : '<span class="badge-ok">✓ PDF-Link gesetzt</span>';
+      })
+      .catch(function (err) {
+        console.error('Landingpage-Check fehlgeschlagen:', lp.file, err);
+        document.getElementById('lp-badges-' + idx).innerHTML = '<span class="badge-warn">Konnte nicht geprüft werden</span>';
+      });
+  });
+}
+</script>
+</body>
+</html>
