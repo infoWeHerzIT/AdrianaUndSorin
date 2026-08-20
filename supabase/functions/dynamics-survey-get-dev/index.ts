@@ -64,7 +64,7 @@ const GUID_RE = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0
 // wht_survey-Felder, die für beide Lookup-Wege (per "id" oder per "slug")
 // gebraucht werden. "_wht_eventid_value" ist die Schatten-FK-Property des
 // Lookups wht_eventid — liefert die rohe Event-GUID ohne $expand.
-const SURVEY_SELECT = "wht_surveyid,wht_title,wht_intro,wht_slug,_wht_eventid_value,statecode";
+const SURVEY_SELECT = "wht_surveyid,wht_title,wht_intro,wht_description,wht_slug,_wht_eventid_value,statecode";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -188,6 +188,7 @@ serve(async (req) => {
           id: surveyId,
           title: survey.wht_title ?? "",
           intro: survey.wht_intro ?? "",
+          description: survey.wht_description ?? "",
           slug: survey.wht_slug ?? "",
           eventId: survey["_wht_eventid_value"] || null,
         },

@@ -83,6 +83,14 @@
     font-size: 16px; font-weight: 300;
     color: rgba(255,255,255,0.65); line-height: 1.7;
   }
+  #survey-description { font-size: 16px; font-weight: 300; color: rgba(255,255,255,0.65); line-height: 1.7; }
+  #survey-description:empty { display: none; }
+
+  #survey-intro {
+    font-size: 15px; color: rgba(0,34,77,0.65);
+    line-height: 1.75; margin-bottom: 32px;
+  }
+  #survey-intro:empty { display: none; margin: 0; }
 
   /* ─── EVENT-EYEBROW (nur sichtbar, wenn die Umfrage einem Event zugeordnet ist) ─── */
   .event-eyebrow {
@@ -270,7 +278,7 @@
     </div>
     <span class="section-label">Umfrage</span>
     <h1 id="survey-title">Wird geladen …</h1>
-    <p id="survey-intro"></p>
+    <div id="survey-description"></div>
   </div>
 </div>
 
@@ -289,6 +297,7 @@
 
     <div id="form-state" style="display:none;">
       <form id="survey-form" novalidate>
+        <p id="survey-intro"></p>
         <div id="questions-root"></div>
 
         <hr class="form-divider">
@@ -388,6 +397,7 @@
 
     surveyId = result.survey.id;
     document.getElementById('survey-title').textContent = result.survey.title || 'Umfrage';
+    document.getElementById('survey-description').innerHTML = result.survey.description || '';
     document.getElementById('survey-intro').textContent = result.survey.intro || '';
 
     renderer.renderQuestions(result.questions, updateContactRequiredUI);

@@ -27,6 +27,8 @@
   .admin-page-label { font-family:'Orbitron',monospace; font-size:10px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--orange); margin-bottom:14px; display:block; }
   .admin-header h1 { font-family:'Fredoka',sans-serif; font-size:clamp(24px,3.2vw,38px); color:var(--white); line-height:1.15; margin-bottom:12px; }
   .admin-header p { font-size:15px; color:rgba(255,255,255,0.55); max-width:680px; line-height:1.7; margin-bottom:18px; }
+  #survey-description:empty { display:none; margin:0; }
+  #survey-description { font-size:15px; color:rgba(255,255,255,0.55); max-width:680px; line-height:1.7; margin-bottom:18px; }
 
   .stat-row { display:flex; gap:28px; flex-wrap:wrap; }
   .stat { }
@@ -37,6 +39,9 @@
 
   .state-box { background:var(--white); border:1px solid rgba(0,34,77,0.1); border-radius:8px; padding:48px; text-align:center; color:rgba(0,34,77,0.45); font-size:14px; }
   .state-box.error { color:var(--red); margin-bottom:24px; }
+
+  #survey-intro { font-size:15px; color:rgba(0,34,77,0.65); line-height:1.7; margin-bottom:24px; }
+  #survey-intro:empty { display:none; margin:0; }
 
   .list-title { font-family:'Fredoka',sans-serif; font-size:16px; margin-bottom:12px; }
   .survey-list { background:var(--white); border:1px solid rgba(0,34,77,0.1); border-radius:8px; overflow:hidden; margin-bottom:24px; }
@@ -140,7 +145,7 @@
   <div class="admin-header-inner">
     <span class="admin-page-label">Auswertung</span>
     <h1 id="survey-title">Wird geladen …</h1>
-    <p id="survey-intro"></p>
+    <div id="survey-description"></div>
     <div class="stat-row" id="stat-row" style="display:none;">
       <div class="stat">
         <div class="stat-num" id="stat-responses">–</div>
@@ -161,6 +166,7 @@
     <div class="list-title">Aktive Umfragen</div>
     <div class="survey-list" id="survey-list"></div>
   </div>
+  <p id="survey-intro"></p>
   <div id="questions-root"></div>
 </div>
 
@@ -423,6 +429,7 @@ document.getElementById('questions-root').addEventListener('click', function (e)
     elLoading.style.display = 'none';
 
     document.getElementById('survey-title').textContent = result.survey.title || 'Umfrage';
+    document.getElementById('survey-description').innerHTML = result.survey.description || '';
     document.getElementById('survey-intro').textContent = result.survey.intro || '';
     document.getElementById('stat-responses').textContent = result.responseCount;
     document.getElementById('stat-questions').textContent = (result.questions || []).length;

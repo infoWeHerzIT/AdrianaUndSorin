@@ -85,7 +85,7 @@ serve(async (req) => {
 
     // ── Survey selbst (Titel/Intro) — Auswertung soll auch für
     // deaktivierte Umfragen möglich sein, deshalb kein statecode-Filter. ──
-    const surveyUrl = `${RESOURCE}/api/data/v9.2/wht_surveies(${surveyId})?$select=wht_surveyid,wht_title,wht_intro,wht_slug`;
+    const surveyUrl = `${RESOURCE}/api/data/v9.2/wht_surveies(${surveyId})?$select=wht_surveyid,wht_title,wht_intro,wht_description,wht_slug`;
     const surveyRes = await fetch(surveyUrl, { headers });
     if (surveyRes.status === 404) return jsonResponse(null, 404);
     if (!surveyRes.ok) {
@@ -222,6 +222,7 @@ serve(async (req) => {
           id: surveyId,
           title: survey.wht_title ?? "",
           intro: survey.wht_intro ?? "",
+          description: survey.wht_description ?? "",
           slug: survey.wht_slug ?? "",
         },
         responseCount,
