@@ -37,6 +37,7 @@
   .lp-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:18px; }
   .lp-card { background:var(--white); border:1px solid rgba(0,34,77,0.1); border-radius:8px; padding:24px 26px; display:flex; flex-direction:column; gap:12px; }
   .lp-card-title { font-family:'Fredoka',sans-serif; font-size:18px; font-weight:600; line-height:1.35; }
+  .lp-card-event { display:none; font-size:11.5px; font-weight:600; color:var(--orange); letter-spacing:.02em; }
   .lp-card-desc { font-size:13.5px; color:rgba(0,34,77,0.6); line-height:1.6; flex:1; }
   .lp-card-path { font-size:11.5px; color:rgba(0,34,77,0.35); font-family:monospace; word-break:break-all; }
   .lp-badges { display:flex; gap:8px; flex-wrap:wrap; }
@@ -62,6 +63,7 @@
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../supabase-config.js"></script>
+<script src="../Code/dynamics-crm.js"></script>
 </head>
 <body>
 
@@ -145,6 +147,7 @@ if (LANDING_PAGES.length === 0) {
     return (
       '<div class="lp-card" data-idx="' + idx + '">' +
         '<div class="lp-card-title">' + esc(lp.title) + '</div>' +
+        '<div class="lp-card-event" id="lp-event-' + idx + '"></div>' +
         '<div class="lp-card-desc">' + esc(lp.desc) + '</div>' +
         '<div class="lp-card-path">lanpag/' + esc(lp.file) + '</div>' +
         '<div class="lp-badges" id="lp-badges-' + idx + '"><span class="badge-checking">wird geprüft …</span></div>' +
@@ -163,12 +166,18 @@ if (LANDING_PAGES.length === 0) {
     return url + (url.indexOf('?') === -1 ? '?' : '&') + 'download=1';
   }
 
+  // Events einmal laden (statt pro Kachel neu) — wird unten je Landingpage
+  // gegen die aus deren Quelltext gelesene EVENT_ID gematcht.
+  var eventsPromise = dynamicsCRM.listEvents();
+
   // Prüft je Landingpage, ob der SharePoint-PDF-Link noch der Platzhalter
   // ist (REPLACE_WITH_SHAREPOINT_LINK...) — hilft, vor Veröffentlichung
   // vergessene Konfiguration zu erkennen, ohne jede Seite einzeln öffnen
   // zu müssen. Ist ein echter Link gesetzt, wird das Badge selbst zu einem
   // Link direkt auf die PDF (mit download=1), damit man den Download hier
   // sofort testen kann, ohne das Formular auf der Landingpage auszufüllen.
+  // Zusätzlich wird das verknüpfte Event (falls vorhanden) auf der Kachel
+  // angezeigt.
   LANDING_PAGES.forEach(function (lp, idx) {
     fetch('../lanpag/' + encodeURIComponent(lp.file))
       .then(function (res) { return res.text(); })
@@ -177,13 +186,24 @@ if (LANDING_PAGES.length === 0) {
         var pdfMissing = html.indexOf('REPLACE_WITH_SHAREPOINT_LINK') !== -1;
         if (pdfMissing) {
           elBadges.innerHTML = '<span class="badge-warn">⚠ PDF-Link fehlt</span>';
-          return;
+        } else {
+          var pdfMatch = html.match(/const\s+PDF_DOWNLOAD_URL\s*=\s*"([^"]*)"/);
+          var pdfUrl = pdfMatch ? pdfMatch[1] : '';
+          elBadges.innerHTML = pdfUrl
+            ? '<a class="badge-ok" href="' + esc(withDownloadParam(pdfUrl)) + '" target="_blank" rel="noopener">✓ PDF-Link gesetzt</a>'
+            : '<span class="badge-ok">✓ PDF-Link gesetzt</span>';
         }
-        var match = html.match(/const\s+PDF_DOWNLOAD_URL\s*=\s*"([^"]*)"/);
-        var pdfUrl = match ? match[1] : '';
-        elBadges.innerHTML = pdfUrl
-          ? '<a class="badge-ok" href="' + esc(withDownloadParam(pdfUrl)) + '" target="_blank" rel="noopener">✓ PDF-Link gesetzt</a>'
-          : '<span class="badge-ok">✓ PDF-Link gesetzt</span>';
+
+        var eventMatch = html.match(/const\s+EVENT_ID\s*=\s*"([^"]*)"/);
+        var eventId = eventMatch ? eventMatch[1] : '';
+        if (!eventId) return;
+        eventsPromise.then(function (events) {
+          var active = (events || []).find(function (e) { return e.id === eventId; });
+          if (!active) return;
+          var elEvent = document.getElementById('lp-event-' + idx);
+          elEvent.textContent = '🔗 ' + active.name;
+          elEvent.style.display = 'block';
+        });
       })
       .catch(function (err) {
         console.error('Landingpage-Check fehlgeschlagen:', lp.file, err);
