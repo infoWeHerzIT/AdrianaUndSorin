@@ -385,6 +385,21 @@
     document.getElementById('survey-title').textContent = 'Umfrage nicht verfügbar';
   }
 
+  // mailto:-Links sollen die Standard-Mail-App öffnen (Browser-Standardverhalten,
+  // kein target nötig); alle anderen Links (http/https etc.) in einem neuen
+  // Fenster/Tab, damit die Umfrage nicht verlassen wird.
+  function fixDescriptionLinkTargets(container) {
+    container.querySelectorAll('a[href]').forEach(function (a) {
+      var href = a.getAttribute('href') || '';
+      if (href.toLowerCase().indexOf('mailto:') === 0) {
+        a.removeAttribute('target');
+      } else {
+        a.setAttribute('target', '_blank');
+        a.setAttribute('rel', 'noopener noreferrer');
+      }
+    });
+  }
+
   if (!slug && !idParam) { showUnavailable(); return; }
 
   var renderer = new DynamicSurveyRenderer(document.getElementById('questions-root'));
@@ -406,7 +421,9 @@
 
     surveyId = result.survey.id;
     document.getElementById('survey-title').textContent = result.survey.title || 'Umfrage';
-    document.getElementById('survey-description').innerHTML = result.survey.description || '';
+    var descEl = document.getElementById('survey-description');
+    descEl.innerHTML = result.survey.description || '';
+    fixDescriptionLinkTargets(descEl);
     document.getElementById('survey-intro').textContent = result.survey.intro || '';
 
     renderer.renderQuestions(result.questions, updateContactRequiredUI);

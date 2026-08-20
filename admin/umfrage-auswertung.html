@@ -393,6 +393,21 @@ document.getElementById('questions-root').addEventListener('click', function (e)
   var elError   = document.getElementById('state-error');
   var elRoot    = document.getElementById('questions-root');
 
+  // mailto:-Links sollen die Standard-Mail-App öffnen (Browser-Standardverhalten,
+  // kein target nötig); alle anderen Links (http/https etc.) in einem neuen
+  // Fenster/Tab.
+  function fixDescriptionLinkTargets(container) {
+    container.querySelectorAll('a[href]').forEach(function (a) {
+      var href = a.getAttribute('href') || '';
+      if (href.toLowerCase().indexOf('mailto:') === 0) {
+        a.removeAttribute('target');
+      } else {
+        a.setAttribute('target', '_blank');
+        a.setAttribute('rel', 'noopener noreferrer');
+      }
+    });
+  }
+
   function showError() {
     elLoading.style.display = 'none';
     elError.style.display = 'block';
@@ -438,7 +453,9 @@ document.getElementById('questions-root').addEventListener('click', function (e)
     elLoading.style.display = 'none';
 
     document.getElementById('survey-title').textContent = result.survey.title || 'Umfrage';
-    document.getElementById('survey-description').innerHTML = result.survey.description || '';
+    var descEl = document.getElementById('survey-description');
+    descEl.innerHTML = result.survey.description || '';
+    fixDescriptionLinkTargets(descEl);
     document.getElementById('survey-intro').textContent = result.survey.intro || '';
     document.getElementById('stat-responses').textContent = result.responseCount;
     document.getElementById('stat-questions').textContent = (result.questions || []).length;
