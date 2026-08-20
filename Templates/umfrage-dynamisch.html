@@ -83,8 +83,9 @@
     font-size: 16px; font-weight: 300;
     color: rgba(255,255,255,0.65); line-height: 1.7;
   }
-  #survey-description { font-weight: 300; color: rgba(255,255,255,0.65); line-height: 1.7; text-align: justify; }
+  #survey-description { font-weight: 300; color: var(--white); line-height: 1.7; text-align: justify; }
   #survey-description:empty { display: none; }
+  #survey-description *:not(a):not(a *) { color: var(--white) !important; }
   #survey-description a, #survey-description a * {
     color: var(--orange) !important;
     background-color: var(--white) !important;
