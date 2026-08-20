@@ -77,6 +77,34 @@
   .survey-list-item-arrow { color:rgba(0,34,77,0.3); font-size:14px; flex-shrink:0; }
   .survey-list-empty { padding:24px 20px; color:rgba(0,34,77,0.4); font-size:14px; }
 
+  .responses-toggle-row { display:flex; justify-content:center; margin:8px 0 32px; }
+  .btn-load-responses {
+    background:transparent; border:1px solid rgba(0,34,77,0.18); border-radius:2px;
+    color:var(--navy); font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500;
+    padding:12px 24px; cursor:pointer; transition:border-color .2s, background .2s;
+  }
+  .btn-load-responses:hover { border-color:var(--orange); background:rgba(255,99,0,0.04); }
+  .btn-load-responses:disabled { opacity:.6; cursor:not-allowed; }
+
+  .resp-card { background:var(--white); border:1px solid rgba(0,34,77,0.1); border-radius:8px; margin-bottom:14px; overflow:hidden; }
+  .resp-card-header {
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+    padding:16px 22px; cursor:pointer; user-select:none;
+  }
+  .resp-card-who { font-weight:600; font-size:14.5px; color:var(--navy); }
+  .resp-card-sub { font-size:12.5px; color:rgba(0,34,77,0.5); margin-top:2px; }
+  .resp-card-meta { display:flex; align-items:center; gap:14px; flex-shrink:0; }
+  .resp-card-date { font-size:12px; color:rgba(0,34,77,0.4); white-space:nowrap; }
+  .resp-card-chevron { transition:transform .2s; color:rgba(0,34,77,0.35); flex-shrink:0; }
+  .resp-card.open .resp-card-chevron { transform:rotate(180deg); }
+  .resp-card-body { display:none; padding:0 22px 20px; border-top:1px solid rgba(0,34,77,0.08); }
+  .resp-card.open .resp-card-body { display:block; padding-top:16px; }
+  .resp-answer { margin-bottom:14px; }
+  .resp-answer:last-child { margin-bottom:0; }
+  .resp-answer-q { font-size:12.5px; font-weight:600; color:rgba(0,34,77,0.55); margin-bottom:3px; }
+  .resp-answer-a { font-size:14.5px; color:var(--navy); line-height:1.55; }
+  .resp-empty { padding:24px 20px; color:rgba(0,34,77,0.4); font-size:14px; text-align:center; }
+
   .q-card { background:var(--white); border:1px solid rgba(0,34,77,0.1); border-radius:8px; padding:26px 28px; margin-bottom:18px; }
   .q-head { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:18px; }
   .q-label { font-family:'Fredoka',sans-serif; font-size:17px; font-weight:600; line-height:1.4; }
@@ -192,6 +220,14 @@
   </div>
   <p id="survey-intro"></p>
   <div id="questions-root"></div>
+
+  <div class="responses-toggle-row" id="responses-toggle-row" style="display:none;">
+    <button type="button" class="btn-load-responses" id="btn-load-responses">Einzelantworten anzeigen</button>
+  </div>
+  <div id="responses-section" style="display:none;">
+    <div class="list-title">Einzelantworten</div>
+    <div id="responses-list"></div>
+  </div>
 </div>
 
 <script>
@@ -485,6 +521,10 @@ document.getElementById('questions-root').addEventListener('click', function (e)
     document.getElementById('stat-questions').textContent = (result.questions || []).length;
     document.getElementById('stat-row').style.display = 'flex';
 
+    if (result.responseCount > 0) {
+      document.getElementById('responses-toggle-row').style.display = 'flex';
+    }
+
     var questions = result.questions || [];
     if (questions.length === 0) {
       elRoot.innerHTML = '<div class="state-box">Diese Umfrage hat noch keine Fragen.</div>';
@@ -525,6 +565,81 @@ document.getElementById('questions-root').addEventListener('click', function (e)
   }).catch(function (err) {
     console.error('Survey results load error:', err);
     showError();
+  });
+
+  // ── Einzelantworten (was hat jede Person konkret geantwortet) — erst
+  // beim ersten Klick nachgeladen, danach nur noch ein-/ausgeblendet. ──
+  var btnLoadResponses  = document.getElementById('btn-load-responses');
+  var elResponsesSection = document.getElementById('responses-section');
+  var responsesLoaded = false;
+
+  function renderResponses(responses) {
+    var elList = document.getElementById('responses-list');
+    if (!responses || responses.length === 0) {
+      elList.innerHTML = '<div class="resp-empty">Keine Einzelantworten vorhanden.</div>';
+      return;
+    }
+
+    elList.innerHTML = responses.map(function (r) {
+      var hasLead = r.lead && (r.lead.name || r.lead.email || r.lead.phone);
+      var who = hasLead ? esc(r.lead.name || '(ohne Name)') : 'Anonym';
+      var subParts = [];
+      if (r.lead && r.lead.email) subParts.push(esc(r.lead.email));
+      if (r.lead && r.lead.phone) subParts.push(esc(r.lead.phone));
+      var sub = subParts.length ? '<div class="resp-card-sub">' + subParts.join(' · ') + '</div>' : '';
+      var dateStr = r.createdOn
+        ? new Date(r.createdOn).toLocaleString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+        : '';
+
+      var answersHtml = (r.answers || []).map(function (a) {
+        return (
+          '<div class="resp-answer">' +
+            '<div class="resp-answer-q">' + esc(a.questionLabel) + '</div>' +
+            '<div class="resp-answer-a">' + esc(a.value) + '</div>' +
+          '</div>'
+        );
+      }).join('') || '<div class="resp-empty">Keine Antworten.</div>';
+
+      return (
+        '<div class="resp-card">' +
+          '<div class="resp-card-header">' +
+            '<div>' +
+              '<div class="resp-card-who">' + who + '</div>' +
+              sub +
+            '</div>' +
+            '<div class="resp-card-meta">' +
+              '<span class="resp-card-date">' + esc(dateStr) + '</span>' +
+              '<span class="resp-card-chevron">▾</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="resp-card-body">' + answersHtml + '</div>' +
+        '</div>'
+      );
+    }).join('');
+
+    elList.querySelectorAll('.resp-card-header').forEach(function (header) {
+      header.addEventListener('click', function () {
+        header.closest('.resp-card').classList.toggle('open');
+      });
+    });
+  }
+
+  btnLoadResponses.addEventListener('click', function () {
+    if (responsesLoaded) {
+      var nowHidden = elResponsesSection.style.display !== 'none';
+      elResponsesSection.style.display = nowHidden ? 'none' : 'block';
+      btnLoadResponses.textContent = nowHidden ? 'Einzelantworten anzeigen' : 'Einzelantworten ausblenden';
+      return;
+    }
+    btnLoadResponses.disabled = true;
+    btnLoadResponses.textContent = 'Wird geladen …';
+    dynamicsCRM.getSurveyResponses(surveyId).then(function (responses) {
+      responsesLoaded = true;
+      btnLoadResponses.disabled = false;
+      btnLoadResponses.textContent = 'Einzelantworten ausblenden';
+      renderResponses(responses);
+      elResponsesSection.style.display = 'block';
+    });
   });
 })();
 </script>

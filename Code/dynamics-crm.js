@@ -210,6 +210,22 @@ class DynamicsCRM {
     });
   }
 
+  // Liefert die EINZELNEN Responses einer Umfrage (nicht aggregiert wie
+  // getSurveyResults) — je Response die Lead-Daten (falls verknüpft) und
+  // die Antworten je Frage — supabase/functions/dynamics-survey-responses[-dev].
+  getSurveyResponses(id) {
+    var fnName = this._functionName('dynamics-survey-responses') + '?id=' + encodeURIComponent(id || '');
+    return this.client.functions.invoke(fnName, {
+      method: 'GET'
+    }).then(function (res) {
+      if (res.error) throw res.error;
+      return (res.data && res.data.responses) || [];
+    }).catch(function (err) {
+      console.error('CRM get survey responses error:', err);
+      return [];
+    });
+  }
+
   // Bestätigt die Double-Opt-In-E-Mail eines Leads: prüft, ob "token"
   // (die Lead-GUID) zu einem Lead mit der übergebenen E-Mail-Adresse
   // gehört, und setzt bei Erfolg statuscode=Active + wht_doubleoptinam —
