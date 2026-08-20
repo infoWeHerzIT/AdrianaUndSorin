@@ -40,7 +40,8 @@
   .lp-card-desc { font-size:13.5px; color:rgba(0,34,77,0.6); line-height:1.6; flex:1; }
   .lp-card-path { font-size:11.5px; color:rgba(0,34,77,0.35); font-family:monospace; word-break:break-all; }
   .lp-badges { display:flex; gap:8px; flex-wrap:wrap; }
-  .badge-ok { display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; padding:3px 10px; border-radius:10px; background:rgba(22,163,74,0.12); color:var(--green); }
+  .badge-ok { display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; padding:3px 10px; border-radius:10px; background:rgba(22,163,74,0.12); color:var(--green); text-decoration:none; cursor:pointer; transition:background .15s; }
+  a.badge-ok:hover { background:rgba(22,163,74,0.22); }
   .badge-warn { display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; padding:3px 10px; border-radius:10px; background:rgba(217,119,6,0.12); color:var(--yellow); }
   .badge-checking { display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; padding:3px 10px; border-radius:10px; background:rgba(0,34,77,0.06); color:rgba(0,34,77,0.4); }
   .lp-card-actions { display:flex; gap:10px; margin-top:4px; }
@@ -154,18 +155,34 @@ if (LANDING_PAGES.length === 0) {
     );
   }).join('');
 
+  // Hängt "download=1" korrekt an (mit "&", falls die URL schon ein "?..."
+  // enthält, sonst mit "?") — gleiche Logik wie withDownloadParam() in den
+  // Landingpages selbst.
+  function withDownloadParam(url) {
+    if (!url) return url;
+    return url + (url.indexOf('?') === -1 ? '?' : '&') + 'download=1';
+  }
+
   // Prüft je Landingpage, ob der SharePoint-PDF-Link noch der Platzhalter
   // ist (REPLACE_WITH_SHAREPOINT_LINK...) — hilft, vor Veröffentlichung
   // vergessene Konfiguration zu erkennen, ohne jede Seite einzeln öffnen
-  // zu müssen.
+  // zu müssen. Ist ein echter Link gesetzt, wird das Badge selbst zu einem
+  // Link direkt auf die PDF (mit download=1), damit man den Download hier
+  // sofort testen kann, ohne das Formular auf der Landingpage auszufüllen.
   LANDING_PAGES.forEach(function (lp, idx) {
     fetch('../lanpag/' + encodeURIComponent(lp.file))
       .then(function (res) { return res.text(); })
       .then(function (html) {
         var elBadges = document.getElementById('lp-badges-' + idx);
         var pdfMissing = html.indexOf('REPLACE_WITH_SHAREPOINT_LINK') !== -1;
-        elBadges.innerHTML = pdfMissing
-          ? '<span class="badge-warn">⚠ PDF-Link fehlt</span>'
+        if (pdfMissing) {
+          elBadges.innerHTML = '<span class="badge-warn">⚠ PDF-Link fehlt</span>';
+          return;
+        }
+        var match = html.match(/const\s+PDF_DOWNLOAD_URL\s*=\s*"([^"]*)"/);
+        var pdfUrl = match ? match[1] : '';
+        elBadges.innerHTML = pdfUrl
+          ? '<a class="badge-ok" href="' + esc(withDownloadParam(pdfUrl)) + '" target="_blank" rel="noopener">✓ PDF-Link gesetzt</a>'
           : '<span class="badge-ok">✓ PDF-Link gesetzt</span>';
       })
       .catch(function (err) {
