@@ -245,7 +245,7 @@
         <div class="celebrate-emojis">🎉 🎊 ✨</div>
         <h3 class="serif">Fast geschafft, ${vornameDisplay} 🎉</h3>
         <p>Dein „4-Schritte-Fahrplan" ist bereit. Klick unten, um es direkt herunterzuladen.</p>
-        <a href="https://weherzit-my.sharepoint.com/:b:/g/personal/sorin_ratiu_weherzit_de1/IQD6seI6s4ZsToAle_7Spuq8AZosodFI0vm1yX_BjHMvKMY?e=IVNXvB?download=1" class="download-btn" download>PDF jetzt herunterladen</a>
+        <a href="https://weherzit-my.sharepoint.com/:b:/g/personal/sorin_ratiu_weherzit_de1/IQD6seI6s4ZsToAle_7Spuq8AZosodFI0vm1yX_BjHMvKMY?e=5aSv9J?download=1" class="download-btn" download>PDF jetzt herunterladen</a>
       </div>
     </div>
   </div>
@@ -262,22 +262,28 @@
   // ============================================================
   // KONFIGURATION — VOR VERÖFFENTLICHUNG AUSFÜLLEN
   // ============================================================
-  // Echten SharePoint-Link zur PDF-Datei eintragen.
-  // WICHTIG bei SharePoint/OneDrive-Freigabelinks: Der normale "Teilen"-Link
-  // öffnet meist eine Vorschauseite statt direkt herunterzuladen. Damit der
-  // Button-Klick sofort die Datei lädt, an den Link "&download=1" anhängen,
-  // z. B.: https://euretenant.sharepoint.com/:b:/g/.../Fahrplan.pdf?download=1
+  // Rohen SharePoint-"Link kopieren"-Link zur PDF-Datei eintragen — GENAU
+  // wie aus SharePoint kopiert, OHNE selbst "download=1" anzuhängen. Das
+  // übernimmt withDownloadParam() weiter unten automatisch und korrekt
+  // (mit "&", falls der Link schon ein "?..." enthält, sonst mit "?").
   // (Freigabe-Einstellung des Links auf "Jeder mit dem Link" bzw. "Öffentlich" prüfen,
   // sonst müssen Besucher sich erst bei Microsoft anmelden, bevor sie den Download sehen.)
-  const PDF_DOWNLOAD_URL = "https://weherzit-my.sharepoint.com/:b:/g/personal/sorin_ratiu_weherzit_de1/IQD6seI6s4ZsToAle_7Spuq8AZosodFI0vm1yX_BjHMvKMY?e=rxRbLe&download=1";
+  const PDF_DOWNLOAD_URL = "https://weherzit-my.sharepoint.com/:b:/g/personal/sorin_ratiu_weherzit_de1/IQD6seI6s4ZsToAle_7Spuq8AZosodFI0vm1yX_BjHMvKMY?e=5aSv9J";
   // ============================================================
+
+  // Hängt "download=1" korrekt an — sonst zeigt SharePoint nur seine
+  // HTML-Vorschauseite statt die Datei direkt herunterzuladen.
+  function withDownloadParam(url) {
+    if (!url) return url;
+    return url + (url.indexOf("?") === -1 ? "?" : "&") + "download=1";
+  }
 
   const form = document.getElementById("leadForm");
   const thankyou = document.getElementById("thankyou");
   const errorMsg = document.getElementById("errorMsg");
   const submitBtn = document.getElementById("submitBtn");
   const downloadBtn = thankyou.querySelector(".download-btn");
-  downloadBtn.href = PDF_DOWNLOAD_URL;
+  downloadBtn.href = withDownloadParam(PDF_DOWNLOAD_URL);
 
   form.addEventListener("submit", async function (e) {
     e.preventDefault();
