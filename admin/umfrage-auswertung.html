@@ -58,7 +58,6 @@
   .admin-main { max-width:1000px; margin:0 auto; padding:36px 32px 0; }
 
   .state-box { background:var(--white); border:1px solid rgba(0,34,77,0.1); border-radius:8px; padding:48px; text-align:center; color:rgba(0,34,77,0.45); font-size:14px; }
-  .state-box.error { color:var(--red); margin-bottom:24px; }
 
   #survey-intro { font-size:15px; color:rgba(0,34,77,0.65); line-height:1.7; margin-bottom:24px; }
   #survey-intro:empty { display:none; margin:0; }
@@ -185,7 +184,6 @@
 
 <div class="admin-main">
   <div class="state-box" id="state-loading">Wird geladen …</div>
-  <div class="state-box error" id="state-error" style="display:none;">Diese Umfrage konnte nicht gefunden werden. Bitte prüfe die ID im Link.</div>
   <div id="survey-picker" style="display:none;">
     <div class="list-title">Aktive Umfragen</div>
     <div class="survey-list" id="survey-list"></div>
@@ -405,7 +403,6 @@ document.getElementById('questions-root').addEventListener('click', function (e)
   var surveyId = (params.get('id') || '').trim();
 
   var elLoading = document.getElementById('state-loading');
-  var elError   = document.getElementById('state-error');
   var elRoot    = document.getElementById('questions-root');
 
   // mailto:-Links sollen die Standard-Mail-App öffnen (Browser-Standardverhalten,
@@ -425,7 +422,6 @@ document.getElementById('questions-root').addEventListener('click', function (e)
 
   function showError() {
     elLoading.style.display = 'none';
-    elError.style.display = 'block';
     document.getElementById('survey-title').textContent = 'Umfrage nicht gefunden';
     loadSurveyPicker();
   }
