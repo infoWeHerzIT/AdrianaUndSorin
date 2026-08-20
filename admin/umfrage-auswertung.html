@@ -25,6 +25,16 @@
   .admin-header::after { content:''; position:absolute; left:0; top:0; bottom:0; width:5px; background:var(--orange); }
   .admin-header-inner { max-width:1000px; margin:0 auto; padding:0 32px; position:relative; z-index:1; }
   .admin-page-label { font-family:'Orbitron',monospace; font-size:10px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--orange); margin-bottom:14px; display:block; }
+  .event-eyebrow {
+    display: none;
+    align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.16);
+    padding: 6px 13px; border-radius: 100px;
+    font-size: 12px; letter-spacing: .03em; color: rgba(255,255,255,0.85);
+    margin-bottom: 14px; width: fit-content;
+  }
+  .event-eyebrow.visible { display: inline-flex; }
   .admin-header h1 { font-family:'Fredoka',sans-serif; font-size:clamp(24px,3.2vw,38px); color:var(--white); line-height:1.15; margin-bottom:12px; }
   .admin-header p { font-size:15px; color:rgba(255,255,255,0.55); max-width:680px; line-height:1.7; margin-bottom:18px; }
   #survey-description:empty { display:none; margin:0; }
@@ -145,6 +155,7 @@
     <a href="../index.html" class="nav-logo">Adriana &amp; <span>Sorin</span><span class="nav-admin-badge">Admin</span></a>
     <div class="nav-links">
       <a href="admin-feedback.html" class="nav-link">Feedback</a>
+      <a href="umfrage-auswertung.html" class="nav-link active">Umfragen</a>
       <a href="admin-users.html" class="nav-link">Admins</a>
       <button id="btn-logout" class="nav-link" style="border-color:rgba(220,38,38,0.4);color:#f87171;">Ausloggen</button>
     </div>
@@ -154,6 +165,9 @@
 <div class="admin-header">
   <div class="admin-header-inner">
     <span class="admin-page-label">Auswertung</span>
+    <div class="event-eyebrow" id="event-eyebrow">
+      <span id="event-eyebrow-text"></span>
+    </div>
     <h1 id="survey-title">Wird geladen …</h1>
     <div id="survey-description"></div>
     <div class="stat-row" id="stat-row" style="display:none;">
@@ -458,6 +472,17 @@ document.getElementById('questions-root').addEventListener('click', function (e)
     descEl.innerHTML = result.survey.description || '';
     fixDescriptionLinkTargets(descEl);
     document.getElementById('survey-intro').textContent = result.survey.intro || '';
+
+    if (result.survey.eventId) {
+      dynamicsCRM.listEvents().then(function (events) {
+        var active = (events || []).find(function (e) { return e.id === result.survey.eventId; });
+        if (active) {
+          document.getElementById('event-eyebrow-text').textContent = active.name || '';
+          document.getElementById('event-eyebrow').classList.add('visible');
+        }
+      });
+    }
+
     document.getElementById('stat-responses').textContent = result.responseCount;
     document.getElementById('stat-questions').textContent = (result.questions || []).length;
     document.getElementById('stat-row').style.display = 'flex';
