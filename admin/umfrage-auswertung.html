@@ -30,7 +30,12 @@
   #survey-description:empty { display:none; margin:0; }
   #survey-description { font-size:18px; color:rgba(255,255,255,0.55); max-width:920px; line-height:1.7; margin-bottom:18px; text-align:justify; }
   #survey-description, #survey-description * { font-size:18px !important; }
-  #survey-description a { color:var(--orange) !important; background:var(--white); text-decoration:underline; padding:1px 5px; border-radius:2px; }
+  #survey-description a, #survey-description a * {
+    color:var(--orange) !important;
+    background-color:var(--white) !important;
+    text-decoration:underline !important;
+  }
+  #survey-description a { padding:1px 5px; border-radius:2px; }
 
   .stat-row { display:flex; gap:28px; flex-wrap:wrap; }
   .stat { }
