@@ -60,6 +60,25 @@ class DynamicsCRM {
   // aktuelle Datum ein (Dynamics speichert dort den Zeitpunkt der
   // Zustimmung, kein Bool). Alle vier sind optional; wird ein Feld nicht
   // angegeben, bleibt es in Dynamics einfach leer.
+  // leadType: 'contact' oder 'account' (optional) — setzt wht_leadtype.
+  // firmenname: bei leadType='account' (optional) — landet in wht_accountname.
+  // widerrufsverzichtOptIn: true, wenn die Widerrufsverzicht-Checkbox beim
+  // Absenden gesetzt war (nur bei Privatperson relevant) — landet wie die
+  // anderen OptIn-Felder als Zeitstempel in wht_verzichtaufwiederrufsrecht.
+  // Existiert aktuell nur in Dynamics DEV, noch nicht in PROD.
+  // leadConnectionId: GUID eines anderen, vorher angelegten Leads (optional)
+  // — verknüpft diesen Lead per wht_leadconnection damit (z. B. Empfänger-
+  // Lead → Besteller-Lead beim Verschenken-Fall). Existiert aktuell nur in
+  // Dynamics DEV, noch nicht in PROD.
+  // extra: beliebiges flaches Objekt (z. B. { strasse, hausnr, plz, stadt,
+  // land, ustIdNr, nachricht }) — landet in DEV auf eigenen Feldern
+  // (wht_street1, wht_city usw.), alles sonst Unbekannte gebündelt als JSON
+  // in wht_jsoncontent.
+  //
+  // Anders als die übrigen fire-and-forget-Methoden hier: wirft NIE, gibt
+  // aber ein Ergebnisobjekt { success, id } zurück (id = neue Lead-GUID),
+  // damit Aufrufer bei Erfolg z. B. einen zweiten, verknüpften Lead anlegen
+  // können, ohne dafür auf CRM-Fehler mit try/catch reagieren zu müssen.
   submitLead(fields) {
     fields = fields || {};
     return this.client.functions.invoke(this._functionName('crm-submit'), {
@@ -73,10 +92,19 @@ class DynamicsCRM {
         interesseAnCoachingOptIn:           !!fields.interesseAnCoachingOptIn,
         einwilligungDatenverarbeitungOptIn: !!fields.einwilligungDatenverarbeitungOptIn,
         newsletterOptIn:                    !!fields.newsletterOptIn,
-        testimonialOptIn:                   !!fields.testimonialOptIn
+        testimonialOptIn:                   !!fields.testimonialOptIn,
+        widerrufsverzichtOptIn:             !!fields.widerrufsverzichtOptIn,
+        leadType:                           fields.leadType         || '',
+        leadConnectionId:                   fields.leadConnectionId || '',
+        firmenname:                         fields.firmenname       || '',
+        extra:                              fields.extra            || null
       }
+    }).then(function (res) {
+      if (res.error) throw res.error;
+      return { success: true, id: (res.data && res.data.id) || null };
     }).catch(function (err) {
       console.error('CRM submit error:', err);
+      return { success: false, id: null };
     });
   }
 

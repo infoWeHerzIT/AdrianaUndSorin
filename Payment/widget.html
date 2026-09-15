@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Bestell-Widget – Adriana und Sorin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=DM+Sans:wght@400;500;700&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase-config.js"></script>
+<script src="../Code/dynamics-crm.js"></script>
+<style>
+  :root { --orange: #ff6300; --navy: #00224d; --white: #ffffff; --grey-bg: #f4f4f2; --border: rgba(0,34,77,0.14); }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--grey-bg); padding: 32px 16px; color: var(--navy); }
+
+  /* ============================================================
+     Rein optisches Bestell-Widget — KEINE echte Zahlungsabwicklung.
+     Der "Zur Zahlung"-Button sieht IMMER aktiv aus (nie ausgegraut). Ob der
+     Klick tatsächlich zum Zahlungslink aus dem per "id" verknüpften
+     Dynamics-Event weiterleitet (neuer Tab), hängt von "zahlungBereit" ab:
+     nur wenn ein passender Link für den gewählten Besteller-Typ existiert,
+     alle Pflichtfelder ausgefüllt sind und ein Preis vorliegt, führt der
+     Klick tatsächlich weiter. Fehlen noch Pflichtfelder, markiert der Klick
+     sie stattdessen rot (siehe .invalid / highlightMissingFields()) und
+     springt zum ersten leeren Feld, statt weiterzuleiten.
+
+     Klick auf "Zur Zahlung" legt zusätzlich die Besteller-Daten als Lead in
+     Dynamics an (wht_lead, über Code/dynamics-crm.js submitLead() —
+     supabase/functions/crm-submit[-dev]): Privatperson als Contact, Unternehmen
+     als Account. Ist "Verschenken" aktiv und eine USt-IdNr angegeben, wird
+     zusätzlich ein Empfänger-Lead als Account angelegt, per wht_leadconnection
+     mit dem Besteller-Lead verknüpft (dieses Feld existiert bisher nur in
+     Dynamics DEV, noch nicht in PROD). Blockiert nie die Weiterleitung — läuft
+     im Hintergrund, unabhängig vom CRM-Ergebnis.
+
+     Unterstützte Parameter (alle optional):
+       id            – Dynamics-Event-GUID (wht_eventid). Ist dieser Parameter gesetzt, lädt das
+                       Widget das Event über dynamicsCRM.listEvents() (Code/dynamics-crm.js,
+                       supabase/functions/dynamics-events-list) und zieht daraus automatisch die
+                       Zahlungslinks für den "Zur Zahlung"-Button: den Primary-Link
+                       (wht_paymentlinktype=0) bei "Privatperson", den Unternehmen-Link
+                       (wht_paymentlinktype=4) bei "Unternehmen" — passend zum aktuell gewählten
+                       Besteller-Typ, wechselt live beim Umschalten. Ebenso zieht "Heute fällig"/
+                       "Gesamt" den wht_price des jeweils ausgewählten Payment Links (existiert
+                       Stand 2026-08-21 nur in DEV). Hat der Link keinen Preis (z. B. in PROD),
+                       zeigt die Zusammenfassung immer "---" — kein Fallback auf einen
+                       geschätzten Preis, und der Klick auf "Zur Zahlung" führt dann nicht weiter
+                       (siehe "zahlungBereit" oben). Ebenso müssen alle Pflichtfelder unter "Ich
+                       bestelle als" ausgefüllt sein (das HTML "required"-Attribut allein greift
+                       nicht, da der Button in keinem <form> liegt — ohne diese eigene Prüfung
+                       würde crm-submit die Lead-Anlage sonst lautlos mit 400 ablehnen). Der
+                       Event-Name (wht_name) wird außerdem als Titel über dem
+                       Widget angezeigt.
+       preis_hinweis – Kleingedrucktes unter dem Preis (Fallback: "inkl. Steuern"), wird bei
+                       "Unternehmen" ausgeblendet
+       agb_url       – Link auf die AGB des Anbieters
+       widerruf_url  – Link auf die Widerrufsbelehrung
+       widerruf_text – Text der Widerrufs-Checkbox
+
+     Beispiel:
+       widget.html?id=734af96e-b19c-f111-b8db-002248d8784e
+     ============================================================ */
+
+  .widget-wrap { max-width: 960px; margin: 0 auto; }
+  .widget-title {
+    display: none;
+    font-family: 'Fredoka', sans-serif; font-size: 24px; font-weight: 700;
+    color: var(--navy); margin-bottom: 18px;
+  }
+  .widget-title.visible { display: block; }
+  .widget-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  .widget-box {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px 26px;
+    margin-bottom: 18px;
+  }
+  .container-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 11px; font-weight: 700; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--orange);
+    margin-bottom: 16px;
+  }
+
+  /* ── Payer type switcher ── */
+  .payer-type-switcher { display: flex; gap: 10px; margin-bottom: 20px; }
+  .pill-radio { flex: 1; position: relative; }
+  .pill-radio input { position: absolute; opacity: 0; }
+  .pill-radio label {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    border: 1.5px solid var(--border); border-radius: 6px;
+    padding: 12px; font-size: 14px; font-weight: 500; cursor: pointer;
+    transition: border-color .15s, background .15s;
+  }
+  .pill-radio input:checked + label {
+    border-color: var(--orange); background: rgba(255,99,0,0.06); color: var(--navy); font-weight: 700;
+  }
+  .pill-radio .dot {
+    width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid var(--border);
+    flex-shrink: 0; position: relative;
+  }
+  .pill-radio input:checked + label .dot { border-color: var(--orange); }
+  .pill-radio input:checked + label .dot::after {
+    content: ''; position: absolute; inset: 3px; border-radius: 50%; background: var(--orange);
+  }
+
+  /* ── Form fields ── */
+  .row { display: flex; gap: 12px; margin-bottom: 12px; }
+  .row > * { flex: 1; min-width: 0; }
+  .field { margin-bottom: 12px; }
+  .field.hidden { display: none; }
+  input[type="text"], input[type="email"], input[type="tel"], select, textarea {
+    width: 100%;
+    border: 1.5px solid var(--border); border-radius: 5px;
+    padding: 12px 13px; font-size: 14.5px; font-family: 'DM Sans', sans-serif;
+    color: var(--navy); background: var(--white);
+  }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--orange); }
+  input.invalid, select.invalid { border-color: #dc2626; background: rgba(220,38,38,0.04); }
+  textarea { resize: vertical; min-height: 70px; }
+  .field-3-1 { display: flex; gap: 12px; margin-bottom: 12px; }
+  .field-3-1 > :first-child { flex: 3; }
+  .field-3-1 > :last-child { flex: 1; }
+
+  .checkbox-row { display: flex; align-items: flex-start; gap: 10px; margin: 6px 0 4px; cursor: pointer; }
+  .checkbox-row.hidden { display: none; }
+  .checkbox-row input { margin-top: 3px; accent-color: var(--orange); width: 16px; height: 16px; flex-shrink: 0; }
+  .checkbox-row span { font-size: 13.5px; color: rgba(0,34,77,0.75); line-height: 1.6; }
+  .checkbox-row a { color: var(--navy); text-decoration: underline; }
+
+  #gift-form { margin-top: 18px; padding-top: 18px; border-top: 1px dashed var(--border); display: none; }
+  #gift-form.visible { display: block; }
+
+  /* ── Coupon ── */
+  .accordion-body { display: flex; gap: 10px; }
+  .accordion-body input { flex: 1; }
+  .btn-apply {
+    border: none; border-radius: 5px; background: var(--navy); color: var(--white);
+    font-size: 13.5px; font-weight: 600; padding: 0 18px; cursor: pointer;
+  }
+
+  /* ── Summary ── */
+  .summary-row { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 4px; }
+  .summary-row .label { font-size: 14px; color: rgba(0,34,77,0.6); }
+  .summary-row.today .label { font-weight: 700; color: var(--navy); }
+  .summary-row.today .price { font-family: 'Fredoka', sans-serif; font-size: 26px; font-weight: 700; color: var(--orange); }
+  .summary-row.total .price { font-size: 14px; color: rgba(0,34,77,0.6); }
+  .summary-note { font-size: 12px; color: rgba(0,34,77,0.4); margin-bottom: 4px; }
+  .summary-note.hidden { display: none; }
+
+  /* ── Buy button + trust ── */
+  .btn-buy-widget {
+    display: block; width: 100%; text-align: center;
+    background: var(--orange); color: var(--white);
+    border: none; border-radius: 6px; padding: 16px; margin-top: 18px;
+    font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700;
+    text-decoration: none; cursor: pointer; transition: background .2s;
+  }
+  .btn-buy-widget:hover { background: #e55700; }
+  .secure-note { text-align: center; font-size: 12px; color: rgba(0,34,77,0.4); margin-top: 12px; }
+
+  @media (max-width: 760px) {
+    .widget-columns { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 480px) {
+    .row, .field-3-1 { flex-direction: column; }
+    .payer-type-switcher { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<div class="widget-wrap">
+<h1 class="widget-title" id="widget-title"></h1>
+<div class="widget-columns">
+<div class="col-left">
+
+  <!-- BUYER INFO -->
+  <div class="widget-box">
+    <div class="container-title">Ich bestelle als</div>
+    <div class="payer-type-switcher">
+      <div class="pill-radio">
+        <input type="radio" name="payer-type" id="payer-private" checked>
+        <label for="payer-private"><span class="dot"></span>Privatperson</label>
+      </div>
+      <div class="pill-radio">
+        <input type="radio" name="payer-type" id="payer-business">
+        <label for="payer-business"><span class="dot"></span>Unternehmen</label>
+      </div>
+    </div>
+
+    <div class="field hidden" id="field-company">
+      <input type="text" id="buyer-firmenname" placeholder="Firmenname" autocomplete="organization" required>
+    </div>
+    <div class="field hidden" id="field-company-ustid">
+      <input type="text" id="buyer-ustid" placeholder="USt-IdNr." autocomplete="off" required>
+    </div>
+
+    <div class="row">
+      <div class="field"><input type="text" id="buyer-vorname" placeholder="Vorname" autocomplete="given-name" required></div>
+      <div class="field"><input type="text" id="buyer-nachname" placeholder="Nachname" autocomplete="family-name" required></div>
+    </div>
+    <div class="field"><input type="email" id="buyer-email" placeholder="E-Mail" autocomplete="email" required></div>
+    <div class="field-3-1">
+      <input type="text" id="buyer-adresse" placeholder="Adresse" autocomplete="street-address" required>
+      <input type="text" id="buyer-hausnr" placeholder="Hausnr." required>
+    </div>
+    <div class="field-3-1">
+      <input type="text" id="buyer-plz" placeholder="PLZ" autocomplete="postal-code" required>
+      <input type="text" id="buyer-stadt" placeholder="Stadt" autocomplete="address-level2" style="flex:3;" required>
+    </div>
+    <div class="field">
+      <select id="buyer-land" required>
+        <option>Deutschland</option>
+        <option>Österreich</option>
+        <option>Schweiz</option>
+      </select>
+    </div>
+    <div class="field"><input type="tel" id="buyer-telefon" placeholder="Telefonnr." autocomplete="tel" required></div>
+
+    <label class="checkbox-row">
+      <input type="checkbox" id="gift-toggle">
+      <span>Verschenken / andere Lieferadresse</span>
+    </label>
+
+    <div id="gift-form">
+      <div class="container-title">Empfänger</div>
+      <div class="row">
+        <div class="field"><input type="text" id="gift-vorname" placeholder="Vorname" autocomplete="given-name"></div>
+        <div class="field"><input type="text" id="gift-nachname" placeholder="Nachname" autocomplete="family-name"></div>
+      </div>
+      <div class="field"><input type="email" id="gift-email" placeholder="E-Mail" autocomplete="email"></div>
+      <div class="field"><input type="text" id="gift-adresse" placeholder="Adresse" autocomplete="street-address"></div>
+      <div class="field-3-1">
+        <input type="text" id="gift-plz" placeholder="PLZ" autocomplete="postal-code">
+        <input type="text" id="gift-stadt" placeholder="Stadt" autocomplete="address-level2" style="flex:3;">
+      </div>
+      <div class="field">
+        <select id="gift-land">
+          <option>Deutschland</option>
+          <option>Österreich</option>
+          <option>Schweiz</option>
+        </select>
+      </div>
+      <div class="field"><input type="tel" id="gift-telefon" placeholder="Telefonnr." autocomplete="tel"></div>
+      <div class="field"><input type="text" id="gift-firmenname" placeholder="Firmenname" autocomplete="organization"></div>
+      <div class="field"><input type="text" id="gift-ustid" placeholder="USt-IdNr." autocomplete="off"></div>
+      <div class="field">
+        <label style="display:block;font-size:13px;font-weight:600;margin-bottom:6px;">Nachricht für den Empfänger:</label>
+        <textarea id="gift-nachricht"></textarea>
+      </div>
+    </div>
+  </div>
+
+</div>
+<div class="col-right">
+
+  <!-- COUPON + SUMMARY -->
+  <div class="widget-box">
+    <div class="container-title">Gutscheincode einlösen</div>
+    <div class="accordion-body">
+      <input type="text" placeholder="Code eingeben">
+      <button type="button" class="btn-apply">Anwenden</button>
+    </div>
+  </div>
+
+  <div class="widget-box">
+    <div class="container-title">Zusammenfassung</div>
+    <div class="summary-row today">
+      <span class="label">Heute fällig</span>
+      <span class="price" id="price-today">39,27 €</span>
+    </div>
+    <div class="summary-row total">
+      <span class="label">Gesamt</span>
+      <span class="price" id="price-total">39,27 €</span>
+    </div>
+    <div class="summary-note" id="price-note">inkl. Steuern</div>
+  </div>
+
+  <!-- PAYMENT -->
+  <div class="widget-box">
+   <div class="container-title">Zahlungsart</div>
+     <div style="font-size:12.5px;color:rgba(0,34,77,0.55);line-height:1.7;margin-bottom:14px;">
+      Für diesen Kauf gelten die <a href="#" id="link-agb" target="_blank" style="color:var(--navy);">AGB des Anbieters</a>.
+    </div>
+    <label class="checkbox-row" id="widerruf-row">
+      <input type="checkbox" id="widerruf-checkbox" checked>
+      <span id="widerruf-text">Hiermit verzichte ich auf mein mir zustehendes 14-tägiges <a href="#" id="link-widerruf" target="_blank">Widerrufsrecht</a>, da die gesamte Leistung direkt erbracht wird.</span>
+    </label>
+
+    <div class="secure-note">🔒 Sichere externe Zahlungsabwicklung</div>
+    <a href="#" class="btn-buy-widget" id="link-zahlung" target="_blank" rel="noopener" style="margin-top:0;">Zur Zahlung →</a>
+  </div>
+
+</div>
+</div>
+</div>
+
+<script>
+(function () {
+  var p = new URLSearchParams(window.location.search);
+  var get = function (name, fallback) { return p.has(name) ? p.get(name) : fallback; };
+
+  function formatPrice(n) {
+    return Number(n).toFixed(2).replace('.', ',') + ' €';
+  }
+
+  document.getElementById('price-note').textContent = get('preis_hinweis', 'inkl. Steuern');
+
+  // Zahlungslink UND Preis ("Heute fällig"/"Gesamt") kommen ausschließlich aus
+  // dem Dynamics-Event (payment_url/payment_price für Privatperson,
+  // business_payment_url/business_payment_price für Unternehmen), abhängig vom
+  // gewählten Besteller-Typ — der wht_price des jeweils ausgewählten Payment
+  // Links. Hat der ausgewählte Link keinen wht_price (Feld existiert Stand
+  // 2026-08-21 z. B. in PROD noch gar nicht), wird IMMER "---" angezeigt.
+  //
+  // Der Button selbst sieht IMMER aktiv aus (nie ausgegraut) — ob der Klick
+  // tatsächlich weiterleitet, entscheidet "zahlungBereit": nur wenn ein
+  // Zahlungslink vorhanden ist, alle Pflichtfelder ausgefüllt sind UND ein
+  // Preis vorliegt, zeigt href auf den echten Link; sonst bleibt href "#"
+  // (Klick passiert sichtbar, führt aber nirgendwohin) und der Klick-Handler
+  // legt auch keinen Lead an.
+  var eventZahlungUrls = { private: '', business: '' };
+  var eventPreise = { private: null, business: null };
+  var elZahlung = document.getElementById('link-zahlung');
+  var zahlungBereit = false;
+
+  // Alle Felder unter "Ich bestelle als" sind Pflicht — bei Unternehmen
+  // zusätzlich Firmenname + USt-IdNr. Das HTML "required"-Attribut allein
+  // greift nicht (Button liegt in keinem <form>), daher hier zusätzlich per
+  // JS geprüft, sonst würde crm-submit die Lead-Anlage sonst lautlos mit
+  // 400 ablehnen (siehe vorheriger Vorname/Nachname/E-Mail-Fix).
+  var BASE_REQUIRED_IDS = ['buyer-vorname', 'buyer-nachname', 'buyer-email', 'buyer-adresse', 'buyer-hausnr', 'buyer-plz', 'buyer-stadt', 'buyer-telefon'];
+  var BUSINESS_REQUIRED_IDS = ['buyer-firmenname', 'buyer-ustid'];
+
+  function updateZahlungLink() {
+    var isBusiness = document.getElementById('payer-business').checked;
+    var url = isBusiness ? eventZahlungUrls.business : eventZahlungUrls.private;
+    var preis = isBusiness ? eventPreise.business : eventPreise.private;
+    var requiredIds = BASE_REQUIRED_IDS.concat(isBusiness ? BUSINESS_REQUIRED_IDS : []);
+    var hasPflichtfelder = requiredIds.every(function (id) {
+      var el = document.getElementById(id);
+      return el && el.value.trim() !== '';
+    });
+    var hasPreis = preis != null;
+
+    // "inkl. Steuern" gilt nur für Privatperson — bei Unternehmen (z. B.
+    // wegen Reverse-Charge/Nettopreis) wird der Hinweis ausgeblendet.
+    document.getElementById('price-note').classList.toggle('hidden', isBusiness);
+
+    document.getElementById('price-today').textContent = hasPreis ? formatPrice(preis) : '---';
+    document.getElementById('price-total').textContent = hasPreis ? formatPrice(preis) : '---';
+
+    zahlungBereit = !!(url && hasPflichtfelder && hasPreis);
+    elZahlung.href = zahlungBereit ? url : '#';
+  }
+  // Markiert leere Pflichtfelder rot (siehe .invalid) und springt zum ersten
+  // davon — wird beim Klick auf "Zur Zahlung" aufgerufen, solange nicht alle
+  // Bedingungen erfüllt sind.
+  function highlightMissingFields() {
+    var isBusiness = document.getElementById('payer-business').checked;
+    var requiredIds = BASE_REQUIRED_IDS.concat(isBusiness ? BUSINESS_REQUIRED_IDS : []);
+    var firstInvalid = null;
+    requiredIds.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      var empty = el.value.trim() === '';
+      el.classList.toggle('invalid', empty);
+      if (empty && !firstInvalid) firstInvalid = el;
+    });
+    if (firstInvalid) {
+      firstInvalid.focus();
+      firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
+  updateZahlungLink();
+  BASE_REQUIRED_IDS.concat(BUSINESS_REQUIRED_IDS).forEach(function (id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', function () {
+      updateZahlungLink();
+      if (el.value.trim() !== '') el.classList.remove('invalid');
+    });
+  });
+
+  document.getElementById('link-agb').href = get('agb_url', '#');
+  document.getElementById('link-widerruf').href = get('widerruf_url', '#');
+  if (p.has('widerruf_text')) {
+    document.getElementById('widerruf-text').textContent = p.get('widerruf_text');
+  }
+
+  // Besteller-Typ: Firmenname- und USt-IdNr-Feld nur bei "Unternehmen" zeigen,
+  // Widerrufs-Verzicht nur bei "Privatperson" (Unternehmen haben kein
+  // gesetzliches Widerrufsrecht nach § 312g Abs. 2 BGB), Zahlungslink
+  // passend zum Typ neu setzen.
+  var elCompany = document.getElementById('field-company');
+  var elCompanyUstId = document.getElementById('field-company-ustid');
+  var elWiderruf = document.getElementById('widerruf-row');
+  document.getElementById('payer-business').addEventListener('change', function () {
+    elCompany.classList.remove('hidden');
+    elCompanyUstId.classList.remove('hidden');
+    elWiderruf.classList.add('hidden');
+    updateZahlungLink();
+  });
+  document.getElementById('payer-private').addEventListener('change', function () {
+    elCompany.classList.add('hidden');
+    elCompanyUstId.classList.add('hidden');
+    elWiderruf.classList.remove('hidden');
+    updateZahlungLink();
+  });
+
+  // Event laden (falls "id" gesetzt ist) und die passenden
+  // Zahlungslinks (Privatperson/Unternehmen) daraus ziehen — siehe
+  // supabase/functions/dynamics-events-list: wht_paymentlinktype 0=Primary
+  // (Privatperson), 4=Unternehmen.
+  var eventId = get('id', '');
+  if (eventId && typeof dynamicsCRM !== 'undefined') {
+    dynamicsCRM.listEvents().then(function (events) {
+      var ev = (events || []).find(function (e) { return e.id === eventId; });
+      if (!ev) return;
+      eventZahlungUrls.private = ev.payment_url || '';
+      eventZahlungUrls.business = ev.business_payment_url || '';
+      eventPreise.private = (typeof ev.payment_price === 'number') ? ev.payment_price : null;
+      eventPreise.business = (typeof ev.business_payment_price === 'number') ? ev.business_payment_price : null;
+      updateZahlungLink();
+
+      if (ev.name) {
+        var elTitle = document.getElementById('widget-title');
+        elTitle.textContent = ev.name;
+        elTitle.classList.add('visible');
+        document.title = ev.name + ' – Bestell-Widget – Adriana und Sorin';
+      }
+    });
+  }
+
+  // Verschenken-Toggle
+  var elGift = document.getElementById('gift-form');
+  document.getElementById('gift-toggle').addEventListener('change', function (e) {
+    elGift.classList.toggle('visible', e.target.checked);
+  });
+
+  // Beim Klick auf "Zur Zahlung" (nur wenn nicht ausgegraut, siehe
+  // updateZahlungLink) Besteller-Daten als Lead speichern — Privatperson
+  // als Contact (wht_leadtype=contact), Unternehmen als Account
+  // (wht_leadtype=account). Ist "Verschenken" aktiv UND eine USt-IdNr
+  // angegeben, zusätzlich einen zweiten Lead für den Empfänger als Account
+  // anlegen, verknüpft per wht_leadconnection mit dem Besteller-Lead.
+  // Blockiert NIE die Weiterleitung — der Button ist ein normaler Link mit
+  // echtem href, der Browser navigiert unabhängig vom Ausgang dieser
+  // Hintergrund-Anfrage(n).
+  function fieldVal(id) {
+    var el = document.getElementById(id);
+    return el ? el.value.trim() : '';
+  }
+
+  elZahlung.addEventListener('click', function (e) {
+    if (!zahlungBereit) {
+      e.preventDefault();
+      highlightMissingFields();
+      return;
+    }
+    if (typeof dynamicsCRM === 'undefined') return;
+
+    var isBusiness = document.getElementById('payer-business').checked;
+    var buyerExtra = {
+      strasse: fieldVal('buyer-adresse'),
+      hausnr:  fieldVal('buyer-hausnr'),
+      plz:     fieldVal('buyer-plz'),
+      stadt:   fieldVal('buyer-stadt'),
+      land:    fieldVal('buyer-land'),
+      ustIdNr: isBusiness ? fieldVal('buyer-ustid') : ''
+    };
+
+    // Gilt für den Besteller (Privatperson wie Unternehmen), nie für den
+    // Empfänger-Lead — die Checkbox wird bei Unternehmen nur optisch
+    // ausgeblendet, ihr Wert (Standard: angehakt) zählt trotzdem mit.
+    var widerrufsverzichtOptIn = document.getElementById('widerruf-checkbox').checked;
+
+    dynamicsCRM.submitLead({
+      firstname:   fieldVal('buyer-vorname'),
+      lastname:    fieldVal('buyer-nachname'),
+      email:       fieldVal('buyer-email'),
+      mobilephone: fieldVal('buyer-telefon'),
+      eventId:     eventId,
+      leadType:    isBusiness ? 'account' : 'contact',
+      firmenname:  isBusiness ? fieldVal('buyer-firmenname') : '',
+      widerrufsverzichtOptIn: widerrufsverzichtOptIn,
+      extra:       buyerExtra
+    }).then(function (buyerResult) {
+      var giftChecked = document.getElementById('gift-toggle').checked;
+      var ustId = fieldVal('gift-ustid');
+      if (!buyerResult.success || !buyerResult.id || !giftChecked || !ustId) return;
+
+      dynamicsCRM.submitLead({
+        firstname:        fieldVal('gift-vorname'),
+        lastname:         fieldVal('gift-nachname'),
+        email:            fieldVal('gift-email'),
+        mobilephone:      fieldVal('gift-telefon'),
+        eventId:          eventId,
+        leadType:         'account',
+        firmenname:       fieldVal('gift-firmenname'),
+        leadConnectionId: buyerResult.id,
+        extra: {
+          strasse:    fieldVal('gift-adresse'),
+          plz:        fieldVal('gift-plz'),
+          stadt:      fieldVal('gift-stadt'),
+          land:       fieldVal('gift-land'),
+          ustIdNr:    ustId,
+          nachricht:  fieldVal('gift-nachricht')
+        }
+      });
+    });
+  });
+
+})();
+</script>
+</body>
+</html>

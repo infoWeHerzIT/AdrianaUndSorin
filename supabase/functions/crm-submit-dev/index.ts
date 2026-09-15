@@ -7,6 +7,21 @@ import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 // Kontakte in Dynamics PROD anlegen.
 //
 // Legt IMMER einen neuen Lead an (Entität "wht_lead"), keinen Contact.
+//
+// wht_leadtype (Picklist, laut Dynamics-Metadaten): 959230000=Account, 959230001=Contact.
+// wht_leadconnection ist ein Self-Lookup auf wht_lead selbst (Navigation-Property
+// "wht_LeadConnection") — damit lässt sich z. B. ein Empfänger-Lead (Verschenken-Fall)
+// mit dem ursprünglichen Besteller-Lead verknüpfen. ACHTUNG: Dieses Feld existiert laut
+// Dataverse-Metadaten-Check (2026-08-21) bisher NUR in Dynamics DEV, noch nicht in PROD —
+// "leadConnectionId" darf im PROD-Payload also erst gesetzt werden, sobald das Feld dort
+// nachgezogen wurde, sonst schlägt der Dataverse-Request mit 400 fehl.
+//
+// Adressfelder (Stand 2026-08-21, nur in DEV vorhanden, noch nicht in PROD):
+//   Adresse → wht_street1, Hausnr. → wht_street2, PLZ → wht_zippostalcode,
+//   Stadt → wht_city, Land → wht_countryregion, USt-IdNr. → wht_ustidnr,
+//   Nachricht für den Empfänger → wht_nachrichtfurdenempfanger.
+// Firmenname (bei Unternehmen) → wht_accountname (eigenes Feld, nicht mehr
+// wht_vorname).
 const TENANT_ID     = Deno.env.get("DYNAMICS_TENANT_ID")!;
 const CLIENT_ID     = Deno.env.get("DYNAMICS_CLIENT_ID")!;
 const CLIENT_SECRET = Deno.env.get("DYNAMICS_CLIENT_SECRET")!;
@@ -67,6 +82,11 @@ serve(async (req) => {
     const einwilligungDatenverarbeitungOptIn = !!payload.einwilligungDatenverarbeitungOptIn;
     const newsletterOptIn                    = !!payload.newsletterOptIn;
     const testimonialOptIn                   = !!payload.testimonialOptIn;
+    const widerrufsverzichtOptIn             = !!payload.widerrufsverzichtOptIn;
+    const leadTypeRaw           = String(payload.leadType ?? "").trim().toLowerCase();
+    const leadConnectionId      = String(payload.leadConnectionId ?? "").trim();
+    const firmenname            = String(payload.firmenname ?? "").trim();
+    const extra                 = (payload.extra && typeof payload.extra === "object") ? payload.extra as Record<string, unknown> : null;
 
     // Nachname ist NICHT (mehr) zwingend — manche Formulare (z. B. die
     // Lead-Magnet-Landingpages in /lanpag) fragen bewusst nur Vorname +
@@ -84,6 +104,7 @@ serve(async (req) => {
       wht_leadname: (firstname + " " + lastname).trim(),
       wht_email1:   email,
     };
+    if (firmenname) leadFields.wht_accountname = firmenname;
     if (mobilephone) leadFields.wht_phone1 = mobilephone;
     if (eventId) leadFields["wht_EventId@odata.bind"] = `/wht_events(${eventId})`;
     if (quelleRaw !== null && quelleRaw !== undefined && quelleRaw !== "") {
@@ -94,6 +115,35 @@ serve(async (req) => {
     if (einwilligungDatenverarbeitungOptIn) leadFields.wht_einwilligungzurdatenverarbeitung = nowIso;
     if (newsletterOptIn)                    leadFields.wht_interesseannewsletterperemail = nowIso;
     if (testimonialOptIn)                   leadFields.wht_zustimmungfurtestimonials = nowIso;
+    if (widerrufsverzichtOptIn)              leadFields.wht_verzichtaufwiederrufsrecht = nowIso;
+
+    if (leadTypeRaw === "account") leadFields.wht_leadtype = 959230000;
+    else if (leadTypeRaw === "contact") leadFields.wht_leadtype = 959230001;
+
+    if (leadConnectionId) leadFields["wht_LeadConnection@odata.bind"] = `/wht_leads(${leadConnectionId})`;
+
+    // Adressfelder auf eigene Dataverse-Felder abbilden (siehe Kommentar oben).
+    // Alle sonst unbekannten extra-Keys landen gebündelt in wht_jsoncontent.
+    if (extra) {
+      const FIELD_MAP: Record<string, string> = {
+        strasse:   "wht_street1",
+        hausnr:    "wht_street2",
+        plz:       "wht_zippostalcode",
+        stadt:     "wht_city",
+        land:      "wht_countryregion",
+        ustIdNr:   "wht_ustidnr",
+        nachricht: "wht_nachrichtfurdenempfanger",
+      };
+      const remaining: Record<string, unknown> = {};
+      Object.keys(extra).forEach((key) => {
+        const val = extra[key];
+        if (val === undefined || val === null || String(val).trim() === "") return;
+        const strVal = String(val).trim();
+        if (FIELD_MAP[key]) leadFields[FIELD_MAP[key]] = strVal;
+        else remaining[key] = strVal;
+      });
+      if (Object.keys(remaining).length > 0) leadFields.wht_jsoncontent = JSON.stringify(remaining);
+    }
 
     const leadRes = await fetch(`${RESOURCE}/api/data/v9.2/wht_leads`, {
       method: "POST",
@@ -112,7 +162,15 @@ serve(async (req) => {
       return jsonResponse({ error: "CRM-Anfrage fehlgeschlagen" }, 502);
     }
 
-    return jsonResponse({ success: true }, 200);
+    // Dataverse liefert die neue GUID im "OData-EntityId"-Header zurück
+    // (Format ".../wht_leads(<guid>)"), nicht im Body (Standard-Response ist 204).
+    // Wird gebraucht, um z. B. einen Empfänger-Lead per wht_leadconnection an
+    // diesen Lead zu binden.
+    const entityIdHeader = leadRes.headers.get("OData-EntityId") || "";
+    const idMatch = entityIdHeader.match(/\(([0-9a-fA-F-]+)\)/);
+    const id = idMatch ? idMatch[1] : null;
+
+    return jsonResponse({ success: true, id }, 200);
   } catch (err) {
     console.error(err);
     return jsonResponse({ error: "Interner Fehler" }, 500);

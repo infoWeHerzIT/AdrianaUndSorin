@@ -68,13 +68,23 @@
   .survey-list { background:var(--white); border:1px solid rgba(0,34,77,0.1); border-radius:8px; overflow:hidden; margin-bottom:24px; }
   .survey-list-item {
     display:flex; align-items:center; justify-content:space-between; gap:16px;
-    padding:14px 20px; border-top:1px solid rgba(0,34,77,0.06);
-    color:var(--navy); text-decoration:none; transition:background .15s;
+    padding:0 8px 0 20px; border-top:1px solid rgba(0,34,77,0.06);
   }
   .survey-list-item:first-child { border-top:none; }
-  .survey-list-item:hover { background:rgba(255,99,0,0.04); }
+  .survey-list-item-main {
+    flex:1; min-width:0; display:flex; align-items:center; justify-content:space-between; gap:16px;
+    padding:14px 0; color:var(--navy); text-decoration:none; transition:background .15s;
+  }
+  .survey-list-item:hover .survey-list-item-main { background:rgba(255,99,0,0.04); }
   .survey-list-item-title { font-weight:600; font-size:14px; }
   .survey-list-item-arrow { color:rgba(0,34,77,0.3); font-size:14px; flex-shrink:0; }
+  .survey-list-item-start {
+    flex-shrink:0; display:inline-flex; align-items:center; gap:6px;
+    color:var(--orange); text-decoration:none; font-size:13px; font-weight:600;
+    border:1px solid rgba(255,99,0,0.35); border-radius:2px; padding:8px 12px;
+    transition:background .15s, border-color .15s;
+  }
+  .survey-list-item-start:hover { background:rgba(255,99,0,0.08); border-color:var(--orange); }
   .survey-list-empty { padding:24px 20px; color:rgba(0,34,77,0.4); font-size:14px; }
 
   .responses-toggle-row { display:flex; justify-content:center; margin:8px 0 32px; }
@@ -485,10 +495,13 @@ document.getElementById('questions-root').addEventListener('click', function (e)
         }
         elList.innerHTML = surveys.map(function (s) {
           return (
-            '<a class="survey-list-item" href="umfrage-auswertung.html?id=' + encodeURIComponent(s.id) + '">' +
-              '<span class="survey-list-item-title">' + esc(s.title || s.slug || s.id) + '</span>' +
-              '<span class="survey-list-item-arrow">Auswerten →</span>' +
-            '</a>'
+            '<div class="survey-list-item">' +
+              '<a class="survey-list-item-main" href="umfrage-auswertung.html?id=' + encodeURIComponent(s.id) + '">' +
+                '<span class="survey-list-item-title">' + esc(s.title || s.slug || s.id) + '</span>' +
+                '<span class="survey-list-item-arrow">Auswerten →</span>' +
+              '</a>' +
+              '<a class="survey-list-item-start" href="../Templates/umfrage-dynamisch.html?id=' + encodeURIComponent(s.id) + '" target="_blank" rel="noopener noreferrer" title="Umfrage starten">▶ Starten</a>' +
+            '</div>'
           );
         }).join('');
       });

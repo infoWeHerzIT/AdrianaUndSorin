@@ -90,9 +90,10 @@ function formatLabel(n: unknown): string {
 }
 
 // wht_paymentlinktype (laut Dynamics-Konfiguration):
-// 0=Primary, 1=Duo, 2=Ressourcen, 3=Video Meeting, 5=Early Bird, 6=Early Bird Duo
+// 0=Primary, 1=Duo, 2=Ressourcen, 3=Video Meeting, 4=Unternehmen, 5=Early Bird, 6=Early Bird Duo
 const LINK_TYPE_PRIMARY       = 0;
 const LINK_TYPE_DUO           = 1;
+const LINK_TYPE_BUSINESS      = 4;
 const LINK_TYPE_EARLY_BIRD    = 5;
 const LINK_TYPE_EARLY_BIRD_DUO = 6;
 
@@ -102,12 +103,17 @@ function paymentLinkTypeLabel(n: unknown): string {
   if (num === 1) return "Duo";
   if (num === 2) return "Ressourcen";
   if (num === 3) return "Video Meeting";
+  if (num === 4) return "Unternehmen";
   if (num === 5) return "Early Bird";
   if (num === 6) return "Early Bird Duo";
   return "Unbekannt (" + num + ")";
 }
 
-type EventLinks = { primary?: string; duo?: string; earlyBird?: string; earlyBirdDuo?: string };
+type EventLinks = {
+  primary?: string; duo?: string; business?: string; earlyBird?: string; earlyBirdDuo?: string;
+  primaryPrice?: number | null; duoPrice?: number | null; businessPrice?: number | null;
+  earlyBirdPrice?: number | null; earlyBirdDuoPrice?: number | null;
+};
 type RawPaymentLink = { name: string; url: string; type: number | null; typeLabel: string };
 
 serve(async (req) => {
@@ -166,16 +172,21 @@ serve(async (req) => {
         const type = typeof link.wht_paymentlinktype === "number" ? link.wht_paymentlinktype : null;
         const linkUrl = typeof link.wht_url === "string" ? link.wht_url : "";
         const linkName = typeof link.wht_name === "string" ? link.wht_name : "";
+        // wht_price existiert (Stand 2026-08-21) nur in Dynamics DEV, noch nicht in
+        // PROD — dort liefert Dataverse das Feld einfach nicht mit zurück (kein
+        // Fehler, da hier ohne $select gelesen wird), price bleibt dann null.
+        const price = typeof link.wht_price === "number" ? link.wht_price : null;
 
         if (!allLinksByEvent[eventGuid]) allLinksByEvent[eventGuid] = [];
         allLinksByEvent[eventGuid].push({ name: linkName, url: linkUrl, type, typeLabel: paymentLinkTypeLabel(type) });
 
         if (!linkUrl) continue;
         if (!linksByEvent[eventGuid]) linksByEvent[eventGuid] = {};
-        if (type === LINK_TYPE_PRIMARY)        linksByEvent[eventGuid].primary = linkUrl;
-        else if (type === LINK_TYPE_DUO)        linksByEvent[eventGuid].duo = linkUrl;
-        else if (type === LINK_TYPE_EARLY_BIRD)  linksByEvent[eventGuid].earlyBird = linkUrl;
-        else if (type === LINK_TYPE_EARLY_BIRD_DUO) linksByEvent[eventGuid].earlyBirdDuo = linkUrl;
+        if (type === LINK_TYPE_PRIMARY)        { linksByEvent[eventGuid].primary = linkUrl; linksByEvent[eventGuid].primaryPrice = price; }
+        else if (type === LINK_TYPE_DUO)        { linksByEvent[eventGuid].duo = linkUrl; linksByEvent[eventGuid].duoPrice = price; }
+        else if (type === LINK_TYPE_BUSINESS)   { linksByEvent[eventGuid].business = linkUrl; linksByEvent[eventGuid].businessPrice = price; }
+        else if (type === LINK_TYPE_EARLY_BIRD)  { linksByEvent[eventGuid].earlyBird = linkUrl; linksByEvent[eventGuid].earlyBirdPrice = price; }
+        else if (type === LINK_TYPE_EARLY_BIRD_DUO) { linksByEvent[eventGuid].earlyBirdDuo = linkUrl; linksByEvent[eventGuid].earlyBirdDuoPrice = price; }
       }
     }
 
@@ -207,8 +218,17 @@ serve(async (req) => {
         duo_discount:       r.wht_duodiscount ?? null,
         payment_url:        links.primary || "",
         duo_payment_url:    links.duo || "",
+        business_payment_url: links.business || "",
         eb_payment_url:     links.earlyBird || "",
         eb_duo_payment_url: links.earlyBirdDuo || "",
+        // Preis (wht_price) des jeweiligen Zahlungslinks — für "Heute fällig" im
+        // Bestell-Widget (Payment/widget.html). Existiert (Stand 2026-08-21) nur
+        // in DEV, ist dann null.
+        payment_price:        links.primaryPrice ?? null,
+        duo_payment_price:    links.duoPrice ?? null,
+        business_payment_price: links.businessPrice ?? null,
+        eb_payment_price:     links.earlyBirdPrice ?? null,
+        eb_duo_payment_price: links.earlyBirdDuoPrice ?? null,
         // Alle verknüpften Zahlungslinks (ungefiltert) — fürs Debug-Panel in kalender.html
         payment_links:      allLinksByEvent[eventGuid] || [],
       };

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Checkout – Adriana und Sorin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root { --orange: #ff6300; --navy: #00224d; --white: #ffffff; --green: #16a34a; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #f0f2f5;
+    min-height: 100vh;
+    padding: 40px 16px 80px;
+  }
+
+  .card {
+    max-width: 640px;
+    margin: 0 auto;
+    background: var(--white);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 4px 32px rgba(0,0,0,0.10);
+  }
+
+  /* ── Header ── */
+  .hdr {
+    background: var(--navy);
+    padding: 40px 44px 32px;
+    position: relative;
+  }
+  .hdr::after {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 5px; background: var(--orange);
+  }
+  .hdr-logo {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 20px; font-weight: 700; color: var(--white);
+  }
+  .hdr-logo span { color: var(--orange); }
+  .hdr-badge {
+    display: inline-block;
+    margin-top: 16px;
+    background: rgba(34,197,94,0.18);
+    border: 1px solid rgba(34,197,94,0.4);
+    color: #22c55e;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 14px; font-weight: 700;
+    padding: 5px 14px; border-radius: 3px;
+  }
+  .hdr-badge.hidden { display: none; }
+  .hdr-eyebrow {
+    font-family: 'Orbitron', monospace;
+    font-size: 10px; font-weight: 700; letter-spacing: .18em;
+    text-transform: uppercase; color: var(--orange);
+    margin-top: 22px; display: block;
+  }
+  .hdr h1 {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 28px; font-weight: 700; color: var(--white);
+    margin-top: 8px; line-height: 1.25;
+  }
+  .hdr p {
+    color: rgba(255,255,255,0.6); font-size: 15px; line-height: 1.7;
+    margin-top: 12px;
+  }
+
+  /* ── Scarcity bar ── */
+  .scarcity {
+    background: #fff3cd;
+    border-bottom: 1px solid rgba(255,165,0,0.3);
+    padding: 13px 44px;
+    font-size: 13.5px; color: #664d00; font-weight: 500;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .scarcity.hidden { display: none; }
+
+  /* ── Body ── */
+  .body { padding: 36px 44px 0; }
+  .body p.intro { color: #2d3748; font-size: 16px; line-height: 1.75; margin-bottom: 8px; }
+
+  /* ── Price box ── */
+  .price-box {
+    margin-top: 26px;
+    border: 2px solid var(--orange);
+    border-radius: 6px;
+    padding: 28px 26px;
+    text-align: center;
+    background: rgba(255,99,0,0.03);
+  }
+  .price-box .pass-name {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 21px; font-weight: 700; color: var(--navy);
+    margin-bottom: 12px;
+  }
+  .price-box .price-line { display: flex; align-items: baseline; justify-content: center; gap: 12px; flex-wrap: wrap; }
+  .price-box .price-old {
+    font-size: 18px; color: #999; text-decoration: line-through;
+  }
+  .price-box .price-old.hidden { display: none; }
+  .price-box .price-new {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 36px; font-weight: 700; color: var(--orange);
+  }
+  .price-box .price-note { font-size: 12px; color: #999; margin-top: 4px; }
+  .btn-buy {
+    display: inline-block; margin-top: 20px;
+    background: var(--orange); color: var(--white);
+    border: none; border-radius: 3px;
+    padding: 16px 32px;
+    font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600;
+    text-decoration: none; cursor: pointer;
+    transition: background .2s, transform .15s;
+  }
+  .btn-buy:hover { background: #e55700; transform: translateY(-1px); }
+  .trust-row {
+    margin-top: 14px; font-size: 12px; color: #999;
+    display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap;
+  }
+  .decline-link {
+    display: block; margin-top: 14px;
+    font-size: 13px; color: rgba(0,34,77,0.4);
+    text-decoration: none;
+  }
+  .decline-link:hover { color: rgba(0,34,77,0.65); text-decoration: underline; }
+  .decline-link.hidden { display: none; }
+
+  /* ── Bonus list ── */
+  .bonus-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 10px; font-weight: 700; letter-spacing: .16em;
+    text-transform: uppercase; color: #aaa;
+    margin: 34px 0 14px;
+  }
+  .bonus-item {
+    display: flex; align-items: flex-start; gap: 16px;
+    padding: 16px 0; border-top: 1px solid #eee;
+  }
+  .bonus-item:last-child { border-bottom: 1px solid #eee; }
+  .bonus-icon {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: rgba(0,34,77,0.06);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 19px;
+  }
+  .bonus-body { flex: 1; }
+  .bonus-name { font-size: 15.5px; font-weight: 700; color: var(--navy); }
+  .bonus-desc { font-size: 13.5px; color: #666; margin-top: 3px; line-height: 1.6; }
+  .bonus-value { font-size: 12.5px; color: var(--orange); font-weight: 600; margin-top: 5px; }
+  .bonus-total {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 2px 4px; font-size: 14px; color: var(--navy); font-weight: 700;
+  }
+  .bonus-total span:last-child { color: var(--orange); }
+
+  /* ── Footer ── */
+  .ftr { background: var(--navy); padding: 24px 44px; margin-top: 36px; }
+  .ftr p { color: rgba(255,255,255,0.5); font-size: 12px; line-height: 1.7; }
+  .ftr a { color: rgba(255,255,255,0.5); text-decoration: none; margin-right: 14px; }
+  .ftr a:hover { color: var(--white); }
+
+  /* ── Bestell-Widget (eingebettet aus widget.html) ── */
+  .widget-embed-wrap { max-width: 960px; margin: 28px auto 0; }
+  #widget-frame { width: 100%; border: 0; display: block; }
+
+  @media (max-width: 480px) {
+    body { padding: 0 0 60px; }
+    .card { border-radius: 0; }
+    .hdr, .body, .ftr { padding-left: 24px; padding-right: 24px; }
+    .scarcity { padding-left: 24px; padding-right: 24px; }
+    .price-box { padding: 22px 18px; }
+    .price-box .price-new { font-size: 30px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="card" id="card">
+
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="hdr-logo">Adriana &amp; <span>Sorin</span></div>
+    <span class="hdr-badge" id="hdr-badge">Anmeldung bestätigt ✓</span>
+    <span class="hdr-eyebrow" id="hdr-eyebrow">Exklusives Angebot</span>
+    <h1 id="hdr-h1">Der <em style="font-style:normal;color:var(--orange);">Architekten-Pass</em></h1>
+    <p id="hdr-sub">Alles, was du brauchst, um das, was du gerade gelernt hast, sofort in dein Leben einzubauen — statt es wieder zu vergessen.</p>
+  </div>
+
+  <!-- SCARCITY -->
+  <div class="scarcity" id="scarcity">🔒 Nur begrenzt verfügbar — danach ist dieses Angebot weg.</div>
+
+  <div class="body">
+    <p class="intro" id="intro">Der Architekt Deines Lebens beginnt nicht mit einem Zufall, sondern mit einem Plan.</p>
+
+    <!-- PRICE BOX -->
+    <div class="price-box">
+      <div class="pass-name" id="pass-name">Der Architekten-Pass</div>
+      <div class="price-line">
+        <span class="price-old" id="price-old">297 €</span>
+        <span class="price-new" id="price-new">97 €</span>
+      </div>
+      <div class="price-note" id="price-note">Einmalig · zzgl. MwSt.</div>
+      <a href="#" class="btn-buy" id="btn-buy" target="_blank" rel="noopener">Jetzt sichern →</a>
+      <div class="trust-row">🔒 Sichere externe Zahlungsabwicklung · PayPal, SEPA, Kreditkarte</div>
+      <a href="#" class="decline-link" id="btn-decline">Nein danke, ich verzichte auf dieses Angebot</a>
+    </div>
+
+    <!-- BONUS LIST -->
+    <div class="bonus-title">Was enthalten ist</div>
+    <div id="bonus-list"></div>
+    <div class="bonus-total" id="bonus-total" style="display:none;">
+      <span>Gesamtwert</span><span id="bonus-total-value">0 €</span>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="ftr">
+    <p>
+      <a href="#" id="ftr-impressum">Impressum</a><a href="#" id="ftr-datenschutz">Datenschutz</a>
+      <br><br>
+      Adriana &amp; <strong style="color:var(--orange);">Sorin</strong> · Der Architekt Deines Lebens<br>
+      © <span id="footer-year">2026</span> · Alle Rechte vorbehalten
+    </p>
+  </div>
+
+</div>
+
+<!-- BESTELL-WIDGET (widget.html) -->
+<div class="widget-embed-wrap">
+  <iframe id="widget-frame" src="" title="Bestell-Widget" scrolling="no"></iframe>
+</div>
+
+<script>
+(function () {
+  // ============================================================
+  // Diese Seite ist ein wiederverwendbares Checkout-Template —
+  // ein einziges File, das per Query-Parameter für unterschiedliche
+  // Angebote (auch auf unterschiedlichen Landingpages/Domains)
+  // verlinkt werden kann, statt es pro Angebot zu kopieren.
+  // Ohne Parameter zeigt es die Demo-Werte des Architekten-Passes.
+  //
+  // Unterstützte Parameter (alle optional):
+  //   produkt          – Name des Passes/Angebots (Preisbox + Titel-Fallback)
+  //   titel             – H1-Text (Fallback: "Der {produkt}")
+  //   eyebrow           – kleines Label über der H1
+  //   badge             – Text der grünen Badge; "badge=" (leer) blendet sie aus
+  //   text              – Fließtext direkt unter der H1
+  //   intro             – Absatz im Body, unter der Scarcity-Leiste
+  //   scarcity          – Text der gelben Verknappungs-Leiste; "scarcity=" blendet sie aus
+  //   preis_alt         – durchgestrichener Altpreis (nur Zahl, z. B. 297)
+  //   preis_neu         – aktueller Preis (nur Zahl, z. B. 97)
+  //   preis_hinweis     – kleiner Text unter dem Preis (z. B. "Einmalig · zzgl. MwSt.")
+  //   kauf_url          – Ziel-Link des Kaufen-Buttons (echter Zahlungslink, z. B. Ablefy/Elopage)
+  //   kauf_text         – Beschriftung des Kaufen-Buttons
+  //   verzicht_url       – Ziel-Link des "Nein danke"-Links; ohne Parameter bleibt der Link auf "#"
+  //   verzicht_text      – Beschriftung des "Nein danke"-Links; "verzicht_text=" blendet den Link aus
+  //   impressum_url, datenschutz_url – Footer-Links
+  //   vorname           – falls gesetzt, wird die H1 persönlich ergänzt ("Hallo {vorname} —")
+  //   boni              – JSON-Array, überschreibt die Bonus-Liste komplett, z. B.
+  //                        [{"icon":"📐","name":"Der Bauplan","desc":"...","wert":145}]
+  //
+  // Beispiel-Link für ein anderes Angebot:
+  //   checkout.html?produkt=VIP-Pass&preis_alt=247&preis_neu=97&kauf_url=https://...&scarcity=Nur%2010%20Pl%C3%A4tze%20verf%C3%BCgbar
+  //
+  // Unter der Boni-Liste wird zusätzlich per iframe das Bestell-Widget
+  // (widget.html, im selben Ordner) eingebettet — siehe die Parameter-Liste
+  // dort (u. a. id). Die eigene Query-String wird 1:1
+  // an widget.html durchgereicht.
+  // ============================================================
+
+  var p = new URLSearchParams(window.location.search);
+  var has = function (name) { return p.has(name); };
+  var get = function (name, fallback) { return has(name) ? p.get(name) : fallback; };
+
+  var produkt = get('produkt', 'Architekten-Pass');
+  document.title = 'Checkout – ' + produkt + ' – Adriana und Sorin';
+
+  document.getElementById('hdr-eyebrow').textContent = get('eyebrow', 'Exklusives Angebot');
+
+  var badge = get('badge', 'Anmeldung bestätigt ✓');
+  var elBadge = document.getElementById('hdr-badge');
+  if (badge) { elBadge.textContent = badge; } else { elBadge.classList.add('hidden'); }
+
+  var vorname = get('vorname', '');
+  var titelDefault = 'Der <em style="font-style:normal;color:var(--orange);">' + produkt + '</em>';
+  document.getElementById('hdr-h1').innerHTML = (vorname ? 'Hallo ' + vorname + ' — ' : '') + get('titel', titelDefault);
+
+  document.getElementById('hdr-sub').textContent = get('text', 'Alles, was du brauchst, um das, was du gerade gelernt hast, sofort in dein Leben einzubauen — statt es wieder zu vergessen.');
+  document.getElementById('intro').textContent = get('intro', 'Der Architekt Deines Lebens beginnt nicht mit einem Zufall, sondern mit einem Plan.');
+
+  var scarcity = get('scarcity', '🔒 Nur begrenzt verfügbar — danach ist dieses Angebot weg.');
+  var elScarcity = document.getElementById('scarcity');
+  if (scarcity) { elScarcity.textContent = scarcity; } else { elScarcity.classList.add('hidden'); }
+
+  document.getElementById('pass-name').textContent = produkt;
+
+  var preisAlt = get('preis_alt', '297');
+  var preisNeu = get('preis_neu', '97');
+  var elPreisAlt = document.getElementById('price-old');
+  if (preisAlt) { elPreisAlt.textContent = preisAlt + ' €'; } else { elPreisAlt.classList.add('hidden'); }
+  document.getElementById('price-new').textContent = preisNeu + ' €';
+  document.getElementById('price-note').textContent = get('preis_hinweis', 'Einmalig · zzgl. MwSt.');
+
+  var elBuy = document.getElementById('btn-buy');
+  elBuy.href = get('kauf_url', '#');
+  elBuy.textContent = get('kauf_text', 'Jetzt sichern →');
+
+  var elDecline = document.getElementById('btn-decline');
+  var declineText = get('verzicht_text', 'Nein danke, ich verzichte auf dieses Angebot');
+  if (declineText) {
+    elDecline.textContent = declineText;
+    elDecline.href = get('verzicht_url', '#');
+  } else {
+    elDecline.classList.add('hidden');
+  }
+
+  document.getElementById('ftr-impressum').href = get('impressum_url', '#');
+  document.getElementById('ftr-datenschutz').href = get('datenschutz_url', '#');
+  document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+  // ── Bonusliste ──
+  var defaultBoni = [
+    { icon: '📐', name: 'Der Bauplan', desc: 'Die Aufzeichnung des Workshops — unbegrenzter Zugriff, damit nichts verloren geht.', wert: 145 },
+    { icon: '🧱', name: 'Die Baustellen-Crew', desc: 'Exklusive WhatsApp-Gruppe mit direktem Draht zu Adriana & Sorin für deine Fragen.', wert: 27 },
+    { icon: '📘', name: 'Das Fundament-Workbook', desc: 'Dein Arbeitsbuch zur Architekten-Methode — Schritt für Schritt dein Leben neu entwerfen.', wert: 27 },
+    { icon: '🎧', name: 'Die innere Statik', desc: 'Geführte Audio-Session, um alte Blockaden zu lösen, die dir sonst im Weg stehen.', wert: 49 }
+  ];
+
+  var boni = defaultBoni;
+  if (has('boni')) {
+    try {
+      var parsed = JSON.parse(p.get('boni'));
+      if (Array.isArray(parsed)) boni = parsed;
+    } catch (err) {
+      console.error('Konnte "boni"-Parameter nicht als JSON lesen:', err);
+    }
+  }
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  var elList = document.getElementById('bonus-list');
+  elList.innerHTML = boni.map(function (b) {
+    var wertLine = (b.wert || b.wert === 0)
+      ? '<div class="bonus-value">Wert: ' + esc(b.wert) + ' €</div>'
+      : '';
+    return (
+      '<div class="bonus-item">' +
+        '<div class="bonus-icon">' + esc(b.icon || '✓') + '</div>' +
+        '<div class="bonus-body">' +
+          '<div class="bonus-name">' + esc(b.name || '') + '</div>' +
+          '<div class="bonus-desc">' + esc(b.desc || '') + '</div>' +
+          wertLine +
+        '</div>' +
+      '</div>'
+    );
+  }).join('');
+
+  var totalWert = boni.reduce(function (sum, b) { return sum + (Number(b.wert) || 0); }, 0);
+  if (totalWert > 0) {
+    document.getElementById('bonus-total').style.display = 'flex';
+    document.getElementById('bonus-total-value').textContent = totalWert + ' €';
+  }
+
+  // ── Bestell-Widget einbetten ──
+  // Reicht die eigene Query-String unverändert an widget.html durch, damit
+  // z. B. "id" auf einem geteilten Link beide
+  // Seiten gleichzeitig steuern — widget.html ignoriert Parameter, die es
+  // nicht kennt (z. B. "produkt", "preis_alt"), von selbst.
+  var elFrame = document.getElementById('widget-frame');
+  elFrame.src = 'widget.html' + window.location.search;
+
+  function resizeWidgetFrame() {
+    try {
+      var doc = elFrame.contentDocument;
+      if (doc && doc.documentElement) {
+        elFrame.style.height = doc.documentElement.scrollHeight + 'px';
+      }
+    } catch (err) {
+      // Andere Origin (z. B. widget.html auf anderer Domain gehostet) —
+      // dann lässt sich die Höhe nicht auslesen, iframe behält seine
+      // Default-Höhe. Kein Fehlerfall, den man dem Nutzer zeigen müsste.
+    }
+  }
+
+  elFrame.addEventListener('load', function () {
+    resizeWidgetFrame();
+    try {
+      var doc = elFrame.contentDocument;
+      new MutationObserver(resizeWidgetFrame).observe(doc.body, { subtree: true, childList: true, attributes: true });
+    } catch (err) {}
+  });
+  window.addEventListener('resize', resizeWidgetFrame);
+})();
+</script>
+</body>
+</html>
