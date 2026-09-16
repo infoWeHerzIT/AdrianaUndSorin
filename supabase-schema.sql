@@ -1,5 +1,5 @@
 -- ================================================================
--- Adriana & Sorin – Supabase Schema
+-- Der Architekt deines Lebens – Supabase Schema
 -- Ausführen im Supabase SQL Editor (supabase.com → SQL Editor)
 -- ================================================================
 

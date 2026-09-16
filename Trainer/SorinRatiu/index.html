@@ -3,387 +3,637 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Über mich – Sorin Ratiu</title>
+<title>Meine Geschichte – Sorin Ratiu | Der Architekt deines Lebens</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --orange: #ff6300;
-    --navy: #00224d;
-    --white: #ffffff;
+  :root{
+    --paper:#f6f0e3;
+    --paper-2:#eee4cf;
+    --ink:#1d1a13;
+    --ink-soft:#5c5645;
+    --navy-900:#00224d;
+    --navy-800:#0b3a6b;
+    --navy-700:#1b4f8f;
+    --line-light:#cdbe9c;
+    --line-dark:#37486b;
+    --orange-500:#e8630a;
+    --orange-600:#c55408;
+    --orange-100:#fdfaf6;
+    --cream:#fffaf1;
+    --shadow:0 18px 40px -22px rgba(15,27,45,.35);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Work Sans",system-ui,-apple-system,sans-serif;
+    font-size:16px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:"Fraunces",Georgia,serif;
+    font-weight:600;
+    line-height:1.08;
+    text-wrap:balance;
+    margin:0;
+    color:inherit;
+  }
+  p{margin:0;}
+  a{color:inherit;text-decoration:none;}
+  img{max-width:100%;display:block;}
+  .container{
+    max-width:1160px;
+    margin:0 auto;
+    padding-inline:24px;
+  }
+  @media (min-width:720px){ .container{padding-inline:40px;} }
+
+  .eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    font-family:"Work Sans",sans-serif;
+    font-weight:600;
+    font-size:.72rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--orange-500);
+  }
+  .eyebrow::before{
+    content:"";
+    width:22px;height:1px;
+    background:var(--orange-500);
+    display:inline-block;
+  }
+  .eyebrow.on-dark{color:var(--orange-100);}
+
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:14px 26px;
+    border-radius:2px;
+    font-family:"Work Sans",sans-serif;
+    font-weight:600;
+    font-size:.95rem;
+    letter-spacing:.01em;
+    cursor:pointer;
+    border:1px solid transparent;
+    transition:transform .15s ease, background .15s ease, border-color .15s ease;
+  }
+  .btn:hover{transform:translateY(-1px);}
+  .btn-primary{background:var(--orange-500);color:var(--cream);}
+  .btn-primary:hover{background:var(--orange-600);}
+  .btn-ghost-dark{border-color:rgba(255,250,241,.35);color:var(--cream);}
+  .btn-ghost-dark:hover{border-color:var(--cream);}
+  .btn-ghost-light{border-color:var(--ink);color:var(--ink);}
+  .btn-ghost-light:hover{background:var(--ink);color:var(--cream);}
+
+  .photo-frame{
+    border-radius:6px;
+    overflow:hidden;
+    box-shadow:var(--shadow);
+  }
+  .photo-frame img{width:100%;height:100%;object-fit:cover;}
+  .ratio-portrait{aspect-ratio:4/5;}
+
+  /* ---------- image placeholder (for photos not yet available) ---------- */
+  .img-ph{
+    border:2px dashed var(--line-light);
+    border-radius:6px;
+    background:
+      repeating-linear-gradient(45deg, rgba(29,26,19,.03) 0 2px, transparent 2px 14px),
+      var(--paper-2);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    gap:10px;
+    padding:28px 20px;
+    color:var(--ink-soft);
+    width:100%;
+  }
+  .img-ph svg{width:30px;height:30px;opacity:.7;flex:none;}
+  .img-ph .ph-label{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--orange-500);}
+  .img-ph .ph-detail{font-size:.85rem;font-style:italic;max-width:32ch;line-height:1.5;}
+
+  /* ---------- header ---------- */
+  header{
+    position:sticky;
+    top:env(safe-area-inset-top,0px);
+    z-index:40;
+    background:var(--navy-900);
+    border-bottom:1px solid var(--line-dark);
+  }
+  .nav-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding-block:16px;
+    gap:20px;
+  }
+  .logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:var(--cream);
+    font-family:"Fraunces",serif;
+    font-weight:600;
+    font-size:1.05rem;
+    letter-spacing:.01em;
+    white-space:nowrap;
+  }
+  .logo svg{width:26px;height:26px;flex:none;color:var(--orange-500);}
+  nav.primary-nav{
+    display:none;
+    align-items:center;
+    gap:30px;
+  }
+  nav.primary-nav a{
+    color:#dbe2ee;
+    font-size:.9rem;
+    font-weight:500;
+  }
+  nav.primary-nav a:hover, nav.primary-nav a.active{color:var(--cream);}
+  .nav-actions{display:flex;align-items:center;gap:14px;}
+  .menu-toggle{
+    display:inline-flex;
+    background:none;border:1px solid var(--line-dark);
+    color:var(--cream);
+    padding:9px 11px;
+    border-radius:2px;
+  }
+  @media (min-width:960px){
+    nav.primary-nav{display:flex;}
+    .menu-toggle{display:none;}
+  }
+  #mobileMenu{
+    display:none;
+    flex-direction:column;
+    gap:2px;
+    padding-block:8px 18px;
+    border-top:1px solid var(--line-dark);
+  }
+  #mobileMenu.open{display:flex;}
+  #mobileMenu a{
+    color:#dbe2ee;
+    padding:10px 4px;
+    font-size:.95rem;
+    border-bottom:1px solid rgba(255,255,255,.06);
+  }
+  @media (min-width:960px){ #mobileMenu{display:none !important;} }
+
+  /* ---------- section shells ---------- */
+  section{padding-block:76px;}
+  section.on-navy{background:var(--navy-900);color:var(--cream);}
+  section.on-navy-2{background:var(--navy-800);color:var(--cream);}
+  section.on-paper2{background:var(--paper-2);}
+
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative;
+    background:var(--navy-900);
+    color:var(--cream);
+    overflow:hidden;
+    padding-block:84px 90px;
+  }
+  .hero::before{
+    content:"";
+    position:absolute;inset:0;
+    background-image:
+      linear-gradient(rgba(255,250,241,.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,250,241,.05) 1px, transparent 1px);
+    background-size:44px 44px;
+    mask-image:linear-gradient(to bottom, black, transparent 88%);
+    pointer-events:none;
+  }
+  .hero-grid{
+    position:relative;
+    display:grid;
+    gap:48px;
+    align-items:center;
+  }
+  @media (min-width:900px){
+    .hero-grid{grid-template-columns:1.15fr .85fr;gap:60px;}
+  }
+  .hero h1{font-size:clamp(2.3rem,5vw,3.6rem);margin-top:16px;}
+  .hero .lede{
+    margin-top:22px;
+    max-width:52ch;
+    font-size:1.08rem;
+    color:#dbe2ee;
+  }
+  .hero-ctas{display:flex;flex-wrap:wrap;gap:14px;margin-top:34px;}
+  .hero-note{
+    margin-top:16px;
+    font-size:.82rem;
+    color:#a9b6cb;
   }
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 17px;
-    background: var(--white);
-    color: var(--navy);
-    overflow-x: hidden;
+  /* ---------- generic body section ---------- */
+  .lede-block{margin-top:20px;color:var(--ink-soft);max-width:60ch;font-size:1.05rem;}
+  .lede-block p{margin-bottom:18px;}
+  .lede-block p:last-child{margin-bottom:0;}
+  section.on-navy .lede-block, section.on-navy-2 .lede-block{color:#dbe2ee;}
+  .pain-close{
+    margin-top:34px;
+    font-family:"Fraunces",serif;
+    font-style:italic;
+    font-size:1.3rem;
+    color:var(--ink);
+    max-width:46ch;
   }
 
-  .content-wrap {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 32px;
+  /* ---------- philosophy band ---------- */
+  .philosophy{display:grid;gap:40px;}
+  @media (min-width:900px){ .philosophy{grid-template-columns:1fr 1fr;gap:70px;align-items:start;} }
+  .philosophy h2{font-size:clamp(1.7rem,3.4vw,2.5rem);}
+  .philosophy .body-text{margin-top:20px;color:#dbe2ee;max-width:48ch;}
+  .pull-quote{
+    font-family:"Fraunces",serif;
+    font-style:italic;
+    font-size:1.35rem;
+    line-height:1.4;
+    color:var(--cream);
+    border-left:2px solid var(--orange-500);
+    padding-left:22px;
+  }
+  .arch-terms{margin-top:26px;display:flex;flex-wrap:wrap;gap:8px;}
+  .arch-terms span{
+    font-size:.72rem;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:#a9b6cb;
+    border:1px solid var(--line-dark);
+    border-radius:2px;
+    padding:6px 10px;
   }
 
-  h1, h2 {
-    font-family: 'Fredoka', sans-serif;
-    font-weight: 700;
+  /* ---------- about-grid ---------- */
+  .about-grid{display:grid;gap:44px;}
+  @media (min-width:900px){ .about-grid{grid-template-columns:.85fr 1.15fr;gap:64px;align-items:center;} }
+  .about-grid h2{font-size:clamp(1.9rem,3.6vw,2.6rem);margin-top:14px;}
+  .about-bio{margin-top:22px;font-size:1.05rem;color:var(--ink-soft);max-width:58ch;}
+  section.on-navy .about-bio{color:#dbe2ee;}
+  .credentials{display:flex;flex-wrap:wrap;gap:10px 14px;padding:0;margin-block:26px 0;}
+  .credentials li{
+    list-style:none;
+    font-size:.85rem;
+    font-weight:600;
+    padding:8px 14px;
+    background:var(--cream);
+    border:1px solid var(--line-light);
+    border-radius:2px;
   }
+  .about-story{
+    margin-top:30px;
+    padding:22px 24px;
+    background:var(--cream);
+    border-left:3px solid var(--orange-500);
+  }
+  .about-story p{font-style:italic;color:var(--ink-soft);}
+  .about-story p + p{margin-top:10px;}
 
-  .orange { color: var(--orange); }
+  /* ---------- method grid ---------- */
+  .method-grid{
+    display:grid;
+    gap:1px;
+    margin-top:44px;
+    background:var(--line-light);
+    border:1px solid var(--line-light);
+  }
+  @media (min-width:720px){ .method-grid{grid-template-columns:repeat(2,1fr);} }
+  @media (min-width:1080px){ .method-grid{grid-template-columns:repeat(3,1fr);} }
+  .method-card{background:var(--paper);padding:30px 26px;display:flex;flex-direction:column;gap:14px;}
+  .method-card .idx{font-family:"Fraunces",serif;font-size:.95rem;color:var(--orange-500);font-weight:600;}
+  .method-card h3{font-size:1.15rem;}
+  .method-card p{font-size:.92rem;color:var(--ink-soft);}
 
-  /* ─── HEADER ─── */
-  header {
-    background: var(--navy);
-    padding: 18px 0;
-  }
-  header .content-wrap {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  header img.logo {
-    height: 64px;
-    width: auto;
-  }
-  header .back-link {
-    color: rgba(255,255,255,0.65);
-    font-size: 14px;
-    text-decoration: none;
-    border: 1px solid rgba(255,255,255,0.25);
-    padding: 8px 16px;
-    border-radius: 2px;
-    transition: color .2s, border-color .2s, background .2s;
-  }
-  header .back-link:hover {
-    color: var(--white);
-    border-color: rgba(255,255,255,0.5);
-    background: rgba(255,255,255,0.08);
-  }
+  /* ---------- final cta ---------- */
+  .final-cta{text-align:center;display:flex;flex-direction:column;align-items:center;gap:22px;}
+  .final-cta h2{font-size:clamp(1.9rem,4vw,2.8rem);max-width:24ch;}
+  .final-cta .ctas{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;}
 
-  /* ─── SECTIONS ─── */
-  section { padding: 90px 0; position: relative; }
-  .bg-navy { background: var(--navy); color: var(--white); }
-  .bg-white { background: var(--white); color: var(--navy); }
-  .bg-orange { background: var(--orange); color: var(--white); }
-
-  .split {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 60px;
-    align-items: center;
+  /* ---------- footer ---------- */
+  footer{background:var(--navy-900);color:#a9b6cb;padding-block:56px 30px;}
+  .footer-grid{display:grid;gap:36px;}
+  @media (min-width:820px){ .footer-grid{grid-template-columns:1.3fr .8fr .8fr .9fr;} }
+  .footer-grid h4{
+    color:var(--cream);font-family:"Work Sans",sans-serif;font-size:.8rem;
+    letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px;font-weight:700;
   }
-  .split.reverse .split-photo { order: 2; }
-  .split.reverse .split-text { order: 1; }
-
-  .split-photo img {
-    width: 100%;
-    height: auto;
-    display: block;
+  .footer-grid ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px;}
+  .footer-grid a{font-size:.88rem;}
+  .footer-grid a:hover{color:var(--cream);}
+  .footer-logo{display:flex;align-items:center;gap:10px;color:var(--cream);font-family:"Fraunces",serif;font-weight:600;font-size:1.05rem;}
+  .footer-logo svg{width:24px;height:24px;color:var(--orange-500);}
+  .footer-tag{margin-top:14px;font-size:.86rem;max-width:34ch;}
+  .footer-bottom{
+    margin-top:44px;padding-top:22px;border-top:1px solid var(--line-dark);
+    display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;font-size:.8rem;
   }
-
-  h1.page-title {
-    font-size: clamp(36px, 4.5vw, 56px);
-    line-height: 1.1;
-    margin-bottom: 32px;
-  }
-
-  h2.section-title {
-    font-size: clamp(28px, 3.5vw, 44px);
-    line-height: 1.15;
-    margin-bottom: 32px;
-  }
-
-  .intro-list {
-    list-style: none;
-    font-family: 'Fredoka', sans-serif;
-    font-size: clamp(20px, 2.4vw, 28px);
-    font-weight: 600;
-    margin-bottom: 28px;
-  }
-  .intro-list > li:first-child { margin-bottom: 10px; }
-  .intro-list ul { list-style: none; padding-left: 4px; }
-  .intro-list ul li {
-    position: relative;
-    padding-left: 26px;
-    margin-bottom: 4px;
-  }
-  .intro-list ul li::before {
-    content: '•';
-    position: absolute; left: 4px;
-    color: var(--white);
-  }
-
-  p { line-height: 1.8; margin-bottom: 22px; }
-  p:last-child { margin-bottom: 0; }
-
-  .lines p { margin-bottom: 4px; }
-
-  .centered { text-align: center; }
-  .centered p { margin-bottom: 6px; }
-
-  .callout-lines {
-    font-weight: 700;
-    color: var(--orange);
-    text-align: center;
-    margin-top: 40px;
-  }
-  .callout-lines p { margin-bottom: 6px; }
-  section.bg-navy .callout-lines,
-  section.bg-orange .callout-lines,
-  section.bg-orange .callout-lines strong { color: var(--white); }
-
-  ul.plain-list { list-style: none; margin: 0 0 22px; }
-  ul.plain-list li {
-    position: relative;
-    padding-left: 22px;
-    margin-bottom: 8px;
-    line-height: 1.6;
-  }
-  ul.plain-list li::before {
-    content: '•';
-    position: absolute; left: 4px;
-    color: var(--orange);
-  }
-  section.bg-navy ul.plain-list li::before,
-  section.bg-orange ul.plain-list li::before { color: var(--white); }
-
-  ol.numbered-list {
-    margin: 0 0 22px;
-    padding-left: 26px;
-  }
-  ol.numbered-list li {
-    margin-bottom: 18px;
-    line-height: 1.7;
-  }
-
-  .qr-wrap {
-    margin-top: 8px;
-    max-width: 180px;
-  }
-  .qr-wrap img { width: 100%; display: block; }
-
-  /* ─── CTA ─── */
-  .cta-btn {
-    display: inline-block;
-    border: 2px solid #2ecc71;
-    color: #2ecc71;
-    font-weight: 700;
-    text-decoration: none;
-    padding: 16px 36px;
-    border-radius: 2px;
-    margin-top: 24px;
-    transition: background .2s, color .2s;
-  }
-  .cta-btn:hover { background: #2ecc71; color: var(--white); }
-
-  /* ─── FOOTER ─── */
-  footer {
-    background: #000d1f;
-    padding: 32px 0;
-    text-align: center;
-  }
-  footer p {
-    margin: 0;
-    font-size: 12px;
-    color: rgba(255,255,255,0.35);
-    letter-spacing: .04em;
-  }
-
-  /* ─── RESPONSIVE ─── */
-  @media (max-width: 860px) {
-    .split, .split.reverse { grid-template-columns: 1fr; gap: 32px; }
-    .split.reverse .split-photo, .split .split-photo { order: -1; }
-    .split.reverse .split-text, .split .split-text { order: 2; }
-    .split-photo img { max-width: 340px; margin: 0 auto; }
-    section { padding: 60px 0; }
-    header .content-wrap { flex-direction: column; gap: 14px; }
-  }
+  .footer-bottom .legal-links{display:flex;gap:18px;flex-wrap:wrap;}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="content-wrap">
-    <img class="logo" src="images/logo-uniquely-me.png" alt="Uniquely Me">
-    <a class="back-link" href="../../index.html">Zurück zur Startseite</a>
+  <div class="container nav-row">
+    <a href="../../startseite.html#top" class="logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 20h18M5 20V9l7-5 7 5v11M9 20v-6h6v6"/></svg>
+      Der Architekt deines Lebens
+    </a>
+    <nav class="primary-nav">
+      <a href="#top" class="active">Über mich</a>
+      <a href="../../startseite.html#methode">Methode</a>
+      <a href="../../startseite.html#angebote">Angebote</a>
+      <a href="../../startseite.html#stimmen">Stimmen</a>
+      <a href="../../startseite.html#kontakt">Kontakt</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="../../startseite.html#kontakt" class="btn btn-primary" style="padding:11px 20px;font-size:.85rem;">Erstgespräch</a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Menü öffnen" aria-expanded="false">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="container" id="mobileMenu">
+    <a href="#top">Über mich</a>
+    <a href="../../startseite.html#methode">Methode</a>
+    <a href="../../startseite.html#angebote">Angebote</a>
+    <a href="../../startseite.html#stimmen">Stimmen</a>
+    <a href="../../startseite.html#kontakt">Kontakt</a>
   </div>
 </header>
 
-<section class="bg-navy">
-  <div class="content-wrap split">
-    <div class="split-text">
-      <h1 class="page-title">Über mich</h1>
+<main id="top">
 
-      <ul class="intro-list">
-        <li>🌱 Ich bin <span class="orange">Sorin Ratiu</span></li>
-        <li>
-          <ul>
-            <li><span class="orange">Coach</span></li>
-            <li><span class="orange">Mentor</span> und</li>
-            <li><span class="orange">International zertifizierter NLP Master</span>.</li>
-          </ul>
-        </li>
-      </ul>
-
-      <p>Ich begleite ambitionierte Menschen und Führungspersönlichkeiten dabei, innere Blockaden zu lösen, Klarheit zu gewinnen und entschlossen ins Handeln zu kommen. Nicht durch kurzfristige Motivation – sondern durch nachhaltige, strukturelle Transformation.</p>
-
-      <p>Mit über zwei Jahrzehnten Erfahrung in Beratung, Technologie und professioneller Entwicklung verbinde ich strategische Präzision mit menschlicher Tiefe. Mein Hintergrund in Software, CRM-Systemen und agilen Umfeldern hat mich gelehrt, komplexe Systeme zu verstehen und funktionierende Strukturen aufzubauen.</p>
-
-      <div class="lines">
-        <p>Aber vor allem bin ich jemand, der nicht nur über Veränderung spricht – sondern sie selbst durchlebt hat.</p>
-        <p>Ich kenne das Gefühl, zu funktionieren, aber nicht erfüllt zu sein.</p>
-        <p>Ich kenne Zweifel, innere Konflikte und die Frage: <em>War das schon alles?</em></p>
-        <p><strong>Und ich habe mich entschieden, mein Leben bewusst in die Hand zu nehmen.</strong></p>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <span class="eyebrow on-dark">Meine Geschichte</span>
+        <h1>Vom Funktionieren zum bewussten Gestalten</h1>
+        <p class="lede">Ich bin NLP-Trainer, Coach und Seminarleiter — aber vor allem jemand, der nicht nur über Veränderung spricht, sondern sie selbst durchlebt hat. Das hier ist die Geschichte dahinter: warum ich heute Frauen begleite, die nach außen funktionieren und innerlich wieder Klarheit suchen.</p>
+        <div class="hero-ctas">
+          <a href="../../startseite.html#kontakt" class="btn btn-primary">Kostenloses Erstgespräch vereinbaren</a>
+          <a href="../../startseite.html" class="btn btn-ghost-dark">Zur Startseite</a>
+        </div>
       </div>
-
-      <div class="callout-lines">
-        <p>Verantwortung statt Ausreden.</p>
-        <p>Klarheit statt Chaos.</p>
-        <p>Handlung statt Stillstand.</p>
+      <div class="photo-frame ratio-portrait">
+        <img src="images/sorin-profil-flat.jpg" alt="Sorin Ratiu">
       </div>
     </div>
-    <div class="split-photo">
-      <img src="images/headshot.png" alt="Sorin Ratiu">
+  </section>
+
+  <!-- GESCHICHTE -->
+  <section>
+    <div class="container">
+      <span class="eyebrow">Der Wendepunkt</span>
+      <h2 style="font-size:clamp(1.8rem,3.6vw,2.4rem);margin-top:16px;max-width:28ch;">Eine einzige Übung an einem Seminartisch</h2>
+      <div class="lede-block">
+        <p>Nach vielen Jahren in der Persönlichkeitsentwicklung habe ich eine Sache immer wieder gesehen: Menschen tragen viel mit sich herum und wissen nicht, wie sie sich anpassen oder ändern können. Ich kenne das aus eigener Erfahrung — ich hielt eine so schnelle, echte Veränderung damals für unmöglich, ohne einen "Mega-Experten" an meiner Seite.</p>
+        <p>Der Wendepunkt kam bei einem NLP-Practitioner-Seminar. Die erste Übung drehte sich um Wahrnehmungsfilter: kein Mensch sieht dasselbe Ereignis gleich, weil jeder eigene Filter aus Prägung mitbringt — durch Eltern, Umfeld, Erfahrungen. In diesem Moment habe ich verstanden, wie einfach eine echte Veränderung im Kopf beginnt — und dass mir das nie jemand beigebracht hatte.</p>
+        <p>Direkt danach war klar: Wie wir denken, ist ein enormer Hebel im eigenen Leben. Menschen kontrollieren selbst ihr Leben und können aktiv ihre Zukunft gestalten, statt nur das zu leben, was sie für möglich halten. Genau das musste ich weitergeben.</p>
+      </div>
+      <p class="pain-close">Wie wir denken, ist der größte Hebel, den wir haben — und niemand hat uns je gezeigt, wie man ihn bewusst nutzt.</p>
     </div>
-  </div>
-</section>
+  </section>
 
-<section class="bg-white">
-  <div class="content-wrap split reverse">
-    <div class="split-text">
-      <p>Doch <strong>die wichtigste Struktur ist die innere.</strong></p>
-      <p>Echter Erfolg entsteht nicht nur im Außen.</p>
-      <p>Er beginnt im Denken, in der Identität, in der emotionalen Stabilität.</p>
-      <p>Im Laufe meiner Karriere habe ich Menschen und Teams international begleitet – bei beruflichen Neuausrichtungen, persönlichen Wendepunkten und inneren Veränderungsprozessen. Ich unterstütze dabei, limitierende Muster zu durchbrechen, Selbstzweifel zu transformieren und eine klare Vision mit konkreten Zielen zu entwickeln.</p>
-
-      <p><strong class="orange">Mein Ansatz verbindet:</strong></p>
-      <ul class="plain-list">
-        <li>Strategische Klarheit</li>
-        <li>NLP-basierte Transformationsmethoden</li>
-        <li>Systemisches Coaching</li>
-        <li>Ehrliches, direktes Feedback</li>
-        <li>Konkrete Umsetzung</li>
-      </ul>
-
-      <p>Ich arbeite <strong>nicht an der Oberfläche</strong>.<br>Ich arbeite <strong>an der Wurzel</strong>.</p>
-
-      <div class="qr-wrap">
-        <img src="images/qr-code.png" alt="QR-Code">
+  <!-- PHILOSOPHIE -->
+  <section class="on-navy">
+    <div class="container philosophy">
+      <div>
+        <span class="eyebrow on-dark">Was ich daraus mitgenommen habe</span>
+        <h2 style="margin-top:16px;">Du bist nicht deinen Umständen ausgeliefert.</h2>
+        <div class="arch-terms">
+          <span>Wahrnehmungsfilter</span><span>Selbstführung</span><span>Klarheit</span><span>Bewusste Entscheidung</span><span>Eigene Vision</span>
+        </div>
+      </div>
+      <div>
+        <p class="pull-quote">„Ich habe gelernt: Der Abstand zwischen dem, was man früh spürt, und dem, wonach man tatsächlich handelt, ist der teuerste Abstand im Leben."</p>
+        <p class="body-text" style="margin-top:24px;">Das habe ich nicht nur einmal erlebt — sondern mehrfach, auch schmerzhaft, in beruflichen und persönlichen Wendepunkten. Genau deshalb arbeite ich heute nicht mit Motivationssprüchen, sondern mit einem strukturierten Prozess: damit du nicht erst Jahre später erkennst, was du heute schon spürst.</p>
       </div>
     </div>
-    <div class="split-photo">
-      <img src="images/standing-suit.png" alt="Sorin Ratiu">
-    </div>
-  </div>
-</section>
+  </section>
 
-<section class="bg-orange">
-  <div class="content-wrap split">
-    <div class="split-photo">
-      <img src="images/orange-chair.png" alt="Sorin Ratiu">
-    </div>
-    <div class="split-text">
-      <h2 class="section-title">Warum ich der Richtige für dich bin?</h2>
-      <ol class="numbered-list">
-        <li><strong>Ich arbeite tief – nicht oberflächlich.</strong> Wir kratzen nicht an Symptomen. Wir gehen an die Wurzel. Blockaden, Glaubenssätze, emotionale Muster – dort entsteht echte Veränderung.</li>
-        <li><strong>Ich verbinde Struktur mit Transformation.</strong> Durch meine Erfahrung in Beratung, Strategie und Coaching bekommst du nicht nur Inspiration, sondern einen klaren Plan. Veränderung wird messbar und umsetzbar. 3. Ich sehe dein Potenzial – auch wenn du es noch nicht siehst.</li>
-        <li><strong>Manchmal brauchst du jemanden,</strong> der an dich glaubt, bis du selbst wieder an dich glaubst.</li>
-        <li><strong>Ich fordere dich.</strong> Wachstum passiert nicht in der Komfortzone. Wenn du nur Bestätigung suchst, bin ich nicht der Richtige. Wenn du echte Entwicklung willst, schon.</li>
-        <li><strong>Ich arbeite partnerschaftlich.</strong> Ich bin nicht der Held deiner Geschichte. Du bist es.</li>
-        <li><strong>Ich gebe dir Werkzeuge, Klarheit und Spiegel</strong> – damit du dein Leben bewusst gestaltest.</li>
-      </ol>
-
-      <div class="centered">
-        <p><strong>Wenn du bereit bist, Verantwortung zu übernehmen, alte Muster zu durchbrechen und dein nächstes Level zu erreichen, dann bin ich der richtige Begleiter an deiner Seite.</strong></p>
-        <p>Nicht, weil ich alles für dich löse.</p>
-        <p><strong>Sondern weil ich dir zeige, wie du es selbst tust.</strong></p>
+  <!-- ALS COACH -->
+  <section class="on-paper2">
+    <div class="container about-grid">
+      <div class="photo-frame ratio-portrait">
+        <img src="images/pointing.jpg" alt="Sorin Ratiu als Coach">
+      </div>
+      <div>
+        <span class="eyebrow">Als Coach</span>
+        <h2 style="font-size:clamp(1.8rem,3.6vw,2.4rem);margin-top:16px;max-width:30ch;">Drei Werkzeuge, die mehr bewegen als tausend Ratschläge</h2>
+        <div class="lede-block">
+          <p>Die meisten Ratschläge scheitern, weil sie am Verstand ansetzen — nicht an den Mustern, die längst automatisch laufen. Als NLP-Coach setze ich deshalb an drei Stellen an, die in einem normalen Gespräch praktisch nie zur Sprache kommen.</p>
+        </div>
       </div>
     </div>
-  </div>
-</section>
-
-<section class="bg-navy">
-  <div class="content-wrap split reverse">
-    <div class="split-text">
-      <h2 class="section-title">Vom Schatten ins Licht</h2>
-      <p><em>– das ist nicht nur die Geschichte der Menschen, die ich begleite. Es ist auch meine eigene.</em></p>
-
-      <p>Es gab einen Punkt in meinem Leben, an dem ich gespürt habe: So wie es ist, kann es nicht bleiben. Äußerlich funktionierte vieles. Innerlich fehlten Klarheit, Richtung und echte Erfüllung. Ich stand vor denselben Fragen, die heute viele meiner Klienten bewegen:</p>
-
-      <ul class="plain-list">
-        <li>Warum wiederholen sich bestimmte Muster?</li>
-        <li>Warum halte ich mich selbst zurück?</li>
-        <li>Was will ich wirklich – und wer muss ich werden, um es zu erreichen?</li>
-      </ul>
-
-      <p>Ich habe begonnen, Verantwortung zu übernehmen.</p>
-
-      <div class="callout-lines">
-        <p>Für meine Entscheidungen.</p>
-        <p>Für meine Gedanken.</p>
-        <p>Für mein Leben.</p>
+    <div class="container" style="margin-top:48px;">
+      <div class="method-grid">
+        <div class="method-card">
+          <span class="idx">Reframing</span>
+          <p>Du siehst eine Situation nicht, wie sie ist — du siehst sie durch einen Filter, der dir oft längst nicht mehr dient. Reframing verschiebt genau diesen Filter, bis aus einer Sackgasse plötzlich eine Option wird.</p>
+        </div>
+        <div class="method-card">
+          <span class="idx">Submodalitäten</span>
+          <p>Wie sich ein Gedanke anfühlt, hängt nicht nur davon ab, was du denkst, sondern wie du es dir vorstellst — Bild, Ton, Nähe, Farbe. Kleine Verschiebungen hier verändern oft mehr als stundenlanges Reden.</p>
+        </div>
+        <div class="method-card">
+          <span class="idx">Anchoring</span>
+          <p>Zustände wie Ruhe oder Klarheit lassen sich gezielt abrufbar machen — wie ein Knopf, den du drückst, wenn du ihn brauchst, statt zu hoffen, dass er zufällig da ist.</p>
+        </div>
       </div>
+      <p class="pain-close">Klingt nach Technik? Ist es auch. Aber sie wirkt oft in Minuten, wo reines Nachdenken seit Jahren nicht weiterkam.</p>
+    </div>
+  </section>
 
-      <p style="margin-top: 32px;">Durch intensive Weiterbildung, praktische Erfahrung und tiefe innere Arbeit entwickelte ich mich zum erfahrenen Coach und Mentor sowie zum international zertifizierten NLP Master. Doch Titel waren nie das Ziel.</p>
-
-      <p class="centered"><strong>Transformation war das Ziel.</strong></p>
-
-      <p>Ich lernte, innere Blockaden aufzulösen, emotionale Zustände bewusst zu steuern, Werte zu klären und eine klare Vision zu entwickeln. Vor allem lernte ich: Veränderung beginnt nicht im Außen – <strong>sie beginnt im Inneren.</strong></p>
-
-      <p>Heute begleite ich Menschen als Lebensarchitekt dabei, ihre innere Struktur neu zu gestalten. Ich verbinde analytische Klarheit mit tiefgehender Coaching-Expertise. Mit Methoden aus NLP, systemischem Coaching und eigenen Konzepten unterstütze ich sie dabei, Selbstzweifel zu überwinden, emotionale Stabilität aufzubauen und konkrete Ziele entschlossen umzusetzen.</p>
-
-      <div class="centered">
-        <p><strong>Ich bin nicht der Held ihrer Geschichte.</strong></p>
-        <p>Ich zeige dir, wie du selbst zum Helden wirst.</p>
+  <!-- ALS MENTOR -->
+  <section class="on-navy-2">
+    <div class="container about-grid">
+      <div class="photo-frame ratio-portrait">
+        <img src="images/arms-up.jpg" alt="Sorin Ratiu als Mentor">
       </div>
-
-      <p style="margin-top: 32px;">Mein Weg hat mir gezeigt:</p>
-      <ul class="plain-list">
-        <li><strong>Man muss nicht im Autopilot bleiben.</strong></li>
-        <li><strong>Man kann das Steuer übernehmen.</strong></li>
-      </ul>
-
-      <img src="images/logo-uniquely-me.png" alt="Uniquely Me" style="height: 90px; margin-top: 20px;">
-    </div>
-    <div class="split-photo">
-      <img src="images/arms-up.png" alt="Sorin Ratiu">
-    </div>
-  </div>
-</section>
-
-<section class="bg-white">
-  <div class="content-wrap split">
-    <div class="split-text">
-      <p>Wenn du nur Motivation suchst, bin ich nicht der Richtige.<br>Wenn du bereit bist, echte Veränderung zu leben – dann passen wir zusammen.</p>
-
-      <p>Ich arbeite auf <strong class="orange">Deutsch</strong>, <strong class="orange">Englisch</strong> und <strong class="orange">Rumänisch</strong> mit Menschen, die mehr wollen als bloßen Erfolg:</p>
-
-      <p class="centered orange"><strong>Sie wollen innere Stärke, Klarheit und nachhaltige Wirkung.</strong></p>
-
-      <p>Du brauchst keinen Zuschauer in deinem Leben.<br>Du brauchst einen strategischen Partner, der dein Potenzial klar erkennt – und dich fordert, es zu leben.</p>
-
-      <p class="centered orange"><strong>Wenn dich das anspricht, dann lass uns dein nächstes Kapitel gestalten.</strong></p>
-
-      <div class="centered">
-        <a class="cta-btn" href="mailto:sorin.ratiu@weherzit.de">Buche jetzt dein kostenloses Discovery Call</a>
+      <div>
+        <span class="eyebrow on-dark">Als Mentor</span>
+        <h2 style="margin-top:16px;">Ich kann bis heute nicht erklären, woher ich das wusste.</h2>
+        <p class="pull-quote" style="margin-top:26px;">„Manche Momente lassen sich nicht planen. Man muss nur bereit sein, sie zu erkennen."</p>
+        <div class="lede-block" style="margin-top:24px;">
+          <p>Bei einem zehntägigen NLP-Practitioner-Seminar spürte ich schon ab dem zweiten Tag: Am vorletzten Tag würde ich eine bestimmte Teilnehmerin zu ihrem Thema coachen. Ich habe es anderen vorher gesagt — sie haben es bezweifelt.</p>
+          <p>Die Teilnehmerin hatte ihr Thema zuvor bei anderen Coaches versucht zu lösen. Am Ende wählte sie mich, als es bei ihr nicht mehr anders ging. Was folgte, war eine sehr intensive, emotionale Coaching-Situation — mit einem starken emotionalen Ausbruch. Ich wusste in diesem Moment, wann und wie ich sie ansprechen musste, ohne die Situation eskalieren zu lassen. Nach 20 bis 30 Minuten kippte die Stimmung in gemeinsames, befreiendes Lachen. Am Ende war sie ruhig — und sehr glücklich.</p>
+          <p>Woher diese Intuition für das exakte Timing kam, kann ich bis heute nicht erklären. Aber genau das ist für mich Mentoring: nicht nur Methode, sondern auch ein Gespür dafür, wann jemand bereit ist für den nächsten Schritt — und wann nicht.</p>
+        </div>
       </div>
     </div>
-    <div class="split-photo">
-      <img src="images/pointing.png" alt="Sorin Ratiu">
+  </section>
+
+  <!-- ALS BERATER -->
+  <section>
+    <div class="container about-grid">
+      <div class="photo-frame ratio-portrait">
+        <img src="images/orange-chair.png" alt="Sorin Ratiu als Berater">
+      </div>
+      <div>
+        <span class="eyebrow">Als Berater</span>
+        <h2 style="max-width:32ch;">Struktur ist kein Widerspruch zu echter Veränderung</h2>
+        <div class="lede-block">
+          <p>Bevor ich Coach wurde, war ich Gesellschafter einer Firma — und habe erlebt, was passiert, wenn Entscheidungen zu spät getroffen werden, weil offene Kommunikation fehlt. Ich wusste ein Jahr im Voraus, dass ein Konflikt kommen würde, und habe trotzdem gewartet, bis er mich buchstäblich vor die Tür gesetzt hat. Diese Lektion hat mich geprägt.</p>
+          <p>Beruflich arbeite ich seitdem auch im Bereich Microsoft Dynamics — mit Prozessen, Strukturen, klaren Abläufen. Diese Denkweise bringe ich in mein Coaching ein: kein vages Bauchgefühl-Programm, sondern ein nachvollziehbarer Bauplan mit klaren Schritten. Wer mit mir arbeitet, bekommt nicht nur emotionale Klarheit, sondern auch eine Struktur, an der er sich festhalten kann, wenn es unbequem wird.</p>
+        </div>
+        <div class="arch-terms" style="margin-top:22px;">
+          <span style="color:var(--orange-600);border-color:var(--line-light);">Klare Entscheidungen</span><span style="color:var(--orange-600);border-color:var(--line-light);">Strukturierte Prozesse</span><span style="color:var(--orange-600);border-color:var(--line-light);">Frühzeitige Kommunikation</span><span style="color:var(--orange-600);border-color:var(--line-light);">Nachvollziehbare Schritte</span>
+        </div>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
+
+  <!-- WARUM ICH -->
+  <section class="on-paper2">
+    <div class="container">
+      <span class="eyebrow">Wie ich arbeite</span>
+      <h2 style="font-size:clamp(1.8rem,3.6vw,2.4rem);margin-top:16px;max-width:28ch;">Was meine Begleitung ausmacht</h2>
+      <div class="method-grid">
+        <div class="method-card">
+          <span class="idx">01</span>
+          <h3>Ich arbeite an der Ursache, nicht am Symptom</h3>
+          <p>Nicht das lauteste Symptom lösen, sondern verstehen, wo der eigentliche Druckpunkt sitzt — mit NLP, Coaching und ehrlichem Hinsehen.</p>
+        </div>
+        <div class="method-card">
+          <span class="idx">02</span>
+          <h3>Struktur statt nur Inspiration</h3>
+          <p>Ein individueller Bauplan statt Standardprogramm — Veränderung wird konkret, nachvollziehbar und umsetzbar.</p>
+        </div>
+        <div class="method-card">
+          <span class="idx">03</span>
+          <h3>Ehrlich statt bequem</h3>
+          <p>Ich beschönige nichts. Manchmal ist die unbequeme Frage der wichtigste Schritt — aber immer mit Respekt, nie von oben herab.</p>
+        </div>
+        <div class="method-card">
+          <span class="idx">04</span>
+          <h3>Kein Standardprogramm von der Stange</h3>
+          <p>Jede Situation ist anders. Deshalb passe ich den Prozess an dich an, statt dich in ein starres Konzept zu pressen.</p>
+        </div>
+        <div class="method-card">
+          <span class="idx">05</span>
+          <h3>Du bist die Architektin deines Lebens</h3>
+          <p>Ich löse nicht für dich. Ich gebe dir die Werkzeuge und den Spiegel, damit du dein Leben selbst gestaltest.</p>
+        </div>
+        <div class="method-card">
+          <span class="idx">06</span>
+          <h3>Gemeinsam mit Adriana</h3>
+          <p>Bei Workshops und Seminaren wie „Stress-frei &amp; mentale Stärke" arbeite ich eng mit meiner Kollegin Adriana zusammen — zwei Perspektiven auf demselben Weg.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HEUTE -->
+  <section id="heute">
+    <div class="container about-grid">
+      <div class="photo-frame ratio-portrait">
+        <img src="images/standing-suit.png" alt="Sorin Ratiu">
+      </div>
+      <div>
+        <span class="eyebrow">Heute</span>
+        <h2>Das ist nicht nur die Geschichte der Menschen, die ich begleite. Es ist auch meine eigene.</h2>
+        <p class="about-bio">Es gab einen Punkt in meinem Leben, an dem ich gespürt habe: So wie es ist, kann es nicht bleiben. Äußerlich funktionierte vieles. Innerlich fehlten Klarheit, Richtung und echte Erfüllung. Durch intensive Weiterbildung, praktische Erfahrung und tiefe innere Arbeit habe ich mich zum NLP-Trainer, Coach und Seminarleiter entwickelt — mit dem Fokus, den ich mir selbst gewünscht hätte: Selbstführung, Stressmanagement und mentale Stärke für Frauen 35–55, die nach außen funktionieren und innerlich wieder zu sich finden wollen.</p>
+        <ul class="credentials">
+          <li>NLP-Trainer &amp; Coach</li>
+          <li>Seminarleiter</li>
+          <li>Stressmanagement &amp; Mentale Stärke</li>
+          <li>Individuelle Lebensplanung</li>
+        </ul>
+        <div class="about-story">
+          <p>„Ich bin nicht die Heldin deiner Geschichte. Du bist es. Ich zeige dir, wie du selbst dein Leben entwirfst."</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="on-navy">
+    <div class="container final-cta">
+      <span class="eyebrow on-dark">Nächster Schritt</span>
+      <h2>Wenn dich das anspricht, lass uns sprechen.</h2>
+      <p class="lede" style="max-width:56ch;">Kein Verkaufsdruck, kein Standardprogramm. Im kostenlosen Erstgespräch schauen wir gemeinsam ehrlich auf deine Situation.</p>
+      <div class="ctas">
+        <a href="../../startseite.html#kontakt" class="btn btn-primary">Kostenloses Erstgespräch vereinbaren</a>
+        <a href="../../startseite.html" class="btn btn-ghost-dark">Zurück zur Startseite</a>
+      </div>
+    </div>
+  </section>
+
+</main>
 
 <footer>
-  <p>© Sorin Ratiu</p>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 20h18M5 20V9l7-5 7 5v11M9 20v-6h6v6"/></svg>
+          Der Architekt deines Lebens
+        </div>
+        <p class="footer-tag">NLP-Trainer, Coach &amp; Seminarleiter für Frauen 35–55, die wieder wirklich leben statt nur funktionieren wollen. Raum Nürnberg.</p>
+      </div>
+      <div>
+        <h4>Seite</h4>
+        <ul>
+          <li><a href="../../startseite.html#ueber-mich">Über die Marke</a></li>
+          <li><a href="../../startseite.html#methode">Methode</a></li>
+          <li><a href="../../startseite.html#angebote">Angebote</a></li>
+          <li><a href="../../startseite.html#stimmen">Stimmen</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Angebote</h4>
+        <ul>
+          <li><a href="../../startseite.html#angebote">Einzelcoaching</a></li>
+          <li><a href="../../startseite.html#angebote">Gruppenprogramm</a></li>
+          <li><a href="../../startseite.html#angebote">Workshops &amp; Seminare</a></li>
+          <li><a href="../../startseite.html#freebie">Ist-Situations-Check</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Kontakt</h4>
+        <ul>
+          <li><a href="mailto:kontakt@der-architekt-deines-lebens.de">kontakt@der-architekt-deines-lebens.de</a></li>
+          <li><a href="../../startseite.html#kontakt">Erstgespräch anfragen</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Der Architekt deines Lebens</span>
+      <div class="legal-links">
+        <a href="#">Impressum</a>
+        <a href="#">Datenschutz</a>
+        <a href="#">AGB</a>
+      </div>
+    </div>
+  </div>
 </footer>
+
+<script>
+  (function(){
+    var btn = document.getElementById('menuToggle');
+    var menu = document.getElementById('mobileMenu');
+    if(!btn||!menu) return;
+    btn.addEventListener('click', function(){
+      var open = menu.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    menu.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click', function(){ menu.classList.remove('open'); btn.setAttribute('aria-expanded','false'); });
+    });
+  })();
+</script>
 
 </body>
 </html>

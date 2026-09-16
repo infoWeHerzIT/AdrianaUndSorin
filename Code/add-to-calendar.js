@@ -154,7 +154,7 @@
     var lines = [
       'BEGIN:VCALENDAR',
       'VERSION:2.0',
-      'PRODID:-//Adriana & Sorin//Add to Calendar//DE',
+      'PRODID:-//Der Architekt deines Lebens//Add to Calendar//DE',
       'CALSCALE:GREGORIAN',
       'METHOD:PUBLISH'
     ].concat(buildVEvent(opts, times), ['END:VCALENDAR']);
@@ -170,7 +170,7 @@
     var lines = [
       'BEGIN:VCALENDAR',
       'VERSION:2.0',
-      'PRODID:-//Adriana & Sorin//Add to Calendar//DE',
+      'PRODID:-//Der Architekt deines Lebens//Add to Calendar//DE',
       'CALSCALE:GREGORIAN',
       'METHOD:PUBLISH'
     ].concat(body, ['END:VCALENDAR']);
