@@ -8,9 +8,9 @@
     --paper-2:#eee4cf;
     --ink:#1d1a13;
     --ink-soft:#5c5645;
-    --navy-900:#0f1b2d;
-    --navy-800:#182a44;
-    --navy-700:#23395c;
+    --navy-900:#00224d;
+    --navy-800:#0b3a6b;
+    --navy-700:#1b4f8f;
     --line-light:#cdbe9c;
     --line-dark:#37486b;
     --orange-500:#d9682c;
@@ -133,6 +133,9 @@
   .ratio-portrait{aspect-ratio:4/5;}
   .ratio-square{aspect-ratio:1/1;}
   .ratio-wide{aspect-ratio:16/9;}
+
+  .photo-frame{border-radius:6px;overflow:hidden;box-shadow:var(--shadow);}
+  .photo-frame img{width:100%;height:100%;object-fit:cover;}
 
   /* ---------- header ---------- */
   header{
@@ -344,7 +347,7 @@
     border-left:3px solid var(--orange-500);
   }
   .about-story p{font-style:italic;color:var(--ink-soft);}
-  .about-story a{color:var(--orange-600);font-style:normal;font-weight:600;}
+  .about-story a{color:var(--orange-600);font-style:normal;font-weight:600;display:block;margin-top:10px;}
 
   /* ---------- method ---------- */
   .method-grid{
@@ -610,15 +613,13 @@
         <h1>Du funktionierst.<br>Aber lebst du auch?</h1>
         <p class="lede">Wenn du seit Jahren für alle da bist, aber selbst kaum noch vorkommst: Der Architekt deines Lebens begleitet Frauen an genau diesem Wendepunkt mit einem individuellen Bauplan aus NLP, Coaching und klarer Lebensplanung – zurück zu einem Leben, das sich wieder wie deins anfühlt.</p>
         <div class="hero-ctas">
-          <a href="https://claude.ai/artifact/YYAN2v4wAvt4Qz2m58aBdB" target="_blank" rel="noopener" class="btn btn-primary">Kostenlosen Ist-Situations-Check starten</a>
+          <a href="#freebie" class="btn btn-primary">Kostenlosen Ist-Situations-Check starten</a>
           <a href="#ueber-mich" class="btn btn-ghost-dark">Die Vision dahinter</a>
         </div>
         <p class="hero-note">Kein Standardprogramm. Kein Motivations-Bla. Ein klarer, individueller Prozess.</p>
       </div>
-      <div class="img-ph ratio-portrait on-dark">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
-        <span class="ph-label">Bildplatzhalter — Hero</span>
-        <span class="ph-detail">Foto mit Sorin und Adriana gemeinsam, Hochformat 4:5. Nahbar, ruhig-selbstbewusst, beide im Bild (z. B. im Seminarraum), warmes natürliches Licht, kein Stock-Foto-Look.</span>
+      <div class="photo-frame ratio-portrait">
+        <img src="Trainer/Adriana%20und%20Sorin.png" alt="Sorin Ratiu und Adriana im Gespräch">
       </div>
     </div>
   </section>
@@ -658,10 +659,8 @@
   <!-- ABOUT -->
   <section id="ueber-mich">
     <div class="container about-grid">
-      <div class="img-ph ratio-portrait">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
-        <span class="ph-label">Bildplatzhalter — Team</span>
-        <span class="ph-detail">Foto von Sorin und Adriana gemeinsam, z. B. im Seminarraum oder in einem Workshop-Moment. Hochformat 4:5, gleiche Bildsprache wie Hero-Foto für Wiedererkennung, beide erkennbar im Bild.</span>
+      <div class="photo-frame ratio-portrait">
+        <img src="Trainer/Adriana%20und%20Sorin.png" alt="Sorin Ratiu und Adriana im Gespräch">
       </div>
       <div>
         <span class="eyebrow">Wer hinter der Marke steht</span>
@@ -675,7 +674,8 @@
         </ul>
         <div class="about-story">
           <p>„Der Moment, der alles verändert hat, war kein großer Plan – sondern eine einzige Übung an einem Seminartisch." Lies, wie aus dieser Erkenntnis die Vision von Der Architekt deines Lebens wurde.</p>
-          <a href="#">Die ganze Geschichte lesen →</a>
+          <a href="Trainer/SorinRatiu/index.html">Sorins Geschichte lesen →</a>
+          <a href="Trainer/AdrianaVukin/index.html">Adrianas Geschichte lesen →</a>
         </div>
       </div>
     </div>
@@ -795,14 +795,15 @@
             <span>Beziehung</span><span>Beruf &amp; Zeit</span><span>Energie &amp; Körper</span><span>Finanzen</span><span>Selbstbild</span>
           </div>
         </div>
-        <div class="form-ph">
+        <form class="form-ph" id="checkLeadForm">
           <label for="ph-name">Vorname</label>
-          <input id="ph-name" type="text" placeholder="Dein Vorname" disabled>
+          <input id="ph-name" name="vorname" type="text" placeholder="Dein Vorname" autocomplete="given-name" required>
           <label for="ph-mail">E-Mail</label>
-          <input id="ph-mail" type="email" placeholder="deine@email.de" disabled>
-          <a href="https://claude.ai/artifact/YYAN2v4wAvt4Qz2m58aBdB" target="_blank" rel="noopener" class="btn btn-primary" style="margin-top:6px;justify-content:center;">Jetzt kostenlos starten</a>
-          <p class="form-note">Verlinkt auf den Check-Entwurf. Formular hier auf der Startseite bewusst als Vorschau/Platzhalter belassen — final an bestehende Power-Automate/Dynamics-365-Anbindung koppeln.</p>
-        </div>
+          <input id="ph-mail" name="email" type="email" placeholder="deine@email.de" autocomplete="email" required>
+          <button type="submit" class="btn btn-primary" id="checkSubmitBtn" style="margin-top:6px;justify-content:center;">Jetzt kostenlos starten</button>
+          <p class="form-note" id="checkErrorMsg" style="display:none;color:var(--orange-500);">Da ist etwas schiefgelaufen. Bitte versuch es gleich noch einmal.</p>
+          <p class="form-note">Kein Spam. Deine Daten werden ausschließlich für deinen Check und gelegentliche Impulse von Der Architekt deines Lebens genutzt. Abmeldung jederzeit möglich.</p>
+        </form>
       </div>
     </div>
   </section>
@@ -828,7 +829,7 @@
       <h2>Bereit, dein Leben wieder selbst zu gestalten?</h2>
       <div class="ctas">
         <a href="#kontakt" class="btn btn-primary">Kostenloses Erstgespräch vereinbaren</a>
-        <a href="https://claude.ai/artifact/YYAN2v4wAvt4Qz2m58aBdB" target="_blank" rel="noopener" class="btn btn-ghost-dark">Ist-Situations-Check starten</a>
+        <a href="#freebie" class="btn btn-ghost-dark">Ist-Situations-Check starten</a>
       </div>
     </div>
   </section>
@@ -899,6 +900,41 @@
     });
     menu.querySelectorAll('a').forEach(function(a){
       a.addEventListener('click', function(){ menu.classList.remove('open'); btn.setAttribute('aria-expanded','false'); });
+    });
+  })();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="Code/dynamics-crm.js"></script>
+<script>
+  (function(){
+    var form = document.getElementById('checkLeadForm');
+    if(!form) return;
+    var errorMsg = document.getElementById('checkErrorMsg');
+    var submitBtn = document.getElementById('checkSubmitBtn');
+
+    form.addEventListener('submit', async function(e){
+      e.preventDefault();
+      errorMsg.style.display = 'none';
+      var vorname = document.getElementById('ph-name').value.trim();
+      var email = document.getElementById('ph-mail').value.trim();
+      if(!vorname || !email) return;
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Einen Moment …';
+
+      try {
+        // Legt den Lead in Dynamics 365 an (supabase/functions/crm-submit[-dev])
+        // — fire-and-forget: ein CRM-Fehler blockiert nie die Weiterleitung zum Check.
+        await dynamicsCRM.submitLead({ firstname: vorname, email: email });
+        window.location.href = 'Tools/ist-situations-check.html?vorname=' + encodeURIComponent(vorname) + '&email=' + encodeURIComponent(email);
+      } catch (err) {
+        console.error(err);
+        errorMsg.style.display = 'block';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Jetzt kostenlos starten';
+      }
     });
   })();
 </script>
