@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Über mich – Adriana Vukin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange: #ff6300;
+    --navy: #00224d;
+    --white: #ffffff;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 17px;
+    background: var(--white);
+    color: var(--navy);
+    overflow-x: hidden;
+  }
+
+  .content-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  h1, h2 {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+  }
+
+  .orange { color: var(--orange); }
+
+  /* ─── HEADER ─── */
+  header {
+    background: var(--navy);
+    padding: 22px 0;
+  }
+  header .content-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  header .brand {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--white);
+  }
+  header .brand span { color: var(--orange); }
+  header .back-link {
+    color: rgba(255,255,255,0.65);
+    font-size: 14px;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.25);
+    padding: 8px 16px;
+    border-radius: 2px;
+    transition: color .2s, border-color .2s, background .2s;
+  }
+  header .back-link:hover {
+    color: var(--white);
+    border-color: rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.08);
+  }
+
+  /* ─── SECTIONS ─── */
+  section { padding: 90px 0; position: relative; }
+  .bg-navy { background: var(--navy); color: var(--white); }
+  .bg-white { background: var(--white); color: var(--navy); }
+  .bg-orange { background: var(--orange); color: var(--white); }
+
+  .split {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: 60px;
+    align-items: center;
+  }
+  .split.reverse { grid-template-columns: 1.1fr 0.9fr; }
+  .split.reverse .split-photo { order: 2; }
+  .split.reverse .split-text { order: 1; }
+
+  .split-photo img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 4px;
+  }
+
+  h1.page-title {
+    font-size: clamp(36px, 4.5vw, 56px);
+    line-height: 1.1;
+    margin-bottom: 32px;
+  }
+
+  h2.section-title {
+    font-size: clamp(28px, 3.5vw, 44px);
+    line-height: 1.15;
+    margin-bottom: 32px;
+  }
+
+  p { line-height: 1.8; margin-bottom: 22px; }
+  p:last-child { margin-bottom: 0; }
+
+  .lines p { margin-bottom: 4px; }
+  .lines { margin-bottom: 22px; }
+
+  .centered { text-align: center; }
+  .centered p { margin-bottom: 6px; }
+
+  .callout-lines {
+    font-weight: 700;
+    color: var(--orange);
+    text-align: center;
+    margin: 32px 0;
+  }
+  .callout-lines p { margin-bottom: 6px; }
+  section.bg-navy .callout-lines,
+  section.bg-orange .callout-lines { color: var(--white); }
+
+  ul.plain-list { list-style: none; margin: 0 0 22px; }
+  ul.plain-list li {
+    position: relative;
+    padding-left: 22px;
+    margin-bottom: 8px;
+    line-height: 1.6;
+  }
+  ul.plain-list li::before {
+    content: '•';
+    position: absolute; left: 4px;
+    color: var(--orange);
+  }
+  section.bg-navy ul.plain-list li::before,
+  section.bg-orange ul.plain-list li::before { color: var(--white); }
+
+  .subtitle-tag {
+    font-family: 'Fredoka', sans-serif;
+    font-size: clamp(18px, 2vw, 24px);
+    font-weight: 600;
+    color: var(--orange);
+    margin-bottom: 28px;
+  }
+  section.bg-navy .subtitle-tag { color: var(--orange); }
+
+  /* ─── THEME CARDS ─── */
+  .themes-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    margin: 40px 0;
+  }
+  .theme-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 24px 20px;
+    text-align: center;
+  }
+  .theme-card h3 {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 16px;
+    color: var(--orange);
+    margin-bottom: 8px;
+  }
+  .theme-card p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.7);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  blockquote {
+    border-left: 4px solid var(--orange);
+    padding-left: 20px;
+    margin: 32px 0;
+    font-style: italic;
+    color: rgba(255,255,255,0.85);
+  }
+  blockquote .attr {
+    display: block;
+    margin-top: 10px;
+    font-style: normal;
+    font-size: 13px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+  }
+
+  /* ─── CTA ─── */
+  .cta-btn {
+    display: inline-block;
+    border: 2px solid #2ecc71;
+    color: #2ecc71;
+    font-weight: 700;
+    text-decoration: none;
+    padding: 16px 36px;
+    border-radius: 2px;
+    margin-top: 12px;
+    transition: background .2s, color .2s;
+  }
+  .cta-btn:hover { background: #2ecc71; color: var(--white); }
+
+  .closing-line {
+    text-align: center;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 20px;
+    margin: 32px 0;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: #000d1f;
+    padding: 32px 0;
+    text-align: center;
+  }
+  footer p {
+    margin: 0;
+    font-size: 12px;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: .04em;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 860px) {
+    .split, .split.reverse { grid-template-columns: 1fr; gap: 32px; }
+    .split .split-photo, .split.reverse .split-photo { order: -1; }
+    .split .split-text, .split.reverse .split-text { order: 2; }
+    .split-photo img { max-width: 300px; margin: 0 auto; }
+    section { padding: 60px 0; }
+    header .content-wrap { flex-direction: column; gap: 14px; }
+    .themes-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="content-wrap">
+    <div class="brand">Adriana <span>Vukin</span></div>
+    <a class="back-link" href="../../index.html">Zurück zur Startseite</a>
+  </div>
+</header>
+
+<section class="bg-navy">
+  <div class="content-wrap split">
+    <div class="split-photo">
+      <img src="images/adriana.png" alt="Adriana Vukin">
+    </div>
+    <div class="split-text">
+      <h1 class="page-title">Meine Geschichte</h1>
+
+      <p>Ich habe lange gesucht. Mir viele Fragen gestellt. Und irgendwann meinen Weg gefunden.</p>
+      <p>Ich war schon immer jemand, der gerne viel Verantwortung übernimmt.</p>
+      <p>Ich kümmere mich, organisiere, löse Probleme und versuche, Dinge möglich zu machen. Lange Zeit dachte ich, genau das bedeutet Stärke: durchhalten, weitermachen und auch dann funktionieren, wenn es eigentlich schon zu viel wird.</p>
+      <p>Doch irgendwann habe ich gemerkt, dass man nach außen stark wirken kann und innerlich trotzdem nicht mehr weiß, wer man eigentlich ist und was man wirklich möchte.</p>
+
+      <div class="lines">
+        <p>Was ist eigentlich mein Warum?</p>
+        <p>Warum tue ich das, was ich tue?</p>
+        <p>Was treibt mich an?</p>
+        <p>Und was davon gehört wirklich zu mir?</p>
+      </div>
+
+      <p>Ich habe lange gesucht und mir viele Fragen gestellt.</p>
+      <p>Denn zwischen Verantwortung, Erwartungen und dem Anspruch, alles schaffen zu müssen, bleibt man selbst manchmal auf der Strecke.</p>
+
+      <div class="lines">
+        <p>Als Mensch. Als Adri.</p>
+      </div>
+
+      <p>Auch ich kenne dieses Gefühl.</p>
+
+      <div class="lines">
+        <p>Den Kopf, der nicht abschaltet.</p>
+        <p>Das Gefühl, funktionieren zu müssen.</p>
+        <p>Den Wunsch, alles richtig zu machen.</p>
+        <p>Für andere da zu sein und Verantwortung zu übernehmen.</p>
+      </div>
+
+      <p>Und gleichzeitig die Frage:</p>
+
+      <div class="callout-lines">
+        <p>„Was brauche eigentlich ich?“</p>
+        <p>„Wer bin ich hinter all dem Stress?“</p>
+      </div>
+
+      <p>Diese Fragen haben meinen eigenen Weg verändert.</p>
+      <p>Ich habe begonnen, mich intensiver mit mir selbst, meinen Gedanken, meinen Emotionen und meinen inneren Mustern auseinanderzusetzen.</p>
+      <p>Ich habe angefangen, mich ehrlich mit mir selbst auseinanderzusetzen und mich auch bewusst getraut, tiefer hinzuschauen.</p>
+      <p>Denn genau das kann manchmal weh tun.</p>
+      <p>Wenn wir beginnen, alte Muster zu hinterfragen, Erwartungen loszulassen und uns zu fragen, was eigentlich wirklich zu uns gehört, kann das zunächst unbequem sein.</p>
+      <p>Aber genau darin liegt für mich etwas unglaublich Wertvolles.</p>
+      <p>Ich habe angefangen, innerlich freizuräumen.</p>
+      <p>Freizuräumen von Dingen, die mich geprägt haben, aber nicht mehr zu mir passten. Von Vorstellungen darüber, wie ich sein sollte. Von Erwartungen und alten Mustern.</p>
+      <p>Und je mehr ich freigeräumt habe, desto klarer wurde mein eigener Weg.</p>
+      <p>Ich habe wieder mehr gespürt, wer ich bin, was mir wichtig ist und warum ich das tue, was ich heute tue.</p>
+      <p>Und genau daraus ist meine Leidenschaft für das Mental Coaching entstanden.</p>
+    </div>
+  </div>
+</section>
+
+<section class="bg-white">
+  <div class="content-wrap">
+    <h2 class="section-title">Meine Vision</h2>
+
+    <p>Heute möchte ich einen Raum schaffen, in dem Menschen sich öffnen dürfen.</p>
+    <div class="lines">
+      <p>Einen Raum, in dem man nicht funktionieren muss.</p>
+      <p>Einen Raum, in dem man sein darf, wie man ist – ohne das Gefühl zu haben, falsch zu sein.</p>
+    </div>
+    <p>Ich möchte Menschen dabei unterstützen, tiefer in sich hineinzuschauen und wieder Zugang zu ihren eigenen Ressourcen zu finden.</p>
+    <p>Denn ich glaube fest daran:</p>
+
+    <div class="callout-lines" style="color: var(--orange);">
+      <p>Wir tragen bereits so viele Ressourcen in uns.</p>
+    </div>
+
+    <p>Oft wissen wir nur nicht, wie wir wieder Zugang zu ihnen bekommen.</p>
+    <p>Durch Stress, Erwartungen, Erfahrungen, Selbstzweifel oder alte Muster können diese Ressourcen in den Hintergrund geraten.</p>
+
+    <div class="lines">
+      <p>Aber sie sind nicht weg.</p>
+      <p>Sie sind da.</p>
+    </div>
+
+    <p>Und manchmal braucht es nur den richtigen Raum, die richtigen Fragen und jemanden, der einen ein Stück auf diesem Weg begleitet, damit sie wieder zum Leben erweckt werden.</p>
+    <p>Genau diesen Raum möchte ich schaffen.</p>
+  </div>
+</section>
+
+<section class="bg-orange">
+  <div class="content-wrap">
+    <h2 class="section-title">Was ich heute mache</h2>
+
+    <p>Durch meine Ausbildungen und meine beruflichen Erfahrungen habe ich verschiedene Methoden miteinander verbunden.</p>
+    <p>Als Mental Coach arbeite ich unter anderem mit NLP, systemischen Kurzzeitkonzepten, wingwave®, Hypnose, Trance und emotionaler Transformationsarbeit.</p>
+
+    <div class="lines">
+      <p>Dabei steht für mich nicht die Methode im Mittelpunkt.</p>
+      <p><strong>Der Mensch steht im Mittelpunkt.</strong></p>
+    </div>
+
+    <p>Ich begleite besonders Menschen, die sich in Veränderungsprozessen befinden, beruflich oder persönlich an einem Punkt stehen, an dem sie nicht mehr weiterwissen oder merken:</p>
+
+    <div class="callout-lines" style="margin: 24px 0;">
+      <p>„So wie bisher möchte ich nicht weitermachen.“</p>
+    </div>
+
+    <ul class="plain-list">
+      <li>Menschen, die ihre eigenen Ressourcen suchen und gerade keinen Zugang dazu finden.</li>
+      <li>Menschen, die viel Verantwortung tragen.</li>
+      <li>Menschen, die funktionieren, obwohl sie eigentlich eine Pause bräuchten.</li>
+      <li>Menschen, die wieder mehr Klarheit, Vertrauen und innere Stärke entwickeln möchten.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="bg-navy">
+  <div class="content-wrap">
+    <h2 class="section-title">Meine vier Herzensthemen</h2>
+    <div class="subtitle-tag">Stress · Klarheit · Resilienz · innere Stärke</div>
+
+    <p>Für mich gehören diese vier Themen zusammen.</p>
+
+    <div class="themes-grid">
+      <div class="theme-card">
+        <h3>Stress</h3>
+        <p>Wenn wir lernen, unseren Stress besser zu verstehen, entsteht Raum für Klarheit.</p>
+      </div>
+      <div class="theme-card">
+        <h3>Klarheit</h3>
+        <p>Wenn wir unsere Grenzen und Bedürfnisse wahrnehmen, entsteht mehr Selbstvertrauen.</p>
+      </div>
+      <div class="theme-card">
+        <h3>Resilienz</h3>
+        <p>Wenn wir unsere Ressourcen kennen und aktivieren, wächst unsere Resilienz.</p>
+      </div>
+      <div class="theme-card">
+        <h3>Innere Stärke</h3>
+        <p>Und wenn wir wieder Zugang zu uns selbst finden, entsteht innere Stärke.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="bg-white">
+  <div class="content-wrap">
+    <h2 class="section-title">Vielleicht bin ich genau deshalb die richtige Person für dich.</h2>
+
+    <p>Weil ich nicht nur über Veränderung spreche.</p>
+    <p>Ich kenne das Suchen. Ich kenne die Fragen. Und ich kenne den Weg, auf dem man sich selbst wieder ein Stück näherkommt.</p>
+    <p>Ich weiß, dass es Mut braucht, wirklich hinzuschauen.</p>
+    <p>Und ich weiß, wie wertvoll es sein kann, dabei nicht alleine zu sein.</p>
+
+    <div class="lines">
+      <p>Vielleicht bist du gerade selbst an einem Punkt, an dem du viele Fragen hast.</p>
+      <p>Vielleicht spürst du, dass etwas nicht mehr passt.</p>
+      <p>Vielleicht möchtest du herausfinden, was dein eigener Weg ist.</p>
+      <p>Oder vielleicht möchtest du einfach wieder mehr bei dir ankommen.</p>
+    </div>
+
+    <p>Dann möchte ich dir einen Raum geben, in dem genau das möglich ist.</p>
+    <p>Ich glaube fest daran, dass Veränderung nicht bedeutet, jemand anderes zu werden.</p>
+    <p>Es geht vielmehr darum, wieder zu entdecken, wer du wirklich bist, was dir wichtig ist und was bereits in dir steckt.</p>
+
+    <p class="centered orange"><strong>Und vielleicht bin ich genau deshalb die richtige Person für dich.</strong></p>
+  </div>
+</section>
+
+<section class="bg-navy">
+  <div class="content-wrap">
+    <h2 class="section-title">Was ich dir mitgeben möchte</h2>
+
+    <div class="lines">
+      <p>Du musst nicht immer stärker werden.</p>
+      <p>Du musst nicht alles alleine schaffen.</p>
+      <p>Du musst nicht perfekt sein.</p>
+      <p>Und du musst auch nicht jemand anderes werden, um deinen eigenen Weg zu gehen.</p>
+    </div>
+
+    <p>Vielleicht musst du manchmal nur anfangen, freizuräumen, was dich von dir selbst entfernt hat.</p>
+    <p>Und dann entsteht Raum für das, was wirklich zu dir gehört.</p>
+
+    <div class="lines">
+      <p>Für deine Klarheit.</p>
+      <p>Für deine Stärke.</p>
+      <p>Für deine Ressourcen.</p>
+      <p>Für dein eigenes Warum.</p>
+    </div>
+
+    <p>Genau dabei möchte ich dich begleiten.</p>
+
+    <blockquote>
+      „Veränderung beginnt von innen heraus.“
+    </blockquote>
+
+    <blockquote>
+      „Zusammenkommen ist ein Beginn.<br>
+      Zusammenbleiben ist ein Fortschritt.<br>
+      Zusammenarbeiten ist ein Erfolg.“
+      <span class="attr">— Henry Ford</span>
+    </blockquote>
+
+    <p class="closing-line">Vielleicht ist unser Zusammenkommen dein erster Schritt. 🌿</p>
+
+    <div class="centered">
+      <a class="cta-btn" href="mailto:vukinadriana@gmail.com">Buche jetzt dein kostenloses Erstgespräch</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© Adriana Vukin</p>
+</footer>
+
+</body>
+</html>

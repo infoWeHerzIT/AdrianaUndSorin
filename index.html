@@ -1,2399 +1,904 @@
-﻿?<!DOCTYPE html>
-<html lang="de">
-<head>
-
-
-
-  <script>window.location.replace('event-workshop.html?event_id=evt_1779977254518_2694');</script>
-
-
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Deep Coaching Workshop – Adriana und Sorin | Rodgau, 18. Juli</title>
+<title>Der Architekt deines Lebens</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --orange: #ff6300;
-    --navy: #00224d;
-    --white: #ffffff;
-    --orange-dim: rgba(255,99,0,0.12);
-    --navy-dim: rgba(0,34,77,0.06);
+  :root{
+    --paper:#f6f0e3;
+    --paper-2:#eee4cf;
+    --ink:#1d1a13;
+    --ink-soft:#5c5645;
+    --navy-900:#0f1b2d;
+    --navy-800:#182a44;
+    --navy-700:#23395c;
+    --line-light:#cdbe9c;
+    --line-dark:#37486b;
+    --orange-500:#d9682c;
+    --orange-600:#bd551f;
+    --orange-100:#f3dcc4;
+    --cream:#fffaf1;
+    --shadow:0 18px 40px -22px rgba(15,27,45,.35);
   }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Work Sans",system-ui,-apple-system,sans-serif;
+    font-size:16px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:"Fraunces",Georgia,serif;
+    font-weight:600;
+    line-height:1.08;
+    text-wrap:balance;
+    margin:0;
+    color:inherit;
+  }
+  p{margin:0;}
+  a{color:inherit;text-decoration:none;}
+  img{max-width:100%;display:block;}
+  .container{
+    max-width:1160px;
+    margin:0 auto;
+    padding-inline:24px;
+  }
+  @media (min-width:720px){ .container{padding-inline:40px;} }
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  /* ---------- eyebrow / labels ---------- */
+  .eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    font-family:"Work Sans",sans-serif;
+    font-weight:600;
+    font-size:.72rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--orange-500);
+  }
+  .eyebrow::before{
+    content:"";
+    width:22px;height:1px;
+    background:var(--orange-500);
+    display:inline-block;
+  }
+  .eyebrow.on-dark{color:var(--orange-100);}
 
-  html { scroll-behavior: smooth; }
+  /* ---------- buttons ---------- */
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:14px 26px;
+    border-radius:2px;
+    font-family:"Work Sans",sans-serif;
+    font-weight:600;
+    font-size:.95rem;
+    letter-spacing:.01em;
+    cursor:pointer;
+    border:1px solid transparent;
+    transition:transform .15s ease, background .15s ease, border-color .15s ease;
+  }
+  .btn:hover{transform:translateY(-1px);}
+  .btn-primary{background:var(--orange-500);color:var(--cream);}
+  .btn-primary:hover{background:var(--orange-600);}
+  .btn-ghost-dark{border-color:rgba(255,250,241,.35);color:var(--cream);}
+  .btn-ghost-dark:hover{border-color:var(--cream);}
+  .btn-ghost-light{border-color:var(--ink);color:var(--ink);}
+  .btn-ghost-light:hover{background:var(--ink);color:var(--cream);}
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 17px;
-    background: var(--white);
-    color: var(--navy);
-    overflow-x: hidden;
+  /* ---------- image / media placeholders ---------- */
+  .img-ph{
+    border:2px dashed var(--line-light);
+    border-radius:6px;
+    background:
+      repeating-linear-gradient(45deg, rgba(29,26,19,.03) 0 2px, transparent 2px 14px),
+      var(--paper-2);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    gap:10px;
+    padding:28px 20px;
+    color:var(--ink-soft);
+    width:100%;
   }
+  .img-ph.on-dark{
+    border-color:var(--line-dark);
+    background:
+      repeating-linear-gradient(45deg, rgba(255,250,241,.04) 0 2px, transparent 2px 14px),
+      var(--navy-700);
+    color:#c9d3e2;
+  }
+  .img-ph svg{width:30px;height:30px;opacity:.7;flex:none;}
+  .img-ph .ph-label{
+    font-size:.68rem;
+    font-weight:700;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--orange-500);
+  }
+  .img-ph.on-dark .ph-label{color:var(--orange-100);}
+  .img-ph .ph-detail{
+    font-size:.85rem;
+    font-style:italic;
+    max-width:32ch;
+    line-height:1.5;
+  }
+  .ratio-portrait{aspect-ratio:4/5;}
+  .ratio-square{aspect-ratio:1/1;}
+  .ratio-wide{aspect-ratio:16/9;}
 
-  /* ─── UTILITY ─── */
-  .orange { color: var(--orange); }
-  .tag {
-    display: inline-block;
-    background: var(--orange);
-    color: var(--white);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    padding: 5px 14px;
-    border-radius: 2px;
+  /* ---------- header ---------- */
+  header{
+    position:sticky;
+    top:env(safe-area-inset-top,0px);
+    z-index:40;
+    background:var(--navy-900);
+    border-bottom:1px solid var(--line-dark);
   }
-  .section-label {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: .18em;
-    text-transform: uppercase;
-    color: var(--orange);
-    margin-bottom: 12px;
-    display: block;
+  .nav-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding-block:16px;
+    gap:20px;
   }
+  .logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:var(--cream);
+    font-family:"Fraunces",serif;
+    font-weight:600;
+    font-size:1.05rem;
+    letter-spacing:.01em;
+    white-space:nowrap;
+  }
+  .logo svg{width:26px;height:26px;flex:none;color:var(--orange-500);}
+  nav.primary-nav{
+    display:none;
+    align-items:center;
+    gap:30px;
+  }
+  nav.primary-nav a{
+    color:#dbe2ee;
+    font-size:.9rem;
+    font-weight:500;
+  }
+  nav.primary-nav a:hover{color:var(--cream);}
+  .nav-actions{display:flex;align-items:center;gap:14px;}
+  .menu-toggle{
+    display:inline-flex;
+    background:none;border:1px solid var(--line-dark);
+    color:var(--cream);
+    padding:9px 11px;
+    border-radius:2px;
+  }
+  @media (min-width:960px){
+    nav.primary-nav{display:flex;}
+    .menu-toggle{display:none;}
+  }
+  #mobileMenu{
+    display:none;
+    flex-direction:column;
+    gap:2px;
+    padding-block:8px 18px;
+    border-top:1px solid var(--line-dark);
+  }
+  #mobileMenu.open{display:flex;}
+  #mobileMenu a{
+    color:#dbe2ee;
+    padding:10px 4px;
+    font-size:.95rem;
+    border-bottom:1px solid rgba(255,255,255,.06);
+  }
+  @media (min-width:960px){ #mobileMenu{display:none !important;} }
 
-  /* ─── NAV ─── */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    display: flex; align-items: center; justify-content: center;
-    padding: 18px 5%;
-    background: rgba(0,34,77,0.97);
-    backdrop-filter: blur(8px);
-  }
-  .nav-logo {
-    font-family: 'Fredoka', sans-serif;
-    color: var(--white);
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: -.01em;
-  }
-  .nav-logo span { color: var(--orange); }
-  .nav-cta {
-    background: var(--orange);
-    color: var(--white);
-    border: none;
-    padding: 10px 22px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    border-radius: 2px;
-    letter-spacing: .04em;
-    text-decoration: none;
-    transition: background .2s;
-  }
-  .nav-cta:hover { background: #e55700; }
-  .nav-kalender {
-    color: rgba(255,255,255,0.65);
-    font-size: 13px; font-weight: 500;
-    text-decoration: none;
-    border: 1px solid rgba(255,255,255,0.2);
-    padding: 9px 16px; border-radius: 2px;
-    letter-spacing: .04em;
-    transition: background .2s, color .2s, border-color .2s;
-  }
-  .nav-kalender:hover { background: rgba(255,255,255,0.08); color: var(--white); border-color: rgba(255,255,255,0.35); }
+  /* ---------- section shells ---------- */
+  section{padding-block:76px;}
+  section.on-navy{background:var(--navy-900);color:var(--cream);}
+  section.on-navy-2{background:var(--navy-800);color:var(--cream);}
+  section.on-paper2{background:var(--paper-2);}
+  .rule{height:1px;background:var(--line-light);border:none;margin-block:0;}
+  .rule.on-dark{background:var(--line-dark);}
 
-  /* ─── HERO ─── */
-  #hero {
-    min-height: 100vh;
-    background: var(--navy);
-    position: relative;
-    overflow: hidden;
-    padding-top: 80px;
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative;
+    background:var(--navy-900);
+    color:var(--cream);
+    overflow:hidden;
+    padding-block:84px 90px;
   }
-
-  .hero-bg-lines {
-    position: absolute; inset: 0; pointer-events: none;
+  .hero::before{
+    content:"";
+    position:absolute;inset:0;
     background-image:
-      repeating-linear-gradient(90deg, rgba(255,99,0,0.04) 0px, rgba(255,99,0,0.04) 1px, transparent 1px, transparent 80px);
-  }
-
-  .hero-accent-bar {
-    position: absolute; left: 0; top: 0; bottom: 0;
-    width: 5px;
-    background: var(--orange);
-  }
-
-  .hero-left {
-    padding: 30px 5% 30px 8%;
-    position: relative; z-index: 2;
-  }
-
-  .hero-eyebrow {
-    display: flex; align-items: center; gap: 50px;
-    margin-bottom: 28px;
-  }
-  .hero-eyebrow-dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: var(--orange);
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse {
-    0%,100% { opacity: 1; transform: scale(1); }
-    50% { opacity: .5; transform: scale(1.4); }
-  }
-  .hero-eyebrow-text {
-    font-size: 12px; font-weight: 500;
-    letter-spacing: .14em; text-transform: uppercase;
-    color: rgba(255,255,255,0.55);
-  }
-
-  .hero-title {
-    font-family: 'Fredoka', sans-serif;
-    font-size: clamp(36px, 4.5vw, 62px);
-    font-weight: 900;
-    line-height: 1.08;
-    color: var(--white);
-    margin-bottom: 24px;
-  }
-  .hero-title em {
-    font-style: normal;
-    color: var(--orange);
-  }
-
-  .hero-sub {
-    font-size: 18px;
-    font-weight: 300;
-    line-height: 1.7;
-    color: rgba(255,255,255,0.7);
-    max-width: 480px;
-    margin-bottom: 36px;
-  }
-
-  .hero-meta {
-    display: flex; flex-wrap: wrap; gap: 16px;
-    margin-bottom: 40px;
-  }
-  .hero-meta-item {
-    display: flex; align-items: center; gap: 8px;
-    font-size: 13px; color: rgba(255,255,255,0.6);
-  }
-  .hero-meta-item svg { color: var(--orange); flex-shrink: 0; }
-
-  .hero-cta-group { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
-  .btn-primary {
-    background: var(--orange);
-    color: var(--white);
-    border: none;
-    padding: 16px 36px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px; font-weight: 500;
-    cursor: pointer; border-radius: 2px;
-    text-decoration: none;
-    display: inline-block;
-    transition: background .2s, transform .15s;
-    letter-spacing: .02em;
-  }
-  .btn-primary:hover { background: #e55700; transform: translateY(-1px); }
-  .btn-ghost {
-    color: rgba(255,255,255,0.55);
-    font-size: 13px;
-    border-bottom: 1px solid rgba(255,255,255,0.25);
-    padding-bottom: 2px;
-    text-decoration: none;
-    transition: color .2s;
-  }
-  .btn-ghost:hover { color: var(--white); }
-
-  .hero-limit-note {
-    margin-top: 24px;
-    font-size: 12px; color: rgba(255,255,255,0.35);
-    letter-spacing: .08em;
-    text-transform: uppercase;
-  }
-  .hero-limit-note span { color: var(--orange); }
-
-  /* ─── HERO PHOTO AREA ─── */
-  .hero-right {
-    position: relative; height: 100vh;
-    display: flex; align-items: flex-end;
-    padding-right: 5%;
-  }
-
-  .hero-photo-frame {
-    position: relative;
-    width: 100%;
-    max-width: 520px;
-    margin-left: auto;
-  }
-
-  .hero-photo-placeholder {
-    width: 100%;
-    aspect-ratio: 3/4;
-    background: linear-gradient(160deg, rgba(255,99,0,0.08) 0%, rgba(0,34,77,0.5) 100%);
-    border: 1px solid rgba(255,99,0,0.25);
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    gap: 12px;
-    position: relative;
-    overflow: hidden;
-  }
-  .hero-photo-placeholder::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: repeating-linear-gradient(
-      -45deg,
-      transparent,
-      transparent 20px,
-      rgba(255,99,0,0.03) 20px,
-      rgba(255,99,0,0.03) 21px
-    );
-  }
-  .hero-photo-frame img {
-    width: 100%;
-    height: auto;
-    display: block;
-    object-fit: cover;
-  }
-  .photo-icon {
-    width: 64px; height: 64px;
-    border: 2px dashed rgba(255,99,0,0.4);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    color: rgba(255,99,0,0.5);
-    font-size: 28px;
-  }
-  .photo-label {
-    font-size: 13px; font-weight: 500;
-    color: rgba(255,255,255,0.4);
-    text-align: center; letter-spacing: .05em;
-    line-height: 1.5;
-  }
-
-  .hero-name-badge {
-    position: absolute;
-    bottom: 160px; left: -20px;
-    background: var(--white);
-    padding: 14px 20px;
-    border-left: 4px solid var(--orange);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-  }
-  .hero-name-badge .name {
-    font-family: 'Fredoka', sans-serif;
-    font-size: 18px; font-weight: 700;
-    color: var(--navy);
-  }
-  .hero-name-badge .role {
-    font-size: 12px; color: #888;
-    letter-spacing: .08em; margin-top: 3px;
-  }
-
-  .hero-corner-decor {
-    position: absolute; top: -1px; right: -1px;
-    width: 60px; height: 60px;
-    border-top: 4px solid var(--orange);
-    border-right: 4px solid var(--orange);
-  }
-
-  /* ─── PROBLEM SECTION ─── */
-  #problem {
-    background: var(--white);
-    padding: 100px 0;
-  }
-
-  .problem-left h2 {
-    font-family: 'Fredoka', sans-serif;
-    font-size: clamp(28px, 3vw, 44px);
-    font-weight: 700;
-    line-height: 1.15;
-    color: var(--navy);
-    margin-bottom: 20px;
-  }
-  .problem-left p {
-    font-size: 17px; line-height: 1.8;
-    color: #4a5568; margin-bottom: 28px;
-  }
-
-  .problem-list { list-style: none; margin-bottom: 36px; }
-  .problem-list li {
-    display: flex; align-items: flex-start; gap: 14px;
-    padding: 14px 0;
-    border-bottom: 1px solid rgba(0,34,77,0.07);
-    font-size: 17px; line-height: 1.5;
-    color: var(--navy);
-  }
-  .problem-list li::before {
-    content: '→';
-    color: var(--orange);
-    font-size: 18px;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-
-  .quote-block {
-    background: var(--navy);
-    padding: 24px 28px;
-    position: relative;
-  }
-  .quote-block::before {
-    content: '"';
-    position: absolute; top: 8px; left: 24px;
-    font-family: 'Fredoka', sans-serif;
-    font-size: 80px; line-height: 1;
-    color: var(--orange);
-    opacity: .4;
-  }
-  .quote-block p {
-    font-family: 'Fredoka', sans-serif;
-    font-style: normal;
-    font-size: 17px; line-height: 1.6;
-    color: var(--white);
-    position: relative; z-index: 1;
-  }
-  .quote-block .quote-attr {
-    margin-top: 16px;
-    font-size: 12px; letter-spacing: .1em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.4);
-    font-family: 'DM Sans', sans-serif;
-    font-style: normal;
-  }
-
-  .problem-right {
-    display: flex; flex-direction: column; gap: 16px;
-  }
-
-  .stat-card {
-    border: 1px solid rgba(0,34,77,0.1);
-    padding: 20px 24px;
-    position: relative;
-    overflow: hidden;
-  }
-  .stat-card::after {
-    content: '';
-    position: absolute; top: 0; left: 0;
-    width: 4px; height: 100%;
-    background: var(--orange);
-  }
-  .stat-card .stat-number {
-    font-family: 'Fredoka', sans-serif;
-    font-size: 40px; font-weight: 900;
-    color: var(--navy);
-    line-height: 1;
-  }
-  .stat-card .stat-number span { color: var(--orange); }
-  .stat-card .stat-desc {
-    font-size: 14px; color: #666;
-    margin-top: 8px; line-height: 1.5;
-  }
-
-  /* ─── SOLUTION ─── */
-  #solution {
-    background: var(--navy);
-    padding: 100px 8%;
-  }
-
-  .solution-header {
-    max-width: 640px;
-    margin-bottom: 60px;
-  }
-  .solution-header h2 {
-    font-family: 'Fredoka', sans-serif;
-    font-size: clamp(28px, 3.5vw, 48px);
-    font-weight: 700;
-    color: var(--white);
-    line-height: 1.15;
-    margin-bottom: 16px;
-  }
-  .solution-header p {
-    font-size: 17px; line-height: 1.8;
-    color: rgba(255,255,255,0.6);
-  }
-
-  .pillars-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 2px;
-    margin-bottom: 60px;
-  }
-  .pillar {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.07);
-    padding: 32px 28px;
-    transition: background .2s;
-  }
-  .pillar:hover { background: rgba(255,99,0,0.08); }
-  .pillar-num {
-    font-family: 'Fredoka', sans-serif;
-    font-size: 42px; font-weight: 900;
-    color: var(--orange);
-    line-height: 1; margin-bottom: 16px;
-  }
-  .pillar h3 {
-    font-size: 15px; font-weight: 500;
-    color: var(--white); margin-bottom: 8px;
-  }
-  .pillar p {
-    font-size: 13px; line-height: 1.6;
-    color: rgba(255,255,255,0.5);
-  }
-
-  .solution-key-line {
-    border-top: 1px solid rgba(255,255,255,0.1);
-    padding-top: 40px;
-    font-family: 'Fredoka', sans-serif;
-    font-style: normal;
-    font-size: 22px;
-    color: rgba(255,255,255,0.7);
-    max-width: 560px;
-  }
-  .solution-key-line em { color: var(--orange); }
-
-  /* ─── ABLAUF ─── */
-  #ablauf {
-    padding: 100px 8%;
-    background: #f9f8f6;
-  }
-
-  #ablauf h2 {
-    font-family: 'Fredoka', sans-serif;
-    font-size: clamp(28px, 3vw, 44px);
-    font-weight: 700; color: var(--navy);
-    margin-bottom: 10px;
-  }
-  #ablauf .subtitle {
-    font-size: 16px; color: #666; margin-bottom: 56px;
-  }
-
-  .timeline {
-    display: flex; flex-direction: column; gap: 0;
-    max-width: 780px;
-    position: relative;
-  }
-  .timeline::before {
-    content: '';
-    position: absolute;
-    left: 26px; top: 0; bottom: 0;
-    width: 1px;
-    background: linear-gradient(to bottom, var(--orange), rgba(255,99,0,0.1));
-  }
-
-  .timeline-item {
-    display: flex; gap: 28px;
-    padding: 24px 0;
-    position: relative;
-  }
-  .tl-dot {
-    width: 52px; height: 52px;
-    flex-shrink: 0;
-    background: var(--white);
-    border: 2px solid var(--orange);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Fredoka', sans-serif;
-    font-weight: 700; font-size: 16px;
-    color: var(--orange);
-    position: relative; z-index: 1;
-  }
-  .tl-dot.break {
-    background: var(--orange);
-    color: var(--white);
-    border-color: var(--orange);
-    font-size: 18px;
-  }
-  .tl-content { padding-top: 10px; }
-  .tl-content h4 {
-    font-size: 16px; font-weight: 500;
-    color: var(--navy); margin-bottom: 4px;
-  }
-  .tl-content p {
-    font-size: 16px; color: #888; line-height: 1.6;
-  }
-
-  .break-bar {
-    background: var(--orange);
-    color: var(--white);
-    padding: 14px 28px 14px 80px;
-    font-size: 13px; font-weight: 500;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-    margin: 8px 0;
-  }
-
-  /* ─── FÜR WEN ─── */
-  #target {
-    background: var(--white);
-    padding: 100px 0;
-  }
-
-  .target-yes, .target-no {
-    padding: 44px 40px;
-    border: 1px solid rgba(0,34,77,0.1);
-  }
-  .target-yes { border-top: 4px solid var(--orange); }
-  .target-no { border-top: 4px solid rgba(0,34,77,0.15); }
-
-  .target-yes h3, .target-no h3 {
-    font-family: 'Fredoka', sans-serif;
-    font-size: 28px; font-weight: 700;
-    margin-bottom: 24px; color: var(--navy);
-  }
-
-  .check-list { list-style: none; }
-  .check-list li {
-    display: flex; gap: 14px; align-items: flex-start;
-    padding: 13px 0;
-    border-bottom: 1px solid rgba(0,34,77,0.07);
-    font-size: 18px; line-height: 1.55; color: #333;
-  }
-  .check-list li .icon { flex-shrink: 0; margin-top: 1px; }
-  .check-list.yes li .icon { color: var(--orange); }
-  .check-list.no li .icon { color: rgba(0,34,77,0.3); }
-
-  .target-note {
-    grid-column: 1 / -1;
-    background: var(--navy-dim);
-    border-left: 4px solid var(--orange);
-    padding: 22px 28px;
-    font-size: 17px; line-height: 1.7;
-    color: #555; font-style: normal;
-  }
-
-  /* ─── MATERIALS ─── */
-  #materials {
-    background: var(--navy);
-    padding: 100px 8%;
-  }
-
-  #materials h2 {
-    font-family: 'Fredoka', sans-serif;
-    font-size: clamp(26px, 3vw, 40px);
-    font-weight: 700; color: var(--white);
-    margin-bottom: 48px;
-  }
-
-  .materials-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-  }
-  .material-item {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    padding: 24px 20px;
-    display: flex; flex-direction: column; gap: 14px;
-    align-items: center;
-    text-align: center;
-    padding: 32px 24px;
-  }
-  .material-item .m-icon {
-    font-size: 52px; line-height: 1;
-  }
-  .material-item p {
-    font-size: 28px; color: rgba(255,255,255,0.85); line-height: 1.4;
-  }
-
-  .materials-note {
-    margin-top: 36px;
-    font-size: 14px; color: rgba(255,255,255,0.4);
-    padding-top: 28px;
-    border-top: 1px solid rgba(255,255,255,0.08);
-    letter-spacing: .04em;
-  }
-
-  /* ─── INVESTMENT ─── */
-  #investment {
-    padding: 100px 8%;
-    background: var(--white);
-  }
-
-  #investment h2 {
-    font-family: 'Fredoka', sans-serif;
-    font-size: clamp(26px, 3vw, 40px);
-    font-weight: 700; color: var(--navy);
-    margin-bottom: 48px;
-  }
-
-  .pricing-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    margin-bottom: 28px;
-  }
-  .price-card {
-    border: 1px solid rgba(0,34,77,0.12);
-    padding: 36px 32px;
-    position: relative;
-    width: 100%;
-    box-sizing: border-box;
-  }
-  .price-card.featured {
-    border-color: rgba(0,34,77,0.12);
-    border-width: 1px;
-  }
-  .price-card.featured::before {
-    display: none;
-  }
-  .price-label {
-    font-size: 12px; font-weight: 500;
-    letter-spacing: .12em; text-transform: uppercase;
-    color: #888; margin-bottom: 12px;
-  }
-  .price-amount {
-    font-family: 'Fredoka', sans-serif;
-    font-size: 54px; font-weight: 900;
-    color: var(--navy); line-height: 1;
-  }
-  .price-amount span {
-    font-size: 22px; font-weight: 400;
-    vertical-align: super; margin-right: 2px;
-    color: var(--orange);
-  }
-  .price-per {
-    font-size: 13px; color: #888; margin-top: 6px;
-  }
-  .price-desc {
-    font-size: 14px; line-height: 1.6;
-    color: #555; margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid rgba(0,34,77,0.08);
-  }
-
-  .payment-note {
-    font-size: 16px; color: #555;
-    padding: 40px 32px;
-    border: 1px solid rgba(0,34,77,0.1);
-    background: rgba(0,34,77,0.03);
-    display: flex;
-    align-items: center;
-    min-height: 96px;
-  }
-  .payment-note strong { color: var(--navy); }
-
-  /* ─── ABOUT ─── */
-  #about {
-    background: var(--white);
-    padding: 0;
-    overflow: hidden;
-  }
-
-  .about-intro {
-    background: var(--navy);
-    padding: 80px 8% 60px;
-    text-align: center;
-    position: relative;
-  }
-  .about-intro::after {
-    content: '';
-    position: absolute; bottom: 0; left: 8%; right: 8%;
-    height: 1px;
-    background: rgba(255,255,255,0.1);
-  }
-  .about-intro h2 {
-    font-family: 'Fredoka', sans-serif;
-    font-size: clamp(32px, 4vw, 52px);
-    font-weight: 700;
-    color: var(--white);
-    line-height: 1.1; margin-bottom: 16px;
-  }
-  .about-intro p {
-    font-size: 17px; color: rgba(255,255,255,0.6);
-    max-width: 540px; margin: 0 auto; line-height: 1.7;
-  }
-
-  /* Full-bleed split cards */
-  .coach-split {
-    display: grid;
-    grid-template-columns: 320px 1fr;
-    min-height: 480px;
-    gap: 0;
-  }
-  .coach-split.reverse { grid-template-columns: 1fr 320px; }
-
-  .coach-split-photo {
-    position: relative;
-    overflow: hidden;
-    background: var(--navy);
-    border-radius: 48px 0 32px 0;
-  }
-  .coach-split.reverse .coach-split-photo {
-    border-radius: 0 56px 0 28px;
-  }
-  .coach-split-photo img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center top;
-    display: block;
-    filter: grayscale(15%);
-    transition: filter .5s ease, transform .6s ease;
-  }
-  .coach-split:hover .coach-split-photo img { filter: grayscale(0%); }
-
-  .coach-split-photo-overlay {
-    position: absolute; bottom: 0; left: 0; right: 0;
-    padding: 28px 32px;
-    background: linear-gradient(to top, rgba(0,34,77,0.92) 0%, transparent 100%);
-  }
-  .coach-split-photo-overlay .csn {
-    font-family: 'Fredoka', sans-serif;
-    font-size: 28px; font-weight: 700;
-    color: var(--white); line-height: 1.1;
-  }
-  .coach-split-photo-overlay .csr {
-    font-size: 12px; font-weight: 500;
-    letter-spacing: .12em; text-transform: uppercase;
-    color: var(--orange); margin-top: 5px;
-  }
-
-  .coach-split-body {
-    padding: 56px 56px 56px 60px;
-    background: #f9f8f6;
-    display: flex; flex-direction: column; justify-content: center;
-    position: relative;
-  }
-  .coach-split.reverse .coach-split-body {
-    padding: 56px 60px 56px 56px;
-    background: var(--white);
-  }
-  .coach-split-body::before {
-    content: '';
-    position: absolute; top: 56px; left: 0;
-    width: 4px; height: 60px;
-    background: var(--orange);
-  }
-  .coach-split.reverse .coach-split-body::before {
-    left: auto; right: 0;
-  }
-
-  .coach-split-body .tag { margin-bottom: 20px; }
-  .coach-split-body .bio {
-    font-size: 16px; line-height: 1.85;
-    color: #444; margin-bottom: 16px;
-  }
-  .coach-split-body .bio strong { color: var(--navy); }
-
-  .coach-split-pills {
-    display: flex; flex-wrap: wrap; gap: 7px; margin-top: 24px;
-  }
-  .coach-split-pills span {
-    background: rgba(255,99,0,0.08);
-    color: var(--orange);
-    font-size: 11px; font-weight: 500;
-    letter-spacing: .06em;
-    padding: 5px 12px; border-radius: 2px;
-    border: 1px solid rgba(255,99,0,0.2);
-  }
-
-  /* Together bar */
-  .about-together {
-    background: var(--navy);
-    padding: 52px 8%;
-    overflow: visible;
-    display: flex; gap: 36px; align-items: flex-start;
-  }
-  .about-together-icon {
-    flex-shrink: 0;
-    width: 52px; height: 52px;
-    border: 2px solid rgba(255,99,0,0.5);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 24px; color: var(--orange);
-    margin-top: 4px;
-  }
-  .about-together-text h4 {
-    font-family: 'Fredoka', sans-serif;
-    font-size: 24px; font-weight: 700;
-    color: var(--white); margin-bottom: 12px;
-  }
-  .about-together-text p {
-    font-size: 17px; line-height: 1.8;
-    color: rgba(255,255,255,0.65);
-  }
-
-  @media (max-width: 860px) {
-    .coach-split, .coach-split.reverse { grid-template-columns: 1fr; min-height: auto; }
-    .coach-split.reverse .coach-split-photo { order: -1; }
-    .coach-split-photo { height: 320px; border-radius: 40px 0 28px 0 !important; }
-    .coach-split-body, .coach-split.reverse .coach-split-body { padding: 36px 24px; }
-    .coach-split-body::before, .coach-split.reverse .coach-split-body::before { top: 36px; left: 0; right: auto; }
-    .about-together { flex-direction: column; gap: 16px; }
-  }
-
-    /* ─── FINAL CTA ─── */
-  #cta-final {
-    background: var(--navy);
-    padding: 120px 8% 100px;
-    text-align: center;
-    position: relative;
-  }
-  #cta-final::before {
-    content: '';
-    position: absolute; inset: 0; z-index: 0;
-    background-image: radial-gradient(circle at 50% 50%, rgba(255,99,0,0.1) 0%, transparent 70%);
-  }
-
-  #cta-final h2 {
-    font-family: 'Fredoka', sans-serif;
-    font-size: clamp(32px, 4vw, 58px);
-    font-weight: 900;
-    color: var(--white);
-    line-height: 1.1;
-    margin-bottom: 20px;
-    position: relative; z-index: 2;
-  }
-  #cta-final h2 em { color: var(--orange); font-style: normal; }
-
-  #cta-final p {
-    font-size: 17px; color: rgba(255,255,255,0.75);
-    margin-bottom: 48px;
-    max-width: 600px; margin-left: auto; margin-right: auto;
-    line-height: 1.7;
-    position: relative; z-index: 2;
-  }
-
-  .cta-event-details {
-    display: flex; justify-content: center; flex-wrap: wrap; gap: 32px;
-    margin-bottom: 48px;
-    position: relative; z-index: 2;
-  }
-  .cta-detail {
-    text-align: center;
-  }
-  .cta-detail .d-label {
-    font-size: 11px; font-weight: 500;
-    letter-spacing: .14em; text-transform: uppercase;
-    color: rgba(255,255,255,0.55);
-    margin-bottom: 5px;
-  }
-  .cta-detail .d-value {
-    font-size: 18px; font-weight: 500;
-    color: var(--white);
-  }
-
-  .cta-btn-wrap { position: relative; z-index: 2; }
-  .btn-cta-big {
-    display: inline-block;
-    background: var(--orange);
-    color: var(--white);
-    padding: 20px 56px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 16px; font-weight: 500;
-    text-decoration: none;
-    border-radius: 2px;
-    letter-spacing: .04em;
-    transition: background .2s, transform .15s;
-  }
-  .btn-cta-big:hover { background: #e55700; transform: translateY(-2px); }
-
-  .cta-sub {
-    margin-top: 20px;
-    font-size: 14px; color: rgba(255,255,255,0.55);
-    position: relative; z-index: 2;
-  }
-
-  /* ─── FOOTER ─── */
-  footer {
-    background: #000d1f;
-    padding: 36px 8%;
-    display: flex; align-items: center; justify-content: center;
-  }
-  footer .f-logo {
-    font-family: 'Fredoka', sans-serif;
-    font-size: 16px; color: rgba(255,255,255,0.5);
-  }
-  footer .f-logo span { color: var(--orange); }
-  footer p {
-    font-size: 12px; color: rgba(255,255,255,0.25);
-    letter-spacing: .04em;
-  }
-
-  /* ─── SCROLL REVEAL ─── */
-  .reveal {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity .7s ease, transform .7s ease;
-  }
-  .reveal.visible {
-    opacity: 1; transform: translateY(0);
-  }
-
-  /* ─── RESPONSIVE ─── */
-  @media (max-width: 860px) {
-    #hero { grid-template-columns: 1fr; min-height: auto; }
-    .hero-right { height: 65vw; max-height: 400px; padding: 0 5% 40px; }
-    .hero-photo-frame { max-width: 100%; }
-    #problem, #target { grid-template-columns: 1fr; gap: 40px; }
-    #problem .problem-left { order: 1; } #problem .problem-right { order: 2; }
-    .hero-name-badge { left: 10px; }
-    nav { padding: 14px 5%; }
-  }
-
-  @media (max-width: 760px) {
-    .nav-inner {
-      flex-direction: column;
-      align-items: stretch;
-      gap: 12px;
-    }
-    .nav-logo { font-size: 17px; }
-    .nav-kalender { display: none; }
-    .nav-cta {
-      width: 100%;
-      text-align: center;
-      padding: 12px 0;
-    }
-    .hero-inner {
-      grid-template-columns: 1fr;
-      gap: 36px;
-      padding: 0 20px;
-    }
-    .hero-left { padding: 20px 0 10px; }
-    .hero-right {
-      height: auto;
-      padding: 0 20px 40px;
-    }
-    .hero-photo-frame {
-      max-width: 100%;
-      margin: 0 auto;
-    }
-    .hero-name-badge {
-      position: static;
-      margin: 18px auto 0;
-      left: auto;
-      transform: none;
-      box-shadow: none;
-    }
-    .hero-title {
-      font-size: clamp(28px, 10vw, 42px);
-      margin-bottom: 20px;
-    }
-    .hero-sub { max-width: 100%; }
-    .hero-meta {
-      flex-direction: column;
-      gap: 10px;
-    }
-    .hero-cta-group {
-      flex-direction: column;
-      align-items: stretch;
-    }
-    .btn-primary,
-    .btn-cta-big {
-      width: 100%;
-      padding-left: 0;
-      padding-right: 0;
-    }
-    .btn-primary { padding: 14px 0; }
-    .btn-ghost {
-      width: 100%;
-      text-align: center;
-      border-bottom: none;
-    }
-    .hero-limit-note { margin-top: 18px; }
-
-    .content-wrap.padded,
-    .about-intro-inner,
-    .about-together-inner,
-    .pricing-grid,
-    .materials-grid,
-    .eb-pricing-grid,
-    .target .content-wrap {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 18px;
-    }
-    .materials-grid,
-    .pricing-grid,
-    .eb-pricing-grid { gap: 16px; }
-    .about-together-inner { align-items: stretch; }
-    .about-together-text h4 { font-size: 22px; }
-    .about-together-text p { max-width: 100%; }
-    .pillars-grid { gap: 14px; }
-    .pillar { padding: 24px 20px; }
-    .tl-content h4 { font-size: 15px; }
-    .tl-content p { font-size: 15px; }
-    .timeline::before { left: 18px; }
-    .tl-dot {
-      width: 44px;
-      height: 44px;
-      font-size: 14px;
-    }
-    .break-bar { padding-left: 70px; }
-    .target-yes,
-    .target-no { padding: 28px 20px; }
-    .check-list li { font-size: 16px; }
-    .about-intro { padding: 60px 18px 40px; }
-    .coach-split-body { padding: 36px 20px; }
-    .coach-split-photo { height: 280px; }
-    .coach-split-photo-overlay { padding: 20px; }
-    .cta-event-details {
-      flex-direction: column;
-      gap: 18px;
-    }
-    footer {
-      padding: 28px 5%;
-    }
-    .footer-inner {
-      flex-direction: column;
-      align-items: flex-start;
-      text-align: left;
-    }
-    footer p { margin-top: 10px; }
-    .btn-cta-big {
-      min-width: 0;
-    }
-  }
-
-  /* ─── FUTURISTIC TRANSITIONS ─── */
-
-  /* ─── ORGANIC WAVE TRANSITIONS ─── */
-  /* SVG-based wavy dividers — each section gets a unique curve */
-
-  /* Hero: gentle falling wave bottom-right */
-  #hero {
-    margin-bottom: -80px;
-    padding-bottom: 160px;
-    position: relative;
-  }
-  #hero::before { display: none; }
-
-  /* Each section has an SVG wave as ::after pseudo that overlaps the next */
-  .wave-bottom {
-    position: absolute;
-    bottom: -2px; left: 0; right: 0;
-    line-height: 0;
-    z-index: 5;
-    pointer-events: none;
-  }
-  .wave-bottom svg { display: block; width: 100%; }
-
-  .wave-top {
-    position: absolute;
-    top: -2px; left: 0; right: 0;
-    line-height: 0;
-    z-index: 5;
-    pointer-events: none;
-  }
-  .wave-top svg { display: block; width: 100%; }
-
-  #problem {
-    padding-top: 140px;
-    padding-bottom: 140px;
-    position: relative;
-  }
-  #solution {
-    padding-top: 140px;
-    padding-bottom: 140px;
-    position: relative;
-  }
-  #ablauf {
-    padding-top: 140px;
-    padding-bottom: 140px;
-    position: relative;
-  }
-  #target {
-    padding-top: 140px;
-    padding-bottom: 140px;
-    position: relative;
-  }
-  #materials {
-    padding-top: 140px;
-    padding-bottom: 140px;
-    position: relative;
-  }
-  #investment {
-    padding-top: 140px;
-    padding-bottom: 140px;
-    position: relative;
-  }
-  #about {
-    padding-top: 0;
-    padding-bottom: 0;
-    position: relative;
-  }
-  #about .about-intro {
-    padding-top: 140px;
-  }
-  #cta-final {
-    padding-top: 160px;
-    position: relative;
-  }
-
-  /* Futuristic grid scan-line texture on dark sections */
-  #solution::after,
-  #materials::after,
-  #about .about-intro::before,
-  #cta-final::before {
-    content: '';
-    position: absolute; inset: 0;
-    background-image:
-      repeating-linear-gradient(0deg, rgba(255,99,0,0.025) 0px, rgba(255,99,0,0.025) 1px, transparent 1px, transparent 40px),
-      repeating-linear-gradient(90deg, rgba(255,99,0,0.025) 0px, rgba(255,99,0,0.025) 1px, transparent 1px, transparent 80px);
-    pointer-events: none;
-    z-index: 0;
-  }
-  #solution > *, #materials > *, #cta-final > * { position: relative; z-index: 2; }
-
-  /* Glowing orange accent lines at section edges */
-  #problem::before,
-  #solution::before,
-  #ablauf::before,
-  #target::before,
-  #investment::before {
-    content: '';
-    position: absolute;
-    left: 50%; top: 0;
-    transform: translateX(-50%);
-    width: 120px; height: 2px;
-    background: linear-gradient(90deg, transparent, var(--orange), transparent);
-    z-index: 11;
-  }
-
-  /* Floating particle dots decoration */
-  #hero::after {
-    content: '';
-    position: absolute;
-    top: 0; right: 0; bottom: 0;
-    width: 50%;
-    background-image:
-      radial-gradient(circle, rgba(255,99,0,0.15) 1px, transparent 1px),
-      radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
-    background-size: 40px 40px, 80px 80px;
-    background-position: 0 0, 20px 20px;
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  /* Futuristic section labels with Orbitron */
-  .section-label {
-    font-family: 'Orbitron', monospace;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: .22em;
-    text-transform: uppercase;
-    color: var(--orange);
-    margin-bottom: 14px;
-    display: block;
-  }
-
-  /* Animated glowing border on CTA button */
-  .btn-primary, .btn-cta-big, .nav-cta {
-    position: relative;
-    overflow: hidden;
-  }
-  .btn-primary::after, .btn-cta-big::after, .nav-cta::after {
-    content: '';
-    position: absolute;
-    top: -50%; left: -60%;
-    width: 40%; height: 200%;
-    background: rgba(255,255,255,0.2);
-    transform: skewX(-20deg);
-    transition: left .5s ease;
-  }
-  .btn-primary:hover::after, .btn-cta-big:hover::after, .nav-cta:hover::after {
-    left: 120%;
-  }
-
-  /* Pulse ring on hero dot */
-  @keyframes ring {
-    0% { box-shadow: 0 0 0 0 rgba(255,99,0,0.6); }
-    70% { box-shadow: 0 0 0 10px rgba(255,99,0,0); }
-    100% { box-shadow: 0 0 0 0 rgba(255,99,0,0); }
-  }
-  .hero-eyebrow-dot { animation: ring 2s infinite; }
-
-  /* Neon glow on tags */
-  .tag {
-    box-shadow: 0 0 12px rgba(255,99,0,0.35);
-    letter-spacing: .14em;
-  }
-
-  /* Smooth scroll-reveal with upward slide */
-  .reveal {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1);
-  }
-  .reveal.visible { opacity: 1; transform: translateY(0); }
-
-  /* Futuristic hover on pillar cards */
-  .pillar {
-    position: relative;
-    overflow: hidden;
-  }
-  .pillar::before {
-    content: '';
-    position: absolute; bottom: 0; left: 0;
-    width: 0; height: 2px;
-    background: var(--orange);
-    transition: width .35s ease;
-  }
-  .pillar:hover::before { width: 100%; }
-
-  /* Scan line on timeline dots */
-  .tl-dot {
-    position: relative;
-    transition: background .2s, color .2s, box-shadow .2s;
-  }
-  .timeline-item:hover .tl-dot {
-    box-shadow: 0 0 0 6px rgba(255,99,0,0.15), 0 0 20px rgba(255,99,0,0.3);
-  }
-
-  /* Coach photo glow on hover */
-  .coach-split-photo img {
-    transition: filter .5s ease, transform .6s ease;
-  }
-  .coach-split:hover .coach-split-photo img {
-    filter: grayscale(0%) brightness(1.04);
-    transform: scale(1.02);
-  }
-
-  /* Hero name badge futuristic */
-  .hero-name-badge {
-    animation: fadeSlideUp .9s cubic-bezier(.16,1,.3,1) forwards;
-  }
-  @keyframes fadeSlideUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  /* Stat card neon accent */
-  .stat-card::after {
-    transition: height .3s ease, box-shadow .3s ease;
-  }
-  .stat-card:hover::after {
-    box-shadow: 2px 0 12px rgba(255,99,0,0.4);
-  }
-
-  /* Material item hover */
-  .material-item {
-    transition: background .25s, border-color .25s, transform .25s;
-  }
-  .material-item:hover {
-    background: rgba(255,99,0,0.07);
-    border-color: rgba(255,99,0,0.3);
-    transform: translateY(-3px);
-  }
-
-  /* Price card hover */
-  .price-card {
-    transition: border-color .25s, box-shadow .25s, transform .25s;
-  }
-  .price-card:hover {
-    border-color: var(--orange);
-    box-shadow: 0 8px 32px rgba(255,99,0,0.12);
-    transform: translateY(-4px);
-  }
-
-  /* Section position relative for pseudo elements */
-  #problem, #solution, #ablauf, #target, #materials, #investment, #about .about-intro {
-    position: relative;
-  }
-
-
-  /* ─── WAVE OVERLAP LAYERING ─── */
-  #hero     { position: relative; z-index: 8; }
-  #problem  { position: relative; z-index: 7; margin-top: -90px; padding-top: 180px; }
-  #solution { position: relative; z-index: 6; margin-top: -80px; padding-top: 170px; }
-  #ablauf   { position: relative; z-index: 5; margin-top: -75px; padding-top: 165px; }
-  #target   { position: relative; z-index: 4; margin-top: -80px; padding-top: 170px; }
-  #materials{ position: relative; z-index: 3; margin-top: -90px; padding-top: 180px; }
-  #investment{position: relative; z-index: 2; margin-top: -80px; padding-top: 170px; }
-  #about    { position: relative; z-index: 1; margin-top: -75px; }
-  #about .about-intro { padding-top: 165px; }
-  #cta-final{ position: relative; z-index: 0; margin-top: -75px; padding-top: 165px; }
-
-  /* make sure wave svgs don't clip */
-  #hero, #problem, #solution, #ablauf,
-  #target, #materials, #investment, #about { overflow: visible; }
-
-  /* remove the old glowing line pseudo on sections now covered by waves */
-  #problem::before,
-  #solution::before,
-  #ablauf::before,
-  #target::before,
-  #investment::before { display: none; }
-
-
-  /* ─── MAX WIDTH 1000px CONTENT WRAPPER ─── */
-  .content-wrap {
-    max-width: 1200px;
-    margin: 0 auto;
-    width: 100%;
-  }
-
-  /* Override section paddings to use wrapper instead of % */
-  #problem  { padding-left: 0; padding-right: 0; }
-  #problem .content-wrap {
-    display: grid;
-    grid-template-columns: 1.3fr 0.7fr;
-    gap: 60px;
-    align-items: center;
-  }
-  #solution { padding-left: 0; padding-right: 0; }
-  #ablauf   { padding-left: 0; padding-right: 0; }
-  #materials{ padding-left: 0; padding-right: 0; }
-  #investment{padding-left: 0; padding-right: 0; }
-  #cta-final{ padding-left: 0; padding-right: 0; }
-  #target   { padding-left: 0; padding-right: 0; }
-  #target .content-wrap {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 48px;
-    align-items: start;
-  }
-
-  .content-wrap.padded { padding: 0 32px; }
-
-  /* Nav inner */
-  .nav-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-  }
-
-  /* Hero inner */
-  .hero-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    align-items: start; 
-    width: 100%;
-    padding: 0 32px;
-  }
-
-  /* About intro inner */
-  .about-intro-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    text-align: center;
-    padding: 0 32px;
-  }
-
-  /* Coach split max width */
-  .coach-split, .coach-split.reverse {
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  /* About together inner */
-  .about-together-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    gap: 36px;
-    align-items: flex-start;
-    padding: 0 32px;
-  }
-
-  /* footer inner */
-  .footer-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 16px;
-    width: 100%;
-  }
-
-
-  /* ─── HIGHLIGHT PHRASE ─── */
-  .highlight-phrase {
-    position: relative;
-    z-index: 9999;
-    color: var(--orange);
-    font-weight: 700;
-    white-space: nowrap;
-    display: inline-block;
-    text-shadow: 0 0 20px rgba(255,99,0,0.6), 0 0 40px rgba(255,99,0,0.3);
-  }
-
-
-  /* ─── STAR CANVAS ─── */
-  #star-canvas { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:99999; }
-
-  /* ─── EARLY BIRD SECTION ─── */
-  .early-bird-section {
-    margin-bottom: 48px;
-  }
-  .early-bird-header {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    margin-bottom: 28px;
-    flex-wrap: wrap;
-  }
-  .early-bird-badge {
-    background: linear-gradient(135deg, #FFE040, #FF8C00);
-    color: #00224d;
-    font-family: 'Orbitron', monospace;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: .14em;
-    text-transform: uppercase;
-    padding: 7px 16px;
-    border-radius: 2px;
-    box-shadow: 0 0 16px rgba(255,180,0,0.5);
-    white-space: nowrap;
-  }
-  .early-bird-title {
-    font-family: 'Fredoka', sans-serif;
-    font-size: 26px;
-    font-weight: 700;
-    color: var(--navy);
-  }
-  .countdown-wrap {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-left: auto;
-    flex-wrap: wrap;
-  }
-  .countdown-label {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    color: #888;
-  }
-  .countdown-timer {
-    display: flex;
-    gap: 6px;
-  }
-  .countdown-unit {
-    background: var(--navy);
-    color: var(--white);
-    border-radius: 4px;
-    padding: 6px 10px;
-    text-align: center;
-    min-width: 50px;
-  }
-  .countdown-unit .cu-num {
-    font-family: 'Orbitron', monospace;
-    font-size: 20px;
-    font-weight: 700;
-    color: #FFE040;
-    display: block;
-    line-height: 1;
-  }
-  .countdown-unit .cu-lbl {
-    font-size: 9px;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.959);
-    display: block;
-    margin-top: 3px;
-  }
-  .countdown-sep {
-    font-family: 'Orbitron', monospace;
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--orange);
-    line-height: 1;
-    margin-top: 4px;
-  }
-  .eb-pricing-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-  }
-  .eb-card {
-    border: 2px solid #FFB800;
-    padding: 32px 28px;
-    position: relative;
-    background: linear-gradient(135deg, rgba(255,224,64,0.06) 0%, rgba(255,140,0,0.04) 100%);
-    overflow: hidden;
-    transition: transform .25s, box-shadow .25s;
-  }
-  .eb-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(255,180,0,0.2);
-  }
-  .eb-card::before {
-    content: 'EARLY BIRD';
-    position: absolute;
-    top: 14px; right: -22px;
-    background: linear-gradient(135deg, #FFE040, #FF8C00);
-    color: #00224d;
-    font-family: 'Orbitron', monospace;
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: .1em;
-    padding: 4px 32px;
-    transform: rotate(45deg);
-    transform-origin: center;
-  }
-  .eb-card .price-label { color: var(--navy); opacity: .7; }
-  .eb-card .price-amount {
-    font-family: 'Fredoka', sans-serif;
-    font-size: 54px;
-    font-weight: 900;
-    color: var(--navy);
-    line-height: 1;
-  }
-  .eb-card .price-amount span {
-    font-size: 22px;
-    font-weight: 400;
-    vertical-align: super;
-    margin-right: 2px;
-    color: #FF8C00;
-  }
-  .eb-card .price-per { font-size: 13px; color: #888; margin-top: 6px; }
-  .eb-card .price-desc {
-    font-size: 14px;
-    line-height: 1.6;
-    color: #555;
-    margin-top: 18px;
-    padding-top: 18px;
-    border-top: 1px solid rgba(255,180,0,0.25);
-  }
-  .eb-divider {
-    border: none;
-    border-top: 1px dashed rgba(0,34,77,0.15);
-    margin: 40px 0 36px;
-  }
-  @media (max-width: 660px) {
-    .eb-pricing-grid { grid-template-columns: 1fr; }
-    .early-bird-header { flex-direction: column; align-items: flex-start; }
-    .countdown-wrap { margin-left: 0; }
-  }
+      linear-gradient(rgba(255,250,241,.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,250,241,.05) 1px, transparent 1px);
+    background-size:44px 44px;
+    mask-image:linear-gradient(to bottom, black, transparent 88%);
+    pointer-events:none;
+  }
+  .hero-grid{
+    position:relative;
+    display:grid;
+    gap:48px;
+    align-items:center;
+  }
+  @media (min-width:900px){
+    .hero-grid{grid-template-columns:1.15fr .85fr;gap:60px;}
+  }
+  .hero h1{font-size:clamp(2.3rem,5vw,3.6rem);margin-top:16px;}
+  .hero .lede{
+    margin-top:22px;
+    max-width:52ch;
+    font-size:1.08rem;
+    color:#dbe2ee;
+  }
+  .hero-ctas{display:flex;flex-wrap:wrap;gap:14px;margin-top:34px;}
+  .hero-note{
+    margin-top:16px;
+    font-size:.82rem;
+    color:#a9b6cb;
+  }
+
+  /* ---------- pain section ---------- */
+  .pain-list{
+    display:grid;
+    gap:0;
+    margin-top:36px;
+    border-top:1px solid var(--line-light);
+  }
+  .pain-item{
+    display:grid;
+    grid-template-columns:auto 1fr;
+    gap:20px;
+    padding-block:22px;
+    border-bottom:1px solid var(--line-light);
+    align-items:baseline;
+  }
+  .pain-item .mark{
+    font-family:"Fraunces",serif;
+    font-size:1rem;
+    color:var(--orange-500);
+    font-weight:600;
+  }
+  .pain-item p{font-size:1.08rem;max-width:60ch;}
+  .pain-close{
+    margin-top:34px;
+    font-family:"Fraunces",serif;
+    font-style:italic;
+    font-size:1.3rem;
+    color:var(--ink);
+    max-width:42ch;
+  }
+
+  /* ---------- philosophy band ---------- */
+  .philosophy{
+    display:grid;
+    gap:40px;
+  }
+  @media (min-width:900px){ .philosophy{grid-template-columns:1fr 1fr;gap:70px;align-items:start;} }
+  .philosophy h2{font-size:clamp(1.7rem,3.4vw,2.5rem);}
+  .philosophy .body-text{margin-top:20px;color:#dbe2ee;max-width:48ch;}
+  .pull-quote{
+    font-family:"Fraunces",serif;
+    font-style:italic;
+    font-size:1.35rem;
+    line-height:1.4;
+    color:var(--cream);
+    border-left:2px solid var(--orange-500);
+    padding-left:22px;
+  }
+  .arch-terms{
+    margin-top:26px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .arch-terms span{
+    font-size:.72rem;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:#a9b6cb;
+    border:1px solid var(--line-dark);
+    border-radius:2px;
+    padding:6px 10px;
+  }
+
+  /* ---------- about ---------- */
+  .about-grid{
+    display:grid;
+    gap:44px;
+  }
+  @media (min-width:900px){ .about-grid{grid-template-columns:.85fr 1.15fr;gap:64px;align-items:center;} }
+  .about-grid h2{font-size:clamp(1.9rem,3.6vw,2.6rem);margin-top:14px;}
+  .about-bio{margin-top:22px;font-size:1.05rem;color:var(--ink-soft);max-width:58ch;}
+  .credentials{
+    margin-top:26px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px 14px;
+  }
+  .credentials li{
+    list-style:none;
+    font-size:.85rem;
+    font-weight:600;
+    padding:8px 14px;
+    background:var(--cream);
+    border:1px solid var(--line-light);
+    border-radius:2px;
+  }
+  .credentials{padding:0;margin-block:26px 0;}
+  .about-story{
+    margin-top:30px;
+    padding:22px 24px;
+    background:var(--cream);
+    border-left:3px solid var(--orange-500);
+  }
+  .about-story p{font-style:italic;color:var(--ink-soft);}
+  .about-story a{color:var(--orange-600);font-style:normal;font-weight:600;}
+
+  /* ---------- method ---------- */
+  .method-grid{
+    display:grid;
+    gap:1px;
+    margin-top:44px;
+    background:var(--line-light);
+    border:1px solid var(--line-light);
+  }
+  @media (min-width:720px){ .method-grid{grid-template-columns:repeat(2,1fr);} }
+  @media (min-width:1080px){ .method-grid{grid-template-columns:repeat(4,1fr);} }
+  .method-card{
+    background:var(--paper);
+    padding:30px 26px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .method-card .idx{
+    font-family:"Fraunces",serif;
+    font-size:.95rem;
+    color:var(--orange-500);
+    font-weight:600;
+  }
+  .method-card .icon{width:34px;height:34px;color:var(--navy-800);}
+  .method-card h3{font-size:1.15rem;}
+  .method-card p{font-size:.92rem;color:var(--ink-soft);}
+
+  /* ---------- offers ---------- */
+  .offer-grid{
+    display:grid;
+    gap:22px;
+    margin-top:44px;
+  }
+  @media (min-width:720px){ .offer-grid{grid-template-columns:repeat(2,1fr);} }
+  @media (min-width:1100px){ .offer-grid{grid-template-columns:repeat(3,1fr);} }
+  .offer-card{
+    background:var(--navy-800);
+    border:1px solid var(--line-dark);
+    padding:30px 26px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    border-radius:3px;
+  }
+  .offer-card.featured{
+    background:var(--orange-500);
+    border-color:var(--orange-500);
+  }
+  .offer-card.featured .offer-tag{color:var(--navy-900);}
+  .offer-card.featured p{color:rgba(15,27,45,.82);}
+  .offer-card.featured h3{color:var(--navy-900);}
+  .offer-tag{
+    font-size:.7rem;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--orange-100);
+    font-weight:700;
+  }
+  .offer-card h3{font-size:1.3rem;color:var(--cream);}
+  .offer-card p{font-size:.94rem;color:#c9d3e2;flex:1;}
+  .offer-card .btn{align-self:flex-start;margin-top:6px;}
+
+  /* ---------- testimonials ---------- */
+  .testi-grid{
+    display:grid;
+    gap:24px;
+    margin-top:44px;
+  }
+  @media (min-width:820px){ .testi-grid{grid-template-columns:repeat(3,1fr);} }
+  .testi-card{
+    background:var(--cream);
+    border:1px solid var(--line-light);
+    padding:26px 24px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+  .testi-quote{font-style:italic;font-size:.98rem;color:var(--ink-soft);}
+  .testi-who{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-top:auto;
+  }
+  .avatar-ph{
+    width:44px;height:44px;border-radius:50%;
+    background:var(--paper-2);
+    border:1.5px dashed var(--line-light);
+    display:flex;align-items:center;justify-content:center;
+    font-size:.65rem;color:var(--ink-soft);flex:none;
+    text-align:center;line-height:1.1;
+  }
+  .testi-who .name{font-weight:600;font-size:.88rem;}
+  .testi-who .role{font-size:.78rem;color:var(--ink-soft);}
+  .trust-bar{
+    margin-top:40px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:28px;
+    align-items:center;
+    justify-content:space-between;
+    padding-top:30px;
+    border-top:1px solid var(--line-light);
+  }
+  .trust-stat{font-family:"Fraunces",serif;font-size:1.5rem;color:var(--navy-800);}
+  .trust-stat span{display:block;font-family:"Work Sans",sans-serif;font-size:.75rem;color:var(--ink-soft);font-weight:600;letter-spacing:.03em;}
+  .trust-logos{
+    display:flex;flex-wrap:wrap;gap:12px;
+  }
+  .trust-logo-ph{
+    border:1.5px dashed var(--line-light);
+    padding:10px 16px;
+    font-size:.68rem;
+    color:var(--ink-soft);
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    border-radius:2px;
+  }
+
+  /* ---------- freebie ---------- */
+  .freebie-box{
+    background:var(--navy-800);
+    border:1px solid var(--line-dark);
+    padding:44px 36px;
+    display:grid;
+    gap:34px;
+    border-radius:4px;
+  }
+  @media (min-width:900px){ .freebie-box{grid-template-columns:1.1fr .9fr;align-items:center;} }
+  .freebie-box h2{font-size:clamp(1.6rem,3vw,2.1rem);color:var(--cream);}
+  .freebie-box .lede{margin-top:14px;color:#c9d3e2;max-width:46ch;}
+  .check-areas{
+    display:flex;flex-wrap:wrap;gap:8px;margin-top:20px;
+  }
+  .check-areas span{
+    font-size:.72rem;
+    padding:6px 10px;
+    border:1px solid var(--line-dark);
+    border-radius:20px;
+    color:#dbe2ee;
+  }
+  .form-ph{
+    background:var(--navy-900);
+    border:1px solid var(--line-dark);
+    padding:26px;
+    border-radius:3px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .form-ph label{font-size:.75rem;color:#a9b6cb;text-transform:uppercase;letter-spacing:.06em;}
+  .form-ph input{
+    width:100%;
+    padding:12px 14px;
+    border-radius:2px;
+    border:1px solid var(--line-dark);
+    background:var(--navy-800);
+    color:var(--cream);
+    font-family:"Work Sans",sans-serif;
+    font-size:.95rem;
+  }
+  .form-ph input::placeholder{color:#7f8ea6;}
+  .form-note{font-size:.72rem;color:#8394ad;margin-top:2px;}
+
+  /* ---------- social grid ---------- */
+  .social-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:14px;
+    margin-top:40px;
+  }
+  @media (min-width:720px){ .social-grid{grid-template-columns:repeat(4,1fr);} }
+
+  /* ---------- final cta ---------- */
+  .final-cta{
+    text-align:center;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:22px;
+  }
+  .final-cta h2{font-size:clamp(1.9rem,4vw,2.8rem);max-width:20ch;}
+  .final-cta .ctas{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;}
+
+  /* ---------- footer ---------- */
+  footer{background:var(--navy-900);color:#a9b6cb;padding-block:56px 30px;}
+  .footer-grid{
+    display:grid;
+    gap:36px;
+  }
+  @media (min-width:820px){ .footer-grid{grid-template-columns:1.3fr .8fr .8fr .9fr;} }
+  .footer-grid h4{
+    color:var(--cream);
+    font-family:"Work Sans",sans-serif;
+    font-size:.8rem;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    margin-bottom:14px;
+    font-weight:700;
+  }
+  .footer-grid ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px;}
+  .footer-grid a{font-size:.88rem;}
+  .footer-grid a:hover{color:var(--cream);}
+  .footer-logo{display:flex;align-items:center;gap:10px;color:var(--cream);font-family:"Fraunces",serif;font-weight:600;font-size:1.05rem;}
+  .footer-logo svg{width:24px;height:24px;color:var(--orange-500);}
+  .footer-tag{margin-top:14px;font-size:.86rem;max-width:34ch;}
+  .social-icons{display:flex;gap:12px;margin-top:18px;}
+  .social-icons a{
+    width:34px;height:34px;border:1px solid var(--line-dark);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .social-icons svg{width:16px;height:16px;}
+  .footer-bottom{
+    margin-top:44px;
+    padding-top:22px;
+    border-top:1px solid var(--line-dark);
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px;
+    justify-content:space-between;
+    font-size:.8rem;
+  }
+  .footer-bottom .legal-links{display:flex;gap:18px;flex-wrap:wrap;}
 </style>
-</head>
-<body>
 
-<!-- NAV -->
-<canvas id="star-canvas"></canvas>
-<nav>
-  <div class="nav-inner">
-    <div class="nav-logo">Adriana &amp; <span>Sorin</span></div>
-    <div style="display:flex;align-items:center;gap:10px;">
-      <a href="kalender.html" class="nav-kalender">Kalender ↗</a>
-      <a href="#investment" class="nav-cta" rel="noopener">Platz sichern →</a>
+<header>
+  <div class="container nav-row">
+    <a href="#top" class="logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 20h18M5 20V9l7-5 7 5v11M9 20v-6h6v6"/></svg>
+      Der Architekt deines Lebens
+    </a>
+    <nav class="primary-nav">
+      <a href="#ueber-mich">Über mich</a>
+      <a href="#methode">Methode</a>
+      <a href="#angebote">Angebote</a>
+      <a href="#stimmen">Stimmen</a>
+      <a href="#kontakt">Kontakt</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="#kontakt" class="btn btn-primary" style="padding:11px 20px;font-size:.85rem;">Erstgespräch</a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Menü öffnen" aria-expanded="false">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
     </div>
   </div>
-</nav>
-
-<!-- HERO -->
-<section id="hero">
-  <div class="hero-bg-lines"></div>
-  <div class="hero-accent-bar"></div>
-  <div class="hero-inner">
-  <div class="hero-left reveal">
-    <div class="hero-eyebrow" id="hero-eyebrow">
-      <div class="hero-eyebrow-dot"></div>
-      <span class="hero-eyebrow-text">Deep Coaching Workshop </span>
-      <span class="hero-eyebrow-text">Rodgau <br>18. Juli</span>
-    </div>
-
-    <h1 class="hero-title">
-      Raus aus dem<br>Dauer&#8209;Funktionieren.<br>Rein in <em>innere Ruhe,</em><br>Klarheit und Selbstführung.
-    </h1>
-
-    <p class="hero-sub">
-      Ein intensiver Deep&#8209;Coaching&#8209;Workshop für Führungskräfte &amp; ambitionierte Professionals, die wissen was hilft – aber im Alltag nicht mehr drankommen.
-    </p>
-
-    <div id="hero-metas">
-     <div class="hero-meta">
-      <div class="hero-meta-item">
-        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-        Rodgau
-      </div>
-      <div class="hero-meta-item">
-        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        Sa., 18. Juli · 10:00–16:00
-      </div>
-      <div class="hero-meta-item">
-        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        Nur begrenzte Plätze
-      </div>
-    </div>
-    </div><!-- /#hero-metas -->
-
-    <div class="hero-cta-group">
-      <a href="#investment" class="btn-primary" rel="noopener">Jetzt Platz sichern →</a>
-      <a href="#ablauf" class="btn-ghost">Ablauf ansehen</a>
-    </div>
-
-    <p class="hero-limit-note"><span>●</span>&nbsp; Tiefe statt Theorie. Substanz statt Motivation.</p>
+  <div class="container" id="mobileMenu">
+    <a href="#ueber-mich">Über mich</a>
+    <a href="#methode">Methode</a>
+    <a href="#angebote">Angebote</a>
+    <a href="#stimmen">Stimmen</a>
+    <a href="#kontakt">Kontakt</a>
   </div>
+</header>
 
-  <div class="hero-right">
-    <div class="hero-photo-frame">
-      <img class="hero-photo" src="Workshops/Bilder/Adriana%20und%20Sorin_hoch.png" alt="Adriana und Sorin">
-      <div class="hero-corner-decor"></div>
-      <div class="hero-name-badge">
-        <div class="name">Adriana Vukin &amp; Sorin Ratiu</div>
-        <div class="role">MENTAL COACH · NLP MASTER · DEEP COACHING</div>
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <span class="eyebrow on-dark">NLP-Trainer · Coach · Seminarleiter — Raum Nürnberg</span>
+        <h1>Du funktionierst.<br>Aber lebst du auch?</h1>
+        <p class="lede">Wenn du seit Jahren für alle da bist, aber selbst kaum noch vorkommst: Der Architekt deines Lebens begleitet Frauen an genau diesem Wendepunkt mit einem individuellen Bauplan aus NLP, Coaching und klarer Lebensplanung – zurück zu einem Leben, das sich wieder wie deins anfühlt.</p>
+        <div class="hero-ctas">
+          <a href="#freebie" class="btn btn-primary">Kostenlosen Ist-Situations-Check starten</a>
+          <a href="#ueber-mich" class="btn btn-ghost-dark">Die Vision dahinter</a>
+        </div>
+        <p class="hero-note">Kein Standardprogramm. Kein Motivations-Bla. Ein klarer, individueller Prozess.</p>
+      </div>
+      <div class="img-ph ratio-portrait on-dark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span class="ph-label">Bildplatzhalter — Hero</span>
+        <span class="ph-detail">Foto mit Sorin und Adriana gemeinsam, Hochformat 4:5. Nahbar, ruhig-selbstbewusst, beide im Bild (z. B. im Seminarraum), warmes natürliches Licht, kein Stock-Foto-Look.</span>
       </div>
     </div>
-  </div>
-<div class="wave-bottom" style="bottom:-1px;">
-<svg viewBox="0 0 1440 110" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M0,60 C180,110 320,20 520,75 C680,120 800,30 1000,65 C1160,95 1320,25 1440,55 L1440,110 L0,110 Z" fill="#ffffff"/>
-</svg>
-</div>
-</section>
+  </section>
 
-<!-- PROBLEM -->
-<section id="problem">
-  <div class="content-wrap padded">
-  <div class="problem-left reveal">
-    <span class="section-label">Das kennst du</span>
-    <h2>Du weißt, was helfen würde. Und trotzdem...</h2>
-    <p>Atem. Präsenz. Klarheit. Innere Struktur. Das alles ist dir nicht fremd. Und trotzdem bleibt der Alltag wie er ist.</p>
-
-    <ul class="problem-list">
-      <li>Dein Nervensystem bleibt im Dauer-Alarm</li>
-      <li>Du reagierst schneller, als du willst</li>
-      <li>Du trägst Verantwortung – nach außen stabil, innen angespannt</li>
-      <li>Die Zeit fehlt, wirklich nach innen zu gehen</li>
-    </ul>
-
-    <div class="quote-block">
-      <p>„Ich weiß, was hilft – ich komme nur nicht mehr dran."</p>
-      <div class="quote-attr">Typischer Satz aus dieser Gruppe</div>
+  <!-- PAIN / IDENTIFICATION -->
+  <section>
+    <div class="container">
+      <span class="eyebrow">Kommt dir das bekannt vor?</span>
+      <h2 style="font-size:clamp(1.8rem,3.6vw,2.4rem);margin-top:16px;max-width:22ch;">Nach außen stark. Innerlich längst am Limit.</h2>
+      <div class="pain-list">
+        <div class="pain-item"><span class="mark">01</span><p>Du hältst nach außen alles zusammen – Job, Familie, Erwartungen – und innerlich bist du erschöpft.</p></div>
+        <div class="pain-item"><span class="mark">02</span><p>Du triffst jeden Tag Entscheidungen für andere – nur nicht mehr für dich selbst.</p></div>
+        <div class="pain-item"><span class="mark">03</span><p>Du weißt, dass sich etwas ändern muss. Nur nicht, wo du anfangen sollst.</p></div>
+        <div class="pain-item"><span class="mark">04</span><p>Du hast das Gefühl, in deinem eigenen Leben nicht mehr wirklich aufzutauchen.</p></div>
+      </div>
+      <p class="pain-close">Du bist nicht kaputt. Du hast nur nie gelernt, dein Leben selbst zu entwerfen.</p>
     </div>
+  </section>
 
-    <p style="margin-top:28px; font-size:15px; line-height:1.8; color:#555;">
-      <strong style="color:var(--navy)">Genau hier setzt dieser Workshop an.</strong>
-    </p>
-  </div>
-
-  <div class="problem-right reveal">
-    <div class="stat-card">
-      <div class="stat-number">6<span>h</span></div>
-      <div class="stat-desc">Deep Coaching – keine Oberfläche, kein Event-Format. Echter Reset.</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-number">1<span>Tag</span></div>
-      <div class="stat-desc">Ein Termin. Ein Fokus. Eine echte Veränderung, die bleibt.</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-number">ab 48<span>€</span></div>
-      <div class="stat-desc">Investment für nachhaltigen Effekt – nicht für Motivation auf Zeit.</div>
-    </div>
-  </div>
-  </div>
-<div class="wave-bottom" style="bottom:-1px;">
-<svg viewBox="0 0 1440 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M0,40 C100,0 280,80 480,45 C640,15 780,70 960,35 C1120,5 1280,60 1440,30 L1440,100 L0,100 Z" fill="#00224d"/>
-</svg>
-</div>
-</section>
-
-<!-- SOLUTION -->
-<section id="solution">
-  <div class="content-wrap padded">
-  <div class="solution-header reveal">
-    <span class="section-label">Der Workshop</span>
-    <h2>Kein Motivationsevent. Kein „Tipps & Tricks"-Format. Keine Oberfläche.</h2>
-    <p>Ein strukturierter Deep-Reset, der an Systemen arbeitet – nicht an Symptomen.</p>
-  </div>
-
-  <div class="pillars-grid">
-    <div class="pillar reveal">
-      <div class="pillar-num">01</div>
-      <h3>Somatische Stress-Regulation</h3>
-      <p>Körperbasierte Techniken, die das Nervensystem direkt ansprechen.</p>
-    </div>
-    <div class="pillar reveal">
-      <div class="pillar-num">02</div>
-      <h3>Deep NLP · Reframing</h3>
-      <p>Muster erkennen und auf der Systemebene verändern.</p>
-    </div>
-    <div class="pillar reveal">
-      <div class="pillar-num">03</div>
-      <h3>Trance-Arbeit & Integration</h3>
-      <p>Safe Place, Future Self, Transformation – geführt in die Tiefe.</p>
-    </div>
-    <div class="pillar reveal">
-      <div class="pillar-num">04</div>
-      <h3>Konkreter Alltags-Transfer</h3>
-      <p>Wenn-Dann-Plan, Mini-Rituale – was morgen wirklich funktioniert.</p>
-    </div>
-  </div>
-
-  <div class="solution-key-line reveal">
-    Du lernst nicht mehr. Du kommst wieder an das heran, <em>was bereits da ist.</em>
-  </div>
-  </div>
-<div class="wave-bottom" style="bottom:-1px;">
-<svg viewBox="0 0 1440 90" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M0,50 C200,90 380,10 600,55 C780,90 920,15 1100,50 C1240,75 1360,20 1440,45 L1440,90 L0,90 Z" fill="#f9f8f6"/>
-</svg>
-</div>
-</section>
-
-<!-- ABLAUF -->
-<section id="ablauf">
-  <div class="content-wrap padded">
-  <span class="section-label">Programm</span>
-  <h2>Ablauf · 10:00 – 16:00</h2>
-  <p class="subtitle">6 Stunden Deep Coaching – strukturiert, wirksam, nachhaltig.</p>
-
-  <div class="timeline">
-    <div class="timeline-item reveal">
-      <div class="tl-dot">1</div>
-      <div class="tl-content">
-        <h4>Ankommen & Check-In</h4>
-        <p>Stress-Skala · Intentionsarbeit · somatisches Ankommen</p>
+  <!-- PHILOSOPHY / BRIDGE -->
+  <section class="on-navy">
+    <div class="container philosophy">
+      <div>
+        <span class="eyebrow on-dark">Die Überzeugung dahinter</span>
+        <h2 style="margin-top:16px;">Du bist nicht deinen Umständen ausgeliefert.<br>Du bist der Architekt deines Lebens.</h2>
+        <div class="arch-terms">
+          <span>Fundament</span><span>Bauplan</span><span>Statik</span><span>Umbau</span><span>Neubau</span>
+        </div>
+      </div>
+      <div>
+        <p class="pull-quote">„In einer einzigen Übung habe ich verstanden, wie einfach eine echte Veränderung im Kopf beginnt – und dass niemand uns das je beigebracht hat."<br><span style="font-family:'Work Sans',sans-serif;font-style:normal;font-size:.8rem;color:#a9b6cb;">— Sorin Ratiu, Gründer</span></p>
+        <p class="body-text">Ein NLP-Practitioner-Seminar hat den Blick auf Veränderung komplett gedreht: Niemand sieht dieselbe Situation gleich – jeder trägt eigene Filter aus Prägung mit sich. Wer diese Filter versteht, hört auf, nur zu reagieren, und beginnt, sein Leben aktiv zu entwerfen. Genau das gibt Der Architekt deines Lebens weiter: ganzheitlich statt Standardlösung, ohne Scham für die Erschöpfung, hin zu einem Leben nach deiner eigenen Vision.</p>
       </div>
     </div>
-    <div class="timeline-item reveal">
-      <div class="tl-dot">2</div>
-      <div class="tl-content">
-        <h4>Stress verstehen</h4>
-        <p>„Stress ist ein Programm" · körperliche Sofort-Demos · Einwände klären</p>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="ueber-mich">
+    <div class="container about-grid">
+      <div class="img-ph ratio-portrait">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span class="ph-label">Bildplatzhalter — Team</span>
+        <span class="ph-detail">Foto von Sorin und Adriana gemeinsam, z. B. im Seminarraum oder in einem Workshop-Moment. Hochformat 4:5, gleiche Bildsprache wie Hero-Foto für Wiedererkennung, beide erkennbar im Bild.</span>
       </div>
-    </div>
-    <div class="timeline-item reveal">
-      <div class="tl-dot">3</div>
-      <div class="tl-content">
-        <h4>Somatischer Stress-Reset</h4>
-        <p>Atmung · Vagus · Orientierung · Selbstkontakt</p>
-      </div>
-    </div>
-    <div class="timeline-item reveal">
-      <div class="tl-dot">4</div>
-      <div class="tl-content">
-        <h4>Deep NLP – Innenarbeit</h4>
-        <p>Reframing · Installation · kurzes Partner-Coaching</p>
-      </div>
-    </div>
-    <div class="break-bar reveal">🟢 Geführte Pause · handyfrei</div>
-    <div class="timeline-item reveal">
-      <div class="tl-dot">5</div>
-      <div class="tl-content">
-        <h4>Safety & De-Activation</h4>
-        <p>Notfall-Routine · Trance-Rahmen</p>
-      </div>
-    </div>
-    <div class="timeline-item reveal">
-      <div class="tl-dot">6</div>
-      <div class="tl-content">
-        <h4>Deep-Trance</h4>
-        <p>Safe Place · Transformation · Future Self</p>
-      </div>
-    </div>
-    <div class="timeline-item reveal">
-      <div class="tl-dot">7</div>
-      <div class="tl-content">
-        <h4>Integration & Transfer</h4>
-        <p>Mini-Ritual · Wenn-Dann-Plan · Future Pace · Abschluss</p>
-      </div>
-    </div>
-  </div>
-
-
-  <div style="text-align:center; margin-top:48px;" class="reveal">
-    <a href="#investment" class="btn-primary" rel="noopener">Jetzt Platz sichern →</a>
-  </div>
-  </div>
-<div class="wave-bottom" style="bottom:-1px;">
-<svg viewBox="0 0 1440 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M0,30 C150,80 300,5 500,50 C660,85 820,10 1020,55 C1180,90 1320,15 1440,40 L1440,100 L0,100 Z" fill="#ffffff"/>
-</svg>
-</div>
-</section>
-
-<!-- TARGET -->
-<section id="target">
-  <div class="content-wrap padded">
-  <div class="target-yes reveal">
-    <h3>Für wen dieser Workshop ist</h3>
-    <ul class="check-list yes">
-      <li><span class="icon">✓</span> Führungskräfte, Unternehmer, Selbstständige</li>
-      <li><span class="icon">✓</span> Ambitionierte Professionals (ca. 35–55)</li>
-      <li><span class="icon">✓</span> Menschen mit hoher Verantwortung</li>
-      <li><span class="icon">✓</span> Wenig Zeit – hohe Bereitschaft für Tiefe</li>
-      <li><span class="icon">✓</span> Offen für wirksame, strukturierte Formate</li>
-      <li><span class="icon">✓</span> Suchen Substanz statt Motivation</li>
-    </ul>
-  </div>
-
-  <div class="target-no reveal">
-    <h3>Nicht geeignet für</h3>
-    <ul class="check-list no">
-      <li><span class="icon">✗</span> „Ich will mal reinschnuppern"</li>
-      <li><span class="icon">✗</span> Reine Entspannung oder Wellness</li>
-      <li><span class="icon">✗</span> Schnelle Tipps oder Motivation</li>
-      <li><span class="icon">✗</span> Therapie-Ersatz</li>
-      <li><span class="icon">✗</span> Menschen, die nicht nach innen gehen wollen</li>
-    </ul>
-  </div>
-
-  <div class="target-note reveal">
-    Diese Klarheit schützt den Raum – für alle, die wirklich kommen.
-  </div>
-  </div>
-<div class="wave-bottom" style="bottom:-1px;">
-<svg viewBox="0 0 1440 110" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M0,65 C120,20 260,90 460,50 C620,15 800,80 1000,45 C1160,15 1300,70 1440,35 L1440,110 L0,110 Z" fill="#00224d"/>
-</svg>
-</div>
-</section>
-
-<!-- MATERIALS -->
-<section id="materials">
-  <div class="content-wrap padded">
-  <h2 class="reveal">Was du mitnimmst</h2>
-  <div class="materials-grid">
-    <div class="material-item reveal">
-      <div class="m-icon">📓</div>
-      <p>Hochwertiges Workbook</p>
-    </div>
-    <div class="material-item reveal">
-      <div class="m-icon">📋</div>
-      <p>Wenn-Dann-Plan (1 Seite)</p>
-    </div>
-    <div class="material-item reveal">
-      <div class="m-icon">🤝</div>
-      <p>Buddy-Log</p>
-    </div>
-    <div class="material-item reveal">
-      <div class="m-icon">⏱️</div>
-      <p>„Reset in 15 Minuten" Mini-Ritual</p>
-    </div>
-    <div class="material-item reveal">
-      <div class="m-icon">🗓️</div>
-      <p>7-Tage-Routine</p>
-    </div>
-    <div class="material-item reveal">
-      <div class="m-icon">🎧</div>
-      <p>Audio-Trance zum Mitnehmen</p>
-    </div>
-  </div>
-  <p class="materials-note reveal">Teilnehmende brauchen nichts mitzubringen.</p>
-  </div>
-<div class="wave-bottom" style="bottom:-1px;">
-<svg viewBox="0 0 1440 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M0,45 C200,5 380,80 580,40 C740,5 880,70 1080,38 C1240,10 1360,65 1440,30 L1440,100 L0,100 Z" fill="#ffffff"/>
-</svg>
-</div>
-</section>
-
-<!-- INVESTMENT -->
-<section id="investment">
-  <div class="content-wrap padded">
-  <span class="section-label">Investment</span>
-  <h2>Fair. Klar. Ohne Haken.</h2>
-
-
-  <!-- EARLY BIRD CARDS -->
-  <div class="early-bird-section reveal" id="early-bird">
-    <div class="early-bird-header">
-      <span class="early-bird-badge">⚡ Early Bird</span>
-      <span class="early-bird-title">Frühbucher-Preise</span>
-      <div class="countdown-wrap">
-        <span class="countdown-label">Gültig noch</span>
-        <div class="countdown-timer">
-          <div class="countdown-unit"><span class="cu-num" id="cd-days">--</span><span class="cu-lbl">Tage</span></div>
-          <div class="countdown-sep">:</div>
-          <div class="countdown-unit"><span class="cu-num" id="cd-hours">--</span><span class="cu-lbl">Std</span></div>
-          <div class="countdown-sep">:</div>
-          <div class="countdown-unit"><span class="cu-num" id="cd-mins">--</span><span class="cu-lbl">Min</span></div>
-          <div class="countdown-sep">:</div>
-          <div class="countdown-unit"><span class="cu-num" id="cd-secs">--</span><span class="cu-lbl">Sek</span></div>
+      <div>
+        <span class="eyebrow">Wer hinter der Marke steht</span>
+        <h2>Menschen, die die Vision tragen</h2>
+        <p class="about-bio">Der Architekt deines Lebens steht für die Überzeugung, dass niemand seinen Umständen ausgeliefert ist – jede und jeder kann lernen, das eigene Leben bewusst zu gestalten. Getragen wird diese Vision von <strong>Sorin Ratiu</strong>, NLP-Trainer, Coach und Seminarleiter aus der Region Nürnberg, mit Fokus auf Selbstführung, Stressmanagement und mentale Stärke für Frauen 35–55. Bei Workshops und Seminaren wie „Stress-frei &amp; mentale Stärke" wird er von <strong>Adriana</strong> unterstützt – zwei Perspektiven auf demselben Weg.</p>
+        <ul class="credentials">
+          <li>NLP-Trainer &amp; Coach</li>
+          <li>Seminarleiter</li>
+          <li>Stressmanagement &amp; Mentale Stärke</li>
+          <li>Individuelle Lebensplanung</li>
+        </ul>
+        <div class="about-story">
+          <p>„Der Moment, der alles verändert hat, war kein großer Plan – sondern eine einzige Übung an einem Seminartisch." Lies, wie aus dieser Erkenntnis die Vision von Der Architekt deines Lebens wurde.</p>
+          <a href="#">Die ganze Geschichte lesen →</a>
         </div>
       </div>
     </div>
+  </section>
 
-    <div class="eb-pricing-grid">
-      <a href="register.html?ticket=Einzelticket+Early+Bird&price=48&per=1+Person&desc=Voller+Zugang+inkl.+aller+Materialien+und+Audio-Trance.&url=https%3A%2F%2Fbusiness.vivid.money%2Fen%2Fpay%2FAZ4XbD4Pei6X-ZnzAfgURA" target="_blank" rel="noopener" class="eb-card reveal" style="text-decoration:none;display:block;cursor:pointer;">
-        <div class="price-label">Einzelticket Early Bird</div>
-        <div class="price-amount"><span>€</span>48</div>
-        <div class="price-per">1 Person</div>
-        <div class="price-desc">Sicher dir deinen Platz zum Frühbucher-Preis – voller Zugang inkl. aller Materialien und Audio-Trance.</div>
-      </a>
-      <a href="register.html?ticket=Duo-Ticket+Early+Bird&price=89&per=2+Personen&desc=Voller+Zugang+f%C3%BCr+zwei+Personen+zum+Fr%C3%BChbucher-Preis.&url=https%3A%2F%2Fbusiness.vivid.money%2Fen%2Fpay%2FAZ4cqiZYdtifI-qsNBvJDQ" target="_blank" rel="noopener" class="eb-card reveal" style="text-decoration:none;display:block;cursor:pointer;">
-        <div class="price-label">Duo-Ticket Early Bird</div>
-        <div class="price-amount"><span>€</span>89</div>
-        <div class="price-per">2 Personen</div>
-        <div class="price-desc">Kommt gemeinsam und spart – beide zum Early-Bird-Preis. Voller Zugang für zwei Personen.</div>
-      </a>
-    </div>
-  </div>
-
-  <hr class="eb-divider">
-
-  <div class="pricing-grid">
-    <a href="register.html?ticket=Einzelticket&price=69&per=pro+Person&desc=Voller+Zugang+zum+Workshop+inkl.+aller+Materialien+und+Audio-Trance.&url=https%3A%2F%2Fbusiness.vivid.money%2Fen%2Fpay%2FAZ4XbXKMcDWI8xWoqs-7-Q" target="_blank" rel="noopener" class="price-card reveal" style="text-decoration:none;display:block;cursor:pointer;">
-      <div class="price-label">Einzelticket</div>
-      <div class="price-amount"><span>€</span>69</div>
-      <div class="price-per">pro Person</div>
-      <div class="price-desc">Voller Zugang zum Workshop inkl. aller Materialien und Audio-Trance.</div>
-    </a>
-    <a href="register.html?ticket=Duo-Ticket&price=48&per=pro+Person+%C2%B7+ab+2+Personen&desc=31+%25+Rabatt+%E2%80%93+kommt+gemeinsam%2C+ver%C3%A4ndert+euch+gemeinsam.&url=https%3A%2F%2Fbusiness.vivid.money%2Fen%2Fpay%2FAZ4XbLF4ecqj4PlthTP7Sg" target="_blank" rel="noopener" class="price-card featured reveal" style="text-decoration:none;display:block;cursor:pointer;">
-      <div class="price-label">Duo-Ticket</div>
-      <div class="price-amount"><span>€</span>48</div>
-      <div class="price-per">pro Person · ab 2 Personen</div>
-      <div class="price-desc">31&nbsp;% Rabatt – kommt gemeinsam, verändert euch gemeinsam.</div>
-    </a>
-    <div class="price-card reveal">
-      <div class="price-label">Folge-Event Bonus</div>
-      <div class="price-amount" style="font-size:38px;">20&nbsp;%</div>
-      <div class="price-per">Bonus auf nächstes Event</div>
-      <div class="price-desc">Wer dabei ist, bekommt exklusiven Rabatt auf das nächste Angebot.</div>
-    </div>
-  </div>
-
-  <p class="payment-note reveal"><strong>Bezahlung:&nbsp; </strong> Apple Pay, Google Pay oder Kreditkarte. Unkompliziert.</p>
-  </div>
-<div class="wave-bottom" style="bottom:-1px;">
-<svg viewBox="0 0 1440 90" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M0,35 C160,80 340,10 540,50 C700,80 860,15 1060,55 C1220,85 1340,20 1440,50 L1440,90 L0,90 Z" fill="#00224d"/>
-</svg>
-</div>
-</section>
-
-<!-- ABOUT -->
-<section id="about">
-
-  <div class="about-intro reveal">
-    <div class="about-intro-inner">
-    <span class="section-label">Über uns</span>
-    <h2>Zwei Menschen. Eine gemeinsame Kraft.</h2>
-    <p>Mentale Klarheit, tiefe innere Arbeit und praxisnahe Umsetzung – vereint in einem Raum für echte Veränderung.</p>
-  </div>
-    </div><!-- /about-intro-inner -->
-  </div>
-
-  <!-- Adriana -->
-  <div class="coach-split reveal">
-    <div class="coach-split-photo">
-      <img class="coach-split-photo" src="Workshops/Bilder/Adriana.PNG" alt="Adriana Vukin � Mental Coach">
-      <div class="coach-split-photo-overlay">
-        <div class="csn">Adriana Vukin</div>
-        <div class="csr">Mental Coach · NLP Master · wingwave® Coach</div>
+  <!-- METHOD -->
+  <section class="on-paper2" id="methode">
+    <div class="container">
+      <span class="eyebrow">Die Methode</span>
+      <h2 style="font-size:clamp(1.8rem,3.6vw,2.4rem);margin-top:16px;max-width:24ch;">Vier Schritte vom Ist-Zustand zum Leben, das sich wieder wie deins anfühlt.</h2>
+      <div class="method-grid">
+        <div class="method-card">
+          <span class="idx">01</span>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+          <h3>Standortbestimmung</h3>
+          <p>Wo stehst du wirklich – jenseits von "funktioniert schon irgendwie"? Der Ist-Situations-Check macht sichtbar, wo der eigentliche Druck sitzt.</p>
+        </div>
+        <div class="method-card">
+          <span class="idx">02</span>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 19V6a1 1 0 0 1 1-1h9l6 6v8a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1Z"/><path d="M14 5v5h5"/></svg>
+          <h3>Bauplan</h3>
+          <p>Ein individueller Fahrplan aus NLP-Techniken, Coaching und strategischer Lebensplanung – kein Standardprogramm von der Stange.</p>
+        </div>
+        <div class="method-card">
+          <span class="idx">03</span>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14.7 6.3a1 1 0 0 1 1.4 0l1.6 1.6a1 1 0 0 1 0 1.4L8.6 18.4 4 19.6l1.2-4.6Z"/><path d="M13 8l3 3"/></svg>
+          <h3>Umbau</h3>
+          <p>In 1:1 Coaching, Workshops oder im Gruppenprogramm setzt du den Plan Schritt für Schritt in echte Veränderung um.</p>
+        </div>
+        <div class="method-card">
+          <span class="idx">04</span>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 20h18M5 20V9l7-5 7 5v11M9 20v-6h6v6"/></svg>
+          <h3>Neues Fundament</h3>
+          <p>Ein Leben nach deiner eigenen Vision – bewusst gestaltet statt nur ertragen. Leben statt nur funktionieren.</p>
+        </div>
       </div>
     </div>
-    <div class="coach-split-body">
-      <span class="tag">Mental Coach</span>
-      <p class="bio">Adriana begleitet Menschen dabei, Stress nachhaltig zu reduzieren, innere Klarheit zu gewinnen und mentale Stärke gezielt aufzubauen. Mit wirkungsvollen Methoden auf bewusster und unbewusster Ebene kombiniert sie NLP, Trance und Coaching, um innere Blockaden zu lösen und neue Handlungsspielräume zu eröffnen.</p>
-      <p class="bio">Ihr Ansatz <strong>„Stark durch Wandel"</strong> steht für echte, tiefgehende Veränderung – hin zu mehr Gelassenheit, Stabilität und innerer Kraft im Alltag.</p>
-      <div class="coach-split-pills">
-        <span>Mental Coach</span>
-        <span>NLP Master</span>
-        <span>wingwave® Coach</span>
-        <span>Trance-Arbeit</span>
-        <span>Stressreduktion</span>
+  </section>
+
+  <!-- OFFERS -->
+  <section class="on-navy" id="angebote">
+    <div class="container">
+      <span class="eyebrow on-dark">Angebote</span>
+      <h2 style="margin-top:16px;max-width:22ch;">So können wir zusammenarbeiten</h2>
+      <div class="offer-grid">
+        <div class="offer-card">
+          <span class="offer-tag">1:1</span>
+          <h3>Einzelcoaching</h3>
+          <p>Individuelle Begleitung auf Basis von NLP, Coaching und deiner konkreten Lebenssituation – im persönlichen Tempo, ohne Umwege.</p>
+          <a href="#kontakt" class="btn btn-ghost-dark">Mehr erfahren</a>
+        </div>
+        <div class="offer-card featured">
+          <span class="offer-tag">Gruppenprogramm</span>
+          <h3>Endlich Klarheit – Endlich wieder du</h3>
+          <p>Begleitetes Programm für Frauen 35–55, die dauerhaften Stress hinter sich lassen und wieder Klarheit über ihre Richtung gewinnen wollen.</p>
+          <a href="#freebie" class="btn" style="background:var(--navy-900);color:var(--cream);">Zur Warteliste</a>
+        </div>
+        <div class="offer-card">
+          <span class="offer-tag">Präsenz</span>
+          <h3>Workshops &amp; Seminare</h3>
+          <p>Seminare wie „Stress-frei &amp; mentale Stärke" – gemeinsam mit Adriana geleitet. Praxisnah, erlebnisorientiert, direkt umsetzbar.</p>
+          <a href="#kontakt" class="btn btn-ghost-dark">Termine ansehen</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section id="stimmen">
+    <div class="container">
+      <span class="eyebrow">Stimmen</span>
+      <h2 style="margin-top:16px;max-width:22ch;">Was Klientinnen nach der Zusammenarbeit sagen</h2>
+      <div class="testi-grid">
+        <div class="testi-card">
+          <p class="testi-quote">„[PLATZHALTER-ZITAT: Echte Kundenstimme einfügen — Ausgangssituation in 1 Satz, dann konkrete Veränderung in 1–2 Sätzen. Keine allgemeine Floskel.]"</p>
+          <div class="testi-who">
+            <div class="avatar-ph">Foto</div>
+            <div><div class="name">Vorname, Alter</div><div class="role">z. B. „Führungskraft, 47"</div></div>
+          </div>
+        </div>
+        <div class="testi-card">
+          <p class="testi-quote">„[PLATZHALTER-ZITAT: zweite Kundenstimme, idealerweise anderer Themenschwerpunkt als Zitat 1 — z. B. berufliche Neuorientierung statt Stress.]"</p>
+          <div class="testi-who">
+            <div class="avatar-ph">Foto</div>
+            <div><div class="name">Vorname, Alter</div><div class="role">z. B. „Selbstständig, 51"</div></div>
+          </div>
+        </div>
+        <div class="testi-card">
+          <p class="testi-quote">„[PLATZHALTER-ZITAT: dritte Kundenstimme — idealerweise aus dem Gruppenprogramm oder einem Workshop, nicht nur Einzelcoaching.]"</p>
+          <div class="testi-who">
+            <div class="avatar-ph">Foto</div>
+            <div><div class="name">Vorname, Alter</div><div class="role">z. B. „Angestellte, 39"</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="trust-bar">
+        <div class="trust-stat">[Zahl]<span>Begleitete Klientinnen &amp; Klienten</span></div>
+        <div class="trust-stat">[Zahl]<span>Durchgeführte Seminare &amp; Workshops</span></div>
+        <div class="trust-logos">
+          <span class="trust-logo-ph">Presse-Logo</span>
+          <span class="trust-logo-ph">Podcast-Logo</span>
+          <span class="trust-logo-ph">Partner-Logo</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FREEBIE -->
+  <section class="on-navy-2" id="freebie">
+    <div class="container">
+      <div class="freebie-box">
+        <div>
+          <span class="eyebrow on-dark">Kostenlos &amp; unverbindlich</span>
+          <h2 style="margin-top:14px;">Mach zuerst den Ist-Situations-Check</h2>
+          <p class="lede">Finde in 5 Minuten heraus, wo der eigentliche Druckpunkt in deinem Leben sitzt – nicht nur das lauteste Symptom.</p>
+          <div class="check-areas">
+            <span>Beziehung</span><span>Beruf &amp; Zeit</span><span>Energie &amp; Körper</span><span>Finanzen</span><span>Selbstbild</span>
+          </div>
+        </div>
+        <div class="form-ph">
+          <label for="ph-name">Vorname</label>
+          <input id="ph-name" type="text" placeholder="Dein Vorname" disabled>
+          <label for="ph-mail">E-Mail</label>
+          <input id="ph-mail" type="email" placeholder="deine@email.de" disabled>
+          <a href="#" class="btn btn-primary" style="margin-top:6px;justify-content:center;">Jetzt kostenlos starten</a>
+          <p class="form-note">Platzhalter-Formular — final an bestehende Power-Automate/Dynamics-365-Anbindung koppeln, sobald der Ist-Situations-Check final gebaut ist.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOCIAL -->
+  <section>
+    <div class="container">
+      <span class="eyebrow">Instagram</span>
+      <h2 style="margin-top:16px;max-width:26ch;">Folge @der_architekt_deines_lebens</h2>
+      <div class="social-grid">
+        <div class="img-ph ratio-square"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg><span class="ph-label">Reel-Cover</span></div>
+        <div class="img-ph ratio-square"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg><span class="ph-label">Karussell-Cover</span></div>
+        <div class="img-ph ratio-square"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg><span class="ph-label">Reel-Cover</span></div>
+        <div class="img-ph ratio-square"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg><span class="ph-label">Karussell-Cover</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="on-navy">
+    <div class="container final-cta">
+      <span class="eyebrow on-dark">Nächster Schritt</span>
+      <h2>Bereit, dein Leben wieder selbst zu gestalten?</h2>
+      <div class="ctas">
+        <a href="#kontakt" class="btn btn-primary">Kostenloses Erstgespräch vereinbaren</a>
+        <a href="#freebie" class="btn btn-ghost-dark">Ist-Situations-Check starten</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer id="kontakt">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 20h18M5 20V9l7-5 7 5v11M9 20v-6h6v6"/></svg>
+          Der Architekt deines Lebens
+        </div>
+        <p class="footer-tag">NLP-Trainer, Coach &amp; Seminarleiter für Frauen 35–55, die wieder wirklich leben statt nur funktionieren wollen. Raum Nürnberg.</p>
+        <div class="social-icons">
+          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="3.5"/><circle cx="17.2" cy="6.8" r="1"/></svg></a>
+          <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 10v7M7 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 13v4"/></svg></a>
+          <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m10 9 5 3-5 3Z"/></svg></a>
+        </div>
+      </div>
+      <div>
+        <h4>Seite</h4>
+        <ul>
+          <li><a href="#ueber-mich">Über mich</a></li>
+          <li><a href="#methode">Methode</a></li>
+          <li><a href="#angebote">Angebote</a></li>
+          <li><a href="#stimmen">Stimmen</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Angebote</h4>
+        <ul>
+          <li><a href="#angebote">Einzelcoaching</a></li>
+          <li><a href="#angebote">Gruppenprogramm</a></li>
+          <li><a href="#angebote">Workshops &amp; Seminare</a></li>
+          <li><a href="#freebie">Ist-Situations-Check</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Kontakt</h4>
+        <ul>
+          <li><a href="mailto:kontakt@der-architekt-deines-lebens.de">kontakt@der-architekt-deines-lebens.de</a></li>
+          <li><a href="#">Raum Nürnberg</a></li>
+          <li><a href="#">Erstgespräch anfragen</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Der Architekt deines Lebens · Sorin Ratiu</span>
+      <div class="legal-links">
+        <a href="#">Impressum</a>
+        <a href="#">Datenschutz</a>
+        <a href="#">AGB</a>
       </div>
     </div>
   </div>
-
-  <!-- Sorin -->
-  <div class="coach-split reverse reveal">
-    <div class="coach-split-body">
-      <span class="tag">Deep Coach</span>
-      <p class="bio">Sorin unterstützt Menschen, die im Berufsalltag viel leisten und Verantwortung tragen, dabei, mentale Stärke, innere Stabilität und Klarheit aufzubauen – auch unter Druck. Sein Fokus liegt auf Stressregulation, Selbstführung und nachhaltiger innerer Stabilität.</p>
-      <p class="bio">Statt reiner Motivation arbeitet er mit erlebnisorientierten Methoden aus NLP, Trancearbeit und körperbasierter Stressregulation. Sein Ansatz: <strong>weniger Funktionieren – mehr bewusstes Steuern innerer Zustände.</strong></p>
-      <div class="coach-split-pills">
-        <span>NLP Master</span>
-        <span>Deep Coaching</span>
-        <span>Stressregulation</span>
-        <span>Selbstführung</span>
-        <span>International zertifiziert</span>
-      </div>
-    </div>
-    <div class="coach-split-photo">
-      <img class="coach-split-photo" src="Workshops/Bilder/Sorin.png" alt="Sorin Ratiu � Coach & NLP Master">
-      <div class="coach-split-photo-overlay">
-        <div class="csn">Sorin Ratiu</div>
-        <div class="csr">Coach · Mentor · NLP Master International</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Together -->
-  <div class="about-together reveal">
-    <div class="about-together-inner">
-    <div class="about-together-icon">✦</div>
-    <div class="about-together-text">
-      <h4>Gemeinsam im Workshop</h4>
-      <p>In ihrer Zusammenarbeit verbinden Adriana und Sorin mentale Klarheit, tiefe innere Arbeit und praxisnahe Umsetzung. Gemeinsam schaffen sie einen Raum für nachhaltige Veränderung – in dem Stress nicht nur verstanden, sondern auf innerer Ebene reguliert und <span class="highlight-phrase">in Stärke verwandelt wird.</span></p>
-    </div>
-  </div>
-
-<div class="wave-bottom" style="bottom:-1px;">
-<svg viewBox="0 0 1440 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M0,55 C140,15 300,85 500,45 C660,10 820,75 1020,40 C1200,10 1340,70 1440,40 L1440,100 L0,100 Z" fill="#00224d"/>
-</svg>
-</div>
-</section>
-
-<!-- FINAL CTA -->
-<section id="cta-final">
-  <div class="content-wrap padded" style="text-align:center; position:relative; z-index:2;">
-  <h2>Ein Termin.<br><em>Echte Tiefe.</em><br>Nachhaltiger Effekt.</h2>
-  <p>Begrenzte Plätze. Kein Livestream. Kein Replay. Nur echter Raum.</p>
-
-  <div class="cta-event-details" id="cta-event-details">
-    <div class="cta-detail">
-      <div class="d-label">Datum</div>
-      <div class="d-value">Sa., 18. Juli 2026</div>
-    </div>
-    <div class="cta-detail">
-      <div class="d-label">Zeit</div>
-      <div class="d-value">10:00 – 16:00 Uhr</div>
-    </div>
-    <div class="cta-detail">
-      <div class="d-label">Ort</div>
-      <div class="d-value">Rodgau</div>
-    </div>
-    <div class="cta-detail">
-      <div class="d-label">Investment</div>
-      <div class="d-value">ab 48 € p. P.</div>
-    </div>
-  </div>
-
-  <div class="cta-btn-wrap">
-    <a href="#investment" class="btn-cta-big" rel="noopener">Jetzt Platz sichern →</a>
-  </div>
-  <p class="cta-sub">Begrenzte Plätze · Tiefe statt Theorie · Rodgau</p>
-
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <div class="footer-inner">
-  <div class="f-logo">Adriana <span>Vukin</span> &amp; Sorin <span>Ratiu</span> · Deep Coaching</div>
-  <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
-    <p>© 2026 · Alle Rechte vorbehalten</p>
-    <a href="kalender.html" style="font-size:12px;color:rgba(255,255,255,0.25);text-decoration:none;letter-spacing:.04em;transition:color .2s;" onmouseover="this.style.color='rgba(255,255,255,0.55)'" onmouseout="this.style.color='rgba(255,255,255,0.25)'">Kalender</a>
-    <a href="Templates/feedback.html" style="font-size:12px;color:rgba(255,255,255,0.25);text-decoration:none;letter-spacing:.04em;transition:color .2s;" onmouseover="this.style.color='rgba(255,255,255,0.55)'" onmouseout="this.style.color='rgba(255,255,255,0.25)'">Feedback</a>
-    <a href="admin/index.html" style="font-size:12px;color:rgba(255,255,255,0.18);text-decoration:none;letter-spacing:.04em;transition:color .2s;" onmouseover="this.style.color='rgba(255,99,0,0.7)'" onmouseout="this.style.color='rgba(255,255,255,0.18)'">Admin</a>
-  </div>
-  </div><!-- /footer-inner -->
 </footer>
 
 <script>
-  const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((e, i) => {
-      if (e.isIntersecting) {
-        setTimeout(() => e.target.classList.add('visible'), i * 80);
-        observer.unobserve(e.target);
-      }
+  (function(){
+    var btn = document.getElementById('menuToggle');
+    var menu = document.getElementById('mobileMenu');
+    if(!btn||!menu) return;
+    btn.addEventListener('click', function(){
+      var open = menu.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
     });
-  }, { threshold: 0.12 });
-  reveals.forEach(r => observer.observe(r));
+    menu.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click', function(){ menu.classList.remove('open'); btn.setAttribute('aria-expanded','false'); });
+    });
+  })();
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<script>
-(function(){
-  var LAPS     = 2;
-  var LAP_MS   = 3500;
-  var TOTAL_MS = LAPS * LAP_MS;
-  var PULSES   = 12;
-
-  /* ── Star SVG with yellow nuances ── */
-  function starSVG(size){
-    var s = size, pts = '';
-    for(var i=0;i<10;i++){
-      var r=i%2===0?s:s*0.42, a=i*(Math.PI/5)-Math.PI/2;
-      pts+=(i===0?'M':'L')+(Math.cos(a)*r).toFixed(1)+','+(Math.sin(a)*r).toFixed(1)+' ';
-    }
-    pts+='Z';
-    var id='sg'+Math.floor(Math.random()*999999);
-    return '<svg xmlns="http://www.w3.org/2000/svg" width="'+(s*2+24)+'" height="'+(s*2+24)+'" '
-      +'viewBox="'+(-s-12)+' '+(-s-12)+' '+(s*2+24)+' '+(s*2+24)+'" style="overflow:visible;display:block;">'
-      +'<defs>'
-        +'<radialGradient id="rg'+id+'" cx="50%" cy="40%" r="60%">'
-          +'<stop offset="0%"   stop-color="#FFFDE0"/>'
-          +'<stop offset="30%"  stop-color="#FFE040"/>'
-          +'<stop offset="65%"  stop-color="#FFB800"/>'
-          +'<stop offset="100%" stop-color="#FF7A00"/>'
-        +'</radialGradient>'
-        +'<filter id="f'+id+'" x="-100%" y="-100%" width="300%" height="300%">'
-          +'<feGaussianBlur stdDeviation="4" result="b"/>'
-          +'<feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>'
-        +'</filter>'
-      +'</defs>'
-      +'<circle cx="0" cy="0" r="'+(s*2.5)+'" fill="rgba(255,200,40,0.15)"/>'
-      +'<circle cx="0" cy="0" r="'+(s*1.5)+'" fill="rgba(255,230,80,0.22)"/>'
-      +'<path d="'+pts+'" fill="url(#rg'+id+')" filter="url(#f'+id+')"/>'
-      +'<line x1="0" y1="'+(-s*2.6)+'" x2="0" y2="'+(s*2.6)+'" stroke="rgba(255,255,200,0.75)" stroke-width="1.3" stroke-linecap="round"/>'
-      +'<line x1="'+(-s*2.6)+'" y1="0" x2="'+(s*2.6)+'" y2="0" stroke="rgba(255,255,200,0.75)" stroke-width="1.3" stroke-linecap="round"/>'
-      +'<line x1="'+(-s*1.7)+'" y1="'+(-s*1.7)+'" x2="'+(s*1.7)+'" y2="'+(s*1.7)+'" stroke="rgba(255,220,80,0.45)" stroke-width="0.9" stroke-linecap="round"/>'
-      +'<line x1="'+(s*1.7)+'" y1="'+(-s*1.7)+'" x2="'+(-s*1.7)+'" y2="'+(s*1.7)+'" stroke="rgba(255,220,80,0.45)" stroke-width="0.9" stroke-linecap="round"/>'
-      +'</svg>';
-  }
-
-  /* ── Extract silhouette contour from PNG via canvas pixel scan ── */
-  function extractContour(imgEl, callback){
-    var offscreen = document.createElement('canvas');
-    var natW = imgEl.naturalWidth  || 400;
-    var natH = imgEl.naturalHeight || 500;
-    // Downsample for speed
-    var scale = Math.min(1, 300/Math.max(natW,natH));
-    var cw = Math.round(natW*scale);
-    var ch = Math.round(natH*scale);
-    offscreen.width  = cw;
-    offscreen.height = ch;
-    var octx = offscreen.getContext('2d');
-    try {
-      octx.drawImage(imgEl, 0, 0, cw, ch);
-      var data = octx.getImageData(0, 0, cw, ch).data;
-      // Collect outermost non-transparent pixels per row and column
-      var pts = [];
-      var ALPHA_THRESH = 30; // pixels darker than this are background
-      var STEP = 4; // sample every Nth row/column for performance
-
-      // Scan each row: find leftmost and rightmost non-bg pixel
-      for(var row=0; row<ch; row+=STEP){
-        var left=-1, right=-1;
-        for(var col=0; col<cw; col++){
-          var idx=(row*cw+col)*4;
-          // Non-black = person (black bg has R+G+B < 60, person is brighter)
-          var lum=data[idx]+data[idx+1]+data[idx+2];
-          if(lum>80){ if(left<0) left=col; right=col; }
-        }
-        if(left>=0){ pts.push({side:'L', x:left,  y:row}); }
-        if(right>=0){ pts.push({side:'R', x:right, y:row}); }
-      }
-
-      // Build clockwise contour: left edge top→bottom, right edge bottom→top
-      var leftPts  = pts.filter(function(p){return p.side==='L';}).sort(function(a,b){return a.y-b.y;});
-      var rightPts = pts.filter(function(p){return p.side==='R';}).sort(function(a,b){return b.y-a.y;});
-      var contour  = leftPts.concat(rightPts);
-      if(contour.length===0){ callback(null); return; }
-      // Normalize to 0..1
-      var norm = contour.map(function(p){ return {x:p.x/cw, y:p.y/ch}; });
-      callback(norm);
-    } catch(e){
-      // CORS or tainted canvas — fall back to rectangle path
-      console.warn('Silhouette extraction failed (CORS?), using rect fallback');
-      callback(null);
-    }
-  }
-
-  /* ── Build path from normalized contour to screen coords ── */
-  function contourToScreen(norm, rect){
-    return norm.map(function(p){
-      return [rect.left + p.x*rect.width, rect.top + p.y*rect.height];
-    });
-  }
-
-  /* ── Rectangle fallback path ── */
-  function rectPath(rect, tl,tr,br,bl){
-    var x=rect.left,y=rect.top,w=rect.width,h=rect.height, pts=[], N=24;
-    function arc(cx,cy,r,a0,a1){
-      for(var i=0;i<=N;i++){var a=a0+(a1-a0)*(i/N); pts.push([cx+Math.cos(a)*r,cy+Math.sin(a)*r]);}
-    }
-    arc(x+tl,y+tl,tl,Math.PI,3*Math.PI/2);
-    arc(x+w-tr,y+tr,tr,3*Math.PI/2,2*Math.PI);
-    arc(x+w-br,y+h-br,br,0,Math.PI/2);
-    arc(x+bl,y+h-bl,bl,Math.PI/2,Math.PI);
-    pts.push(pts[0].slice());
-    return pts;
-  }
-
-  function pathLen(pts){
-    var l=0;
-    for(var i=1;i<pts.length;i++){var dx=pts[i][0]-pts[i-1][0],dy=pts[i][1]-pts[i-1][1];l+=Math.sqrt(dx*dx+dy*dy);}
-    return l;
-  }
-
-  function posAt(pts,frac){
-    var total=pathLen(pts),target=frac*total,walked=0;
-    for(var i=1;i<pts.length;i++){
-      var dx=pts[i][0]-pts[i-1][0],dy=pts[i][1]-pts[i-1][1],seg=Math.sqrt(dx*dx+dy*dy);
-      if(walked+seg>=target){var t=(target-walked)/seg;return[pts[i-1][0]+dx*t,pts[i-1][1]+dy*t];}
-      walked+=seg;
-    }
-    return pts[pts.length-1].slice();
-  }
-
-  /* ── Smooth contour with padding ── */
-  function paddedContour(norm, rect, pad){
-    // center of image
-    var cx=rect.left+rect.width/2, cy=rect.top+rect.height/2;
-    return norm.map(function(p){
-      var sx=rect.left+p.x*rect.width, sy=rect.top+p.y*rect.height;
-      // push outward from center
-      var dx=sx-cx, dy=sy-cy, dist=Math.sqrt(dx*dx+dy*dy)||1;
-      return [sx+dx/dist*pad, sy+dy/dist*pad];
-    });
-  }
-
-  /* ── Orbit one element ── */
-  function orbitElement(photoEl, normContour, rs){
-    var div=document.createElement('div');
-    div.style.cssText='position:fixed;pointer-events:none;z-index:2147483647;width:0;height:0;top:0;left:0;will-change:transform;';
-    document.body.appendChild(div);
-
-    var startTs=null, lastSize=-1;
-
-    function frame(ts){
-      if(!startTs) startTs=ts;
-      var elapsed=ts-startTs;
-      var totalFrac=Math.min(elapsed/TOTAL_MS,1);
-      var lapFrac=(elapsed%LAP_MS)/LAP_MS;
-
-      var pulse=0.5+0.5*Math.sin(lapFrac*PULSES*2*Math.PI);
-      var size=Math.round(9+16*pulse);
-
-      if(size!==lastSize){
-        div.innerHTML=starSVG(size);
-        div.firstChild.style.cssText='position:absolute;top:'+(-size-12)+'px;left:'+(-size-12)+'px;';
-        lastSize=size;
-      }
-
-      var rect=photoEl.getBoundingClientRect();
-      var path=normContour ? paddedContour(normContour,rect,14) : rectPath(rect,rs[0],rs[1],rs[2],rs[3]);
-      var pos=posAt(path,lapFrac);
-      div.style.transform='translate('+pos[0].toFixed(1)+'px,'+pos[1].toFixed(1)+'px)';
-
-      var alpha=totalFrac<0.03?totalFrac/0.03:totalFrac>0.96?(1-totalFrac)/0.04:1;
-      div.style.opacity=alpha;
-
-      if(totalFrac<1) requestAnimationFrame(frame);
-      else div.remove();
-    }
-    requestAnimationFrame(frame);
-  }
-
-  /* ── Shooting stars ── */
-  var cv=document.getElementById('star-canvas');
-  var ctx=cv?cv.getContext('2d'):null;
-  function resize(){if(cv){cv.width=window.innerWidth;cv.height=window.innerHeight;}}
-  resize(); window.addEventListener('resize',resize);
-  var shooters=[];
-  function spawnShooter(){
-    shooters.push({x:Math.random()*window.innerWidth*0.75,y:Math.random()*window.innerHeight*0.4,
-      vx:8+Math.random()*10,vy:3+Math.random()*5,len:100+Math.random()*140,alpha:1});
-  }
-  spawnShooter();spawnShooter();spawnShooter();
-  setInterval(spawnShooter,1100);
-
-  function loopCanvas(){
-    if(ctx){
-      ctx.clearRect(0,0,cv.width,cv.height);
-      for(var i=shooters.length-1;i>=0;i--){
-        var s=shooters[i];
-        var angle=Math.atan2(s.vy,s.vx);
-        var ex=s.x-Math.cos(angle)*s.len,ey=s.y-Math.sin(angle)*s.len;
-        var g=ctx.createLinearGradient(ex,ey,s.x,s.y);
-        g.addColorStop(0,'rgba(255,255,255,0)');
-        g.addColorStop(0.5,'rgba(255,220,80,'+(s.alpha*0.6)+')');
-        g.addColorStop(1,'rgba(255,255,200,'+s.alpha+')');
-        ctx.beginPath();ctx.moveTo(ex,ey);ctx.lineTo(s.x,s.y);
-        ctx.strokeStyle=g;ctx.lineWidth=2;ctx.shadowBlur=10;ctx.shadowColor='rgba(255,200,50,0.9)';
-        ctx.stroke();ctx.shadowBlur=0;
-        ctx.beginPath();ctx.arc(s.x,s.y,2.5,0,Math.PI*2);
-        ctx.fillStyle='rgba(255,250,200,'+s.alpha+')';ctx.fill();
-        s.x+=s.vx;s.y+=s.vy;s.alpha-=0.009;
-        if(s.alpha<=0||s.x>cv.width+300)shooters.splice(i,1);
-      }
-    }
-    requestAnimationFrame(loopCanvas);
-  }
-  requestAnimationFrame(loopCanvas);
-
-  /* ── Start orbiters ── */
-  var RS=[[48,0,32,0],[0,56,0,28]];
-  var orbited=false;
-
-  function startOrbiters(){
-    if(orbited)return;
-    var photos=document.querySelectorAll('.coach-split-photo');
-    if(!photos.length)return;
-    var r0=photos[0].getBoundingClientRect();
-    if(r0.width<10||r0.top>window.innerHeight+100)return;
-    orbited=true;
-
-    photos.forEach(function(el,i){
-      var imgEl=el.querySelector('img');
-      var delay=i*500;
-      setTimeout(function(){
-        // Try silhouette extraction first
-        if(imgEl && imgEl.complete && imgEl.naturalWidth>0){
-          extractContour(imgEl,function(norm){
-            orbitElement(el, norm, RS[i]||[20,20,20,20]);
-          });
-        } else {
-          orbitElement(el, null, RS[i]||[20,20,20,20]);
-        }
-      }, delay);
-    });
-  }
-
-  if(window.IntersectionObserver){
-    var about=document.getElementById('about');
-    if(about) new IntersectionObserver(function(entries){
-      entries.forEach(function(e){if(e.isIntersecting)startOrbiters();});
-    },{threshold:0.05}).observe(about);
-  }
-  window.addEventListener('scroll',startOrbiters);
-  setTimeout(startOrbiters,800);
-  setTimeout(startOrbiters,2000);
-  setTimeout(startOrbiters,4000);
-})();
-</script>
-
-
-<script>
-(function(){
-  // Early Bird deadline
-  var deadline = new Date('2026-07-05T23:59:59');
-
-  function pad(n){ return n < 10 ? '0'+n : ''+n; }
-
-  function tick(){
-    var now  = new Date();
-    var diff = deadline - now;
-
-    var dEl = document.getElementById('cd-days');
-    var hEl = document.getElementById('cd-hours');
-    var mEl = document.getElementById('cd-mins');
-    var sEl = document.getElementById('cd-secs');
-    if(!dEl) return;
-
-    if(diff <= 0){
-      var ebSection = document.getElementById('early-bird');
-      if(ebSection) ebSection.style.display = 'none';
-      return;
-    }
-
-    var days  = Math.floor(diff / 86400000);
-    var hours = Math.floor((diff % 86400000) / 3600000);
-    var mins  = Math.floor((diff % 3600000)  / 60000);
-    var secs  = Math.floor((diff % 60000)    / 1000);
-
-    dEl.textContent = pad(days);
-    hEl.textContent = pad(hours);
-    mEl.textContent = pad(mins);
-    sEl.textContent = pad(secs);
-  }
-
-  tick();
-  setInterval(tick, 1000);
-})();
-</script>
-
-
-
-</body>
-</html>
-
-
