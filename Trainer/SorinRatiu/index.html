@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Über mich – Sorin Ratiu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange: #ff6300;
+    --navy: #00224d;
+    --white: #ffffff;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 17px;
+    background: var(--white);
+    color: var(--navy);
+    overflow-x: hidden;
+  }
+
+  .content-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  h1, h2 {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+  }
+
+  .orange { color: var(--orange); }
+
+  /* ─── HEADER ─── */
+  header {
+    background: var(--navy);
+    padding: 18px 0;
+  }
+  header .content-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  header img.logo {
+    height: 64px;
+    width: auto;
+  }
+  header .back-link {
+    color: rgba(255,255,255,0.65);
+    font-size: 14px;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.25);
+    padding: 8px 16px;
+    border-radius: 2px;
+    transition: color .2s, border-color .2s, background .2s;
+  }
+  header .back-link:hover {
+    color: var(--white);
+    border-color: rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.08);
+  }
+
+  /* ─── SECTIONS ─── */
+  section { padding: 90px 0; position: relative; }
+  .bg-navy { background: var(--navy); color: var(--white); }
+  .bg-white { background: var(--white); color: var(--navy); }
+  .bg-orange { background: var(--orange); color: var(--white); }
+
+  .split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+  .split.reverse .split-photo { order: 2; }
+  .split.reverse .split-text { order: 1; }
+
+  .split-photo img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  h1.page-title {
+    font-size: clamp(36px, 4.5vw, 56px);
+    line-height: 1.1;
+    margin-bottom: 32px;
+  }
+
+  h2.section-title {
+    font-size: clamp(28px, 3.5vw, 44px);
+    line-height: 1.15;
+    margin-bottom: 32px;
+  }
+
+  .intro-list {
+    list-style: none;
+    font-family: 'Fredoka', sans-serif;
+    font-size: clamp(20px, 2.4vw, 28px);
+    font-weight: 600;
+    margin-bottom: 28px;
+  }
+  .intro-list > li:first-child { margin-bottom: 10px; }
+  .intro-list ul { list-style: none; padding-left: 4px; }
+  .intro-list ul li {
+    position: relative;
+    padding-left: 26px;
+    margin-bottom: 4px;
+  }
+  .intro-list ul li::before {
+    content: '•';
+    position: absolute; left: 4px;
+    color: var(--white);
+  }
+
+  p { line-height: 1.8; margin-bottom: 22px; }
+  p:last-child { margin-bottom: 0; }
+
+  .lines p { margin-bottom: 4px; }
+
+  .centered { text-align: center; }
+  .centered p { margin-bottom: 6px; }
+
+  .callout-lines {
+    font-weight: 700;
+    color: var(--orange);
+    text-align: center;
+    margin-top: 40px;
+  }
+  .callout-lines p { margin-bottom: 6px; }
+  section.bg-navy .callout-lines,
+  section.bg-orange .callout-lines,
+  section.bg-orange .callout-lines strong { color: var(--white); }
+
+  ul.plain-list { list-style: none; margin: 0 0 22px; }
+  ul.plain-list li {
+    position: relative;
+    padding-left: 22px;
+    margin-bottom: 8px;
+    line-height: 1.6;
+  }
+  ul.plain-list li::before {
+    content: '•';
+    position: absolute; left: 4px;
+    color: var(--orange);
+  }
+  section.bg-navy ul.plain-list li::before,
+  section.bg-orange ul.plain-list li::before { color: var(--white); }
+
+  ol.numbered-list {
+    margin: 0 0 22px;
+    padding-left: 26px;
+  }
+  ol.numbered-list li {
+    margin-bottom: 18px;
+    line-height: 1.7;
+  }
+
+  .qr-wrap {
+    margin-top: 8px;
+    max-width: 180px;
+  }
+  .qr-wrap img { width: 100%; display: block; }
+
+  /* ─── CTA ─── */
+  .cta-btn {
+    display: inline-block;
+    border: 2px solid #2ecc71;
+    color: #2ecc71;
+    font-weight: 700;
+    text-decoration: none;
+    padding: 16px 36px;
+    border-radius: 2px;
+    margin-top: 24px;
+    transition: background .2s, color .2s;
+  }
+  .cta-btn:hover { background: #2ecc71; color: var(--white); }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: #000d1f;
+    padding: 32px 0;
+    text-align: center;
+  }
+  footer p {
+    margin: 0;
+    font-size: 12px;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: .04em;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 860px) {
+    .split, .split.reverse { grid-template-columns: 1fr; gap: 32px; }
+    .split.reverse .split-photo, .split .split-photo { order: -1; }
+    .split.reverse .split-text, .split .split-text { order: 2; }
+    .split-photo img { max-width: 340px; margin: 0 auto; }
+    section { padding: 60px 0; }
+    header .content-wrap { flex-direction: column; gap: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="content-wrap">
+    <img class="logo" src="images/logo-uniquely-me.png" alt="Uniquely Me">
+    <a class="back-link" href="../../index.html">Zurück zur Startseite</a>
+  </div>
+</header>
+
+<section class="bg-navy">
+  <div class="content-wrap split">
+    <div class="split-text">
+      <h1 class="page-title">Über mich</h1>
+
+      <ul class="intro-list">
+        <li>🌱 Ich bin <span class="orange">Sorin Ratiu</span></li>
+        <li>
+          <ul>
+            <li><span class="orange">Coach</span></li>
+            <li><span class="orange">Mentor</span> und</li>
+            <li><span class="orange">International zertifizierter NLP Master</span>.</li>
+          </ul>
+        </li>
+      </ul>
+
+      <p>Ich begleite ambitionierte Menschen und Führungspersönlichkeiten dabei, innere Blockaden zu lösen, Klarheit zu gewinnen und entschlossen ins Handeln zu kommen. Nicht durch kurzfristige Motivation – sondern durch nachhaltige, strukturelle Transformation.</p>
+
+      <p>Mit über zwei Jahrzehnten Erfahrung in Beratung, Technologie und professioneller Entwicklung verbinde ich strategische Präzision mit menschlicher Tiefe. Mein Hintergrund in Software, CRM-Systemen und agilen Umfeldern hat mich gelehrt, komplexe Systeme zu verstehen und funktionierende Strukturen aufzubauen.</p>
+
+      <div class="lines">
+        <p>Aber vor allem bin ich jemand, der nicht nur über Veränderung spricht – sondern sie selbst durchlebt hat.</p>
+        <p>Ich kenne das Gefühl, zu funktionieren, aber nicht erfüllt zu sein.</p>
+        <p>Ich kenne Zweifel, innere Konflikte und die Frage: <em>War das schon alles?</em></p>
+        <p><strong>Und ich habe mich entschieden, mein Leben bewusst in die Hand zu nehmen.</strong></p>
+      </div>
+
+      <div class="callout-lines">
+        <p>Verantwortung statt Ausreden.</p>
+        <p>Klarheit statt Chaos.</p>
+        <p>Handlung statt Stillstand.</p>
+      </div>
+    </div>
+    <div class="split-photo">
+      <img src="images/headshot.png" alt="Sorin Ratiu">
+    </div>
+  </div>
+</section>
+
+<section class="bg-white">
+  <div class="content-wrap split reverse">
+    <div class="split-text">
+      <p>Doch <strong>die wichtigste Struktur ist die innere.</strong></p>
+      <p>Echter Erfolg entsteht nicht nur im Außen.</p>
+      <p>Er beginnt im Denken, in der Identität, in der emotionalen Stabilität.</p>
+      <p>Im Laufe meiner Karriere habe ich Menschen und Teams international begleitet – bei beruflichen Neuausrichtungen, persönlichen Wendepunkten und inneren Veränderungsprozessen. Ich unterstütze dabei, limitierende Muster zu durchbrechen, Selbstzweifel zu transformieren und eine klare Vision mit konkreten Zielen zu entwickeln.</p>
+
+      <p><strong class="orange">Mein Ansatz verbindet:</strong></p>
+      <ul class="plain-list">
+        <li>Strategische Klarheit</li>
+        <li>NLP-basierte Transformationsmethoden</li>
+        <li>Systemisches Coaching</li>
+        <li>Ehrliches, direktes Feedback</li>
+        <li>Konkrete Umsetzung</li>
+      </ul>
+
+      <p>Ich arbeite <strong>nicht an der Oberfläche</strong>.<br>Ich arbeite <strong>an der Wurzel</strong>.</p>
+
+      <div class="qr-wrap">
+        <img src="images/qr-code.png" alt="QR-Code">
+      </div>
+    </div>
+    <div class="split-photo">
+      <img src="images/standing-suit.png" alt="Sorin Ratiu">
+    </div>
+  </div>
+</section>
+
+<section class="bg-orange">
+  <div class="content-wrap split">
+    <div class="split-photo">
+      <img src="images/orange-chair.png" alt="Sorin Ratiu">
+    </div>
+    <div class="split-text">
+      <h2 class="section-title">Warum ich der Richtige für dich bin?</h2>
+      <ol class="numbered-list">
+        <li><strong>Ich arbeite tief – nicht oberflächlich.</strong> Wir kratzen nicht an Symptomen. Wir gehen an die Wurzel. Blockaden, Glaubenssätze, emotionale Muster – dort entsteht echte Veränderung.</li>
+        <li><strong>Ich verbinde Struktur mit Transformation.</strong> Durch meine Erfahrung in Beratung, Strategie und Coaching bekommst du nicht nur Inspiration, sondern einen klaren Plan. Veränderung wird messbar und umsetzbar. 3. Ich sehe dein Potenzial – auch wenn du es noch nicht siehst.</li>
+        <li><strong>Manchmal brauchst du jemanden,</strong> der an dich glaubt, bis du selbst wieder an dich glaubst.</li>
+        <li><strong>Ich fordere dich.</strong> Wachstum passiert nicht in der Komfortzone. Wenn du nur Bestätigung suchst, bin ich nicht der Richtige. Wenn du echte Entwicklung willst, schon.</li>
+        <li><strong>Ich arbeite partnerschaftlich.</strong> Ich bin nicht der Held deiner Geschichte. Du bist es.</li>
+        <li><strong>Ich gebe dir Werkzeuge, Klarheit und Spiegel</strong> – damit du dein Leben bewusst gestaltest.</li>
+      </ol>
+
+      <div class="centered">
+        <p><strong>Wenn du bereit bist, Verantwortung zu übernehmen, alte Muster zu durchbrechen und dein nächstes Level zu erreichen, dann bin ich der richtige Begleiter an deiner Seite.</strong></p>
+        <p>Nicht, weil ich alles für dich löse.</p>
+        <p><strong>Sondern weil ich dir zeige, wie du es selbst tust.</strong></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="bg-navy">
+  <div class="content-wrap split reverse">
+    <div class="split-text">
+      <h2 class="section-title">Vom Schatten ins Licht</h2>
+      <p><em>– das ist nicht nur die Geschichte der Menschen, die ich begleite. Es ist auch meine eigene.</em></p>
+
+      <p>Es gab einen Punkt in meinem Leben, an dem ich gespürt habe: So wie es ist, kann es nicht bleiben. Äußerlich funktionierte vieles. Innerlich fehlten Klarheit, Richtung und echte Erfüllung. Ich stand vor denselben Fragen, die heute viele meiner Klienten bewegen:</p>
+
+      <ul class="plain-list">
+        <li>Warum wiederholen sich bestimmte Muster?</li>
+        <li>Warum halte ich mich selbst zurück?</li>
+        <li>Was will ich wirklich – und wer muss ich werden, um es zu erreichen?</li>
+      </ul>
+
+      <p>Ich habe begonnen, Verantwortung zu übernehmen.</p>
+
+      <div class="callout-lines">
+        <p>Für meine Entscheidungen.</p>
+        <p>Für meine Gedanken.</p>
+        <p>Für mein Leben.</p>
+      </div>
+
+      <p style="margin-top: 32px;">Durch intensive Weiterbildung, praktische Erfahrung und tiefe innere Arbeit entwickelte ich mich zum erfahrenen Coach und Mentor sowie zum international zertifizierten NLP Master. Doch Titel waren nie das Ziel.</p>
+
+      <p class="centered"><strong>Transformation war das Ziel.</strong></p>
+
+      <p>Ich lernte, innere Blockaden aufzulösen, emotionale Zustände bewusst zu steuern, Werte zu klären und eine klare Vision zu entwickeln. Vor allem lernte ich: Veränderung beginnt nicht im Außen – <strong>sie beginnt im Inneren.</strong></p>
+
+      <p>Heute begleite ich Menschen als Lebensarchitekt dabei, ihre innere Struktur neu zu gestalten. Ich verbinde analytische Klarheit mit tiefgehender Coaching-Expertise. Mit Methoden aus NLP, systemischem Coaching und eigenen Konzepten unterstütze ich sie dabei, Selbstzweifel zu überwinden, emotionale Stabilität aufzubauen und konkrete Ziele entschlossen umzusetzen.</p>
+
+      <div class="centered">
+        <p><strong>Ich bin nicht der Held ihrer Geschichte.</strong></p>
+        <p>Ich zeige dir, wie du selbst zum Helden wirst.</p>
+      </div>
+
+      <p style="margin-top: 32px;">Mein Weg hat mir gezeigt:</p>
+      <ul class="plain-list">
+        <li><strong>Man muss nicht im Autopilot bleiben.</strong></li>
+        <li><strong>Man kann das Steuer übernehmen.</strong></li>
+      </ul>
+
+      <img src="images/logo-uniquely-me.png" alt="Uniquely Me" style="height: 90px; margin-top: 20px;">
+    </div>
+    <div class="split-photo">
+      <img src="images/arms-up.png" alt="Sorin Ratiu">
+    </div>
+  </div>
+</section>
+
+<section class="bg-white">
+  <div class="content-wrap split">
+    <div class="split-text">
+      <p>Wenn du nur Motivation suchst, bin ich nicht der Richtige.<br>Wenn du bereit bist, echte Veränderung zu leben – dann passen wir zusammen.</p>
+
+      <p>Ich arbeite auf <strong class="orange">Deutsch</strong>, <strong class="orange">Englisch</strong> und <strong class="orange">Rumänisch</strong> mit Menschen, die mehr wollen als bloßen Erfolg:</p>
+
+      <p class="centered orange"><strong>Sie wollen innere Stärke, Klarheit und nachhaltige Wirkung.</strong></p>
+
+      <p>Du brauchst keinen Zuschauer in deinem Leben.<br>Du brauchst einen strategischen Partner, der dein Potenzial klar erkennt – und dich fordert, es zu leben.</p>
+
+      <p class="centered orange"><strong>Wenn dich das anspricht, dann lass uns dein nächstes Kapitel gestalten.</strong></p>
+
+      <div class="centered">
+        <a class="cta-btn" href="mailto:sorin.ratiu@weherzit.de">Buche jetzt dein kostenloses Discovery Call</a>
+      </div>
+    </div>
+    <div class="split-photo">
+      <img src="images/pointing.png" alt="Sorin Ratiu">
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© Sorin Ratiu</p>
+</footer>
+
+</body>
+</html>
