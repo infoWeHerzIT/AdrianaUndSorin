@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, follow">
+<title>Rechtliches – Der Architekt deines Lebens</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f6f0e3;
+    --paper-2:#eee4cf;
+    --ink:#1d1a13;
+    --ink-soft:#5c5645;
+    --navy-900:#00224d;
+    --navy-800:#0b3a6b;
+    --navy-700:#1b4f8f;
+    --line-light:#cdbe9c;
+    --line-dark:#37486b;
+    --orange-500:#d9682c;
+    --orange-600:#bd551f;
+    --orange-100:#f3dcc4;
+    --cream:#fffaf1;
+    --shadow:0 18px 40px -22px rgba(15,27,45,.35);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Work Sans",system-ui,-apple-system,sans-serif;
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4,.display{
+    font-family:"Fraunces",Georgia,serif;
+    font-weight:600;
+    line-height:1.18;
+    margin:0;
+    color:inherit;
+  }
+  p{margin:0 0 14px;}
+  address{font-style:normal;margin:0 0 14px;}
+  a{color:var(--orange-600);}
+  .container{max-width:820px;margin:0 auto;padding-inline:24px;}
+  @media (min-width:720px){ .container{padding-inline:40px;} }
+
+  header{
+    position:sticky;top:0;z-index:40;
+    background:var(--navy-900);
+    border-bottom:1px solid var(--line-dark);
+  }
+  .nav-row{display:flex;align-items:center;justify-content:space-between;padding-block:16px;gap:20px;max-width:820px;margin:0 auto;padding-inline:24px;}
+  @media (min-width:720px){ .nav-row{padding-inline:40px;} }
+  .logo{display:flex;align-items:center;gap:10px;color:var(--cream);font-family:"Fraunces",serif;font-weight:600;font-size:1.05rem;text-decoration:none;white-space:nowrap;}
+  .logo svg{width:24px;height:24px;flex:none;color:var(--orange-500);}
+  .back-link{color:#dbe2ee;font-size:.85rem;text-decoration:none;}
+  .back-link:hover{color:var(--cream);}
+
+  .page-hero{padding-block:48px 8px;}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:10px;
+    font-family:"Work Sans",sans-serif;font-weight:600;font-size:.72rem;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--orange-600);
+  }
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--orange-600);display:inline-block;}
+  .page-hero h1{font-size:clamp(1.9rem,4vw,2.6rem);margin-top:14px;}
+
+  .legal-tabs{
+    position:sticky;top:57px;z-index:30;
+    display:flex;gap:4px;flex-wrap:wrap;
+    background:var(--paper);
+    padding-block:14px;
+    border-bottom:1px solid var(--line-light);
+    margin-bottom:20px;
+  }
+  .legal-tabs a{
+    font-family:"Work Sans",sans-serif;font-weight:600;font-size:.85rem;
+    color:var(--ink-soft);text-decoration:none;
+    padding:8px 14px;border-radius:20px;border:1px solid var(--line-light);
+  }
+  .legal-tabs a:hover{color:var(--ink);border-color:var(--ink-soft);}
+
+  .legal-section{padding-block:32px 48px;border-bottom:1px solid var(--line-light);}
+  .legal-section:last-child{border-bottom:none;}
+  .legal-section > h2:first-child{font-size:clamp(1.5rem,3vw,1.9rem);margin-bottom:22px;}
+
+  .legal-body h2{font-size:1.15rem;margin-top:34px;margin-bottom:12px;color:var(--navy-900);}
+  .legal-body h2:first-child{margin-top:0;}
+  .legal-body h3{font-size:1.02rem;margin-top:22px;margin-bottom:8px;color:var(--ink);}
+  .legal-body h4{font-size:.95rem;font-weight:700;margin-top:16px;margin-bottom:6px;color:var(--ink);}
+  .legal-body p{color:var(--ink-soft);font-size:.94rem;}
+  .legal-body address{color:var(--ink-soft);font-size:.94rem;background:var(--paper-2);padding:16px 18px;border-radius:4px;border-left:3px solid var(--orange-500);}
+  .legal-note{
+    font-style:italic;background:var(--paper-2);border-left:3px solid var(--orange-500);
+    padding:12px 16px;border-radius:2px;
+  }
+
+  footer{background:var(--navy-900);color:#c9d3e2;padding-block:32px;margin-top:20px;}
+  footer .container{font-size:.82rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  footer a{color:#c9d3e2;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-row">
+    <a href="startseite.html" class="logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 20h18M5 20V9l7-5 7 5v11M9 20v-6h6v6"/></svg>
+      Der Architekt deines Lebens
+    </a>
+    <a href="startseite.html" class="back-link">&larr; Zur Startseite</a>
+  </div>
+</header>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="eyebrow">Rechtliches</span>
+    <h1>Impressum, Datenschutz &amp; Cookies</h1>
+  </div>
+</div>
+
+<nav class="legal-tabs">
+  <div class="container" style="display:flex;gap:8px;flex-wrap:wrap;padding-inline:0;">
+    <a href="#impressum">Impressum</a>
+    <a href="#datenschutz">Datenschutzerkl&auml;rung</a>
+    <a href="#cookies">Cookie-Richtlinie</a>
+  </div>
+</nav>
+
+<main class="container">
+
+  <section class="legal-section" id="impressum">
+    <h2>Impressum</h2>
+    <div class="legal-body">
+<p>Rechtliche Angaben zum Internetauftritt von der-architekt-deines-lebens.de. Verantwortung gem&auml;&szlig; &sect; 5 TMG:</p>
+<address>
+Sorin Ratiu &ndash; Der Architekt Deines Lebens<br>
+weHerzIT GmbH<br>
+Kleestr. 21-23<br>
+90461 N&uuml;rnberg<br>
+Tel.: +49 1573 / 5314941<br>
+E-Mail: <a href="mailto:info@sorin-ratiu.com">info@sorin-ratiu.com</a><br>
+Webseite: <a href="https://www.der-architekt-deines-lebens.de">www.der-architekt-deines-lebens.de</a>
+</address>
+<p>Umsatzsteuer-Identifikationsnummer gem&auml;&szlig; &sect; 27 a Umsatzsteuergesetz: DE359758731</p>
+<h4>Verbraucherstreitbeilegung / Universal Schlichtungsstelle:</h4>
+<p>Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
+<h4>Verantwortlich i.S.d. §18 Abs. 2 MStV:</h4>
+<p>Sorin Ratiu, weHerzIT GmbH, Kleestr. 21-23, 90461 Nürnberg</p>
+<h4>Technische Umsetzung:</h4>
+<p>Statische Website (HTML/JS), gehostet &uuml;ber GitHub Pages.</p>
+<h4>Zahlungsbedingungen für unsere Onlineschulungen:</h4>
+<p>Die Bestellungen unserer Onlineschulungen werden über unseren Zahlungsdienstleister „DigiStore24 GmbH“ durchgeführt. Es gelten diesbezüglich die jeweiligen allgemeinen Geschäftsbedingungen des Anbieters, welche Sie hier einsehen können: www.digistore24.com/legal/terms</p>
+<h4>Allgemeine Bildnachweise – Quellenangabe für Bilder Dritter:</h4>
+<p>Unsere verwendeten Bilder auf der Webseite entstammen von den unten angegebene Internetseiten und unterliegen der Creative Commons CC0 Lizenz. Bildplattform: www.pixabay.com Bildplattform: www.pexels.com Bildplattform: www.unsplash.com</p>
+<h4>Einzelne Bildnachweise – Quellenangaben für Bilder Dritter:</h4>
+<p>Startseite| Schulung Sorin Ratiu mit Teilnehmer | Urheber: S.Ratiu mit Zustimmung der Teilnehmer zur Veröffentlichung Foto Testimonial | Urheber die jeweiligen Teilnehmer mit Zustimmung der Verwendung.</p>
+<h3>Haftung für Inhalte</h3>
+<p>Als Diensteanbieter sind wir gemäß § 7 Abs.1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen. Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den allgemeinen Gesetzen bleiben hiervon unberührt. Eine diesbezügliche Haftung ist jedoch erst ab dem Zeitpunkt der Kenntnis einer konkreten Rechtsverletzung möglich. Bei Bekanntwerden von entsprechenden Rechtsverletzungen werden wir diese Inhalte umgehend entfernen.</p>
+<h3>Haftung für Links</h3>
+<p>Unser Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich. Die verlinkten Seiten wurden zum Zeitpunkt der Verlinkung auf mögliche Rechtsverstöße überprüft. Rechtswidrige Inhalte waren zum Zeitpunkt der Verlinkung nicht erkennbar. Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist jedoch ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Links umgehend entfernen.</p>
+<h3>Urheberrecht</h3>
+<p>Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers. Downloads und Kopien dieser Seite sind nur für den privaten, nicht kommerziellen Gebrauch gestattet. Soweit die Inhalte auf dieser Seite nicht vom Betreiber erstellt wurden, werden die Urheberrechte Dritter beachtet. Insbesondere werden Inhalte Dritter als solche gekennzeichnet. Sollten Sie trotzdem auf eine Urheberrechtsverletzung aufmerksam werden, bitten wir um einen entsprechenden Hinweis. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Inhalte umgehend entfernen.</p>
+
+    </div>
+  </section>
+
+  <section class="legal-section" id="datenschutz">
+    <h2>Datenschutzerkl&auml;rung</h2>
+    <div class="legal-body">
+<h2>1. ALLGEMEINES ZUR DATENVERARBEITUNG</h2>
+<h3>a) Allgemeine Informationen</h3>
+<p>Für der-architekt-deines-lebens.de hat Datenschutz einen hohen Stellenwert. Eine Nutzung der Internetseiten von der-architekt-deines-lebens.de ist grundsätzlich ohne jede Angabe personenbezogener Daten möglich. Eine Verarbeitung personenbezogener Daten wird erforderlich, wenn Services über unsere Internetseite in Anspruch genommen werden.</p>
+<p>Wir holen generell eine Einwilligung der betroffenen Person ein, wenn es für eine solche Verarbeitung keine gesetzliche Grundlage gibt. Die Verarbeitung personenbezogener Daten (beispielsweise des Namens, der Anschrift, E-Mail-Adresse oder Telefonnummer einer betroffenen Person) erfolgt stets im Einklang mit der Datenschutz-Grundverordnung und in Übereinstimmung mit den geltenden landesspezifischen Datenschutzbestimmungen.</p>
+<p>Mittels dieser Datenschutzerklärung möchte unser Unternehmen die Öffentlichkeit über Art, Umfang und Zweck der von uns verarbeiteten personenbezogenen Daten informieren. Ferner werden betroffene Personen mittels dieser Datenschutzerklärung über die ihnen zustehenden Rechte aufgeklärt.</p>
+<p>der-architekt-deines-lebens.de hat zahlreiche technische und organisatorische Maßnahmen umgesetzt, um einen möglichst lückenlosen Schutz der personenbezogenen Daten sicherzustellen. Dennoch können internetbasierte Datenübertragungen Sicherheitslücken aufweisen, sodass ein absoluter Schutz nicht gewährleistet werden kann. Aus diesem Grund steht es jeder betroffenen Person frei, personenbezogene Daten auch auf alternativen Wegen, beispielsweise telefonisch, an uns zu übermitteln.</p>
+<h3>b) SSL- bzw. TLS-Verschlüsselung</h3>
+<p>Diese Seite nutzt aus Sicherheitsgründen und zum Schutz der Übertragung vertraulicher Inhalte, wie zum Beispiel Bestellungen oder Anfragen, die Sie an uns als Seitenbetreiber senden, eine SSL- bzw. TLS- Verschlüsselung. Eine verschlüsselte Verbindung erkennen Sie daran, dass die Adresszeile des Browsers von „http://“ auf „https://“ wechselt und an dem Schloss-Symbol in Ihrer Browserzeile.</p>
+<p>Wenn die SSL- bzw. TLS-Verschlüsselung aktiviert ist, können die Daten, die Sie an uns übermitteln, nicht von Dritten mitgelesen werden.</p>
+<h3>c) Speicherdauer</h3>
+<p>Soweit innerhalb dieser Datenschutzerklärung keine speziellere Speicherdauer genannt wurde, verbleiben Ihre personenbezogenen Daten bei uns, bis der Zweck für die Datenverarbeitung entfällt. Wenn Sie ein berechtigtes Löschersuchen geltend machen oder eine Einwilligung zur Datenverarbeitung widerrufen, werden Ihre Daten gelöscht, sofern wir keinen anderen rechtlich zulässigen Gründe für die Speicherung Ihrer personenbezogenen Daten haben (z.B. steuer- oder handelsrechtliche Aufbewahrungsfristen); im letztgenannten Fall erfolgt die Löschung nach Fortfall dieser Gründe.</p>
+<h3>d) Hinweis zur Datenweitergabe in die USA</h3>
+<p>Auf unserer Website sind unter anderem Tools von Unternehmen mit Sitz in den USA eingebunden. Wenn diese Tools aktiv sind, können Ihre personenbezogenen Daten an die US-Server der jeweiligen Unternehmen weitergegeben werden. Wir weisen darauf hin, dass die USA kein sicherer Drittstaat im Sinne des EU-Datenschutzrechts sind. US-Unternehmen sind dazu verpflichtet, personenbezogene Daten an Sicherheitsbehörden herauszugeben, ohne dass Sie als Betroffener hiergegen gerichtlich vorgehen könnten. Es kann daher nicht ausgeschlossen werden, dass US-Behörden (z.B. Geheimdienste) Ihre auf US-Servern befindlichen Daten zu Überwachungszwecken verarbeiten, auswerten und dauerhaft speichern. Wir haben auf diese Verarbeitungstätigkeiten keinen Einfluss.</p>
+<h2>2. NAME UND ANSCHRIFT DES FÜR DIE VERARBEITUNG VERANTWORTLICHEN</h2>
+<p>Verantwortlicher im Sinne der Datenschutz-Grundverordnung, sonstiger in den Mitgliedstaaten der Europäischen Union geltenden Datenschutzgesetze und anderer Bestimmungen mit datenschutzrechtlichem Charakter ist:</p>
+<p>Sorin Ratiu - Der Architekt Deines Lebens</p>
+<p>weHerzIT GmbH</p>
+<p>Kleestr. 21-23</p>
+<p>90461 Nürnberg</p>
+<p>Tel.: +49 1573 / 5314941</p>
+<p>E-Mail: info@sorin-ratiu.com</p>
+<p>Webseite: www.der-architekt-deines-lebens.de</p>
+<h2>3. RECHT BETROFFENER PERSONEN</h2>
+<p>Werden von Ihnen personenbezogener Daten verarbeitet, sind Sie Betroffener im Sinne der Datenschutzgrundverordnung und es stehen Ihnen folgende Rechte gegenüber den Verantwortlichen zu.</p>
+<h3>a) Personenbezogene Daten</h3>
+<p>Jede betroffene Person hat das von der Datenschutzgrundverordnung eingeräumte Recht, von dem für die Verarbeitung Verantwortlichen eine Bestätigung darüber zu verlangen, ob sie betreffende personenbezogene Daten verarbeitet werden. Möchte eine betroffene Person dieses Bestätigungsrecht in Anspruch nehmen, kann sie sich hierzu jederzeit an Verantwortlichen wenden.</p>
+<h3>b) Recht auf Auskunft</h3>
+<p>Jede von der Verarbeitung personenbezogener Daten betroffene Person hat das vom Europäischen Richtlinien- und Verordnungsgeber gewährte Recht, jederzeit von dem für die Verarbeitung Verantwortlichen unentgeltliche Auskunft über die zu seiner Person gespeicherten personenbezogenen Daten und eine Kopie dieser Auskunft zu erhalten.</p>
+<p>Ferner hat der Europäische Richtlinien- und Verordnungsgeber der betroffenen Person Auskunft über folgende Informationen zugestanden:</p>
+<p>die Verarbeitungszwecke</p>
+<p>die Kategorien personenbezogener Daten, die verarbeitet werden</p>
+<p>die Empfänger oder Kategorien von Empfängern, gegenüber denen die personenbezogenen Daten offengelegt worden sind oder noch offengelegt werden, insbesondere bei Empfängern in Drittländern oder bei internationalen Organisationen</p>
+<p>falls möglich die geplante Dauer, für die die personenbezogenen Daten gespeichert werden, oder, falls dies nicht möglich ist, die Kriterien für die Festlegung dieser Dauer</p>
+<p>das Bestehen eines Rechts auf Berichtigung oder Löschung der sie betreffenden personenbezogenen Daten oder auf Einschränkung der Verarbeitung durch den Verantwortlichen oder eines Widerspruchsrechts gegen diese Verarbeitung</p>
+<p>das Bestehen eines Beschwerderechts bei einer Aufsichtsbehörde</p>
+<p>wenn die personenbezogenen Daten nicht bei der betroffenen Person erhoben werden:</p>
+<p>Alle verfügbaren Informationen über die Herkunft der Daten</p>
+<p>das Bestehen einer automatisierten Entscheidungsfindung einschließlich Profiling gemäß Artikel 22 Abs.1 und 4 DSGVO und — zumindest in diesen Fällen — aussagekräftige Informationen über die involvierte Logik sowie die Tragweite und die angestrebten Auswirkungen einer derartigen Verarbeitung für die betroffene Person</p>
+<p>Ferner steht der betroffenen Person ein Auskunftsrecht darüber zu, ob personenbezogene Daten an ein Drittland oder an eine internationale Organisation übermittelt wurden. Sofern dies der Fall ist, so steht der betroffenen Person im Übrigen das Recht zu, Auskunft über die geeigneten Garantien im Zusammenhang mit der Übermittlung zu erhalten.</p>
+<p>Möchte eine betroffene Person dieses Auskunftsrecht in Anspruch nehmen, kann sie sich hierzu jederzeit an einen Mitarbeiter des für die Verarbeitung Verantwortlichen wenden.</p>
+<h3>c) Recht auf Berichtigung</h3>
+<p>Jede von der Verarbeitung personenbezogener Daten betroffene Person hat das vom Europäischen Richtlinien- und Verordnungsgeber gewährte Recht, die unverzügliche Berichtigung sie betreffender unrichtiger personenbezogener Daten zu verlangen.</p>
+<p>Ferner steht der betroffenen Person das Recht zu, unter Berücksichtigung der Zwecke der Verarbeitung, die Vervollständigung unvollständiger personenbezogener Daten — auch mittels einer ergänzenden Erklärung — zu verlangen.</p>
+<p>Möchte eine betroffene Person dieses Berichtigungsrecht in Anspruch nehmen, kann sie sich hierzu jederzeit an einen Mitarbeiter des für die Verarbeitung Verantwortlichen wenden.</p>
+<h3>d) Recht auf Löschung (Recht auf Vergessen werden)</h3>
+<p>Jede von der Verarbeitung personenbezogener Daten betroffene Person hat das vom Europäischen Richtlinien- und Verordnungsgeber gewährte Recht, von dem Verantwortlichen zu verlangen, dass die sie betreffenden personenbezogenen Daten unverzüglich gelöscht werden, sofern einer der folgenden Gründe zutrifft und soweit die Verarbeitung nicht erforderlich ist:</p>
+<p>Die personenbezogenen Daten wurden für solche Zwecke erhoben oder auf sonstige Weise verarbeitet, für welche sie nicht mehr notwendig sind.</p>
+<p>Die betroffene Person widerruft ihre Einwilligung, auf die sich die Verarbeitung gemäß Art. 6 Abs. 1 Buchstabe a DS-GVO oder Art. 9 Abs. 2 Buchstabe a DSGVO stützte, und es fehlt an einer anderweitigen Rechtsgrundlage für die Verarbeitung.</p>
+<p>Die betroffene Person legt gemäß Art. 21 Abs. 1 DSGVO Widerspruch gegen die Verarbeitung ein, und es liegen keine vorrangigen berechtigten Gründe für die Verarbeitung vor, oder die betroffene Person legt gemäß Art. 21 Abs. 2 DSGVO Widerspruch gegen die Verarbeitung ein.</p>
+<p>Die personenbezogenen Daten wurden unrechtmäßig verarbeitet.</p>
+<p>Die Löschung der personenbezogenen Daten ist zur Erfüllung einer rechtlichen Verpflichtung nach dem Unionsrecht oder dem Recht der Mitgliedstaaten erforderlich, dem der Verantwortliche unterliegt.</p>
+<p>Die personenbezogenen Daten wurden in Bezug auf angebotene Dienste der Informationsgesellschaft gemäß Art. 8 Abs. 1 DSGVO erhoben.</p>
+<p>Sofern einer der oben genannten Gründe zutrifft und eine betroffene Person die Löschung von personenbezogenen Daten, die bei der-architekt-deines-lebens.de / Sorin Ratiu gespeichert sind, veranlassen möchte, kann sie sich hierzu jederzeit an einen Mitarbeiter des für die Verarbeitung Verantwortlichen wenden. Der Mitarbeiter von der-architekt-deines-lebens.de / Sorin Ratiu wird veranlassen, dass dem Löschverlangen unverzüglich nachgekommen wird.</p>
+<p>Wurden die personenbezogenen Daten von der-architekt-deines-lebens.de / Sorin Ratiu öffentlich gemacht und ist unser Unternehmen als Verantwortlicher gemäß Art. 17 Abs. 1 DS-GVO zur Löschung der personenbezogenen Daten verpflichtet, so trifft der-architekt-deines-lebens.de / Sorin Ratiu unter Berücksichtigung der verfügbaren Technologie und der Implementierungskosten angemessene Maßnahmen, auch technischer Art, um andere für die Datenverarbeitung Verantwortliche, welche die veröffentlichten personenbezogenen Daten verarbeiten, darüber in Kenntnis zu setzen, dass die betroffene Person von diesen anderen für die Datenverarbeitung Verantwortlichen die Löschung sämtlicher Links zu diesen personenbezogenen Daten oder von Kopien oder Replikationen dieser personenbezogenen Daten verlangt hat, soweit die Verarbeitung nicht erforderlich ist. Der Mitarbeiter von der-architekt-deines-lebens.de / Sorin Ratiu wird im Einzelfall das Notwendige veranlassen.</p>
+<h3>e) Recht auf Einschränkung der Verarbeitung</h3>
+<p>Jede von der Verarbeitung personenbezogener Daten betroffene Person hat das vom Europäischen Richtlinien- und Verordnungsgeber gewährte Recht, von dem Verantwortlichen die Einschränkung der Verarbeitung zu verlangen, wenn eine der folgenden Voraussetzungen gegeben ist:</p>
+<p>Die Richtigkeit der personenbezogenen Daten wird von der betroffenen Person bestritten, und zwar für eine Dauer, die es dem Verantwortlichen ermöglicht, die Richtigkeit der personenbezogenen Daten zu überprüfen.</p>
+<p>Die Verarbeitung ist unrechtmäßig, die betroffene Person lehnt die Löschung der personenbezogenen Daten ab und verlangt stattdessen die Einschränkung der Nutzung der personenbezogenen Daten.</p>
+<p>Der Verantwortliche benötigt die personenbezogenen Daten für die Zwecke der Verarbeitung nicht länger, die betroffene Person benötigt sie jedoch zur Geltendmachung, Ausübung oder Verteidigung von Rechtsansprüchen.</p>
+<p>Die betroffene Person hat Widerspruch gegen die Verarbeitung gem. Art. 21 Abs. 1 DSGVO eingelegt und es steht noch nicht fest, ob die berechtigten Gründe des Verantwortlichen gegenüber denen der betroffenen Person überwiegen.</p>
+<p>Sofern eine der oben genannten Voraussetzungen gegeben ist und eine betroffene Person die Einschränkung von personenbezogenen Daten, die bei der-architekt-deines-lebens.de / Sorin Ratiu gespeichert sind, verlangen möchte, kann sie sich hierzu jederzeit an einen Mitarbeiter des für die Verarbeitung Verantwortlichen wenden. Der Mitarbeiter von der-architekt-deines-lebens.de / Sorin Ratiu wird die Einschränkung der Verarbeitung veranlassen.</p>
+<h3>f) Recht auf Datenübertragbarkeit</h3>
+<p>Jede von der Verarbeitung personenbezogener Daten betroffene Person hat das vom Europäischen Richtlinien- und Verordnungsgeber gewährte Recht, die sie betreffenden personenbezogenen Daten, welche durch die betroffene Person einem Verantwortlichen bereitgestellt wurden, in einem strukturierten, gängigen und maschinenlesbaren Format zu erhalten.</p>
+<p>Sie hat außerdem das Recht, diese Daten einem anderen Verantwortlichen ohne Behinderung durch den Verantwortlichen, dem die personenbezogenen Daten bereitgestellt wurden, zu übermitteln, sofern die Verarbeitung auf der Einwilligung gemäß Art. 6 Abs. 1 Buchstabe a DSGVO oder Art. 9 Abs. 2 Buchstabe a DSGVO oder auf einem Vertrag gemäß Art. 6 Abs. 1 Buchstabe b DSGVO beruht und die Verarbeitung mithilfe automatisierter Verfahren erfolgt, sofern die Verarbeitung nicht für die Wahrnehmung einer Aufgabe erforderlich ist, die im öffentlichen Interesse liegt oder in Ausübung öffentlicher Gewalt erfolgt, welche dem Verantwortlichen übertragen wurde.</p>
+<p>Ferner hat die betroffene Person bei der Ausübung ihres Rechts auf Datenübertragbarkeit gemäß Art. 20 Abs. 1 DSGVO das Recht, zu erwirken, dass die personenbezogenen Daten direkt von einem Verantwortlichen an einen anderen Verantwortlichen übermittelt werden, soweit dies technisch machbar ist und sofern hiervon nicht die Rechte und Freiheiten anderer Personen beeinträchtigt werden.</p>
+<p>Zur Geltendmachung des Rechts auf Datenübertragbarkeit kann sich die betroffene Person jederzeit an einen Mitarbeiter von der-architekt-deines-lebens.de / Sorin Ratiu wenden.</p>
+<h3>g) Recht auf Widerspruch</h3>
+<p>Sie haben das Recht, aus Gründen, die sich aus ihrer besonderen Situation ergeben, jederzeit gegen die Verarbeitung der Sie betreffenden personenbezogenen Daten, die aufgrund von Art. 6 Abs. 1 S. 1 lit. e oder f DSGVO erfolgt, Widerspruch einzulegen; dies gilt auch für ein auf diese Bestimmungen gestütztes Profiling.</p>
+<p>Der Verantwortliche verarbeitet die Sie betreffenden personenbezogenen Daten nicht mehr, es sei denn, er kann zwingende schutzwürdige Gründe für die Verarbeitung nachweisen, die Ihre Interessen, Rechte und Freiheiten überwiegen, oder die Verarbeitung dient der Geltendmachung, Ausübung oder Verteidigung von Rechtsansprüchen.</p>
+<p>Werden die Sie betreffenden personenbezogenen Daten verarbeitet, um Direktwerbung zu betreiben, haben Sie das Recht, jederzeit Widerspruch gegen die Verarbeitung der Sie betreffenden personenbezogenen Daten zum Zwecke derartiger Werbung einzulegen; dies gilt auch für das Profiling, soweit es mit solcher Direktwerbung in Verbindung steht.</p>
+<p>Widersprechen Sie der Verarbeitung für Zwecke der Direktwerbung, so werden die Sie betreffenden personenbezogenen Daten nicht mehr für diese Zwecke verarbeitet.</p>
+<p>Sie haben die Möglichkeit, im Zusammenhang mit der Nutzung von Diensten der Informationsgesellschaft – ungeachtet der Richtlinie 2002/58/EG – Ihr Widerspruchsrecht mittels automatisierter Verfahren auszuüben, bei denen technische Spezifikationen verwendet werden.</p>
+<h3>h) Automatisierte Entscheidungen im Einzelfall einschließlich Profiling</h3>
+<p>Sie haben das Recht, nicht einer ausschließlich auf einer automatisierten Verarbeitung – einschließlich Profiling – beruhenden Entscheidung unterworfen zu werden, die Ihnen gegenüber rechtliche Wirkung entfaltet oder Sie in ähnlicher Weise erheblich beeinträchtigt. Dies gilt nicht, wenn die Entscheidung</p>
+<p>für den Abschluss oder die Erfüllung eines Vertrags zwischen Ihnen und dem Verantwortlichen erforderlich ist,</p>
+<p>aufgrund von Rechtsvorschriften der Union oder der Mitgliedstaaten, denen der Verantwortliche unterliegt, zulässig ist und diese Rechtsvorschriften angemessene Maßnahmen zur Wahrung Ihrer Rechte und Freiheiten sowie Ihrer berechtigten Interessen enthalten oder</p>
+<p>mit Ihrer ausdrücklichen Einwilligung erfolgt.</p>
+<p>Allerdings dürfen diese Entscheidungen nicht auf besonderen Kategorien personenbezogener Daten nach Art. 9 Abs. 1 DSGVO beruhen, sofern nicht Art. 9 Abs. 2 lit. a oder b DSGVO gilt und angemessene Maßnahmen zum Schutz der Rechte und Freiheiten sowie Ihrer berechtigten Interessen getroffen wurden.</p>
+<p>Hinsichtlich der oben genannten Fälle trifft der Verantwortliche angemessene Maßnahmen, um die Rechte und Freiheiten sowie Ihre berechtigten Interessen zu wahren, wozu mindestens das Recht auf Erwirkung des Eingreifens einer Person seitens des Verantwortlichen, auf Darlegung des eigenen Standpunkts und auf Anfechtung der Entscheidung gehört.</p>
+<h3>i) Recht auf Widerruf einer datenschutzrechtlichen Einwilligung</h3>
+<p>Jede von der Verarbeitung personenbezogener Daten betroffene Person hat das vom Europäischen Richtlinien- und Verordnungsgeber gewährte Recht, eine Einwilligung zur Verarbeitung personenbezogener Daten jederzeit zu widerrufen.</p>
+<p>Möchte die betroffene Person ihr Recht auf Widerruf einer Einwilligung geltend machen, kann sie sich hierzu jederzeit an einen Mitarbeiter des für die Verarbeitung Verantwortlichen wenden.</p>
+<h3>j) Recht auf Beschwerde bei der Aufsichtsbehörde</h3>
+<p>Unbeschadet eines anderweitigen verwaltungsrechtlichen oder gerichtlichen Rechtsbehelfs steht Ihnen das Recht auf Beschwerde bei einer Aufsichtsbehörde, insbesondere in dem Mitgliedstaat Ihres Aufenthaltsorts, Ihres Arbeitsplatzes oder des Orts des mutmaßlichen Verstoßes, zu, wenn Sie der Ansicht sind, dass die Verarbeitung der Sie betreffenden personenbezogenen Daten gegen die DSGVO verstößt.</p>
+<p>Die Aufsichtsbehörde, bei der die Beschwerde eingereicht wurde, unterrichtet den Beschwerdeführer über den Stand und die Ergebnisse der Beschwerde einschließlich der Möglichkeit eines gerichtlichen Rechtsbehelfs nach Art. 78 DSGVO.</p>
+
+<h2>4. BEREITSTELLUNG DER INTERNETSEITE UND ERSTELLUNG DER SERVER DER SERVER-LOG-DATEIEN</h2>
+<h3>a) Beschreibung und Umfang der Datenverarbeitung</h3>
+<p>Bei jedem Aufruf unserer Internetseite erfasst unser System automatisiert Daten und Informationen vom Computersystem des aufrufenden Rechners. Folgende Daten werden hierbei erhoben: Informationen über den Browsertyp und die verwendete Version Das Betriebssystem des Nutzers Den Internet-Service-Provider des Nutzers Die IP-Adresse des Nutzers Datum und Uhrzeit des Zugriffs Webseiten, von denen das System des Nutzers auf unsere Internetseite gelangt Webseiten, die vom System des Nutzers über unsere Webseite aufgerufen werden Diese Daten werden in den Server-Log-Dateien unseres Systems gespeichert. Eine Speicherung dieser Daten zusammen mit anderen personenbezogenen Daten des Nutzers findet nicht statt.</p>
+<h3>b) Zweck der Datenverarbeitung</h3>
+<p>Die vorübergehende Speicherung der IP-Adresse durch das System ist notwendig, um eine Auslieferung der Webseite an den Rechner des Nutzers zu ermöglichen. Hierfür muss die IP-Adresse des Nutzers für die Dauer der Sitzung gespeichert bleiben. Die Speicherung in Server-Log-Dateien erfolgt, um die Funktionsfähigkeit der Webseite sicherzustellen. Zudem dienen uns die Daten zur Optimierung der Webseite und zur Sicherstellung der Sicherheit unserer informationstechnischen Systeme. Eine Auswertung der Daten zu Marketingzwecken findet in diesem Zusammenhang nicht statt. In diesen Zwecken liegt auch unser berechtigtes Interesse an der Datenverarbeitung nach Art. 6 Abs. 1 S. 1 lit. f DSGVO.</p>
+<h3>c) Rechtsgrundlage für die Datenverarbeitung</h3>
+<p>Rechtsgrundlage für die vorübergehende Speicherung der Daten und der Logfiles ist Art. 6 Abs. 1 S. 1 lit. f DSGVO.</p>
+<h3>d) Dauer der Speicherung</h3>
+<p>Die Daten werden gelöscht, sobald sie für die Erreichung des Zweckes ihrer Erhebung nicht mehr erforderlich sind. Im Falle der Erfassung der Daten zur Bereitstellung der Webseite ist dies der Fall, wenn die jeweilige Sitzung beendet ist. Im Falle der Speicherung der Daten in Logfiles ist dies nach spätestens sieben Tagen der Fall. Eine darüberhinausgehende Speicherung ist möglich. In diesem Fall werden die IP-Adressen der Nutzer gelöscht oder verfremdet, sodass eine Zuordnung des aufrufenden Clients nicht mehr möglich ist.</p>
+<h3>e) Widerspruchs- und Beseitigungsmöglichkeit</h3>
+<p>Die Erfassung der Daten zur Bereitstellung der Webseite und die Speicherung der Daten in Server-Log-Dateien ist für den Betrieb der Internetseite zwingend erforderlich. Es besteht folglich seitens des Nutzers keine Widerspruchsmöglichkeit.</p>
+<h2>5. VERWENDUNG VON COOKIES</h2>
+<h3>a) Umfang und Beschreibung der Datenverarbeitung</h3>
+<p>Die Internetseiten verwenden teilweise so genannte Cookies. Cookies richten auf Ihrem Rechner keinen Schaden an und enthalten keine Viren. Cookies dienen dazu, unser Angebot nutzerfreundlicher, effektiver und sicherer zu machen. Cookies sind kleine Textdateien, die auf Ihrem Rechner abgelegt werden und die Ihr Browser speichert. Die meisten der von uns verwendeten Cookies sind so genannte “Session-Cookies”. Sie werden nach Ende Ihres Besuchs automatisch gelöscht. Andere Cookies bleiben auf Ihrem Endgerät gespeichert bis Sie diese löschen. Diese Cookies ermöglichen es uns, Ihren Browser beim nächsten Besuch wiederzuerkennen. Sie können Ihren Browser so einstellen, dass Sie über das Setzen von Cookies informiert werden und Cookies nur im Einzelfall erlauben, die Annahme von Cookies für bestimmte Fälle oder generell ausschließen sowie das automatische Löschen der Cookies beim Schließen des Browser aktivieren. Bei der Deaktivierung von Cookies kann die Funktionalität dieser Website eingeschränkt sein.</p>
+<h3>b) Zweck der Datenverarbeitung</h3>
+<p>Der Zweck der Verwendung technisch notwendiger Cookies ist, die Nutzung von Webseiten für die Nutzer zu vereinfachen. Einige Funktionen unserer Internetseite können ohne den Einsatz von Cookies nicht angeboten werden. Für diese ist es erforderlich, dass der Browser auch nach einem Seitenwechsel wiedererkannt wird. Für folgende Anwendungen benötigen wir Cookies: Übernahme von Spracheinstellungen Die durch technisch notwendige Cookies erhobenen Nutzerdaten werden nicht zur Erstellung von Nutzerprofilen verwendet. In diesen Zwecken liegt auch unser berechtigtes Interesse in der Verarbeitung der personenbezogenen Daten nach Art. 6 Abs. 1 S. 1 lit. f DSGVO.</p>
+<h3>c) Verwendete Rechtsgrundlage für die Datenverarbeitung</h3>
+<p>Die Rechtsgrundlage für die Verarbeitung personenbezogener Daten unter Verwendung technisch notweniger Cookies ist Art. 6 Abs. 1 S. 1 lit. f DSGVO.</p>
+<h3>d) Widerspruchs- und Beseitigungsmöglichkeit und Dauer der Speicherung</h3>
+<p>Cookies werden auf dem Rechner des Nutzers gespeichert und von diesem an unserer Seite übermittelt. Daher haben Sie als Nutzer auch die volle Kontrolle über die Verwendung von Cookies. Durch eine Änderung der Einstellungen in Ihrem Internetbrowser können Sie die Übertragung von Cookies deaktivieren oder einschränken. Bereits gespeicherte Cookies können jederzeit gelöscht werden. Dies kann auch automatisiert erfolgen. Werden Cookies für unsere Webseite deaktiviert, können möglicherweise nicht mehr alle Funktionen der Webseite vollumfänglich genutzt werden.</p>
+<h2>6. KONTAKTFORMULAR FÜR ANFRAGEN</h2>
+<h3>a) Beschreibung und Umfang der Datenverarbeitung</h3>
+<p>Auf unserer Internetseite sind Kontaktformulare vorhanden, welche für Ihre Anfrage genutzt werden können. Nimmt ein Nutzer diese Möglichkeit wahr, so werden die in der Eingabemaske eingegeben Daten an uns übermittelt und gespeichert und der Nutzer erhält einmalig eine E-Mail von uns. Im Zeitpunkt der Absendung der Nachricht über das Kontaktformular werden Ihre Angaben aus dem Anfrageformular inklusive der von Ihnen dort angegebenen Kontaktdaten zwecks Bearbeitung der Anfrage und für den Fall von Anschlussfragen bei uns gespeichert. Diese Daten geben wir nicht ohne Ihre Einwilligung weiter. E-Mail-Adresse Name / Unternehmen Kommentar IP-Adresse des aufrufenden Rechners Datum und Uhrzeit der Kontaktaufnahme Alternativ ist eine Kontaktaufnahme über die bereitgestellte Emailadresse möglich. In diesem Fall werden die mit der Email übermittelten personenbezogenen Daten des Nutzers gespeichert.</p>
+<h3>b) Zweck der Datenverarbeitung</h3>
+<p>Die Verarbeitung der personenbezogenen Daten aus der Eingabemaske dient uns allein zur Bearbeitung der des Versandes des Angebotes. Im Falle einer Kontaktaufnahme per Email liegt hieran auch das erforderliche berechtigte Interesse an der Verarbeitung der Daten. Die sonstigen während des Absendevorgangs verarbeiteten personenbezogenen Daten dienen dazu, einen Missbrauch des Kontaktformulars zu verhindern und die Sicherheit unserer informationstechnischen Systeme sicherzustellen.</p>
+<h3>c) Rechtsgrundlage für die Datenverarbeitung</h3>
+<p>Rechtsgrundlage für die Verarbeitung der Daten ist eine Vertragsanbahnung, die auf Anfrage der betroffenen Person erfolgt, Art. 6 Abs. 1 S. 1 lit. b Alt. 2 DSGVO. Rechtsgrundlage für die Verarbeitung der Daten, die im Zuge einer Übersendung einer Email übermittelt werden, ist Art. 6 Abs. 1 S. 1 lit. f DSGVO.</p>
+<h3>d) Dauer der Speicherung</h3>
+<p>Die Daten werden gelöscht, sobald sie für die Erreichung des Zweckes ihrer Erhebung nicht mehr erforderlich sind. Für die personenbezogenen Daten aus der Eingabemaske des Kontaktformulars und diejenigen, die per Email übersandt wurden, ist dies dann der Fall, wenn die jeweilige Konversation mit dem Nutzer beendet ist. Beendet ist die Konversation dann, wenn sich aus den Umständen entnehmen lässt, dass der betroffene Sachverhalt abschließend geklärt ist. Die während des Absendevorgangs zusätzlich erhobenen personenbezogenen Daten werden spätestens nach einer Frist von sieben Tagen gelöscht.</p>
+<h3>e) Widerspruchs- und Beseitigungsmöglichkeit</h3>
+<p>Der Nutzer hat jederzeit die Möglichkeit, der Verarbeitung der personenbezogenen Daten zu widersprechen. Nimmt der Nutzer per Email Kontakt mit uns auf, so kann er der Speicherung seiner personenbezogenen Daten jederzeit widersprechen. In einem solchen Fall kann die Konversation nicht fortgeführt werden. Bitte senden sie uns hierzu eine formlose Email an info@sorin-ratiu.com. Alle personenbezogenen Daten, die im Zuge der Kontaktaufnahme gespeichert wurden, werden in diesem Fall gelöscht.</p>
+<h2>7. E-MAIL-KONTAKT FÜR ANFRAGEN</h2>
+<h3>a) Beschreibung und Umfang der Datenverarbeitung</h3>
+<p>Auf unserer Internetseite ist eine Kontaktaufnahme über die bereitgestellte Emailadresse möglich. In diesem Fall werden die mit der Email übermittelten personenbezogenen Daten des Nutzers gespeichert. Die Daten werden ausschließlich für die Verarbeitung der Konversation verwendet.</p>
+<h3>b) Zweck der Datenverarbeitung</h3>
+<p>Im Falle einer Kontaktaufnahme per Email liegt hieran auch das erforderliche berechtigte Interesse an der Verarbeitung der Daten.</p>
+<h3>c) Rechtsgrundlage für die Datenverarbeitung</h3>
+<p>Rechtsgrundlage für die Verarbeitung der Daten, die im Zuge einer Übersendung einer Email übermittelt werden, ist Art. 6 Abs. 1 lit. f DSGVO. Zielt der Email-Kontakt auf den Abschluss eines Vertrages ab, so ist zusätzliche Rechtsgrundlage für die Verarbeitung Art. 6 Abs. 1 lit. b DSGVO.</p>
+<h3>d) Dauer der Speicherung</h3>
+<p>Die Daten werden gelöscht, sobald sie für die Erreichung des Zweckes ihrer Erhebung nicht mehr erforderlich sind. Für die personenbezogenen Daten, die per Email übersandt wurden, ist dies dann der Fall, wenn die jeweilige Konversation mit dem Nutzer beendet ist. Beendet ist die Konversation dann, wenn sich aus den Umständen entnehmen lässt, dass der betroffene Sachverhalt abschließend geklärt ist. Die während des Absendevorgangs zusätzlich erhobenen personenbezogenen Daten werden spätestens nach einer Frist von sieben Tagen gelöscht.</p>
+<h3>e) Widerspruchs- und Beseitigungsmöglichkeit</h3>
+<p>Der Nutzer hat jederzeit die Möglichkeit, der Verarbeitung der personenbezogenen Daten zu widersprechen. Nimmt der Nutzer per Email Kontakt mit uns auf, so kann er der Speicherung seiner personenbezogenen Daten jederzeit widersprechen. Bitte senden sie uns hierzu eine formlose Email an info@sorin-ratiu.com. Alle Kommentare und damit verbundene Daten im Zuge der Eintragungen auf der Internetseite werden in diesem Fall gelöscht.</p>
+<h2>8. KOMMENTARFUNKTION ZU INHALTEN</h2>
+<h3>a) Beschreibung und Umfang der Datenverarbeitung</h3>
+<p>Für die Kommentarfunktion auf dieser Seite werden neben Ihrem Kommentar auch Angaben zum Zeitpunkt der Erstellung des Kommentars, Ihre E-Mail-Adresse und, wenn Sie nicht anonym posten, der von Ihnen gewählte Nutzername gespeichert.</p>
+<h3>b) Speicherung der IP-Adresse</h3>
+<p>Unsere Kommentarfunktion speichert die IP-Adressen der Nutzer, die Kommentare verfassen. Da wir Kommentare auf dieser Website nicht vor der Freischaltung prüfen, benötigen wir diese Daten, um im Falle von Rechtsverletzungen wie Beleidigungen oder Propaganda gegen den Verfasser vorgehen zu können.</p>
+<h3>c) Abonnieren von Kommentaren</h3>
+<p>Als Nutzer der Seite können Sie nach einer Anmeldung Kommentare abonnieren. Sie erhalten eine Bestätigungsemail, um zu prüfen, ob Sie der Inhaber der angegebenen E-Mail-Adresse sind. Sie können diese Funktion jederzeit über einen Link in den Info-Mails abbestellen. Die im Rahmen des Abonnierens von Kommentaren eingegebenen Daten werden in diesem Fall gelöscht; wenn Sie diese Daten für andere Zwecke und an anderer Stelle (z. B. Newsletterbestellung) an uns übermittelt haben, verbleiben diese Daten jedoch bei uns.</p>
+<h3>d) Dauer der Speicherung</h3>
+<p>Die Kommentare und die damit verbundenen Daten werden gespeichert und verbleiben auf dieser Website, bis der kommentierte Inhalt vollständig gelöscht wurde oder die Kommentare aus rechtlichen Gründen gelöscht werden müssen (z. B. beleidigende Kommentare).</p>
+<h3>e) Rechtsgrundlage der Datenverarbeitung</h3>
+<p>Die Speicherung der Kommentare erfolgt auf Grundlage Ihrer Einwilligung (Art. 6 Abs. 1 lit. a DSGVO). Sie können eine von Ihnen erteilte Einwilligung jederzeit widerrufen. Dazu reicht eine formlose Mitteilung per E-Mail an uns. Die Rechtmäßigkeit der bereits erfolgten Datenverarbeitungsvorgänge bleibt vom Widerruf unberührt.</p>
+<h3>f) Widerspruchs- und Beseitigungsmöglichkeit</h3>
+<p>Der Nutzer hat jederzeit die Möglichkeit, seine Einwilligung zur Verarbeitung der personenbezogenen Daten zu widerrufen. Nimmt der Nutzer per Email Kontakt mit uns auf, so kann er der Speicherung seiner personenbezogenen Daten jederzeit widersprechen. In einem solchen Fall kann die Konversation nicht fortgeführt werden. Bitte senden sie uns hierzu eine formlose Email an info@sorin-ratiu.com. Alle personenbezogenen Daten, die im Zuge der Kontaktaufnahme gespeichert wurden, werden in diesem Fall gelöscht.</p>
+<h2>9. NEWSLETTER</h2>
+<h3>a) Beschreibung und Umfang der Datenverarbeitung</h3>
+<p>Auf unserer Internetseite besteht die Möglichkeit einen kostenfreien Newsletter zu abonnieren. Dabei werden bei der Anmeldung zum Newsletter die Daten aus der Eingabemaske an uns übermittelt. Wir benötigen von Ihnen eine E-Mail-Adresse sowie Informationen, welche uns die Überprüfung gestatten, dass Sie der Inhaber der angegebenen E-Mail-Adresse sind und mit dem Empfang des Newsletters einverstanden sind. Weitere Daten werden nicht bzw. nur auf freiwilliger Basis erhoben. Diese Daten werden ausschließlich für den Versand der angeforderten Informationen des Newsletters verwendet und gehen nicht an Dritte weiter.</p>
+<h3>b) Zweck der Datenverarbeitung</h3>
+<p>Die Erhebung der Emailadresse des Nutzers dient dazu, den Newsletter zuzustellen. Die Erhebung sonstiger personenbezogener Daten werden auf freiwilliger Basis erhoben im Rahmen des Anmeldevorgangs und dient dazu, einen Missbrauch der Dienste oder der verwendeten Emailadresse zu verhindern.</p>
+<h3>c) Rechtsgrundlage für die Datenverarbeitung</h3>
+<p>Rechtsgrundlage für die Verarbeitung der Daten nach Anmeldung zum Newsletter durch den Nutzer ist bei Vorliegen einer Einwilligung des Nutzers Art. 6 Abs. 1 S. 1 lit. a DSGVO. Die erteilte Einwilligung zur Speicherung der Daten, der E-Mail-Adresse sowie deren Nutzung zum Versand des Newsletters können Sie jederzeit widerrufen, etwa über den „Austragen“-Link im Newsletter. Die Rechtmäßigkeit der bereits erfolgten Datenverarbeitungsvorgänge bleibt vom Widerruf unberührt.</p>
+<h3>d) Dauer der Speicherung</h3>
+<p>Die Daten werden gelöscht, sobald sie für die Erreichung des Zweckes ihrer Erhebung nicht mehr erforderlich sind. Die Emailadresse des Nutzers wird demnach solange bei uns gespeichert, wie das Abonnement des Newsletters aktiv ist. Nach der Abbestellung des Newsletters aus der Newsletterverteilerliste werden die Daten gelöscht. Daten, die zu anderen Zwecken bei uns gespeichert wurden bleiben hiervon unberührt.</p>
+<h3>e) Widerspruchs- und Beseitigungsmöglichkeit</h3>
+<p>Das Abonnement des Newsletters kann durch den betroffenen Nutzer jederzeit gekündigt werden. Zu diesem Zweck findet sich in jedem Newsletter ein entsprechender Link. Hierdurch wird ebenfalls ein Widerruf der Einwilligung der Speicherung der während des Anmeldevorgangs freiwillig erhobenen personenbezogenen Daten ermöglicht. Nach Ihrer Austragung aus der Newsletterverteilerliste wird Ihre E-Mail-Adresse bei uns ggf. in einer Blacklist gespeichert, um künftige Mailings zu verhindern. Die Daten aus der Blacklist werden nur für diesen Zweck verwendet und nicht mit anderen Daten zusammengeführt. Dies dient sowohl Ihrem Interesse als auch unserem Interesse an der Einhaltung der gesetzlichen Vorgaben beim Versand von Newslettern (berechtigtes Interesse im Sinne des Art. 6 Abs. 1 lit. f DSGVO). Die Speicherung in der Blacklist ist zeitlich nicht befristet. Sie können der Speicherung widersprechen, sofern Ihre Interessen unser berechtigtes Interesse überwiegen.</p>
+<h2>10. UNTERNEHMENSAUFTRITTE IN SOZIALEN NETZWERKEN</h2>
+<h3>a) Allgemeine Informationen zu Social-Media-Plugins mit Shariff</h3>
+<p>Auf dieser Website werden Plugins von sozialen Medien verwendet (z. B. XING, Facebook, Instagram). Die Plugins können Sie in der Regel anhand der jeweiligen Social-Media-Logos erkennen. Um den Datenschutz auf dieser Website zu gewährleisten, verwenden wir diese Plugins zusammen mit der sogenannten „Shariff“-Lösung. Diese Anwendung verhindert, dass die auf dieser Website integrierten Plugins Daten schon beim ersten Betreten der Seite an den jeweiligen Anbieter übertragen. Erst wenn Sie das jeweilige Plugin durch Anklicken der zugehörigen Schaltfläche aktivieren, wird eine direkte Verbindung zum Server des Anbieters hergestellt (Einwilligung). Sobald Sie das Plugin aktivieren, erhält der jeweilige Anbieter die Information, dass Sie mit Ihrer IP-Adresse dieser Website besucht haben. Wenn Sie gleichzeitig in Ihrem jeweiligen Social-Media-Account (z. B. Facebook) eingeloggt sind, kann der jeweilige Anbieter den Besuch dieser Website Ihrem Benutzerkonto zuordnen. Das Aktivieren des Plugins stellt eine Einwilligung im Sinne des Art. 6 Abs. 1 lit. a DSGVO dar. Diese Einwilligung können Sie jederzeit mit Wirkung für die Zukunft widerrufen.</p>
+<h3>b) Datenschutzbestimmungen zum Einsatz und Verwendung von XING</h3>
+<p>Der für die Verarbeitung Verantwortliche hat auf dieser Internetseite Komponenten von Xing integriert. Xing ist ein Internetbasiertes soziales Netzwerk, das die Konnektierung der Nutzer mit bestehenden Geschäftskontakten sowie das Knüpfen von neuen Businesskontakten ermöglicht. Die einzelnen Nutzer können bei Xing ein persönliches Profil von sich anlegen. Unternehmen können beispielsweise Unternehmensprofile erstellen oder Stellenangebote auf Xing veröffentlichen. Betreibergesellschaft von Xing ist die XING SE, Dammtorstraße 30, 20354 Hamburg, Deutschland. Durch jeden Aufruf einer der Einzelseiten dieser Internetseite, die durch den für die Verarbeitung Verantwortlichen betrieben wird und auf welcher eine Xing-Komponente (Xing-Plug-In) integriert wurde, wird der Internetbrowser auf dem informationstechnologischen System der betroffenen Person automatisch durch die jeweilige Xing-Komponente veranlasst, eine Darstellung der entsprechenden Xing-Komponente von Xing herunterzuladen. Weitere Informationen zum den Xing-Plug-Ins können unter https://dev.xing.com/plugins abgerufen werden. Im Rahmen dieses technischen Verfahrens erhält Xing Kenntnis darüber, welche konkrete Unterseite unserer Internetseite durch die betroffene Person besucht wird. Sofern die betroffene Person gleichzeitig bei Xing eingeloggt ist, erkennt Xing mit jedem Aufruf unserer Internetseite durch die betroffene Person und während der gesamten Dauer des jeweiligen Aufenthaltes auf unserer Internetseite, welche konkrete Unterseite unserer Internetseite die betroffene Person besucht. Diese Informationen werden durch die Xing-Komponente gesammelt und durch Xing dem jeweiligen Xing-Account der betroffenen Person zugeordnet. Betätigt die betroffene Person einen der auf unserer Internetseite integrierten Xing-Buttons, beispielsweise den „Share“-Button, ordnet Xing diese Information dem persönlichen Xing-Benutzerkonto der betroffenen Person zu und speichert diese personenbezogenen Daten. Xing erhält über die Xing-Komponente immer dann eine Information darüber, dass die betroffene Person unsere Internetseite besucht hat, wenn die betroffene Person zum Zeitpunkt des Aufrufs unserer Internetseite gleichzeitig bei Xing eingeloggt ist; dies findet unabhängig davon statt, ob die betroffene Person die Xing-Komponente anklickt oder nicht. Ist eine derartige Übermittlung dieser Informationen an Xing von der betroffenen Person nicht gewollt, kann diese die Übermittlung dadurch verhindern, dass sie sich vor einem Aufruf unserer Internetseite aus ihrem Xing-Account ausloggt. Die von Xing veröffentlichten Datenschutzbestimmungen, die unter https://www.xing.com/privacy abrufbar sind, geben Aufschluss über die Erhebung, Verarbeitung und Nutzung personenbezogener Daten durch Xing. Ferner hat Xing unter https://www.xing.com/app/share?op=data_protection Datenschutzhinweise für den XING-Share-Button veröffentlicht.</p>
+<h3>c) Datenschutzbestimmungen zum Einsatz und Verwendung von Facebook</h3>
+<p>Der für die Verarbeitung Verantwortliche hat auf dieser Internetseite Komponenten des Unternehmens Facebook integriert. Facebook ist ein soziales Netzwerk. Ein soziales Netzwerk ist ein im Internet betriebener sozialer Treffpunkt, eine Online-Gemeinschaft, die es den Nutzern in der Regel ermöglicht, untereinander zu kommunizieren und im virtuellen Raum zu interagieren. Ein soziales Netzwerk kann als Plattform zum Austausch von Meinungen und Erfahrungen dienen oder ermöglicht es der Internetgemeinschaft, persönliche oder unternehmensbezogene Informationen bereitzustellen. Facebook ermöglicht den Nutzern des sozialen Netzwerkes unter anderem die Erstellung von privaten Profilen, den Upload von Fotos und eine Vernetzung über Freundschaftsanfragen. Betreibergesellschaft von Facebook ist die Facebook, Inc., 1 Hacker Way, Menlo Park, CA 94025, USA. Für die Verarbeitung personenbezogener Daten Verantwortlicher ist, wenn eine betroffene Person außerhalb der USA oder Kanada lebt, die Facebook Ireland Ltd., 4 Grand Canal Square, Grand Canal Harbour, Dublin 2, Ireland. Durch jeden Aufruf einer der Einzelseiten dieser Internetseite, die durch den für die Verarbeitung Verantwortlichen betrieben wird und auf welcher eine Facebook-Komponente (Facebook-Plug-In) integriert wurde, wird der Internetbrowser auf dem informationstechnologischen System der betroffenen Person automatisch durch die jeweilige Facebook-Komponente veranlasst, eine Darstellung der entsprechenden Facebook-Komponente von Facebook herunterzuladen. Eine Gesamtübersicht über alle Facebook-Plug-Ins kann unter https://developers.facebook.com/docs/plugins/?locale=de_DE abgerufen werden. Im Rahmen dieses technischen Verfahrens erhält Facebook Kenntnis darüber, welche konkrete Unterseite unserer Internetseite durch die betroffene Person besucht wird. Sofern die betroffene Person gleichzeitig bei Facebook eingeloggt ist, erkennt Facebook mit jedem Aufruf unserer Internetseite durch die betroffene Person und während der gesamten Dauer des jeweiligen Aufenthaltes auf unserer Internetseite, welche konkrete Unterseite unserer Internetseite die betroffene Person besucht. Diese Informationen werden durch die Facebook-Komponente gesammelt und durch Facebook dem jeweiligen Facebook-Account der betroffenen Person zugeordnet. Betätigt die betroffene Person einen der auf unserer Internetseite integrierten Facebook-Buttons, beispielsweise den „Gefällt mir“-Button, oder gibt die betroffene Person einen Kommentar ab, ordnet Facebook diese Information dem persönlichen Facebook-Benutzerkonto der betroffenen Person zu und speichert diese personenbezogenen Daten. Facebook erhält über die Facebook-Komponente immer dann eine Information darüber, dass die betroffene Person unsere Internetseite besucht hat, wenn die betroffene Person zum Zeitpunkt des Aufrufs unserer Internetseite gleichzeitig bei Facebook eingeloggt ist; dies findet unabhängig davon statt, ob die betroffene Person die Facebook-Komponente anklickt oder nicht. Ist eine derartige Übermittlung dieser Informationen an Facebook von der betroffenen Person nicht gewollt, kann diese die Übermittlung dadurch verhindern, dass sie sich vor einem Aufruf unserer Internetseite aus ihrem Facebook-Account ausloggt. Die von Facebook veröffentlichte Datenrichtlinie, die unter https://de-de.facebook.com/about/privacy/ abrufbar ist, gibt Aufschluss über die Erhebung, Verarbeitung und Nutzung personenbezogener Daten durch Facebook. Ferner wird dort erläutert, welche Einstellungsmöglichkeiten Facebook zum Schutz der Privatsphäre der betroffenen Person bietet. Zudem sind unterschiedliche Applikationen erhältlich, die es ermöglichen, eine Datenübermittlung an Facebook zu unterdrücken. Solche Applikationen können durch die betroffene Person genutzt werden, um eine Datenübermittlung an Facebook zu unterdrücken.</p>
+<h3>d) Datenschutzbestimmungen zum Einsatz und Verwendung von Instagram</h3>
+<p>Der für die Verarbeitung Verantwortliche hat auf dieser Internetseite Komponenten von Instagram integriert. Auf unserer Unternehmensseite stellen wir Informationen bereit und bieten den Instagram – Nutzern die Möglichkeit der Kommunikation. Wenn sie auf unserem Instagram – Unternehmensauftritt eine Aktion durchführen (bspw. Kommentare, Beiträge, Likes etc.) kann es sein, dass Sie dadurch personenbezogene Daten (bspw. Klarname oder Foto Ihres Nutzerprofils) öffentlich machen. Da wir aber in der Regel bzw. zu großen Teilen keinen Einfluss auf die Verarbeitung Ihrer personenbezogenen Daten durch die für den Unternehmensauftritt mitverantwortlichen Unternehmen Instagram haben, können wir zu Zweck und Umfang der Verarbeitung Ihrer Daten keine verbindlichen Angaben machen. Unser Unternehmensauftritt in sozialen Netzwerken wird für Kommunikation und Informationsaustausch mit (potenziellen) Kunden genutzt. Betreiber von Instagram ist Instagram, Part of Facebook Ireland Ltd., 4 Grand Canal Square Grand Canal Harbour, Dublin 2 Ireland. Es steht dabei jedem Nutzer frei, personenbezogene Daten durch Aktivitäten zu veröffentlichen. Rechtsgrundlage für die Datenverarbeitung ist Art. 6 Abs.1 S.1 lit. a DSGVO. Die durch den Unternehmensauftritt generierten Daten werden nicht in unseren eigenen Systemen gespeichert. Sie können der Verarbeitung Ihrer personenbezogenen Daten, die wir im Rahmen Ihrer Nutzung unseres Instagram – Unternehmensauftritt erfassen, jederzeit widersprechen und Ihre unter IV. dieser Datenschutzerklärung genannten Betroffenenrechte geltend machen. Zur Verarbeitung Ihrer personenbezogenen Daten durch Instagram und die entsprechenden Widerspruchsmöglichkeiten finden Sie weitere Informationen hier: Instagram: https://help.instagram.com/519522125107875</p>
+<h2>11. EINSATZ UND VERWENDUNG VON GOOGLE ANALYTICS</h2>
+<h3>a) Umfang der Verarbeitung personenbezogener Daten</h3>
+<p>Wir nutzen Google Analytics, einen Webanalysedienst der Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA und dem Vertreter in der Union Google Ireland Ltd., Gordon House, Barrow Street, D04 E5W5, Dublin, Irland (nachfolgend: Google genannt). Google Analytics untersucht u. a. die Herkunft der Besucher, ihre Verweildauer auf einzelnen Seiten sowie die Nutzung von Suchmaschinen und erlaubt damit eine bessere Erfolgskontrolle von Werbekampagnen. Google setzt dabei ein Cookie auf Ihrem Computer. Es können dadurch personenbezogene Daten gespeichert und ausgewertet werden, vor allem die Aktivität des Nutzers (Insbesondere welche Seiten besucht worden sind und auf welche Elemente geklickt worden ist), Geräte- und Browserinformationen (Insbesondere die IP-Adresse und das Betriebssystem), Daten über die angezeigten Werbeanzeigen (Insbesondere welche Werbeanzeigen dargestellt wurden und ob der Nutzer darauf geklickt hat) und auch Daten von Werbepartnern (Insbesondere pseudonymisierte Nutzer-IDs). Die durch das Cookie erzeugten Informationen über Ihre Benutzung dieser Onlinepräsenz werden an einen Server von Google in den USA übertragen und dort gespeichert. Im Falle der Aktivierung der IP-Anonymisierung auf dieser Onlinepräsenz, wird Ihre IP-Adresse von Google jedoch innerhalb von Mitgliedstaaten der Europäischen Union oder in anderen Vertragsstaaten des Abkommens über den Europäischen Wirtschaftsraum zuvor gekürzt. Nur in Ausnahmefällen wird die volle IP-Adresse an einen Server von Google in den USA übertragen und dort gekürzt. Teil der Nutzungsbedingungen von Google Analytics als Google Werbeprodukt sind sogenannte EU-Standarddatenschutzklauseln (Art. 46 Abs. 2 S. 1 lit. c DSGVO). Diese sind als geeignete Garantie zum Schutz des Transfers und der Verarbeitung personenbezogener Daten außerhalb der EU zu klassifizieren. Die IP-Anonymisierung ist auf dieser Onlinepräsenz aktiv. Im Auftrag des Betreibers dieser Onlinepräsenz wird Google diese Informationen benutzen, um Ihre Nutzung der Onlinepräsenz auszuwerten, um Reports über die Aktivitäten der Onlinepräsenz zusammenzustellen und um weitere mit der Nutzung der Onlinepräsenz und der Internetnutzung verbundene Dienstleistungen gegenüber dem Betreiber der Onlinepräsenz zu erbringen. Die im Rahmen von Google Analytics von Ihrem Browser übermittelte IP-Adresse wird nicht mit anderen Daten von Google zusammengeführt. Sie können die Speicherung der Cookies durch eine entsprechende Einstellung Ihrer Browser-Software verhindern; wir weisen Sie jedoch darauf hin, dass Sie in diesem Fall gegebenenfalls nicht sämtliche Funktionen unserer Onlinepräsenz vollumfänglich werden nutzen können. Weitere Informationen zur Verarbeitung der Daten durch Google erhalten Sie hier: https://policies.google.com/privacy?gl=DE[&]hl=de</p>
+<h3>b) Zweck der Datenverarbeitung</h3>
+<p>Der Zweck der Verarbeitung der personenbezogenen Daten liegt in der gezielten Ansprache einer Zielgruppe, die bereits ein erstes Interesse durch den Seitenbesuch bekundet hat.</p>
+<h3>c) Rechtsgrundlage für die Verarbeitung personenbezogener Daten</h3>
+<p>Rechtsgrundlage für die Verarbeitung der personenbezogenen Daten der Nutzer ist grundsätzlich die Einwilligung des Nutzers nach Art. 6 Abs. 1 S.1 lit. a DSGVO.</p>
+<h3>d) Dauer der Speicherung</h3>
+<p>Ihre persönlichen Informationen werden solange gespeichert, wie dies erforderlich ist, um die in dieser Datenschutzerklärung beschriebenen Zwecke zu erfüllen oder wie dies gesetzlich vorgeschrieben ist. Werbedaten in Serverprotokollen werden anonymisiert, indem Google nach eigenen Angaben Teile der IP-Adresse und Cookie-Informationen nach 9 bzw. 18 Monaten löscht.</p>
+<h3>e) Widerrufs- und Beseitigungsmöglichkeit</h3>
+<p>Sie haben das Recht, Ihre datenschutzrechtliche Einwilligungserklärung jederzeit zu widerrufen. Durch den Widerruf der Einwilligung wird die Rechtmäßigkeit, der aufgrund der Einwilligung bis zum Widerruf erfolgten Verarbeitung nicht berührt. Sie können die Erfassung sowie die Verarbeitung Ihrer personenbezogenen Daten durch Google verhindern, indem Sie die Speicherung von Cookies von Drittanbietern auf Ihrem Computer unterbinden, die „Do Not Track“-Funktion eines unterstützenden Browsers nutzen, die Ausführung von Script-Code in Ihrem Browser deaktivieren oder einen Script-Blocker wie z.B. NoScript (https://noscript.net/) oder Ghostery (https://www.ghostery.com) in Ihrem Browser installieren. Sie können darüber hinaus die Erfassung der durch das Cookie erzeugten und auf Ihre Nutzung der Onlinepräsenz bezogenen Daten (inkl. Ihrer IP-Adresse) an Google sowie die Verarbeitung dieser Daten durch Google verhindern, indem sie das unter dem folgenden Link verfügbare Browser-Plugin herunterladen und installieren: https://tools.google.com/dlpage/gaoptout?hl=de Mit dem nachfolgenden Link können Sie die Nutzung Ihrer personenbezogenen Daten durch Google deaktivieren: https://adssettings.google.de Weitere Informationen zu Widerspruchs- und Beseitigungsmöglichkeiten gegenüber Google finden Sie unter: https://policies.google.com/privacy</p>
+<h2>12. EINSATZ UND VERWENDUNG VON YOUTUBE</h2>
+<p>Der für die Verarbeitung Verantwortliche hat auf dieser Internetseite Komponenten von YouTube integriert. YouTube ist ein Internet-Videoportal, dass Video-Publishern das kostenlose Einstellen von Videoclips und anderen Nutzern die ebenfalls kostenfreie Betrachtung, Bewertung und Kommentierung dieser ermöglicht. YouTube gestattet die Publikation aller Arten von Videos, weshalb sowohl komplette Film- und Fernsehsendungen, aber auch Musikvideos, Trailer oder von Nutzern selbst angefertigte Videos über das Internetportal abrufbar sind. Betreibergesellschaft von YouTube ist die YouTube, LLC, 901 Cherry Ave., San Bruno, CA 94066, USA. Die YouTube, LLC ist einer Tochtergesellschaft der Google Inc., 1600 Amphitheatre Pkwy, Mountain View, CA 94043-1351, USA. Durch jeden Aufruf einer der Einzelseiten dieser Internetseite, die durch den für die Verarbeitung Verantwortlichen betrieben wird und auf welcher eine YouTube-Komponente (YouTube-Video) integriert wurde, wird der Internetbrowser auf dem informationstechnologischen System der betroffenen Person automatisch durch die jeweilige YouTube-Komponente veranlasst, eine Darstellung der entsprechenden YouTube-Komponente von YouTube herunterzuladen. Weitere Informationen zu YouTube können unter https://www.youtube.com/yt/about/de/ abgerufen werden. Im Rahmen dieses technischen Verfahrens erhalten YouTube und Google Kenntnis darüber, welche konkrete Unterseite unserer Internetseite durch die betroffene Person besucht wird. Sofern die betroffene Person gleichzeitig bei YouTube eingeloggt ist, erkennt YouTube mit dem Aufruf einer Unterseite, die ein YouTube-Video enthält, welche konkrete Unterseite unserer Internetseite die betroffene Person besucht. Diese Informationen werden durch YouTube und Google gesammelt und dem jeweiligen YouTube-Account der betroffenen Person zugeordnet. YouTube und Google erhalten über die YouTube-Komponente immer dann eine Information darüber, dass die betroffene Person unsere Internetseite besucht hat, wenn die betroffene Person zum Zeitpunkt des Aufrufs unserer Internetseite gleichzeitig bei YouTube eingeloggt ist; dies findet unabhängig davon statt, ob die betroffene Person ein YouTube-Video anklickt oder nicht. Ist eine derartige Übermittlung dieser Informationen an YouTube und Google von der betroffenen Person nicht gewollt, kann diese die Übermittlung dadurch verhindern, dass sie sich vor einem Aufruf unserer Internetseite aus ihrem YouTube-Account ausloggt. Die von YouTube veröffentlichten Datenschutzbestimmungen, die unter https://www.google.de/intl/de/policies/privacy/ abrufbar sind, geben Aufschluss über die Erhebung, Verarbeitung und Nutzung personenbezogener Daten durch YouTube und Google.</p>
+<h2>13. EINSATZ UND VERWENDUNG VON VIDEO KONFERENZEN</h2>
+<h3>a) Datenverarbeitung</h3>
+<p>Für die Kommunikation mit unseren Kunden setzen wir unter anderen Online-Konferenz-Tools ein. Die im Einzelnen von uns genutzten Tools sind unten aufgelistet. Wenn Sie mit uns per Video- oder Audiokonferenz via Internet kommunizieren, werden Ihre personenbezogenen Daten von uns und dem Anbieter des jeweiligen Konferenz-Tools erfasst und verarbeitet. Die Konferenz-Tools erfassen dabei alle Daten, die Sie zur Nutzung der Tools bereitstellen/einsetzen (E-Mail-Adresse und/oder Ihre Telefonnummer). Ferner verarbeiten die Konferenz-Tools die Dauer der Konferenz, Beginn und Ende (Zeit) der Teilnahme an der Konferenz, Anzahl der Teilnehmer und sonstige „Kontextinformationen“ im Zusammenhang mit dem Kommunikationsvorgang (Metadaten). Des Weiteren verarbeitet der Anbieter des Tools alle technischen Daten, die zur Abwicklung der Online-Kommunikation erforderlich sind. Dies umfasst insbesondere IP-Adressen, MAC-Adressen, Geräte-IDs, Gerätetyp, Betriebssystemtyp und -version, Client-Version, Kameratyp, Mikrofon oder Lautsprecher sowie die Art der Verbindung. Sofern innerhalb des Tools Inhalte ausgetauscht, hochgeladen oder in sonstiger Weise bereitgestellt werden, werden diese ebenfalls auf den Servern der Tool-Anbieter gespeichert. Zu solchen Inhalten zählen insbesondere Cloud-Aufzeichnungen, Chat-/ Sofortnachrichten, Voicemails hochgeladene Fotos und Videos, Dateien, Whiteboards und andere Informationen, die während der Nutzung des Dienstes geteilt werden. Bitte beachten Sie, dass wir nicht vollumfänglich Einfluss auf die Datenverarbeitungsvorgänge der verwendeten Tools haben. Unsere Möglichkeiten richten sich maßgeblich nach der Unternehmenspolitik des jeweiligen Anbieters. Weitere Hinweise zur Datenverarbeitung durch die Konferenztools entnehmen Sie den Datenschutzerklärungen der jeweils eingesetzten Tools, die wir unter diesem Text aufgeführt haben.</p>
+<h3>b) Zweck und Rechtsgrundlagen</h3>
+<p>Die Konferenz-Tools werden genutzt, um mit angehenden oder bestehenden Vertragspartnern zu kommunizieren oder bestimmte Leistungen gegenüber unseren Kunden anzubieten (Art. 6 Abs. 1 S. 1 lit. b DSGVO). Des Weiteren dient der Einsatz der Tools der allgemeinen Vereinfachung und Beschleunigung der Kommunikation mit uns bzw. unserem Unternehmen (berechtigtes Interesse im Sinne von Art. 6 Abs. 1 lit. f DSGVO). Soweit eine Einwilligung abgefragt wurde, erfolgt der Einsatz der betreffenden Tools auf Grundlage dieser Einwilligung; die Einwilligung ist jederzeit mit Wirkung für die Zukunft widerrufbar.</p>
+<h3>c) Speicherdauer</h3>
+<p>Die unmittelbar von uns über die Video- und Konferenz-Tools erfassten Daten werden von unseren Systemen gelöscht, sobald Sie uns zur Löschung auffordern, Ihre Einwilligung zur Speicherung widerrufen oder der Zweck für die Datenspeicherung entfällt. Gespeicherte Cookies verbleiben auf Ihrem Endgerät, bis Sie sie löschen. Zwingende gesetzliche Aufbewahrungsfristen bleiben unberührt. Auf die Speicherdauer Ihrer Daten, die von den Betreibern der Konferenz-Tools zu eigenen Zwecken gespeichert werden, haben wir keinen Einfluss. Für Einzelheiten dazu informieren Sie sich bitte direkt bei den Betreibern der Konferenz-Tools.</p>
+<h3>d) Eingesetzte Konferenz-Tools</h3>
+<p>Zoom Wir nutzen Zoom. Anbieter dieses Dienstes ist die Zoom Communications Inc., San Jose, 55 Almaden Boulevard, 6th Floor, San Jose, CA 95113, USA. Details zur Datenverarbeitung entnehmen Sie der Datenschutzerklärung von Zoom: https://zoom.us/de-de/privacy.html.</p>
+<h3>e) Abschluss eines Vertrags über Auftragsverarbeitung</h3>
+<p>Wir haben mit dem Anbieter von Zoom einen Vertrag zur Auftragsverarbeitung abgeschlossen und setzen die strengen Vorgaben der deutschen Datenschutzbehörden bei der Nutzung von Zoom vollständig um.</p>
+<h2>14. EINSATZ UND VERWENDUNG VON E-COMMERCE UND ZAHLUNGSANBIETER</h2>
+<h3>a) Verarbeitung von Daten (Kunden- und Vertragsdaten)</h3>
+<p>Wir erheben, verarbeiten und nutzen personenbezogene Daten nur, soweit sie für die Begründung, inhaltliche Ausgestaltung oder Änderung des Rechtsverhältnisses erforderlich sind (Bestandsdaten). Dies erfolgt auf Grundlage von Art. 6 Abs. 1 lit. b DSGVO, der die Verarbeitung von Daten zur Erfüllung eines Vertrags oder vorvertraglicher Maßnahmen gestattet. Personenbezogene Daten über die Inanspruchnahme dieser Website (Nutzungsdaten) erheben, verarbeiten und nutzen wir nur, soweit dies erforderlich ist, um dem Nutzer die Inanspruchnahme des Dienstes zu ermöglichen oder abzurechnen. Die erhobenen Kundendaten werden nach Abschluss des Auftrags oder Beendigung der Geschäftsbeziehung gelöscht. Gesetzliche Aufbewahrungsfristen bleiben unberührt.</p>
+<h3>b) Datenübermittlung bei Vertragsschluss für Dienstleistungen und Digitale Inhalte</h3>
+<p>Wir übermitteln personenbezogene Daten an Dritte nur dann, wenn dies im Rahmen der Vertragsabwicklung notwendig ist, etwa an das mit der Zahlungsabwicklung beauftragte Kreditinstitut. Eine weitergehende Übermittlung der Daten erfolgt nicht bzw. nur dann, wenn Sie der Übermittlung ausdrücklich zugestimmt haben. Eine Weitergabe Ihrer Daten an Dritte ohne ausdrückliche Einwilligung, etwa zu Zwecken der Werbung, erfolgt nicht. Grundlage für die Datenverarbeitung ist Art. 6 Abs. 1 lit. b DSGVO, der die Verarbeitung von Daten zur Erfüllung eines Vertrags oder vorvertraglicher Maßnahmen gestattet.</p>
+<h3>c) Zahlungsabwicklung über Digistore24</h3>
+<p>Einige unserer Produkte, Dienstleistungen und Inhalte werden von Digistore24 als Reseller angeboten. Anbieter und Vertragspartner ist die Digistore24 GmbH, St.-Godehard-Straße 32 in 31139 Hildesheim. Welche Daten Digistore24 bei diesem Website-Aufruf speichert und verarbeitet, legt die Digistore24 GmbH als Verantwortlicher in der eigenen Datenschutzerklärung dar. Weitere Informationen erhalten Sie in der Datenschutzerklärung von Digistore24: https://www.digistore24.com/dataschutz</p>
+<h2>15. HOSTING</h2>
+<p>Diese Website wird bei einem externen Dienstleister gehostet (Hoster). Die personenbezogenen Daten, die auf dieser Website erfasst werden, werden auf den Servern des Hosters gespeichert. Die Server erheben und speichern automatisch Informationen in sogenannten Server-Log-Dateien, die Ihr Browser beim Besuch der Webseite automatisch übermittelt. Die gespeicherten Informationen sind: Browsertyp und Browserversion Verwendetes Betriebssystem Referrer URL Hostname des zugreifenden Rechners Datum und Uhrzeit der Serveranfrage IP-Adresse Der Einsatz des Hosters erfolgt zum Zwecke der Vertragserfüllung gegenüber unseren potenziellen und bestehenden Kunden (Art. 6 Abs. 1 lit. b DSGVO) und im Interesse einer sicheren, schnellen und effizienten Bereitstellung unseres Online-Angebots durch einen professionellen Anbieter (Art. 6 Abs. 1 lit. f DSGVO). Unser Hoster wird Ihre Daten nur insoweit verarbeiten, wie dies zur Erfüllung seiner Leistungspflichten erforderlich ist und unsere Weisungen in Bezug auf diese Daten befolgen. Wir setzen folgenden Hoster ein: Alfahosting GmbH Ankerstraße 3b 06108 Halle (Saale) Deutschland Um die datenschutzkonforme Verarbeitung zu gewährleisten, haben wir einen Vertrag über Auftragsverarbeitung mit unserem Hoster geschlossen.</p>
+
+    </div>
+  </section>
+
+  <section class="legal-section" id="cookies">
+    <h2>Cookie-Richtlinie (EU)</h2>
+    <div class="legal-body">
+<p>Diese Cookie-Richtlinie wurde zuletzt am 11. August 2025 aktualisiert und gilt für Bürger und Einwohner mit ständigem Wohnsitz im Europäischen Wirtschaftsraum und der Schweiz. 1. Einführung Unsere Website, https://www.der-architekt-deines-lebens.de (im folgenden: "Die Website") verwendet Cookies und ähnliche Technologien (der Einfachheit halber werden all diese unter "Cookies" zusammengefasst). Cookies werden außerdem von uns beauftragten Drittparteien platziert. In dem unten stehendem Dokument informieren wir dich über die Verwendung von Cookies auf unserer Website.</p>
+<h3>2. Was sind Cookies?</h3>
+<p>Ein Cookie ist eine einfache kleine Datei, die gemeinsam mit den Seiten einer Internetadresse versendet und vom Webbrowser auf dem PC oder einem anderen Gerät gespeichert werden kann. Die darin gespeicherten Informationen können während folgender Besuche zu unseren oder den Servern relevanter Drittanbieter gesendet werden.</p>
+<h3>3. Was sind Skripte?</h3>
+<p>Ein Script ist ein Stück Programmcode, das benutzt wird, um unserer Website Funktionalität und Interaktivität zu ermöglichen. Dieser Code wird auf unseren Servern oder auf deinem Gerät ausgeführt.</p>
+<h3>4. Was ist ein Web Beacon?</h3>
+<p>Ein Web-Beacon (auch Pixel-Tag genannt), ist ein kleines unsichtbares Textfragment oder Bild auf einer Website, das benutzt wird, um den Verkehr auf der Website zu überwachen. Um dies zu ermöglichen werden diverse Daten von dir mittels Web-Beacons gespeichert.</p>
+<h3>5. Cookies</h3>
+<h4>5.1 Technische oder funktionelle Cookies</h4>
+<p>Einige Cookies stellen sicher, dass bestimmte Teile der Website ordnungsgemäß funktionieren und deine Benutzereinstellungen weiterhin in Erinnerung bleiben. Durch das Setzen funktionaler Cookies erleichtern wir dir den Besuch unserer Website. Auf diese Weise musst du beim Besuch unserer Website nicht wiederholt dieselben Informationen eingeben, so bleiben Artikel beispielsweise in deinem Warenkorb, bis du bezahlst. Wir können diese Cookies ohne deine Einwilligung platzieren.</p>
+<h4>5.2 Analytische Cookies</h4>
+<p>Wir verwenden analytische Cookies, um das Website-Erlebnis für unsere Nutzer zu optimieren. Mit diesen analytischen Cookies erhalten wir Einblicke in die Nutzung unserer Website. Wir bitten um deine Erlaubnis, analytische Cookies zu setzen.</p>
+<h4>5.3 Marketing- / Tracking-Cookies</h4>
+<p>Marketing- / Tracking-Cookies sind Cookies oder eine andere Form der lokalen Speicherung, die zur Erstellung von Benutzerprofilen verwendet werden, um Werbung anzuzeigen oder den Benutzer auf dieser Website oder über mehrere Websites hinweg für ähnliche Marketingzwecke zu verfolgen.</p>
+<h3>6. Platzierte Cookies</h3>
+<p class="legal-note">Eine detaillierte Auflistung der konkret auf dieser Website gesetzten Cookies folgt an dieser Stelle, sobald die eingesetzten Dienste final feststehen.</p>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <span>&copy; 2026 Der Architekt deines Lebens</span>
+    <a href="startseite.html">Zur Startseite</a>
+  </div>
+</footer>
+
+</body>
+</html>
