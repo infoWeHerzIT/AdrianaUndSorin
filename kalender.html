@@ -1064,6 +1064,7 @@ function initFilters() {
 }
 
 function getFilteredEvents() {
+  const todayMidnight = new Date(TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate());
   return EVENTS.filter(ev => {
     const fmt = ev.format || 'Präsenz';
     const typ = ev.type   || 'Sonstiges';
@@ -1071,6 +1072,13 @@ function getFilteredEvents() {
     if (activeFormats.size > 0 && !activeFormats.has(fmt)) return false;
     if (activeTypes.size > 0   && !activeTypes.has(typ))   return false;
     if (st !== activeStatus) return false;
+    if (activeStatus === 'Aktiv') {
+      // Ein Event ohne Datum kann nicht "aktiv/kommend" sein — genau wie ein
+      // Event, dessen Datum bereits vergangen ist, gehört es hier nicht rein,
+      // auch wenn der Status in Dynamics noch "Aktiv" ist.
+      const hasDate = ev.year != null && ev.month != null && ev.day != null;
+      if (!hasDate || new Date(ev.year, ev.month, ev.day) < todayMidnight) return false;
+    }
     return true;
   });
 }

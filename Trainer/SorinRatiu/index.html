@@ -195,6 +195,18 @@
   section.on-navy-2{background:var(--navy-800);color:var(--cream);}
   section.on-paper2{background:var(--paper-2);}
 
+  /* ---------- section transitions (color fade at the seam) ---------- */
+  .fade-to-paper, .fade-to-navy, .fade-to-paper2, .fade-to-navy2{position:relative;}
+  .fade-to-paper::after, .fade-to-navy::after, .fade-to-paper2::after, .fade-to-navy2::after{
+    content:"";
+    position:absolute;left:0;right:0;bottom:0;height:80px;
+    pointer-events:none;
+  }
+  .fade-to-paper::after{background:linear-gradient(to bottom, transparent, var(--paper));}
+  .fade-to-navy::after{background:linear-gradient(to bottom, transparent, var(--navy-900));}
+  .fade-to-paper2::after{background:linear-gradient(to bottom, transparent, var(--paper-2));}
+  .fade-to-navy2::after{background:linear-gradient(to bottom, transparent, var(--navy-800));}
+
   /* ---------- hero ---------- */
   .hero{
     position:relative;
@@ -375,7 +387,7 @@
 <main id="top">
 
   <!-- HERO -->
-  <section class="hero">
+  <section class="hero fade-to-paper">
     <div class="container hero-grid">
       <div>
         <span class="eyebrow on-dark">Meine Geschichte</span>
@@ -393,7 +405,7 @@
   </section>
 
   <!-- GESCHICHTE -->
-  <section>
+  <section class="fade-to-navy">
     <div class="container">
       <span class="eyebrow">Der Wendepunkt</span>
       <h2 style="font-size:clamp(1.8rem,3.6vw,2.4rem);margin-top:16px;max-width:28ch;">Eine einzige Übung an einem Seminartisch</h2>
@@ -407,7 +419,7 @@
   </section>
 
   <!-- PHILOSOPHIE -->
-  <section class="on-navy">
+  <section class="on-navy fade-to-paper2">
     <div class="container philosophy">
       <div>
         <span class="eyebrow on-dark">Was ich daraus mitgenommen habe</span>
@@ -424,7 +436,7 @@
   </section>
 
   <!-- ALS COACH -->
-  <section class="on-paper2">
+  <section class="on-paper2 fade-to-navy2">
     <div class="container about-grid">
       <div class="photo-frame ratio-portrait">
         <img src="images/pointing.jpg" alt="Sorin Ratiu als Coach">
@@ -457,7 +469,7 @@
   </section>
 
   <!-- ALS MENTOR -->
-  <section class="on-navy-2">
+  <section class="on-navy-2 fade-to-paper">
     <div class="container about-grid">
       <div class="photo-frame ratio-portrait">
         <img src="images/arms-up.jpg" alt="Sorin Ratiu als Mentor">
@@ -476,7 +488,7 @@
   </section>
 
   <!-- ALS BERATER -->
-  <section>
+  <section class="fade-to-paper2">
     <div class="container about-grid">
       <div class="photo-frame ratio-portrait">
         <img src="images/orange-chair.png" alt="Sorin Ratiu als Berater">
@@ -496,7 +508,7 @@
   </section>
 
   <!-- WARUM ICH -->
-  <section class="on-paper2">
+  <section class="on-paper2 fade-to-paper">
     <div class="container">
       <span class="eyebrow">Wie ich arbeite</span>
       <h2 style="font-size:clamp(1.8rem,3.6vw,2.4rem);margin-top:16px;max-width:28ch;">Was meine Begleitung ausmacht</h2>
@@ -536,7 +548,7 @@
   </section>
 
   <!-- HEUTE -->
-  <section id="heute">
+  <section id="heute" class="fade-to-navy">
     <div class="container about-grid">
       <div class="photo-frame ratio-portrait">
         <img src="images/standing-suit.png" alt="Sorin Ratiu">
