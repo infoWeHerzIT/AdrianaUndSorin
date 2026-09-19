@@ -550,12 +550,35 @@
   .booking-embed{
     margin-top:40px;
     width:100%;
-    height:780px;
-    background:var(--cream);
+    height:120px;
+    background:var(--paper-2);
     border:1px solid var(--line-light);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:8px;
+    transition:height .2s ease;
   }
+  .booking-embed.is-loaded{height:780px;padding:0;}
   .booking-embed iframe{width:100%;height:100%;display:block;}
-  @media (max-width:640px){ .booking-embed{height:900px;} }
+  .booking-load-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    padding:11px 24px;
+    border-radius:2px;
+    font-family:"Work Sans",sans-serif;
+    font-weight:600;
+    font-size:.95rem;
+    background:var(--orange-500);
+    color:var(--cream);
+    border:1px solid transparent;
+    cursor:pointer;
+  }
+  .booking-load-btn:hover{background:var(--orange-600);}
+  @media (max-width:640px){ .booking-embed.is-loaded{height:900px;} }
 
   /* ---------- footer ---------- */
   footer{background:var(--navy-900);color:#a9b6cb;padding-block:56px 30px;}
@@ -885,9 +908,13 @@
       <span class="eyebrow">Kontakt</span>
       <h2 style="margin-top:16px;max-width:24ch;">Vereinbare dein kostenloses Erstgespräch</h2>
       <p style="margin-top:14px;max-width:60ch;color:var(--ink-soft);">Wähle direkt einen passenden Termin – unverbindlich und kostenlos.</p>
-      <div class="booking-embed">
-        <iframe src="https://bookings.cloud.microsoft/book/Geaeaf2cdf7e54e6eba9ac4fcc962ebf2@weherzit.de/?ismsaljsauthenabled" scrolling="yes" style="border:0" title="Termin buchen"></iframe>
+      <div class="booking-embed" id="bookingEmbed">
+        <button type="button" class="booking-load-btn" id="bookingLoadBtn">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>
+          Terminkalender laden
+        </button>
       </div>
+      <p class="form-note" id="bookingPrivacyNote" style="margin-top:10px;max-width:44ch;">Beim Laden wird eine Verbindung zu Microsoft Bookings hergestellt. Es gelten die Datenschutzhinweise von Microsoft.</p>
     </div>
   </section>
 
@@ -956,6 +983,24 @@
     });
     menu.querySelectorAll('a').forEach(function(a){
       a.addEventListener('click', function(){ menu.classList.remove('open'); btn.setAttribute('aria-expanded','false'); });
+    });
+  })();
+</script>
+
+<script>
+  (function(){
+    var loadBtn = document.getElementById('bookingLoadBtn');
+    var embed = document.getElementById('bookingEmbed');
+    if(!loadBtn||!embed) return;
+    loadBtn.addEventListener('click', function(){
+      var iframe = document.createElement('iframe');
+      iframe.src = 'https://bookings.cloud.microsoft/book/Geaeaf2cdf7e54e6eba9ac4fcc962ebf2@weherzit.de/?ismsaljsauthenabled';
+      iframe.scrolling = 'yes';
+      iframe.style.border = '0';
+      iframe.title = 'Termin buchen';
+      embed.innerHTML = '';
+      embed.appendChild(iframe);
+      embed.classList.add('is-loaded');
     });
   })();
 </script>
