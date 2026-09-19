@@ -441,6 +441,10 @@
     font-size:.65rem;color:var(--ink-soft);flex:none;
     text-align:center;line-height:1.1;
   }
+  .avatar-photo{
+    width:44px;height:44px;border-radius:50%;
+    object-fit:cover;flex:none;border:1.5px solid var(--line-light);
+  }
   .testi-who .name{font-weight:600;font-size:.88rem;}
   .testi-who .role{font-size:.78rem;color:var(--ink-soft);}
   .trust-bar{
@@ -532,6 +536,17 @@
   }
   .final-cta h2{font-size:clamp(1.9rem,4vw,2.8rem);max-width:20ch;}
   .final-cta .ctas{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;}
+
+  /* ---------- booking ---------- */
+  .booking-embed{
+    margin-top:40px;
+    width:100%;
+    height:780px;
+    background:var(--cream);
+    border:1px solid var(--line-light);
+  }
+  .booking-embed iframe{width:100%;height:100%;display:block;}
+  @media (max-width:640px){ .booking-embed{height:900px;} }
 
   /* ---------- footer ---------- */
   footer{background:var(--navy-900);color:#a9b6cb;padding-block:56px 30px;}
@@ -750,30 +765,51 @@
       <h2 style="margin-top:16px;max-width:22ch;">Was Klientinnen nach der Zusammenarbeit sagen</h2>
       <div class="testi-grid">
         <div class="testi-card">
-          <p class="testi-quote">„[PLATZHALTER-ZITAT: Echte Kundenstimme einfügen — Ausgangssituation in 1 Satz, dann konkrete Veränderung in 1–2 Sätzen. Keine allgemeine Floskel.]"</p>
+          <p class="testi-quote">„Danke für Deine tolle Unterstützung und meinen neuen Anker. Im stressigen Alltag ist mir dieser Anker der Freude eine große Hilfe – ich kann sofort abschalten und in die Fülle gehen."</p>
           <div class="testi-who">
-            <div class="avatar-ph">Foto</div>
-            <div><div class="name">Vorname, Alter</div><div class="role">z. B. „Führungskraft, 47"</div></div>
+            <img class="avatar-photo" src="assets/testimonials/jennifer-k.jpg" alt="Jennifer K.">
+            <div><div class="name">Jennifer K.</div><div class="role">Coaching-Klientin</div></div>
           </div>
         </div>
         <div class="testi-card">
-          <p class="testi-quote">„[PLATZHALTER-ZITAT: zweite Kundenstimme, idealerweise anderer Themenschwerpunkt als Zitat 1 — z. B. berufliche Neuorientierung statt Stress.]"</p>
+          <p class="testi-quote">„Innerhalb von zwei bis drei Minuten erkannte er mein zentrales Thema, führte mich sicher in Trance und half mir, ein lange bestehendes Blockadethema nachhaltig zu lösen. Eine kraftvolle, professionelle Arbeit."</p>
           <div class="testi-who">
-            <div class="avatar-ph">Foto</div>
-            <div><div class="name">Vorname, Alter</div><div class="role">z. B. „Selbstständig, 51"</div></div>
+            <img class="avatar-photo" src="assets/testimonials/inna-e.jpg" alt="Inna E.">
+            <div><div class="name">Inna E.</div><div class="role">Teilnehmerin, NLP-Seminar</div></div>
           </div>
         </div>
         <div class="testi-card">
-          <p class="testi-quote">„[PLATZHALTER-ZITAT: dritte Kundenstimme — idealerweise aus dem Gruppenprogramm oder einem Workshop, nicht nur Einzelcoaching.]"</p>
+          <p class="testi-quote">„Ihr beiden seid meiner Meinung nach die Besten, um stressfrei Webinare und Seminare zu geben – ihr habt eine solche Ruhe, die ihr mitbringt. Das hat mir sehr gutgetan."</p>
           <div class="testi-who">
-            <div class="avatar-ph">Foto</div>
-            <div><div class="name">Vorname, Alter</div><div class="role">z. B. „Angestellte, 39"</div></div>
+            <div class="avatar-ph">K</div>
+            <div><div class="name">Kerstin</div><div class="role">Teilnehmerin, Webinar</div></div>
+          </div>
+        </div>
+        <div class="testi-card">
+          <p class="testi-quote">„Ich konnte mich sehr gut fallen lassen und fühlte mich sehr gut aufgehoben, weil du jederzeit achtsam, empathisch und mit viel Gefühl agiert hast. Mein Urvertrauen wächst von Tag zu Tag."</p>
+          <div class="testi-who">
+            <div class="avatar-ph">S</div>
+            <div><div class="name">Sonja</div><div class="role">Teilnehmerin, NLP-Master</div></div>
+          </div>
+        </div>
+        <div class="testi-card">
+          <p class="testi-quote">„Deine ruhige Art, deine Kompetenz und die gezielten Fragen haben mir geholfen, neue Perspektiven zu gewinnen und persönlich zu wachsen."</p>
+          <div class="testi-who">
+            <img class="avatar-photo" src="assets/testimonials/diana.jpg" alt="Diana">
+            <div><div class="name">Diana</div><div class="role">Coaching-Klientin</div></div>
+          </div>
+        </div>
+        <div class="testi-card">
+          <p class="testi-quote">„Ich habe mir Tipps und Tricks gewünscht, um meinen Stress zu reduzieren, und die habe ich auf jeden Fall bekommen. Vor allem wurden die Beispiele und Fälle der Teilnehmer berücksichtigt – für mich ein großer Mehrwert."</p>
+          <div class="testi-who">
+            <img class="avatar-photo" src="assets/testimonials/mandy-z.jpg" alt="Mandy Z.">
+            <div><div class="name">Mandy Z.</div><div class="role">★★★★★ Seminar „Stressfrei erleben"</div></div>
           </div>
         </div>
       </div>
       <div class="trust-bar">
-        <div class="trust-stat">[Zahl]<span>Begleitete Klientinnen &amp; Klienten</span></div>
-        <div class="trust-stat">[Zahl]<span>Durchgeführte Seminare &amp; Workshops</span></div>
+        <div class="trust-stat"> > 40<span>Begleitete Klientinnen &amp; Klienten</span></div>
+        <div class="trust-stat"> > 20<span>Durchgeführte Seminare &amp; Workshops</span></div>
         <div class="trust-logos">
           <span class="trust-logo-ph">Presse-Logo</span>
           <span class="trust-logo-ph">Podcast-Logo</span>
@@ -834,9 +870,21 @@
     </div>
   </section>
 
+  <!-- KONTAKT / BUCHUNG -->
+  <section id="kontakt">
+    <div class="container">
+      <span class="eyebrow">Kontakt</span>
+      <h2 style="margin-top:16px;max-width:24ch;">Vereinbare dein kostenloses Erstgespräch</h2>
+      <p style="margin-top:14px;max-width:60ch;color:var(--ink-soft);">Wähle direkt einen passenden Termin – unverbindlich und kostenlos.</p>
+      <div class="booking-embed">
+        <iframe src="https://bookings.cloud.microsoft/book/Geaeaf2cdf7e54e6eba9ac4fcc962ebf2@weherzit.de/?ismsaljsauthenabled" scrolling="yes" style="border:0" title="Termin buchen"></iframe>
+      </div>
+    </div>
+  </section>
+
 </main>
 
-<footer id="kontakt">
+<footer>
   <div class="container">
     <div class="footer-grid">
       <div>
