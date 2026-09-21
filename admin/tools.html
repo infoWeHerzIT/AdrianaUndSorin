@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Landingpages – Der Architekt deines Lebens</title>
+<title>Tools – Der Architekt deines Lebens</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -41,8 +41,7 @@
   .lp-card-desc { font-size:13.5px; color:rgba(0,34,77,0.6); line-height:1.6; flex:1; }
   .lp-card-path { font-size:11.5px; color:rgba(0,34,77,0.35); font-family:monospace; word-break:break-all; }
   .lp-badges { display:flex; gap:8px; flex-wrap:wrap; }
-  .badge-ok { display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; padding:3px 10px; border-radius:10px; background:rgba(22,163,74,0.12); color:var(--green); text-decoration:none; cursor:pointer; transition:background .15s; }
-  a.badge-ok:hover { background:rgba(22,163,74,0.22); }
+  .badge-ok { display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; padding:3px 10px; border-radius:10px; background:rgba(22,163,74,0.12); color:var(--green); }
   .badge-warn { display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; padding:3px 10px; border-radius:10px; background:rgba(217,119,6,0.12); color:var(--yellow); }
   .badge-checking { display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; padding:3px 10px; border-radius:10px; background:rgba(0,34,77,0.06); color:rgba(0,34,77,0.4); }
   .lp-card-actions { display:flex; gap:10px; margin-top:4px; }
@@ -73,8 +72,8 @@
     <div class="nav-links">
       <a href="admin-feedback.html" class="nav-link">Feedback</a>
       <a href="umfrage-auswertung.html" class="nav-link">Umfragen</a>
-      <a href="landingpages.html" class="nav-link active">Landingpages</a>
-      <a href="tools.html" class="nav-link">Tools</a>
+      <a href="landingpages.html" class="nav-link">Landingpages</a>
+      <a href="tools.html" class="nav-link active">Tools</a>
       <a href="admin-users.html" class="nav-link">Admins</a>
       <button id="btn-logout" class="nav-link" style="border-color:rgba(220,38,38,0.4);color:#f87171;">Ausloggen</button>
     </div>
@@ -83,20 +82,20 @@
 
 <div class="admin-header">
   <div class="admin-header-inner">
-    <span class="admin-page-label">Landingpages</span>
-    <h1>Lead-Magnet-<em style="font-style:normal;color:var(--orange);">Landingpages</em></h1>
-    <p>Alle Landingpages aus /lanpag im Überblick. Die Formulare legen bei Anmeldung direkt einen Lead in Dynamics 365 an (supabase/functions/crm-submit).</p>
+    <span class="admin-page-label">Tools</span>
+    <h1>Selbsttests &amp; <em style="font-style:normal;color:var(--orange);">Tools</em></h1>
+    <p>Alle interaktiven Selbsttests aus /Tools im Überblick. Formulare, die an Dynamics angeschlossen sind, legen bei Absenden direkt einen Lead in Dynamics 365 an (supabase/functions/crm-submit).</p>
   </div>
 </div>
 
 <div class="admin-main">
   <div class="list-header">
-    <div class="list-title">Landingpages</div>
+    <div class="list-title">Tools</div>
     <div class="list-count" id="lp-count"></div>
   </div>
 
   <div class="lp-grid" id="lp-grid"></div>
-  <div id="empty-state">Keine Landingpages gefunden.</div>
+  <div id="empty-state">Keine Tools gefunden.</div>
 </div>
 
 <script>
@@ -113,24 +112,22 @@ function esc(s) {
   return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-// Statische Liste — /lanpag enthält reine HTML-Dateien ohne eigenes Backend,
+// Statische Liste — /Tools enthält reine HTML-Dateien ohne eigenes Backend,
 // es gibt also keine Quelle, aus der sich diese Liste automatisch ableiten
-// ließe. Bei einer neuen Landingpage hier einen Eintrag ergänzen.
-var LANDING_PAGES = [
+// ließe (gleiches Muster wie LANDING_PAGES in landingpages.html). Bei einem
+// neuen Tool hier einen Eintrag ergänzen.
+var TOOLS = [
   {
-    file: '13-Anzeichen-Mental-Load.html',
-    title: '13 Anzeichen von Mental Load',
-    desc: 'Guide: 13 Anzeichen von Mental Load, die dir keiner sagt — und was du heute Abend als Erstes ändern kannst.'
+    file: 'selbsttest-wo-kommst-du-noch-vor.html',
+    title: 'Mental-Load-Test: Wo kommst du noch vor?',
+    desc: '12 Fragen, 6 Lebensbereiche — zeigt, wo man im eigenen Leben noch als Person vorkommt und wo nur noch als Zuständigkeit. Endet mit Opt-in (Leseprobe).',
+    pageKey: '/Tools/selbsttest-wo-kommst-du-noch-vor.html'
   },
   {
-    file: '4-Schritte-Fahrplan.html',
-    title: 'Der 4-Schritte-Fahrplan',
-    desc: 'Vom Funktionieren zum bewussten Gestalten deines Lebens — in 4 Schritten.'
-  },
-  {
-    file: '5-Minuten-Grenzen-Check.html',
-    title: 'Der 5-Minuten-Grenzen-Check',
-    desc: 'Selbsttest: 12 Fragen, um endlich Nein zu sagen, ohne dich schuldig zu fühlen.'
+    file: 'ist-situations-check.html',
+    title: 'Der Ist-Situations-Check',
+    desc: '10 Aussagen, fünf Lebensbereiche — findet den größten aktuellen Druckpunkt (Beziehung, Beruf, Energie, Finanzen, Selbstbild). Formular aktuell nur Entwurf.',
+    pageKey: null
   }
 ];
 
@@ -138,19 +135,19 @@ var elGrid  = document.getElementById('lp-grid');
 var elCount = document.getElementById('lp-count');
 var elEmpty = document.getElementById('empty-state');
 
-if (LANDING_PAGES.length === 0) {
+if (TOOLS.length === 0) {
   elEmpty.style.display = 'block';
 } else {
-  elCount.textContent = LANDING_PAGES.length + (LANDING_PAGES.length === 1 ? ' Landingpage' : ' Landingpages');
+  elCount.textContent = TOOLS.length + (TOOLS.length === 1 ? ' Tool' : ' Tools');
 
-  elGrid.innerHTML = LANDING_PAGES.map(function (lp, idx) {
-    var href = '../lanpag/' + encodeURIComponent(lp.file);
+  elGrid.innerHTML = TOOLS.map(function (t, idx) {
+    var href = '../Tools/' + encodeURIComponent(t.file);
     return (
       '<div class="lp-card" data-idx="' + idx + '">' +
-        '<div class="lp-card-title">' + esc(lp.title) + '</div>' +
+        '<div class="lp-card-title">' + esc(t.title) + '</div>' +
         '<div class="lp-card-event" id="lp-event-' + idx + '"></div>' +
-        '<div class="lp-card-desc">' + esc(lp.desc) + '</div>' +
-        '<div class="lp-card-path">lanpag/' + esc(lp.file) + '</div>' +
+        '<div class="lp-card-desc">' + esc(t.desc) + '</div>' +
+        '<div class="lp-card-path">Tools/' + esc(t.file) + '</div>' +
         '<div class="lp-badges" id="lp-badges-' + idx + '"><span class="badge-checking">wird geprüft …</span></div>' +
         '<div class="lp-card-actions">' +
           '<a class="btn-open primary" href="' + href + '" target="_blank" rel="noopener">Seite öffnen</a>' +
@@ -159,57 +156,43 @@ if (LANDING_PAGES.length === 0) {
     );
   }).join('');
 
-  // Hängt "download=1" korrekt an (mit "&", falls die URL schon ein "?..."
-  // enthält, sonst mit "?") — gleiche Logik wie withDownloadParam() in den
-  // Landingpages selbst.
-  function withDownloadParam(url) {
-    if (!url) return url;
-    return url + (url.indexOf('?') === -1 ? '?' : '&') + 'download=1';
-  }
-
-  // Events einmal laden (statt pro Kachel neu) — wird unten je Landingpage
-  // gegen die aus deren Quelltext gelesene EVENT_ID gematcht.
+  // Events einmal laden (statt pro Kachel neu) — wird unten je Tool mit der
+  // dazugehörigen survey_event_links-Zeile gematcht (siehe unten).
   var eventsPromise = dynamicsCRM.listEvents();
 
-  // Prüft je Landingpage, ob der SharePoint-PDF-Link noch der Platzhalter
-  // ist (REPLACE_WITH_SHAREPOINT_LINK...) — hilft, vor Veröffentlichung
-  // vergessene Konfiguration zu erkennen, ohne jede Seite einzeln öffnen
-  // zu müssen. Ist ein echter Link gesetzt, wird das Badge selbst zu einem
-  // Link direkt auf die PDF (mit download=1), damit man den Download hier
-  // sofort testen kann, ohne das Formular auf der Landingpage auszufüllen.
-  // Zusätzlich wird das verknüpfte Event (falls vorhanden) auf der Kachel
-  // angezeigt.
-  LANDING_PAGES.forEach(function (lp, idx) {
-    fetch('../lanpag/' + encodeURIComponent(lp.file))
+  // Prüft je Tool, ob das Formular an dynamicsCRM.submitLead() (und damit an
+  // Dynamics 365) angeschlossen ist, oder noch ein reiner Klick-Prototyp
+  // ohne echten Versand ist — hilft, vergessene Anbindungen zu erkennen,
+  // ohne jede Seite einzeln öffnen zu müssen. Zusätzlich wird das über
+  // survey_event_links (Supabase, siehe Tools/selbsttest-...html) verknüpfte
+  // Event (falls vorhanden) auf der Kachel angezeigt.
+  TOOLS.forEach(function (t, idx) {
+    fetch('../Tools/' + encodeURIComponent(t.file))
       .then(function (res) { return res.text(); })
       .then(function (html) {
         var elBadges = document.getElementById('lp-badges-' + idx);
-        var pdfMissing = html.indexOf('REPLACE_WITH_SHAREPOINT_LINK') !== -1;
-        if (pdfMissing) {
-          elBadges.innerHTML = '<span class="badge-warn">⚠ PDF-Link fehlt</span>';
-        } else {
-          var pdfMatch = html.match(/const\s+PDF_DOWNLOAD_URL\s*=\s*"([^"]*)"/);
-          var pdfUrl = pdfMatch ? pdfMatch[1] : '';
-          elBadges.innerHTML = pdfUrl
-            ? '<a class="badge-ok" href="' + esc(withDownloadParam(pdfUrl)) + '" target="_blank" rel="noopener">✓ PDF-Link gesetzt</a>'
-            : '<span class="badge-ok">✓ PDF-Link gesetzt</span>';
-        }
-
-        var eventMatch = html.match(/const\s+EVENT_ID\s*=\s*"([^"]*)"/);
-        var eventId = eventMatch ? eventMatch[1] : '';
-        if (!eventId) return;
-        eventsPromise.then(function (events) {
-          var active = (events || []).find(function (e) { return e.id === eventId; });
-          if (!active) return;
-          var elEvent = document.getElementById('lp-event-' + idx);
-          elEvent.textContent = '🔗 ' + active.name;
-          elEvent.style.display = 'block';
-        });
+        var connected = html.indexOf('dynamicsCRM.submitLead') !== -1;
+        elBadges.innerHTML = connected
+          ? '<span class="badge-ok">✓ Dynamics verbunden</span>'
+          : '<span class="badge-warn">⚠ Dynamics nicht verbunden (Prototyp)</span>';
       })
       .catch(function (err) {
-        console.error('Landingpage-Check fehlgeschlagen:', lp.file, err);
+        console.error('Tool-Check fehlgeschlagen:', t.file, err);
         document.getElementById('lp-badges-' + idx).innerHTML = '<span class="badge-warn">Konnte nicht geprüft werden</span>';
       });
+
+    if (!t.pageKey) return;
+    db.from('survey_event_links').select('event_id').eq('page_key', t.pageKey).maybeSingle().then(function (linkRes) {
+      var eventId = (linkRes.data && linkRes.data.event_id) || '';
+      if (!eventId) return;
+      eventsPromise.then(function (events) {
+        var active = (events || []).find(function (e) { return e.id === eventId; });
+        if (!active) return;
+        var elEvent = document.getElementById('lp-event-' + idx);
+        elEvent.textContent = '🔗 ' + active.name;
+        elEvent.style.display = 'block';
+      });
+    });
   });
 }
 </script>

@@ -99,21 +99,20 @@
     background:var(--paper-2); border:1px solid var(--line-light);
     padding:7px 14px; border-radius:100px;
     font-size:12.5px; letter-spacing:.03em; color:var(--ink-soft);
-    margin:0 0 16px; width:fit-content;
+    margin:0 0 16px; width:fit-content; flex-wrap:wrap;
   }
   .event-eyebrow.visible{display:inline-flex}
-  .event-picker-row{ display:none; align-items:center; gap:8px; margin:0 0 16px; flex-wrap:wrap; }
-  .event-picker-row.visible{ display:flex; }
-  .event-picker-tag{
-    font-family:var(--display); font-weight:700; font-size:10px; letter-spacing:.1em;
-    text-transform:uppercase; color:var(--cream); background:var(--orange-600);
-    padding:4px 8px; border-radius:2px; flex-shrink:0;
+  .event-eyebrow-admin-badge{
+    font-size:10px; font-weight:700; letter-spacing:.05em; text-transform:uppercase;
+    background:var(--orange-100); color:var(--orange-600);
+    padding:2px 7px; border-radius:100px; flex-shrink:0;
   }
-  .event-picker-row select{
-    font-family:var(--body); font-size:13px; color:var(--ink);
-    background:var(--cream); border:1px solid var(--line-light);
-    padding:7px 10px; border-radius:2px; max-width:100%;
+  #event-eyebrow-select{
+    background:transparent; border:none; color:var(--ink-soft);
+    font-family:var(--body); font-size:12.5px; letter-spacing:.03em;
+    cursor:pointer; outline:none; max-width:320px;
   }
+  #event-eyebrow-select option{ color:var(--ink); }
   h1{
     font-family:var(--display); font-weight:800; font-size:clamp(34px,7.5vw,52px);
     line-height:1.04; letter-spacing:-.02em; margin:0 0 20px; text-wrap:balance;
@@ -229,10 +228,8 @@
   <section id="intro">
     <div class="event-eyebrow" id="event-eyebrow">
       <span id="event-eyebrow-text"></span>
-    </div>
-    <div class="event-picker-row" id="event-picker-row">
-      <span class="event-picker-tag">Dev</span>
-      <select id="event-picker" aria-label="Event auswählen (nur DEV)"></select>
+      <select id="event-eyebrow-select" style="display:none;" aria-label="Event zuordnen (Admin)"></select>
+      <span class="event-eyebrow-admin-badge" id="event-eyebrow-admin-badge" style="display:none;">Admin</span>
     </div>
     <p class="eyebrow">Mental-Load-Selbsttest · 12 Fragen · 3 Minuten</p>
     <h1>Mental-Load-Test: Wo kommst du noch vor?</h1>
@@ -326,53 +323,77 @@
 (function(){
   "use strict";
 
-  // Event-Verknüpfung (Dynamics wht_event, per Name gefunden — wht_event hat
-  // kein Slug-Feld) — wird als Badge über der Überschrift angezeigt, sobald
-  // gefunden, analog zu den lanpag-Freebie-Seiten und umfrage-dynamisch.html.
-  var EVENT_ID_DEFAULT = "5216ca28-d7b5-f111-aaae-002248d89353"; // "selbsttest-wo-kommst-du-noch-vor"
-  // NUR im DEV-Modus (siehe DynamicsCRM.detectEnvironment()): Auswahl-Dropdown
-  // mit allen aktiven Events, um EVENT_ID_DEFAULT beim Testen ohne Code-Änderung
-  // durchprobieren zu können. Die Auswahl wird nur lokal im Browser gemerkt
-  // (localStorage) — sie schreibt nichts in Dynamics und wirkt nur auf das
-  // Badge dieser Seite.
-  var EVENT_STORAGE_KEY = 'selbsttest_event_id';
+  // ── Event-Zuordnung (gleiches Muster wie Templates/umfrage_zg0826.html,
+  // dort bewusst 1:1-kopierbar gehalten) ─────────────────────────────────
+  // Für normale Besucher wird (falls zugeordnet) nur der Event-Name gezeigt;
+  // nur eingeloggte Admins (Supabase-Auth-Session) sehen stattdessen ein
+  // Auswahlfeld mit allen aktiven Events (aus Dynamics DEV oder PROD, je
+  // nachdem wo die Seite gerade läuft), über das sich die Zuordnung ändern
+  // lässt. Die Zuordnung liegt serverseitig in Supabase (Tabelle
+  // survey_event_links, ein Datensatz pro page_key = URL-Pfad) — NICHT in
+  // localStorage, damit ALLE Besucher (jeder Browser, jedes Gerät) dieselbe
+  // vom Admin gewählte Zuordnung sehen.
+  var PAGE_KEY = window.location.pathname;
+  var SELECTED_EVENT_ID = '';
 
-  function showEventBadge(active) {
-    var badge = document.getElementById('event-eyebrow');
-    if (active) {
-      document.getElementById('event-eyebrow-text').textContent = active.name || '';
-      badge.classList.add('visible');
-    } else {
-      badge.classList.remove('visible');
+  (function initEventEyebrow() {
+    var eyebrow       = document.getElementById('event-eyebrow');
+    var eyebrowText   = document.getElementById('event-eyebrow-text');
+    var eyebrowSelect = document.getElementById('event-eyebrow-select');
+    var eyebrowBadge  = document.getElementById('event-eyebrow-admin-badge');
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+    function dateTimeStamp(ev) {
+      if (ev.year == null || ev.month == null || ev.day == null) return '';
+      var time = (ev.time_from || '00:00').split(':');
+      return '' + ev.year + pad(ev.month + 1) + pad(ev.day) + ' ' + pad(time[0] || '00') + pad(time[1] || '00') + '00';
     }
-  }
 
-  function readStoredEventId() {
-    try { return localStorage.getItem(EVENT_STORAGE_KEY) || ''; } catch (e) { return ''; }
-  }
-  function writeStoredEventId(id) {
-    try { id ? localStorage.setItem(EVENT_STORAGE_KEY, id) : localStorage.removeItem(EVENT_STORAGE_KEY); } catch (e) {}
-  }
+    if (typeof dynamicsCRM === 'undefined') return;
 
-  dynamicsCRM.listEvents().then(function (events) {
-    events = events || [];
-    var storedId  = dynamicsCRM.environment === 'dev' ? readStoredEventId() : '';
-    var initialId = storedId || EVENT_ID_DEFAULT;
-    showEventBadge(events.find(function (e) { return e.id === initialId; }));
+    Promise.all([
+      dynamicsCRM.listEvents(),
+      db.from('survey_event_links').select('event_id').eq('page_key', PAGE_KEY).maybeSingle()
+    ]).then(function (results) {
+      var events = results[0] || [];
+      var linkRes = results[1] || {};
+      SELECTED_EVENT_ID = (linkRes.data && linkRes.data.event_id) || '';
 
-    if (dynamicsCRM.environment === 'dev') {
-      var row    = document.getElementById('event-picker-row');
-      var select = document.getElementById('event-picker');
-      select.innerHTML = '<option value="">— kein Event —</option>' + events.map(function (e) {
-        return '<option value="' + e.id + '"' + (e.id === initialId ? ' selected' : '') + '>' + (e.name || e.id) + '</option>';
-      }).join('');
-      row.classList.add('visible');
-      select.addEventListener('change', function () {
-        writeStoredEventId(select.value);
-        showEventBadge(events.find(function (e) { return e.id === select.value; }));
-      });
-    }
-  });
+      var active = events.find(function (e) { return e.id === SELECTED_EVENT_ID; }) || null;
+
+      if (active) {
+        eyebrowText.textContent = active.name || '';
+        eyebrow.classList.add('visible');
+      }
+
+      // Nur eingeloggte Admins dürfen die Event-Zuordnung ändern.
+      db.auth.getSession().then(function (sessionRes) {
+        if (!sessionRes.data.session || !events.length) return;
+
+        function renderOptions() {
+          eyebrowSelect.innerHTML = '<option value="">— kein Event —</option>' + events.map(function (ev) {
+            var isSelected = ev.id === SELECTED_EVENT_ID;
+            var label = isSelected ? (ev.name || '') : (dateTimeStamp(ev) + ' ' + (ev.name || '')).trim();
+            return '<option value="' + ev.id + '"' + (isSelected ? ' selected' : '') + '>' + label + '</option>';
+          }).join('');
+        }
+        renderOptions();
+
+        eyebrowText.style.display   = 'none';
+        eyebrowSelect.style.display = 'inline-block';
+        eyebrowBadge.style.display  = 'inline-block';
+        eyebrow.classList.add('visible');
+
+        eyebrowSelect.addEventListener('change', function () {
+          SELECTED_EVENT_ID = this.value;
+          renderOptions();
+          db.from('survey_event_links')
+            .upsert({ page_key: PAGE_KEY, event_id: SELECTED_EVENT_ID, updated_at: new Date().toISOString() }, { onConflict: 'page_key' })
+            .then(function (res) { if (res.error) console.error('Survey event link save error:', res.error.message); });
+        });
+      }).catch(function (err) { console.error('Auth session check error:', err); });
+    }).catch(function (err) { console.error('Events load error:', err); });
+  })();
 
   var SIGNS = [
     { t:"Mein Kopf arbeitet auch dann für andere, wenn gerade niemand etwas von mir will.", g:0 },
