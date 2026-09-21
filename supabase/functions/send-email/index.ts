@@ -21,6 +21,7 @@ Deno.serve(async (req: Request) => {
     const TEMPLATES: Record<string, string | undefined> = {
       registration: Deno.env.get('EMAILJS_TEMPLATE_REGISTRATION'),
       danke:        Deno.env.get('EMAILJS_TEMPLATE_DANKE'),
+      feedback:     Deno.env.get('EMAILJS_TEMPLATE_FEEDBACK'),
     };
 
     console.log(`[send-email] action=${action} service=${SERVICE_ID} template=${TEMPLATES[action]} public_key_set=${!!PUBLIC_KEY} private_key_set=${!!PRIVATE_KEY}`);

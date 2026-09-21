@@ -6,7 +6,7 @@
 <title>Über mich – Adriana Vukin | Der Architekt deines Lebens</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600;700&family=Archivo:wght@800&display=swap" rel="stylesheet">
 <style>
   :root{
     --paper:#f6f0e3;
@@ -201,7 +201,10 @@
   @media (min-width:900px){
     .hero-grid{grid-template-columns:1.15fr .85fr;gap:60px;}
   }
-  .hero h1{font-size:clamp(2.3rem,5vw,3.6rem);margin-top:16px;}
+  .hero h1{
+    font-family:'Archivo',system-ui,sans-serif; font-weight:800; letter-spacing:-.02em;
+    font-size:clamp(2.3rem,5vw,3.6rem);margin-top:16px;
+  }
   .hero .lede{
     margin-top:22px;
     max-width:52ch;

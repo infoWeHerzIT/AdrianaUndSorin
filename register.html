@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Registrierung – Deep Coaching Workshop | Der Architekt deines Lebens</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&family=Fraunces:ital,opsz,wght@0,9..144,600&family=Archivo:wght@800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 <script src="Code/dynamics-crm.js"></script>
@@ -14,10 +14,10 @@
 <script src="Code/captcha.js"></script>
 <style>
   :root {
-    --orange: #ff6300;
+    --orange: #d9682c;
     --navy: #00224d;
-    --white: #ffffff;
-    --orange-dim: rgba(255,99,0,0.12);
+    --white: #fffaf1;
+    --orange-dim: rgba(217,104,44,0.12);
     --navy-dim: rgba(0,34,77,0.06);
   }
 
@@ -44,15 +44,16 @@
     display: flex; align-items: center; justify-content: space-between;
   }
   .nav-logo {
-    font-family: 'Fredoka', sans-serif;
+    font-family: "Fraunces", serif;
     color: var(--white);
-    font-size: 18px; font-weight: 700;
-    letter-spacing: -.01em;
+    font-size: 1.05rem; font-weight: 600;
+    letter-spacing: .01em;
     text-decoration: none;
+    display: flex; align-items: center; gap: 10px; white-space: nowrap;
   }
-  .nav-logo span { color: var(--orange); }
+  .nav-logo svg { width: 26px; height: 26px; flex: none; color: var(--orange); }
   .nav-back {
-    color: rgba(255,255,255,0.65);
+    color: rgba(255,250,241,0.65);
     font-size: 13px; font-weight: 500;
     text-decoration: none;
     display: flex; align-items: center; gap: 6px;
@@ -72,7 +73,7 @@
   .reg-hero-bg {
     position: absolute; inset: 0; pointer-events: none;
     background-image:
-      repeating-linear-gradient(90deg, rgba(255,99,0,0.04) 0px, rgba(255,99,0,0.04) 1px, transparent 1px, transparent 80px);
+      repeating-linear-gradient(90deg, rgba(217,104,44,0.04) 0px, rgba(217,104,44,0.04) 1px, transparent 1px, transparent 80px);
   }
   .hero-accent-bar {
     position: absolute; left: 0; top: 0; bottom: 0;
@@ -88,22 +89,22 @@
     color: var(--orange); margin-bottom: 12px; display: block;
   }
   .reg-hero h1 {
-    font-family: 'Fredoka', sans-serif;
+    font-family: 'Archivo', system-ui, sans-serif;
     font-size: clamp(30px, 4vw, 50px);
-    font-weight: 700; color: var(--white);
+    font-weight: 800; color: var(--white);
     line-height: 1.1; margin-bottom: 16px;
   }
   .reg-hero h1 em { font-style: normal; color: var(--orange); }
   .reg-hero-sub {
     font-size: 16px; font-weight: 300;
-    color: rgba(255,255,255,0.6);
+    color: rgba(255,250,241,0.6);
     margin-bottom: 40px;
   }
 
   /* ─── TICKET INFO CARD ─── */
   .ticket-card {
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,99,0,0.35);
+    background: rgba(255,250,241,0.06);
+    border: 1px solid rgba(217,104,44,0.35);
     border-radius: 4px;
     padding: 28px 32px;
     display: flex;
@@ -112,7 +113,7 @@
     flex-wrap: wrap;
   }
   .ticket-badge {
-    background: linear-gradient(135deg, var(--orange), #e55700);
+    background: linear-gradient(135deg, var(--orange), #bd551f);
     color: var(--white);
     font-family: 'Fredoka', sans-serif;
     font-size: 12px; font-weight: 600;
@@ -128,7 +129,7 @@
     color: var(--white); margin-bottom: 4px;
   }
   .ticket-per {
-    font-size: 14px; color: rgba(255,255,255,0.5);
+    font-size: 14px; color: rgba(255,250,241,0.5);
   }
   .ticket-price-wrap { text-align: right; white-space: nowrap; }
   .ticket-price {
@@ -138,7 +139,7 @@
   }
   .ticket-price sup { font-size: 22px; vertical-align: super; }
   .ticket-desc {
-    font-size: 13px; color: rgba(255,255,255,0.45);
+    font-size: 13px; color: rgba(255,250,241,0.45);
     margin-top: 4px; max-width: 340px;
   }
 
@@ -146,7 +147,7 @@
   .event-info-strip {
     width: 100%; flex-basis: 100%;
     padding-bottom: 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid rgba(255,250,241,0.1);
     margin-bottom: 4px;
     display: none;
   }
@@ -158,20 +159,20 @@
   }
   .event-info-meta {
     display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
-    font-size: 13px; color: rgba(255,255,255,0.6);
+    font-size: 13px; color: rgba(255,250,241,0.6);
   }
   .event-info-tag {
     font-family: 'Orbitron', monospace;
     font-size: 8px; font-weight: 700; letter-spacing: .14em;
     text-transform: uppercase;
     padding: 3px 8px; border-radius: 2px;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.15);
-    color: rgba(255,255,255,0.7);
+    background: rgba(255,250,241,0.08);
+    border: 1px solid rgba(255,250,241,0.15);
+    color: rgba(255,250,241,0.7);
   }
   .event-info-date {
     display: flex; align-items: center; gap: 6px;
-    color: rgba(255,255,255,0.75);
+    color: rgba(255,250,241,0.75);
   }
   .event-info-date svg { opacity: .6; flex-shrink: 0; }
   .event-info-location { color: var(--orange); }
@@ -227,7 +228,7 @@
   .form-input::placeholder { color: rgba(0,34,77,0.3); }
   .form-input:focus {
     border-color: var(--orange);
-    box-shadow: 0 0 0 3px rgba(255,99,0,0.1);
+    box-shadow: 0 0 0 3px rgba(217,104,44,0.1);
   }
   .form-input.error {
     border-color: #e53e3e;
@@ -253,12 +254,12 @@
     width: 100%; margin-top: 12px;
     transition: background .2s, transform .15s, opacity .2s;
   }
-  .btn-register:hover:not(:disabled) { background: #e55700; transform: translateY(-1px); }
+  .btn-register:hover:not(:disabled) { background: #bd551f; transform: translateY(-1px); }
   .btn-register:active { transform: translateY(0); }
   .btn-register:disabled { opacity: .7; cursor: not-allowed; transform: none; }
   .spinner {
     width: 18px; height: 18px; border-radius: 50%;
-    border: 2px solid rgba(255,255,255,0.3);
+    border: 2px solid rgba(255,250,241,0.3);
     border-top-color: #fff;
     animation: spin .7s linear infinite;
     display: none;
@@ -268,13 +269,23 @@
   .btn-register.loading .spinner { display: block; }
   .btn-register.loading .btn-label { opacity: .85; }
 
+  .form-checkbox {
+    display: flex; align-items: flex-start; gap: 12px;
+    font-size: 13.5px; color: rgba(0,34,77,0.7); line-height: 1.6;
+    cursor: pointer; margin-top: 14px;
+  }
+  .form-checkbox input { margin-top: 3px; flex-shrink: 0; accent-color: var(--orange); width: 16px; height: 16px; }
+  .form-checkbox.locked { cursor: default; }
+  .form-checkbox.locked input { accent-color: rgba(0,34,77,0.4); cursor: default; }
+  .form-checkbox.locked span strong { color: var(--navy); }
+
   .form-note {
     display: flex; align-items: flex-start; gap: 10px;
     font-size: 14px; color: var(--navy);
     text-align: left; margin-top: 16px;
     line-height: 1.6;
-    background: rgba(255,99,0,0.07);
-    border: 1px solid rgba(255,99,0,0.2);
+    background: rgba(217,104,44,0.07);
+    border: 1px solid rgba(217,104,44,0.2);
     border-radius: 4px;
     padding: 14px 16px;
   }
@@ -336,8 +347,8 @@
 
   /* ─── TEST EVENT DEBUG PANEL ─── */
   .test-debug-panel {
-    background: rgba(255,99,0,0.06);
-    border: 1px dashed rgba(255,99,0,0.4);
+    background: rgba(217,104,44,0.06);
+    border: 1px dashed rgba(217,104,44,0.4);
     border-radius: 12px;
     padding: 16px 20px;
     font-family: 'DM Sans', sans-serif;
@@ -347,7 +358,7 @@
     font-size: 11px;
     letter-spacing: .08em;
     text-transform: uppercase;
-    color: #ff6300;
+    color: #d9682c;
     cursor: pointer;
     user-select: none;
     list-style: none;
@@ -389,7 +400,10 @@
 <!-- NAV -->
 <nav>
   <div class="nav-inner">
-    <a href="startseite.html" class="nav-logo">Der Architekt <span>deines Lebens</span></a>
+    <a href="startseite.html" class="nav-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 20h18M5 20V9l7-5 7 5v11M9 20v-6h6v6"/></svg>
+      Der Architekt deines Lebens
+    </a>
     <a href="#" onclick="history.back(); return false;" class="nav-back">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="15 18 9 12 15 6"/>
@@ -486,6 +500,16 @@
         <span class="field-error" id="err-captcha">Bitte bestätige, dass du kein Roboter bist</span>
       </div>
 
+      <label class="form-checkbox locked">
+        <input type="checkbox" id="c-email-optin" checked disabled>
+        <span><strong>Ich bin damit einverstanden, dass ihr mich per E-Mail zu dieser Anmeldung kontaktiert</strong> (Bestätigung, Erinnerungen, wichtige Infos zur Veranstaltung). Ohne diese Zustimmung dürfen wir dir keine E-Mails zu deiner Anmeldung schicken — deshalb ist sie für die Registrierung erforderlich.</span>
+      </label>
+
+      <label class="form-checkbox">
+        <input type="checkbox" id="c-newsletter">
+        <span>Ja, schickt mir zusätzlich gerne ab und zu Impulse per Newsletter. Jederzeit mit einem Klick abbestellbar.</span>
+      </label>
+
       <button type="submit" class="btn-register" id="btn-register">
         <span class="spinner" id="btn-spinner"></span>
         <span class="btn-label" id="btn-label">Jetzt Registrieren →</span>
@@ -517,7 +541,7 @@
     </div>
 
     <!-- Payment link box (visible in test mode when payment link is set) -->
-    <div class="test-meeting-box" id="test-payment-box" style="display:none; border-color:rgba(255,99,0,0.6); background:rgba(255,99,0,0.06);">
+    <div class="test-meeting-box" id="test-payment-box" style="display:none; border-color:rgba(217,104,44,0.6); background:rgba(217,104,44,0.06);">
       <div class="test-meeting-icon">💳</div>
       <div class="test-meeting-info">
         <div class="test-meeting-label" style="color:var(--orange);">Zahlungslink – aktiv für dieses Ticket</div>
@@ -727,11 +751,11 @@
       rows += '<tr><td>event_id</td><td>' + esc(eventId || '–') + '</td></tr>';
       rows += '<tr><td>ticket</td><td>'   + esc(ticketLabel || '–') + '</td></tr>';
 
-      rows += '<tr><td colspan="2" style="padding:10px 8px 2px;color:#16a34a;font-size:10px;letter-spacing:.08em;font-weight:600;">TICKET-PREIS (berechnet)</td></tr>';
+      rows += '<tr><td colspan="2" style="padding:10px 8px 2px;color:#4c7a5e;font-size:10px;letter-spacing:.08em;font-weight:600;">TICKET-PREIS (berechnet)</td></tr>';
       rows += '<tr><td>ticketName</td><td>' + esc(ticketName || '–') + '</td></tr>';
       rows += '<tr><td>isEB</td><td>' + (isEB ? 'ja' : 'nein') + '</td></tr>';
       rows += '<tr><td>isDuo</td><td>' + (isDuo ? 'ja' : 'nein') + '</td></tr>';
-      rows += '<tr><td style="font-weight:600;">priceNum</td><td style="font-weight:600;color:#16a34a;">€ ' + priceNum + '</td></tr>';
+      rows += '<tr><td style="font-weight:600;">priceNum</td><td style="font-weight:600;color:#4c7a5e;">€ ' + priceNum + '</td></tr>';
 
       rows += '<tr><td colspan="2" style="padding:10px 8px 2px;color:#555;font-size:10px;letter-spacing:.08em;">EVENT-DATEN (aus Datenbank)</td></tr>';
       var evKeys = ['id','name','type','format','year','month','day','time_from','time_to','location','price','spots','description','video_meeting_url'];
@@ -880,7 +904,12 @@
       lastname:    nachname,
       email:       email,
       mobilephone: handy,
-      eventId:     eventId || (ev ? ev.id : '')
+      eventId:     eventId || (ev ? ev.id : ''),
+      // c-email-optin ist Pflicht, vorbelegt und gesperrt (siehe .form-checkbox.locked
+      // oben) — ohne diese Zustimmung dürfen wir keine E-Mails zur Anmeldung schicken,
+      // daher hier immer true, unabhängig vom (nicht änderbaren) Checkbox-Status.
+      einwilligungDatenverarbeitungOptIn: true,
+      newsletterOptIn: document.getElementById('c-newsletter').checked
     });
 
     if (!isTestTicket) {

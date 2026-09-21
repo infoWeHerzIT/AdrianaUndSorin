@@ -5,13 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Termine &amp; Kalender – Der Architekt deines Lebens | Deep Coaching Workshops</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&family=Fraunces:ital,opsz,wght@0,9..144,600&family=Archivo:wght@800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --orange: #ff6300;
+    --orange: #d9682c;
     --navy: #00224d;
-    --white: #ffffff;
-    --orange-dim: rgba(255,99,0,0.12);
+    --white: #fffaf1;
+    --orange-dim: rgba(217,104,44,0.12);
     --navy-dim: rgba(0,34,77,0.06);
   }
 
@@ -61,14 +61,15 @@
     width: 100%;
   }
   .nav-logo {
-    font-family: 'Fredoka', sans-serif;
+    font-family: "Fraunces", serif;
     color: var(--white);
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: -.01em;
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: .01em;
     text-decoration: none;
+    display: flex; align-items: center; gap: 10px; white-space: nowrap;
   }
-  .nav-logo span { color: var(--orange); }
+  .nav-logo svg { width: 26px; height: 26px; flex: none; color: var(--orange); }
   .nav-cta {
     background: var(--orange);
     color: var(--white);
@@ -88,22 +89,22 @@
     content: '';
     position: absolute; top: -50%; left: -60%;
     width: 40%; height: 200%;
-    background: rgba(255,255,255,0.2);
+    background: rgba(255,250,241,0.2);
     transform: skewX(-20deg);
     transition: left .5s ease;
   }
-  .nav-cta:hover { background: #e55700; }
+  .nav-cta:hover { background: #bd551f; }
   .nav-cta:hover::after { left: 120%; }
   .nav-ghost {
-    color: rgba(255,255,255,0.65);
+    color: rgba(255,250,241,0.65);
     font-size: 13px; font-weight: 500;
     text-decoration: none;
-    border: 1px solid rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,250,241,0.2);
     padding: 9px 16px; border-radius: 2px;
     letter-spacing: .04em;
     transition: background .2s, color .2s, border-color .2s;
   }
-  .nav-ghost:hover { background: rgba(255,255,255,0.08); color: var(--white); border-color: rgba(255,255,255,0.35); }
+  .nav-ghost:hover { background: rgba(255,250,241,0.08); color: var(--white); border-color: rgba(255,250,241,0.35); }
 
   /* ─── PAGE HERO ─── */
   #page-hero {
@@ -115,7 +116,7 @@
   }
   .hero-bg-lines {
     position: absolute; inset: 0; pointer-events: none;
-    background-image: repeating-linear-gradient(90deg, rgba(255,99,0,0.04) 0px, rgba(255,99,0,0.04) 1px, transparent 1px, transparent 80px);
+    background-image: repeating-linear-gradient(90deg, rgba(217,104,44,0.04) 0px, rgba(217,104,44,0.04) 1px, transparent 1px, transparent 80px);
   }
   .hero-accent-bar {
     position: absolute; left: 0; top: 0; bottom: 0;
@@ -126,8 +127,8 @@
     content: '';
     position: absolute; top: 0; right: 0; bottom: 0; width: 55%;
     background-image:
-      radial-gradient(circle, rgba(255,99,0,0.12) 1px, transparent 1px),
-      radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
+      radial-gradient(circle, rgba(217,104,44,0.12) 1px, transparent 1px),
+      radial-gradient(circle, rgba(255,250,241,0.04) 1px, transparent 1px);
     background-size: 40px 40px, 80px 80px;
     background-position: 0 0, 20px 20px;
     pointer-events: none; z-index: 1;
@@ -149,19 +150,19 @@
     flex-shrink: 0;
   }
   @keyframes ring {
-    0%   { box-shadow: 0 0 0 0 rgba(255,99,0,0.6); }
-    70%  { box-shadow: 0 0 0 10px rgba(255,99,0,0); }
-    100% { box-shadow: 0 0 0 0 rgba(255,99,0,0); }
+    0%   { box-shadow: 0 0 0 0 rgba(217,104,44,0.6); }
+    70%  { box-shadow: 0 0 0 10px rgba(217,104,44,0); }
+    100% { box-shadow: 0 0 0 0 rgba(217,104,44,0); }
   }
   .hero-eyebrow-text {
     font-size: 12px; font-weight: 500;
     letter-spacing: .14em; text-transform: uppercase;
-    color: rgba(255,255,255,0.55);
+    color: rgba(255,250,241,0.55);
   }
   .hero-title {
-    font-family: 'Fredoka', sans-serif;
+    font-family: 'Archivo', system-ui, sans-serif;
     font-size: clamp(36px, 4.5vw, 58px);
-    font-weight: 900;
+    font-weight: 800;
     line-height: 1.08;
     color: var(--white);
     margin-bottom: 20px;
@@ -171,7 +172,7 @@
     font-size: 17px;
     font-weight: 300;
     line-height: 1.75;
-    color: rgba(255,255,255,0.65);
+    color: rgba(255,250,241,0.65);
     max-width: 700px;
   }
 
@@ -186,7 +187,7 @@
 
   /* ─── KALENDER SECTION ─── */
   #kalender {
-    background: #f9f8f6;
+    background: #f6f0e3;
     padding: 80px 0 100px;
     position: relative; z-index: 7;
     margin-top: -170px;
@@ -213,7 +214,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 24px 32px;
-    border-bottom: 1px solid rgba(255,255,255,0.07);
+    border-bottom: 1px solid rgba(255,250,241,0.07);
     background: rgba(0,0,0,0.18);
   }
 
@@ -229,9 +230,9 @@
   .cal-year { color: var(--orange); }
 
   .cal-nav-btn {
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.12);
-    color: rgba(255,255,255,0.7);
+    background: rgba(255,250,241,0.06);
+    border: 1px solid rgba(255,250,241,0.12);
+    color: rgba(255,250,241,0.7);
     width: 44px; height: 44px;
     display: flex; align-items: center; justify-content: center;
     cursor: pointer;
@@ -241,8 +242,8 @@
     font-family: inherit;
   }
   .cal-nav-btn:hover {
-    background: rgba(255,99,0,0.18);
-    border-color: rgba(255,99,0,0.5);
+    background: rgba(217,104,44,0.18);
+    border-color: rgba(217,104,44,0.5);
     color: var(--orange);
   }
   .cal-nav-btn:disabled {
@@ -256,7 +257,7 @@
     grid-template-columns: repeat(7, 1fr);
     padding: 0 16px;
     background: rgba(0,0,0,0.22);
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 1px solid rgba(255,250,241,0.05);
   }
   .cal-weekdays span {
     text-align: center;
@@ -283,7 +284,7 @@
     justify-content: center;
     border-radius: 4px;
     font-size: 30px;
-    color: rgba(255,255,255,0.6);
+    color: rgba(255,250,241,0.6);
     cursor: default;
     position: relative;
     transition: background .15s, transform .15s;
@@ -291,12 +292,12 @@
     user-select: none;
   }
   .cal-day.other-month {
-    color: rgba(255,255,255,0.14);
+    color: rgba(255,250,241,0.14);
   }
   .cal-day.today {
-    border-color: rgba(255,99,0,0.45);
+    border-color: rgba(217,104,44,0.45);
     color: var(--white);
-    background: rgba(255,99,0,0.1);
+    background: rgba(217,104,44,0.1);
   }
   .cal-day.has-event {
     background: var(--orange);
@@ -309,16 +310,16 @@
     border-color: transparent;
   }
   @keyframes eventGlow {
-    0%, 100% { box-shadow: 0 0 10px rgba(255,99,0,0.45); }
-    50%       { box-shadow: 0 0 26px rgba(255,99,0,0.8), 0 0 48px rgba(255,99,0,0.3); }
+    0%, 100% { box-shadow: 0 0 10px rgba(217,104,44,0.45); }
+    50%       { box-shadow: 0 0 26px rgba(217,104,44,0.8), 0 0 48px rgba(217,104,44,0.3); }
   }
   .cal-day.has-event:hover {
-    background: #e55700;
+    background: #bd551f;
     transform: scale(1.1);
     z-index: 2;
   }
   .cal-day.selected {
-    outline: 2px solid rgba(255,255,255,0.5);
+    outline: 2px solid rgba(255,250,241,0.5);
     outline-offset: 2px;
   }
 
@@ -326,13 +327,13 @@
     display: flex;
     gap: 24px;
     padding: 14px 32px;
-    border-top: 1px solid rgba(255,255,255,0.07);
+    border-top: 1px solid rgba(255,250,241,0.07);
     background: rgba(0,0,0,0.12);
     flex-wrap: wrap;
   }
   .cal-legend-item {
     display: flex; align-items: center; gap: 8px;
-    font-size: 12px; color: rgba(255,255,255,0.45);
+    font-size: 12px; color: rgba(255,250,241,0.45);
   }
   .legend-box-event {
     width: 16px; height: 16px;
@@ -341,9 +342,9 @@
   }
   .legend-box-today {
     width: 16px; height: 16px;
-    border: 1px solid rgba(255,99,0,0.5);
+    border: 1px solid rgba(217,104,44,0.5);
     border-radius: 3px; flex-shrink: 0;
-    background: rgba(255,99,0,0.1);
+    background: rgba(217,104,44,0.1);
   }
 
   /* ─── EVENTS SIDEBAR ─── */
@@ -382,15 +383,15 @@
     transition: width .2s;
   }
   .event-card:hover {
-    border-color: rgba(255,99,0,0.35);
-    box-shadow: 0 8px 28px rgba(255,99,0,0.12);
+    border-color: rgba(217,104,44,0.35);
+    box-shadow: 0 8px 28px rgba(217,104,44,0.12);
     transform: translateX(4px);
   }
   .event-card:hover::before { width: 6px; }
   .event-card.highlighted {
     border-color: var(--orange);
-    box-shadow: 0 8px 32px rgba(255,99,0,0.18);
-    background: rgba(255,99,0,0.025);
+    box-shadow: 0 8px 32px rgba(217,104,44,0.18);
+    background: rgba(217,104,44,0.025);
   }
 
   .event-card-date-badge {
@@ -402,7 +403,7 @@
     padding: 5px 12px;
     border-radius: 2px;
     margin-bottom: 12px;
-    box-shadow: 0 0 12px rgba(255,99,0,0.3);
+    box-shadow: 0 0 12px rgba(217,104,44,0.3);
   }
   .event-card-date-badge .day-num {
     font-family: 'Fredoka', sans-serif;
@@ -441,10 +442,10 @@
     text-decoration: none; white-space: nowrap; flex-shrink: 0;
     transition: background .18s; position: relative; z-index: 2;
   }
-  .btn-reg-top:hover { background: #e55700; }
+  .btn-reg-top:hover { background: #bd551f; }
   .btn-reg-top.fmt-online { background: #0078b4; }
   .btn-reg-top.fmt-online:hover { background: #005f8e; }
-  .btn-reg-top.fmt-hybrid { background: linear-gradient(to bottom left, #0078b4 50%, #ff6300 50%); }
+  .btn-reg-top.fmt-hybrid { background: linear-gradient(to bottom left, #0078b4 50%, #d9682c 50%); }
 
   .event-meta-rows {
     display: flex;
@@ -465,9 +466,9 @@
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    background: rgba(255,99,0,0.08);
+    background: rgba(217,104,44,0.08);
     color: var(--orange);
-    border: 1px solid rgba(255,99,0,0.22);
+    border: 1px solid rgba(217,104,44,0.22);
     font-size: 9px;
     font-weight: 700;
     letter-spacing: .14em;
@@ -504,7 +505,7 @@
   }
   .event-card.fmt-online .event-date-tag { color: #0078b4; }
   .event-card.fmt-hybrid .event-date-tag {
-    background: linear-gradient(to right, #0078b4, #ff6300);
+    background: linear-gradient(to right, #0078b4, #d9682c);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -514,27 +515,27 @@
   .btn-goto-event {
     display: inline-flex; align-items: center;
     padding: 7px 14px; border-radius: 2px;
-    background: rgba(22,163,74,0.1);
-    color: #16a34a; border: 1px solid rgba(22,163,74,0.3);
+    background: rgba(76,122,94,0.1);
+    color: #4c7a5e; border: 1px solid rgba(76,122,94,0.3);
     font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500;
     text-decoration: none; white-space: nowrap;
     transition: background .18s;
     position: relative; z-index: 2;
   }
-  .btn-goto-event:hover { background: rgba(22,163,74,0.18); color: #15803d; }
+  .btn-goto-event:hover { background: rgba(76,122,94,0.18); color: #3d6350; }
 
   /* ─── TEST DEBUG ─── */
   .event-card-test-debug {
     margin-top: 10px;
     padding-top: 10px;
-    border-top: 1px dashed rgba(255,99,0,0.3);
+    border-top: 1px dashed rgba(217,104,44,0.3);
   }
   .event-card-test-debug summary {
     font-family: 'Orbitron', monospace;
     font-size: 10px;
     letter-spacing: .07em;
     text-transform: uppercase;
-    color: #ff6300;
+    color: #d9682c;
     cursor: pointer;
     list-style: none;
     user-select: none;
@@ -554,7 +555,7 @@
     font-family: 'Orbitron', monospace;
     font-size: 9px;
     letter-spacing: .05em;
-    color: #ff6300;
+    color: #d9682c;
     white-space: nowrap;
     padding: 2px 0;
   }
@@ -602,11 +603,11 @@
     content: '';
     position: absolute; top: -50%; left: -60%;
     width: 40%; height: 200%;
-    background: rgba(255,255,255,0.2);
+    background: rgba(255,250,241,0.2);
     transform: skewX(-20deg);
     transition: left .5s ease;
   }
-  .btn-primary:hover { background: #e55700; transform: translateY(-1px); }
+  .btn-primary:hover { background: #bd551f; transform: translateY(-1px); }
   .btn-primary:hover::after { left: 120%; }
 
   /* ─── CTA STRIP ─── */
@@ -622,8 +623,8 @@
     content: '';
     position: absolute; inset: 0; z-index: 0;
     background-image:
-      repeating-linear-gradient(0deg, rgba(255,99,0,0.025) 0px, rgba(255,99,0,0.025) 1px, transparent 1px, transparent 40px),
-      repeating-linear-gradient(90deg, rgba(255,99,0,0.025) 0px, rgba(255,99,0,0.025) 1px, transparent 1px, transparent 80px);
+      repeating-linear-gradient(0deg, rgba(217,104,44,0.025) 0px, rgba(217,104,44,0.025) 1px, transparent 1px, transparent 40px),
+      repeating-linear-gradient(90deg, rgba(217,104,44,0.025) 0px, rgba(217,104,44,0.025) 1px, transparent 1px, transparent 80px);
     pointer-events: none;
   }
   #cta-strip > .content-wrap { position: relative; z-index: 2; }
@@ -637,7 +638,7 @@
   }
   #cta-strip h2 em { color: var(--orange); font-style: normal; }
   #cta-strip p {
-    color: rgba(255,255,255,0.65);
+    color: rgba(255,250,241,0.65);
     font-size: 16px;
     margin-bottom: 40px;
     max-width: 520px;
@@ -661,16 +662,16 @@
     content: '';
     position: absolute; top: -50%; left: -60%;
     width: 40%; height: 200%;
-    background: rgba(255,255,255,0.2);
+    background: rgba(255,250,241,0.2);
     transform: skewX(-20deg);
     transition: left .5s ease;
   }
-  .btn-cta-big:hover { background: #e55700; transform: translateY(-2px); }
+  .btn-cta-big:hover { background: #bd551f; transform: translateY(-2px); }
   .btn-cta-big:hover::after { left: 120%; }
   .cta-sub {
     margin-top: 18px;
     font-size: 13px;
-    color: rgba(255,255,255,0.4);
+    color: rgba(255,250,241,0.4);
     letter-spacing: .04em;
   }
 
@@ -691,11 +692,11 @@
   }
   footer .f-logo {
     font-family: 'Fredoka', sans-serif;
-    font-size: 16px; color: rgba(255,255,255,0.5);
+    font-size: 16px; color: rgba(255,250,241,0.5);
   }
   footer .f-logo span { color: var(--orange); }
   footer p {
-    font-size: 12px; color: rgba(255,255,255,0.25);
+    font-size: 12px; color: rgba(255,250,241,0.25);
     letter-spacing: .04em;
   }
 
@@ -728,8 +729,8 @@
     50%       { box-shadow: 0 0 26px rgba(0,120,180,0.8), 0 0 48px rgba(0,120,180,0.3); }
   }
   @keyframes eventGlowHybrid {
-    0%, 100% { box-shadow: 0 0 10px rgba(0,120,180,0.4), 0 0 10px rgba(255,99,0,0.4); }
-    50%       { box-shadow: 0 0 22px rgba(0,120,180,0.75), 0 0 22px rgba(255,99,0,0.75); }
+    0%, 100% { box-shadow: 0 0 10px rgba(0,120,180,0.4), 0 0 10px rgba(217,104,44,0.4); }
+    50%       { box-shadow: 0 0 22px rgba(0,120,180,0.75), 0 0 22px rgba(217,104,44,0.75); }
   }
   .cal-day.has-event.fmt-online {
     background: #0078b4;
@@ -737,24 +738,24 @@
   }
   .cal-day.has-event.fmt-online:hover { background: #005f8e; }
   .cal-day.has-event.fmt-hybrid {
-    background: linear-gradient(to bottom left, #0078b4 50%, #ff6300 50%);
+    background: linear-gradient(to bottom left, #0078b4 50%, #d9682c 50%);
     animation: eventGlowHybrid 2.8s infinite;
   }
   .cal-day.has-event.fmt-hybrid:hover {
-    background: linear-gradient(to bottom left, #005f8e 50%, #e55700 50%);
+    background: linear-gradient(to bottom left, #005f8e 50%, #bd551f 50%);
   }
 
   /* ─── FORMAT COLORS ON EVENT CARDS ─── */
   .event-card.fmt-online::before { background: #0078b4; }
-  .event-card.fmt-hybrid::before { background: linear-gradient(to bottom, #0078b4 50%, #ff6300 50%); }
+  .event-card.fmt-hybrid::before { background: linear-gradient(to bottom, #0078b4 50%, #d9682c 50%); }
   .event-card.fmt-online:hover { border-color: rgba(0,120,180,0.35); box-shadow: 0 8px 28px rgba(0,120,180,0.12); }
-  .event-card.fmt-hybrid:hover { border-color: rgba(0,120,180,0.25); box-shadow: 0 8px 28px rgba(0,120,180,0.08), 0 8px 28px rgba(255,99,0,0.08); }
+  .event-card.fmt-hybrid:hover { border-color: rgba(0,120,180,0.25); box-shadow: 0 8px 28px rgba(0,120,180,0.08), 0 8px 28px rgba(217,104,44,0.08); }
   .event-card.fmt-online .event-card-date-badge { background: #0078b4; box-shadow: 0 0 12px rgba(0,120,180,0.3); }
-  .event-card.fmt-hybrid .event-card-date-badge { background: linear-gradient(to bottom left, #0078b4 50%, #ff6300 50%); box-shadow: none; }
+  .event-card.fmt-hybrid .event-card-date-badge { background: linear-gradient(to bottom left, #0078b4 50%, #d9682c 50%); box-shadow: none; }
   .event-card.fmt-online .event-type-badge { background: rgba(0,120,180,0.08); color: #0078b4; border-color: rgba(0,120,180,0.22); }
-  .event-card.fmt-hybrid .event-type-badge { background: linear-gradient(to bottom left, #0078b4 50%, #ff6300 50%); color: var(--white); border-color: transparent; }
+  .event-card.fmt-hybrid .event-type-badge { background: linear-gradient(to bottom left, #0078b4 50%, #d9682c 50%); color: var(--white); border-color: transparent; }
   .event-card.fmt-online.highlighted { border-color: #0078b4; box-shadow: 0 8px 32px rgba(0,120,180,0.18); }
-  .event-card.fmt-hybrid.highlighted { border-image: linear-gradient(to bottom left, #0078b4 50%, #ff6300 50%) 1; box-shadow: 0 8px 32px rgba(0,120,180,0.12), 0 8px 32px rgba(255,99,0,0.12); }
+  .event-card.fmt-hybrid.highlighted { border-image: linear-gradient(to bottom left, #0078b4 50%, #d9682c 50%) 1; box-shadow: 0 8px 32px rgba(0,120,180,0.12), 0 8px 32px rgba(217,104,44,0.12); }
 
   /* ─── FILTER BAR ─── */
   .filter-bar {
@@ -764,7 +765,7 @@
     gap: 10px;
     margin-bottom: 24px;
     padding: 14px 20px;
-    background: rgba(255,255,255,0.85);
+    background: rgba(255,250,241,0.85);
     border: 1px solid rgba(0,34,77,0.1);
     border-radius: 4px;
   }
@@ -788,7 +789,7 @@
   .filter-chip.active { background: var(--navy); border-color: var(--navy); color: var(--white); }
   .filter-chip[data-fmt="Präsenz"].active { background: var(--orange); border-color: var(--orange); }
   .filter-chip[data-fmt="Online"].active { background: #0078b4; border-color: #0078b4; }
-  .filter-chip[data-fmt="Hybrid"].active { background: linear-gradient(to bottom left, #0078b4 50%, #ff6300 50%); border-color: transparent; }
+  .filter-chip[data-fmt="Hybrid"].active { background: linear-gradient(to bottom left, #0078b4 50%, #d9682c 50%); border-color: transparent; }
 
   /* ─── EVENT SECTION TOGGLES ─── */
   .event-toggle-bar {
@@ -816,9 +817,9 @@
   .event-view-btn.active {
     background: var(--orange);
     color: var(--white);
-    box-shadow: 0 2px 8px rgba(255,99,0,0.3);
+    box-shadow: 0 2px 8px rgba(217,104,44,0.3);
   }
-  .event-view-btn[data-status="Aktiv"].active   { background: #16a34a; box-shadow: 0 2px 8px rgba(22,163,74,0.3); }
+  .event-view-btn[data-status="Aktiv"].active   { background: #4c7a5e; box-shadow: 0 2px 8px rgba(76,122,94,0.3); }
   .event-view-btn[data-status="Vergangene"].active { background: #444; box-shadow: 0 2px 8px rgba(68,68,68,0.3); }
   .event-card.past-event { opacity: 0.55; }
   .event-card.past-event:hover { opacity: 1; }
@@ -833,11 +834,11 @@
     text-decoration: none !important; letter-spacing: .03em;
     transition: background .18s, transform .15s; position: relative; z-index: 2;
   }
-  .btn-register:hover { background: #e55700 !important; transform: translateY(-1px); color: var(--white) !important; }
+  .btn-register:hover { background: #bd551f !important; transform: translateY(-1px); color: var(--white) !important; }
   .btn-register.fmt-online { background: #0078b4; }
   .btn-register.fmt-online:hover { background: #005f8e !important; }
-  .btn-register.fmt-hybrid { background: linear-gradient(to bottom left, #0078b4 50%, #ff6300 50%); }
-  .btn-register.fmt-hybrid:hover { background: linear-gradient(to bottom left, #005f8e 50%, #e55700 50%) !important; }
+  .btn-register.fmt-hybrid { background: linear-gradient(to bottom left, #0078b4 50%, #d9682c 50%); }
+  .btn-register.fmt-hybrid:hover { background: linear-gradient(to bottom left, #005f8e 50%, #bd551f 50%) !important; }
 
   /* ─── RESPONSIVE ─── */
   @media (max-width: 900px) {
@@ -875,7 +876,10 @@
 <!-- NAV -->
 <nav>
   <div class="nav-inner">
-    <a href="startseite.html" class="nav-logo">Der Architekt <span>deines Lebens</span></a>
+    <a href="startseite.html" class="nav-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 20h18M5 20V9l7-5 7 5v11M9 20v-6h6v6"/></svg>
+      Der Architekt deines Lebens
+    </a>
     <a href="startseite.html#angebote" class="nav-ghost">Angebote ↗</a>
   </div>
 </nav>
@@ -896,7 +900,7 @@
   </div>
   <div class="wave-bottom" style="bottom:-10px;">
     <svg viewBox="0 0 1440 110" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M0,60 C180,110 320,20 520,75 C680,120 800,30 1000,65 C1160,95 1320,25 1440,55 L1440,110 L0,110 Z" fill="#f9f8f6"/>
+      <path d="M0,60 C180,110 320,20 520,75 C680,120 800,30 1000,65 C1160,95 1320,25 1440,55 L1440,110 L0,110 Z" fill="#f6f0e3"/>
     </svg>
   </div>
 </section>
@@ -932,7 +936,7 @@
         <div class="cal-legend" id="cal-legend">
           <div class="cal-legend-item"><div class="legend-box-event"></div><span>Präsenz</span></div>
           <div class="cal-legend-item"><div class="legend-box-event" style="background:#0078b4;box-shadow:0 0 8px rgba(0,120,180,0.5)"></div><span>Online</span></div>
-          <div class="cal-legend-item"><div class="legend-box-event" style="background:linear-gradient(to bottom left,#0078b4 50%,#ff6300 50%)"></div><span>Hybrid</span></div>
+          <div class="cal-legend-item"><div class="legend-box-event" style="background:linear-gradient(to bottom left,#0078b4 50%,#d9682c 50%)"></div><span>Hybrid</span></div>
           <div class="cal-legend-item"><div class="legend-box-today"></div><span>Heute</span></div>
         </div>
       </div>

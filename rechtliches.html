@@ -7,7 +7,7 @@
 <title>Rechtliches – Der Architekt deines Lebens</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600;700&family=Archivo:wght@800&display=swap" rel="stylesheet">
 <style>
   :root{
     --paper:#f6f0e3;
@@ -67,7 +67,10 @@
     letter-spacing:.14em;text-transform:uppercase;color:var(--orange-600);
   }
   .eyebrow::before{content:"";width:22px;height:1px;background:var(--orange-600);display:inline-block;}
-  .page-hero h1{font-size:clamp(1.9rem,4vw,2.6rem);margin-top:14px;}
+  .page-hero h1{
+    font-family:'Archivo',system-ui,sans-serif; font-weight:800; letter-spacing:-.01em;
+    font-size:clamp(1.9rem,4vw,2.6rem);margin-top:14px;
+  }
 
   .legal-tabs{
     position:sticky;top:57px;z-index:30;

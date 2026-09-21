@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Feedback – Der Architekt deines Lebens</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&family=Fraunces:ital,opsz,wght@0,9..144,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&family=Fraunces:ital,opsz,wght@0,9..144,600&family=Archivo:wght@800&display=swap" rel="stylesheet">
 <style>
   :root { --orange:#d9682c; --navy:#00224d; --white:#fffaf1; --green:#4c7a5e; --red:#dc2626; --yellow:#d97706; }
   *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
@@ -26,7 +26,7 @@
   .admin-header::after { content:''; position:absolute; left:0; top:0; bottom:0; width:5px; background:var(--orange); }
   .admin-header-inner { max-width:1200px; margin:0 auto; padding:0 32px; position:relative; z-index:1; }
   .admin-page-label { font-family:'Orbitron',monospace; font-size:10px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--orange); margin-bottom:14px; display:block; }
-  .admin-header h1 { font-family:'Fredoka',sans-serif; font-size:clamp(28px,3.5vw,44px); color:var(--white); line-height:1.1; margin-bottom:12px; }
+  .admin-header h1 { font-family:'Archivo',system-ui,sans-serif; font-weight:800; font-size:clamp(28px,3.5vw,44px); color:var(--white); line-height:1.1; margin-bottom:12px; }
   .admin-header h1 em { font-style:normal; color:var(--orange); }
   .admin-header p { font-size:15px; color:rgba(255,250,241,0.55); max-width:640px; line-height:1.7; }
 
@@ -35,6 +35,47 @@
   .list-title { font-family:'Fredoka',sans-serif; font-size:22px; }
   .list-count { font-size:13px; color:rgba(0,34,77,0.5); }
 
+  .link-card {
+    background:var(--white); border:1px solid rgba(0,34,77,0.1); border-radius:8px;
+    padding:20px 24px; margin-bottom:24px; display:flex; flex-direction:column; gap:12px;
+  }
+  .link-card-title { font-family:'Fredoka',sans-serif; font-size:15px; font-weight:600; }
+  .link-card-row { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .link-card-row select {
+    flex:0 0 auto; min-width:220px; padding:9px 12px; border:1px solid rgba(0,34,77,0.18); border-radius:4px;
+    font-family:'DM Sans',sans-serif; font-size:13.5px; color:var(--navy); background:var(--white); outline:none;
+  }
+  .link-card-row input[type=text] {
+    flex:1; min-width:240px; padding:9px 12px; border:1px solid rgba(0,34,77,0.18); border-radius:4px;
+    font-family:monospace; font-size:12.5px; color:rgba(0,34,77,0.6); background:#f6f0e3; outline:none;
+  }
+  .btn-link-copy, .btn-link-open {
+    background:var(--white); border:1px solid rgba(0,34,77,0.18); color:var(--navy); border-radius:4px;
+    padding:9px 16px; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; cursor:pointer;
+    transition:background .2s,border-color .2s,color .2s; white-space:nowrap; text-decoration:none;
+  }
+  .btn-link-copy:hover, .btn-link-open:hover { border-color:var(--orange); color:var(--orange); }
+  .btn-link-copy.copied { border-color:var(--green); color:var(--green); }
+  .link-card-note { font-size:12.5px; color:rgba(0,34,77,0.55); }
+  .link-card-note.err { color:var(--red); }
+  .link-card-note.ok { color:var(--green); }
+  #fl-participants { display:flex; flex-direction:column; gap:6px; max-height:280px; overflow-y:auto; padding-top:4px; border-top:1px solid rgba(0,34,77,0.08); }
+  .fl-p-row { display:flex; align-items:center; gap:10px; font-size:13px; padding:6px 2px; }
+  .fl-p-name { flex:1; min-width:0; font-weight:500; color:var(--navy); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .fl-p-email { flex:1.4; min-width:0; color:rgba(0,34,77,0.55); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .fl-p-status { flex:0 0 auto; font-size:11px; font-weight:600; padding:2px 9px; border-radius:10px; }
+  .fl-p-status.active { background:rgba(76,122,94,0.12); color:var(--green); }
+  .fl-p-status.pending { background:rgba(0,34,77,0.07); color:rgba(0,34,77,0.45); }
+  .fl-p-link { flex:1.6; min-width:0; font-family:monospace; font-size:11.5px; color:rgba(0,34,77,0.45); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .fl-p-link-empty { font-family:inherit; }
+  .fl-p-send {
+    flex:0 0 auto; background:var(--white); border:1px solid rgba(0,34,77,0.18); color:var(--navy); border-radius:4px;
+    padding:5px 10px; font-family:'DM Sans',sans-serif; font-size:11.5px; font-weight:500; cursor:pointer;
+    transition:border-color .2s, color .2s; white-space:nowrap;
+  }
+  .fl-p-send:hover:not(:disabled) { border-color:var(--orange); color:var(--orange); }
+  .fl-p-send:disabled { opacity:.75; cursor:default; }
+  .fl-p-empty { font-size:13px; color:rgba(0,34,77,0.4); padding:8px 2px; }
   .controls-row { display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:20px; }
   .controls-row input[type=search] {
     flex:1; min-width:240px; padding:9px 14px; border:1px solid rgba(0,34,77,0.18); border-radius:4px;
@@ -123,6 +164,22 @@
 </div>
 
 <div class="admin-main">
+  <div class="link-card">
+    <div class="link-card-title">Feedback-Link für ein Event erstellen</div>
+    <div class="link-card-row">
+      <select id="fl-event"><option value="">Event wählen …</option></select>
+      <input type="text" id="fl-url" readonly placeholder="Event auswählen, um den Link zu erzeugen …">
+      <button type="button" class="btn-link-copy" id="fl-copy" disabled>📋 Kopieren</button>
+      <a href="#" class="btn-link-open" id="fl-open" target="_blank" rel="noopener" style="display:none;">Öffnen ↗</a>
+    </div>
+    <div class="link-card-row">
+      <button type="button" class="btn-link-copy" id="fl-show-participants" disabled>👥 Teilnehmer anzeigen</button>
+      <button type="button" class="btn-link-copy" id="fl-send-feedback" disabled>✉️ Feedback-Link senden</button>
+      <span class="link-card-note" id="fl-send-status"></span>
+    </div>
+    <div id="fl-participants" style="display:none;"></div>
+  </div>
+
   <div class="list-header">
     <div class="list-title">Alle Rückmeldungen</div>
     <div class="list-count" id="list-count"></div>
@@ -158,6 +215,240 @@ document.getElementById('btn-logout').addEventListener('click', async () => {
   await db.auth.signOut();
   window.location.href = 'admin-login.html';
 });
+
+// ── Feedback-Link erstellen ──────────────────────────────────────
+// Erzeugt einen Link auf Templates/feedback.html mit vorbelegter
+// "?event_id=<Dynamics-GUID>" — die Seite blendet den Event-Dropdown dann
+// aus und zeigt das Event nur noch als fixes Badge (siehe presetEventId in
+// feedback.html). Absoluter Link (location.origin), damit er sich per
+// E-Mail/WhatsApp verschicken lässt, nicht nur innerhalb der Seite klickbar ist.
+(function initFeedbackLinkGenerator() {
+  var elSelect  = document.getElementById('fl-event');
+  var elUrl     = document.getElementById('fl-url');
+  var elCopy    = document.getElementById('fl-copy');
+  var elOpen    = document.getElementById('fl-open');
+  var elShowBtn = document.getElementById('fl-show-participants');
+  var elSendBtn = document.getElementById('fl-send-feedback');
+  var elStatus  = document.getElementById('fl-send-status');
+  var elList    = document.getElementById('fl-participants');
+  var MONTH_SHORT = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+  var eventsById = {};
+  var leadsCache = {}; // eventId -> leads[] (vermeidet doppeltes Laden zwischen "anzeigen" und "senden")
+
+  function fmtShort(ev) {
+    return ev.location + ' · ' + ev.day + '. ' + MONTH_SHORT[ev.month] + ' ' + ev.year;
+  }
+
+  dynamicsCRM.listEvents().then(function (events) {
+    (events || [])
+      .sort(function (a, b) { return new Date(b.year, b.month, b.day) - new Date(a.year, a.month, a.day); })
+      .forEach(function (ev) {
+        eventsById[ev.id] = ev;
+        var opt = document.createElement('option');
+        opt.value = ev.id;
+        opt.textContent = ev.name + ' — ' + fmtShort(ev);
+        elSelect.appendChild(opt);
+      });
+  });
+
+  function updateLink() {
+    var id = elSelect.value;
+    elList.style.display = 'none';
+    elList.innerHTML = '';
+    elStatus.textContent = '';
+    elStatus.className = 'link-card-note';
+    if (!id) {
+      elUrl.value = '';
+      elCopy.disabled = true;
+      elOpen.style.display = 'none';
+      elShowBtn.disabled = true;
+      elSendBtn.disabled = true;
+      return;
+    }
+    var url = window.location.origin + '/Templates/feedback.html?event_id=' + encodeURIComponent(id);
+    elUrl.value = url;
+    elCopy.disabled = false;
+    elCopy.classList.remove('copied');
+    elCopy.textContent = '📋 Kopieren';
+    elOpen.href = url;
+    elOpen.style.display = 'inline-block';
+    elShowBtn.disabled = false;
+    elSendBtn.disabled = false;
+  }
+  elSelect.addEventListener('change', updateLink);
+
+  elCopy.addEventListener('click', function () {
+    if (!elUrl.value) return;
+    navigator.clipboard.writeText(elUrl.value).then(function () {
+      elCopy.classList.add('copied');
+      elCopy.textContent = '✓ Kopiert';
+      setTimeout(function () {
+        elCopy.classList.remove('copied');
+        elCopy.textContent = '📋 Kopieren';
+      }, 1800);
+    }).catch(function (err) {
+      console.error('Clipboard-Fehler:', err);
+      elUrl.select();
+      document.execCommand('copy');
+    });
+  });
+
+  // Lädt (mit Cache) die Teilnehmer (wht_lead) des gewählten Events.
+  function getLeads(eventId) {
+    if (leadsCache[eventId]) return Promise.resolve(leadsCache[eventId]);
+    return dynamicsCRM.listLeadsByEvent(eventId).then(function (leads) {
+      leadsCache[eventId] = leads || [];
+      return leadsCache[eventId];
+    });
+  }
+
+  var currentLeads = [];
+
+  function leadName(l) {
+    return (l.name || ((l.firstname || '') + ' ' + (l.lastname || '')).trim()) || '(ohne Name)';
+  }
+
+  // Verschickt 1 Feedback-Mail per EmailJS (template_3nqqrk3, siehe
+  // supabase/functions/send-email "feedback"-Action) — von Massenversand
+  // UND vom Einzel-Knopf je Teilnehmer:in genutzt.
+  function sendOneFeedbackMail(l, eventName, url) {
+    return db.functions.invoke('send-email', {
+      body: {
+        action: 'feedback',
+        params: {
+          to_name:      leadName(l),
+          to_email:     l.email,
+          vorname:      l.firstname || leadName(l),
+          event_name:   eventName,
+          feedback_url: url
+        }
+      }
+    }).then(function (res) {
+      if (res.error) throw res.error;
+      return true;
+    }).catch(function (err) {
+      console.error('Feedback-Mail-Fehler für', l.email, err);
+      return false;
+    });
+  }
+
+  function renderParticipants(leads) {
+    currentLeads = leads;
+    if (!leads.length) {
+      elList.innerHTML = '<div class="fl-p-empty">Keine Teilnehmer für dieses Event gefunden.</div>';
+      elList.style.display = 'flex';
+      return;
+    }
+    var eventUrl = elUrl.value;
+    elList.innerHTML = leads.map(function (l, idx) {
+      var name = leadName(l);
+      var linkHtml = l.email
+        ? '<span class="fl-p-link" title="' + esc(eventUrl) + '">' + esc(eventUrl) + '</span>'
+        : '<span class="fl-p-link fl-p-link-empty">–</span>';
+      var btnHtml = l.email
+        ? '<button type="button" class="fl-p-send" data-idx="' + idx + '">✉️ Senden</button>'
+        : '';
+      return (
+        '<div class="fl-p-row">' +
+          '<span class="fl-p-name">' + esc(name) + '</span>' +
+          '<span class="fl-p-email">' + esc(l.email || '–') + '</span>' +
+          linkHtml +
+          '<span class="fl-p-status ' + (l.active ? 'active' : 'pending') + '">' + (l.active ? 'aktiv' : 'unbestätigt') + '</span>' +
+          btnHtml +
+        '</div>'
+      );
+    }).join('');
+    elList.style.display = 'flex';
+  }
+
+  elShowBtn.addEventListener('click', function () {
+    var id = elSelect.value;
+    if (!id) return;
+    elShowBtn.disabled = true;
+    elShowBtn.textContent = 'Wird geladen …';
+    getLeads(id).then(function (leads) {
+      elShowBtn.disabled = false;
+      elShowBtn.textContent = '👥 Teilnehmer anzeigen';
+      renderParticipants(leads);
+    });
+  });
+
+  // Einzelversand: Klick auf den "Senden"-Knopf einer Teilnehmer-Zeile —
+  // schickt den Feedback-Link NUR an diese eine Person, unabhängig vom
+  // aktiv/unbestätigt-Status (bewusste Einzelentscheidung der Admin-Person).
+  elList.addEventListener('click', function (e) {
+    var btn = e.target.closest('.fl-p-send');
+    if (!btn) return;
+    var l = currentLeads[Number(btn.getAttribute('data-idx'))];
+    if (!l) return;
+    var id = elSelect.value;
+    var ev = eventsById[id];
+    var eventName = ev ? ev.name : '';
+    var url = elUrl.value;
+
+    btn.disabled = true;
+    btn.textContent = 'Sende …';
+    sendOneFeedbackMail(l, eventName, url).then(function (ok) {
+      btn.textContent = ok ? '✓ Gesendet' : '✗ Fehler';
+      if (!ok) { btn.disabled = false; }
+    });
+  });
+
+  // Massenversand: Feedback-Link an alle AKTIVEN (per Double-Opt-In
+  // bestätigten) Teilnehmer:innen des gewählten Events — einzeln
+  // nacheinander (send-email verschickt nur je 1 Mail pro Aufruf).
+  elSendBtn.addEventListener('click', function () {
+    var id = elSelect.value;
+    if (!id) return;
+    var ev = eventsById[id];
+    var eventName = ev ? ev.name : '';
+    var url = elUrl.value;
+
+    elSendBtn.disabled = true;
+    elSendBtn.textContent = 'Teilnehmer werden geladen …';
+    elStatus.textContent = '';
+    elStatus.className = 'link-card-note';
+
+    getLeads(id).then(function (leads) {
+      var recipients = leads.filter(function (l) { return l.active && l.email; });
+
+      if (recipients.length === 0) {
+        elSendBtn.disabled = false;
+        elSendBtn.textContent = '✉️ Feedback-Link senden';
+        elStatus.className = 'link-card-note err';
+        elStatus.textContent = 'Keine aktiven Teilnehmer:innen mit E-Mail-Adresse gefunden.';
+        return;
+      }
+
+      if (!window.confirm('Feedback-Link jetzt an ' + recipients.length + ' aktive Teilnehmer:in(nen) von „' + eventName + '" senden?')) {
+        elSendBtn.disabled = false;
+        elSendBtn.textContent = '✉️ Feedback-Link senden';
+        return;
+      }
+
+      var sent = 0, failed = 0, i = 0;
+      function sendNext() {
+        if (i >= recipients.length) {
+          elSendBtn.disabled = false;
+          elSendBtn.textContent = '✉️ Feedback-Link senden';
+          elStatus.className = 'link-card-note ' + (failed ? 'err' : 'ok');
+          elStatus.textContent = failed
+            ? sent + ' verschickt, ' + failed + ' fehlgeschlagen.'
+            : '✓ ' + sent + ' Feedback-Mail(s) verschickt.';
+          return;
+        }
+        var l = recipients[i];
+        elSendBtn.textContent = 'Sende … (' + (i + 1) + '/' + recipients.length + ')';
+        sendOneFeedbackMail(l, eventName, url).then(function (ok) {
+          if (ok) sent++; else failed++;
+          i++;
+          sendNext();
+        });
+      }
+      sendNext();
+    });
+  });
+})();
 
 // ── Helpers ───────────────────────────────────────────────────
 function esc(s) {

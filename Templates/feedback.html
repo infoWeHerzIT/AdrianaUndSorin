@@ -5,16 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dein Feedback – Deep Coaching Workshop | Der Architekt deines Lebens</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&family=Fraunces:ital,opsz,wght@0,9..144,600&family=Archivo:wght@800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../supabase-config.js"></script>
 <script src="../Code/dynamics-crm.js"></script>
 <style>
   :root {
-    --orange: #ff6300;
+    --orange: #d9682c;
     --navy: #00224d;
-    --white: #ffffff;
-    --orange-dim: rgba(255,99,0,0.12);
+    --white: #fffaf1;
+    --orange-dim: rgba(217,104,44,0.12);
     --navy-dim: rgba(0,34,77,0.06);
   }
 
@@ -48,13 +48,14 @@
     display: flex; align-items: center; justify-content: space-between;
   }
   .nav-logo {
-    font-family: 'Fredoka', sans-serif;
-    color: var(--white); font-size: 18px; font-weight: 700;
-    letter-spacing: -.01em; text-decoration: none;
+    font-family: "Fraunces", serif;
+    color: var(--white); font-size: 1.05rem; font-weight: 600;
+    letter-spacing: .01em; text-decoration: none;
+    display: flex; align-items: center; gap: 10px; white-space: nowrap;
   }
-  .nav-logo span { color: var(--orange); }
+  .nav-logo svg { width: 26px; height: 26px; flex: none; color: var(--orange); }
   .nav-back {
-    color: rgba(255,255,255,0.65);
+    color: rgba(255,250,241,0.65);
     font-size: 13px; font-weight: 500;
     text-decoration: none;
     display: flex; align-items: center; gap: 6px;
@@ -71,7 +72,7 @@
   }
   .fb-hero-bg {
     position: absolute; inset: 0; pointer-events: none;
-    background-image: repeating-linear-gradient(90deg, rgba(255,99,0,0.04) 0px, rgba(255,99,0,0.04) 1px, transparent 1px, transparent 80px);
+    background-image: repeating-linear-gradient(90deg, rgba(217,104,44,0.04) 0px, rgba(217,104,44,0.04) 1px, transparent 1px, transparent 80px);
   }
   .hero-accent-bar {
     position: absolute; left: 0; top: 0; bottom: 0;
@@ -82,15 +83,15 @@
     position: relative; z-index: 2; text-align: center;
   }
   .fb-hero h1 {
-    font-family: 'Fredoka', sans-serif;
+    font-family: 'Archivo', system-ui, sans-serif;
     font-size: clamp(30px, 4vw, 48px);
-    font-weight: 700; color: var(--white);
+    font-weight: 800; color: var(--white);
     line-height: 1.15; margin-bottom: 16px;
   }
   .fb-hero h1 em { font-style: normal; color: var(--orange); }
   .fb-hero p {
     font-size: 16px; font-weight: 300;
-    color: rgba(255,255,255,0.65); line-height: 1.7;
+    color: rgba(255,250,241,0.65); line-height: 1.7;
   }
 
   /* ─── FORM SECTION ─── */
@@ -137,7 +138,7 @@
   .form-input::placeholder, .form-textarea::placeholder { color: rgba(0,34,77,0.3); }
   .form-input:focus, .form-select:focus, .form-textarea:focus {
     border-color: var(--orange);
-    box-shadow: 0 0 0 3px rgba(255,99,0,0.1);
+    box-shadow: 0 0 0 3px rgba(217,104,44,0.1);
   }
   .form-input.error, .form-select.error { border-color: #e53e3e; box-shadow: 0 0 0 3px rgba(229,62,62,0.1); }
   .field-error { font-size: 12px; color: #e53e3e; display: none; margin-top: -4px; }
@@ -196,7 +197,7 @@
   /* ─── STAR RATING ─── */
   .star-rating-wrap {
     background: var(--orange-dim);
-    border: 1px solid rgba(255,99,0,0.25);
+    border: 1px solid rgba(217,104,44,0.25);
     border-radius: 6px;
     padding: 20px 24px;
   }
@@ -207,7 +208,7 @@
   .star-rating input { position: absolute; opacity: 0; width: 0; height: 0; }
   .star-rating label {
     font-size: 88px; line-height: 1;
-    color: #ffffff;
+    color: #fffaf1;
     -webkit-text-stroke: 2px rgba(0,34,77,0.3);
     cursor: pointer;
     transition: color .15s, transform .15s, filter .15s, -webkit-text-stroke .15s;
@@ -218,15 +219,15 @@
   .star-rating label:hover,
   .star-rating label:hover ~ label {
     color: var(--orange);
-    -webkit-text-stroke: 2px #e55700;
-    filter: drop-shadow(0 4px 10px rgba(255,99,0,0.55));
+    -webkit-text-stroke: 2px #bd551f;
+    filter: drop-shadow(0 4px 10px rgba(217,104,44,0.55));
   }
   .star-rating-wrap.error {
     background: rgba(229,62,62,0.06);
     border-color: rgba(229,62,62,0.3);
   }
   .star-rating-wrap.error label {
-    color: #ffffff;
+    color: #fffaf1;
     -webkit-text-stroke: 2px rgba(229,62,62,0.4);
     filter: none;
   }
@@ -247,7 +248,7 @@
   .chip-option input:checked + .chip {
     background: var(--orange); border-color: var(--orange); color: var(--white);
   }
-  .chip-option:hover .chip { border-color: rgba(255,99,0,0.5); }
+  .chip-option:hover .chip { border-color: rgba(217,104,44,0.5); }
 
   /* ─── CHECKBOX ─── */
   .form-checkbox {
@@ -271,11 +272,11 @@
     width: 100%; margin-top: 8px;
     transition: background .2s, transform .15s, opacity .2s;
   }
-  .btn-submit:hover:not(:disabled) { background: #e55700; transform: translateY(-1px); }
+  .btn-submit:hover:not(:disabled) { background: #bd551f; transform: translateY(-1px); }
   .btn-submit:disabled { opacity: .7; cursor: not-allowed; transform: none; }
   .spinner {
     width: 18px; height: 18px; border-radius: 50%;
-    border: 2px solid rgba(255,255,255,0.3);
+    border: 2px solid rgba(255,250,241,0.3);
     border-top-color: #fff;
     animation: spin .7s linear infinite;
     display: none; flex-shrink: 0;
@@ -307,9 +308,9 @@
     display: flex; justify-content: space-between; align-items: center;
     flex-wrap: wrap; gap: 16px;
   }
-  footer .f-logo { font-family: 'Fredoka', sans-serif; font-size: 16px; color: rgba(255,255,255,0.5); }
+  footer .f-logo { font-family: 'Fredoka', sans-serif; font-size: 16px; color: rgba(255,250,241,0.5); }
   footer .f-logo span { color: var(--orange); }
-  footer p { font-size: 12px; color: rgba(255,255,255,0.25); letter-spacing: .04em; }
+  footer p { font-size: 12px; color: rgba(255,250,241,0.25); letter-spacing: .04em; }
 
   /* ─── RESPONSIVE ─── */
   @media (max-width: 600px) {
@@ -328,7 +329,10 @@
 <!-- NAV -->
 <nav>
   <div class="nav-inner">
-    <a href="../startseite.html" class="nav-logo">Der Architekt <span>deines Lebens</span></a>
+    <a href="../startseite.html" class="nav-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 20h18M5 20V9l7-5 7 5v11M9 20v-6h6v6"/></svg>
+      Der Architekt deines Lebens
+    </a>
     <a href="../startseite.html" class="nav-back">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="15 18 9 12 15 6"/>

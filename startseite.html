@@ -1,7 +1,7 @@
 <title>Der Architekt deines Lebens</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600;700&family=Archivo:wght@800&display=swap" rel="stylesheet">
 <style>
   :root{
     --paper:#f6f0e3;
@@ -238,7 +238,10 @@
   @media (min-width:900px){
     .hero-grid{grid-template-columns:1.15fr .85fr;gap:60px;}
   }
-  .hero h1{font-size:clamp(2.3rem,5vw,3.6rem);margin-top:16px;}
+  .hero h1{
+    font-family:'Archivo',system-ui,sans-serif; font-weight:800; letter-spacing:-.02em;
+    font-size:clamp(2.3rem,5vw,3.6rem);margin-top:16px;
+  }
   .hero .lede{
     margin-top:22px;
     max-width:52ch;
@@ -462,6 +465,8 @@
   .trust-logos{
     display:flex;flex-wrap:wrap;gap:12px;
   }
+  .trust-cal-note{margin-top:18px;font-size:.85rem;color:var(--ink-soft);}
+  .trust-cal-note a{color:var(--orange-600);font-weight:600;}
   .trust-logo-ph{
     border:1.5px dashed var(--line-light);
     padding:10px 16px;
@@ -632,6 +637,7 @@
       <a href="#methode">Methode</a>
       <a href="#angebote">Angebote</a>
       <a href="#stimmen">Stimmen</a>
+      <a href="kalender.html">Kalender</a>
       <a href="#kontakt">Kontakt</a>
     </nav>
     <div class="nav-actions">
@@ -646,6 +652,7 @@
     <a href="#methode">Methode</a>
     <a href="#angebote">Angebote</a>
     <a href="#stimmen">Stimmen</a>
+    <a href="kalender.html">Kalender</a>
     <a href="#kontakt">Kontakt</a>
   </div>
 </header>
@@ -840,14 +847,15 @@
         </div>
       </div>
       <div class="trust-bar">
-        <div class="trust-stat"> > 40<span>Begleitete Klientinnen &amp; Klienten</span></div>
-        <div class="trust-stat"> > 20<span>Durchgeführte Seminare &amp; Workshops</span></div>
+        <div class="trust-stat"> > 50<span>Begleitete Klientinnen &amp; Klienten</span></div>
+        <div class="trust-stat"> > 25<span>Durchgeführte Seminare &amp; Workshops</span></div>
         <div class="trust-logos">
           <span class="trust-logo-ph">Presse-Logo</span>
           <span class="trust-logo-ph">Podcast-Logo</span>
           <span class="trust-logo-ph">Partner-Logo</span>
         </div>
       </div>
+      <p class="trust-cal-note">Lust auf einen Termin? <a href="kalender.html">Nächste Termine im Kalender ansehen →</a></p>
     </div>
   </section>
 

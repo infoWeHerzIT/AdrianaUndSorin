@@ -144,6 +144,24 @@ class DynamicsCRM {
     });
   }
 
+  // Liest alle Leads (wht_lead), die einem Event zugeordnet sind (read-only)
+  // — supabase/functions/dynamics-leads-by-event[-dev]. Jeder Lead trägt
+  // "active" (true = per Double-Opt-In bestätigt, siehe confirmLead()).
+  // Gibt bei Fehlern ein leeres Array zurück statt zu werfen, analog zu
+  // listEvents().
+  listLeadsByEvent(eventId) {
+    var fnName = this._functionName('dynamics-leads-by-event') + '?eventId=' + encodeURIComponent(eventId || '');
+    return this.client.functions.invoke(fnName, {
+      method: 'GET'
+    }).then(function (res) {
+      if (res.error) throw res.error;
+      return res.data || [];
+    }).catch(function (err) {
+      console.error('CRM list leads by event error:', err);
+      return [];
+    });
+  }
+
   // Liest eine dynamische Umfrage-Definition (wht_survey + wht_surveyquestion
   // + wht_surveyquestionoption, read-only) anhand ihres Slugs —
   // supabase/functions/dynamics-survey-get[-dev]. Gibt bei Fehlern ODER wenn
