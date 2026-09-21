@@ -187,17 +187,22 @@ class DynamicsCRM {
   // fields.surveyId: Dynamics wht_surveyid-GUID (Pflicht).
   // fields.answers: Array aus { questionId, value } (Text/E-Mail/Telefon/
   // Nummer) ODER { questionId, optionIds: [...] } (Einmal-/Mehrfachauswahl).
+  // fields.newsletterOptIn: true, wenn die Newsletter-Checkbox beim Absenden
+  // gesetzt war — landet wie bei submitLead() als Zeitstempel in
+  // wht_interesseannewsletterperemail (nur wenn dabei auch ein Lead entsteht,
+  // also E-Mail oder Telefon angegeben wurde).
   submitSurveyResponse(fields) {
     fields = fields || {};
     return this.client.functions.invoke(this._functionName('crm-survey-response-submit'), {
       body: {
-        firstname:   fields.firstname   || '',
-        lastname:    fields.lastname    || '',
-        email:       fields.email       || '',
-        mobilephone: fields.mobilephone || '',
-        eventId:     fields.eventId     || '',
-        surveyId:    fields.surveyId    || '',
-        answers:     fields.answers     || []
+        firstname:        fields.firstname   || '',
+        lastname:         fields.lastname    || '',
+        email:            fields.email       || '',
+        mobilephone:      fields.mobilephone || '',
+        eventId:          fields.eventId     || '',
+        surveyId:         fields.surveyId    || '',
+        newsletterOptIn:  !!fields.newsletterOptIn,
+        answers:          fields.answers     || []
       }
     }).catch(function (err) {
       console.error('CRM submit survey response error:', err);
@@ -251,6 +256,26 @@ class DynamicsCRM {
     }).catch(function (err) {
       console.error('CRM get survey responses error:', err);
       return [];
+    });
+  }
+
+  // Kopiert/synchronisiert eine Umfrage (Titel, Intro, Beschreibung, alle
+  // Fragen + Optionen) von Dynamics DEV nach Dynamics PROD —
+  // supabase/functions/dynamics-survey-push-to-prod. Anders als die übrigen
+  // Methoden hier gibt es dafür KEIN "-dev"-Gegenstück (_functionName()):
+  // die Function liest IMMER aus DEV und schreibt IMMER nach PROD, deshalb
+  // wird ihr fester Name direkt aufgerufen, unabhängig von this.environment.
+  // id: DEV-GUID (wht_surveyid) der zu übertragenden Umfrage (Pflicht).
+  // Wirft nie — liefert bei Fehlern { success:false, error }.
+  pushSurveyToProd(id) {
+    return this.client.functions.invoke('dynamics-survey-push-to-prod', {
+      body: { id: id || '' }
+    }).then(function (res) {
+      if (res.error) throw res.error;
+      return res.data;
+    }).catch(function (err) {
+      console.error('CRM push survey to prod error:', err);
+      return { success: false, error: String((err && err.message) || err) };
     });
   }
 

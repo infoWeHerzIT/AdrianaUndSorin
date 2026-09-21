@@ -1,21 +1,89 @@
-<title>Wo kommst du noch vor?</title>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="index, follow">
+
+<title>Selbsttest: Wo kommst du noch vor? | Mental-Load-Test</title>
+<meta name="description" content="Kommst du in deinem eigenen Leben noch vor? Kostenloser Selbsttest in 3 Minuten: 12 Fragen zu 6 Lebensbereichen zeigen dir, wo du nur noch Zuständigkeit bist.">
+<link rel="canonical" href="https://der-architekt-deines-lebens.de/selbsttest-wo-kommst-du-noch-vor/">
+
+<!-- Open Graph / Social Sharing -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="de_DE">
+<meta property="og:site_name" content="Der Architekt Deines Lebens">
+<meta property="og:title" content="Selbsttest: Wo kommst du noch vor?">
+<meta property="og:description" content="12 Fragen, 3 Minuten, 6 Lebensbereiche – finde heraus, wo du in deinem eigenen Leben noch als Person vorkommst und wo nur noch als Zuständigkeit.">
+<meta property="og:url" content="https://der-architekt-deines-lebens.de/selbsttest-wo-kommst-du-noch-vor/">
+<meta property="og:image" content="https://der-architekt-deines-lebens.de/images/mental-load-test-og.jpg"><!-- TODO: echtes Vorschaubild (1200×630px) hochladen und Pfad anpassen -->
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Selbsttest 'Wo kommst du noch vor?' – Mental-Load-Test für Frauen">
+
+<meta name="author" content="Sorin Ratiu">
+<meta name="theme-color" content="#F6F0E3">
+<link rel="icon" href="/favicon.ico"><!-- TODO: prüfen, ob unter dieser URL wirklich ein Favicon liegt, sonst Pfad anpassen -->
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Selbsttest: Wo kommst du noch vor?">
+<meta name="twitter:description" content="12 Fragen, 3 Minuten, 6 Lebensbereiche – finde heraus, wo du in deinem eigenen Leben noch als Person vorkommst.">
+<meta name="twitter:image" content="https://der-architekt-deines-lebens.de/images/mental-load-test-og.jpg">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Selbsttest: Wo kommst du noch vor?",
+  "headline": "Wo kommst du in deinem eigenen Leben noch vor?",
+  "description": "Kommst du in deinem eigenen Leben noch vor? Kostenloser Selbsttest in 3 Minuten: 12 Fragen zu 6 Lebensbereichen zeigen dir, wo du nur noch Zuständigkeit bist.",
+  "url": "https://der-architekt-deines-lebens.de/selbsttest-wo-kommst-du-noch-vor/",
+  "inLanguage": "de-DE",
+  "datePublished": "2026-09-21",
+  "dateModified": "2026-09-21",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "Der Architekt Deines Lebens",
+    "url": "https://der-architekt-deines-lebens.de"
+  },
+  "author": {
+    "@type": "Person",
+    "name": "Sorin Ratiu",
+    "url": "https://der-architekt-deines-lebens.de/ueber-mich"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Der Architekt Deines Lebens",
+    "url": "https://der-architekt-deines-lebens.de"
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Startseite", "item": "https://der-architekt-deines-lebens.de/" },
+      { "@type": "ListItem", "position": 2, "name": "Selbsttest: Wo kommst du noch vor?", "item": "https://der-architekt-deines-lebens.de/selbsttest-wo-kommst-du-noch-vor/" }
+    ]
+  }
+}
+</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap">
 <style>
   :root{
-    --navy:#0B2340; --navy-2:#132C4C; --navy-3:#1C3A61;
-    --cream:#F6EFE5; --cream-dim:#CBBFAF;
-    --orange:#FF7828; --orange-soft:#FFA36B;
-    --slate:#8397B0;
-    --ok:#7FB08A;
+    --paper:#f6f0e3; --paper-2:#eee4cf;
+    --ink:#1d1a13; --ink-soft:#5c5645;
+    --line-light:#cdbe9c; --line-dark:#37486b;
+    --cream:#fffaf1;
+    --orange-500:#d9682c; --orange-600:#bd551f; --orange-100:#f3dcc4;
+    --ok:#4c7a5e;
     --display:'Archivo',system-ui,sans-serif;
     --body:'Source Sans 3',system-ui,sans-serif;
     --maxw:640px;
   }
   *{box-sizing:border-box}
   body{
-    margin:0; background:var(--navy); color:var(--cream);
+    margin:0; background:var(--paper); color:var(--ink);
     font-family:var(--body); font-size:17px; line-height:1.6;
     padding-inline:20px; padding-block:0;
     -webkit-font-smoothing:antialiased;
@@ -23,8 +91,28 @@
   .wrap{max-width:var(--maxw); margin-inline:auto; padding-block:48px 72px}
   .eyebrow{
     font-family:var(--display); font-weight:600; font-size:12px;
-    letter-spacing:.14em; text-transform:uppercase; color:var(--orange);
+    letter-spacing:.14em; text-transform:uppercase; color:var(--orange-600);
     margin:0 0 18px;
+  }
+  .event-eyebrow{
+    display:none; align-items:center; gap:8px;
+    background:var(--paper-2); border:1px solid var(--line-light);
+    padding:7px 14px; border-radius:100px;
+    font-size:12.5px; letter-spacing:.03em; color:var(--ink-soft);
+    margin:0 0 16px; width:fit-content;
+  }
+  .event-eyebrow.visible{display:inline-flex}
+  .event-picker-row{ display:none; align-items:center; gap:8px; margin:0 0 16px; flex-wrap:wrap; }
+  .event-picker-row.visible{ display:flex; }
+  .event-picker-tag{
+    font-family:var(--display); font-weight:700; font-size:10px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--cream); background:var(--orange-600);
+    padding:4px 8px; border-radius:2px; flex-shrink:0;
+  }
+  .event-picker-row select{
+    font-family:var(--body); font-size:13px; color:var(--ink);
+    background:var(--cream); border:1px solid var(--line-light);
+    padding:7px 10px; border-radius:2px; max-width:100%;
   }
   h1{
     font-family:var(--display); font-weight:800; font-size:clamp(34px,7.5vw,52px);
@@ -35,38 +123,38 @@
     line-height:1.15; letter-spacing:-.01em; margin:0 0 14px; text-wrap:balance;
   }
   p{margin:0 0 16px; max-width:60ch}
-  .lead{font-size:19px; color:var(--cream)}
-  .muted{color:var(--cream-dim)}
-  .rule{width:56px; height:3px; background:var(--orange); border:0; margin:0 0 28px}
+  .lead{font-size:19px; color:var(--ink)}
+  .muted{color:var(--ink-soft)}
+  .rule{width:56px; height:3px; background:var(--orange-500); border:0; margin:0 0 28px}
 
   .note{
-    border-left:3px solid var(--orange); padding:14px 0 14px 18px;
-    margin:28px 0; font-size:16px; color:var(--cream-dim);
+    border-left:3px solid var(--orange-500); padding:14px 0 14px 18px;
+    margin:28px 0; font-size:16px; color:var(--ink-soft);
   }
-  .note strong{color:var(--cream)}
+  .note strong{color:var(--ink)}
 
   button{font:inherit; cursor:pointer}
   .btn{
     display:inline-block; font-family:var(--display); font-weight:700; font-size:17px;
-    letter-spacing:.01em; background:var(--orange); color:#221000; border:0;
+    letter-spacing:.01em; background:var(--orange-500); color:var(--cream); border:0;
     padding:16px 30px; border-radius:2px; transition:background .15s ease;
   }
-  .btn:hover{background:var(--orange-soft)}
-  .btn:focus-visible,.opt:focus-visible,.link:focus-visible{outline:3px solid var(--orange-soft); outline-offset:3px}
+  .btn:hover{background:var(--orange-600)}
+  .btn:focus-visible,.opt:focus-visible,.link:focus-visible{outline:3px solid var(--orange-500); outline-offset:3px}
   .btn-ghost{
-    background:none; color:var(--cream-dim); border:1px solid var(--navy-3);
+    background:none; color:var(--ink-soft); border:1px solid var(--line-light);
     padding:12px 20px; font-family:var(--display); font-weight:600; font-size:15px; border-radius:2px;
   }
-  .btn-ghost:hover{color:var(--cream); border-color:var(--slate)}
+  .btn-ghost:hover{color:var(--ink); border-color:var(--orange-500)}
 
   /* progress */
   .prog{display:flex; gap:5px; margin:0 0 34px}
-  .prog span{height:4px; flex:1; background:var(--navy-3); border-radius:2px}
-  .prog span.done{background:var(--orange)}
-  .prog span.now{background:var(--orange-soft)}
+  .prog span{height:4px; flex:1; background:var(--line-light); border-radius:2px}
+  .prog span.done{background:var(--orange-500)}
+  .prog span.now{background:var(--orange-600)}
   .step{
     font-family:var(--display); font-weight:600; font-size:12px; letter-spacing:.12em;
-    text-transform:uppercase; color:var(--slate); margin:0 0 14px;
+    text-transform:uppercase; color:var(--ink-soft); margin:0 0 14px;
   }
   .qtext{
     font-family:var(--display); font-weight:700; font-size:clamp(21px,4.4vw,27px);
@@ -74,43 +162,80 @@
   }
   .opts{display:flex; flex-direction:column; gap:10px; margin-bottom:26px}
   .opt{
-    text-align:left; width:100%; background:var(--navy-2); color:var(--cream);
-    border:1px solid var(--navy-3); border-radius:2px; padding:15px 18px;
+    text-align:left; width:100%; background:var(--cream); color:var(--ink);
+    border:1.5px solid var(--line-light); border-radius:2px; padding:15px 18px;
     font-size:17px; transition:border-color .12s ease, background .12s ease;
   }
-  .opt:hover{border-color:var(--orange); background:var(--navy-3)}
-  .opt[aria-pressed="true"]{border-color:var(--orange); background:var(--navy-3)}
-  .opt[aria-pressed="true"]::before{content:"→ "; color:var(--orange); font-weight:700}
+  .opt:hover{border-color:var(--orange-500); background:var(--orange-100)}
+  .opt[aria-pressed="true"]{border-color:var(--orange-500); background:var(--orange-100)}
+  .opt[aria-pressed="true"]::before{content:"→ "; color:var(--orange-600); font-weight:700}
 
   /* result map */
-  .map{display:grid; grid-template-columns:1fr; gap:1px; background:var(--navy-3); border:1px solid var(--navy-3); margin:6px 0 30px}
-  .cell{background:var(--navy-2); padding:14px 16px; display:flex; align-items:baseline; justify-content:space-between; gap:14px}
+  .map{display:grid; grid-template-columns:1fr; gap:1px; background:var(--line-light); border:1px solid var(--line-light); margin:6px 0 30px}
+  .cell{background:var(--cream); padding:14px 16px; display:flex; align-items:baseline; justify-content:space-between; gap:14px}
   .cell b{font-family:var(--display); font-weight:600; font-size:16px; letter-spacing:.01em}
   .state{font-family:var(--display); font-weight:700; font-size:12px; letter-spacing:.1em; text-transform:uppercase; white-space:nowrap}
-  .s-ja{color:var(--ok)} .s-kaum{color:var(--orange-soft)} .s-nein{color:var(--orange)}
+  .s-ja{color:var(--ok)} .s-kaum{color:var(--orange-500)} .s-nein{color:var(--orange-600)}
   .verdict{
     font-family:var(--display); font-weight:800; font-size:clamp(24px,5vw,34px);
     line-height:1.12; letter-spacing:-.015em; margin:0 0 18px; text-wrap:balance;
   }
-  .card{background:var(--navy-2); border:1px solid var(--navy-3); padding:24px 22px; margin:0 0 26px}
+  .card{background:var(--paper-2); border:1px solid var(--line-light); padding:24px 22px; margin:0 0 26px}
   .card h3{font-family:var(--display); font-weight:700; font-size:19px; margin:0 0 10px; letter-spacing:-.005em}
   .card p:last-child{margin-bottom:0}
-  .placeholder{
-    border:1px dashed var(--slate); padding:20px; color:var(--cream-dim); font-size:15px; margin:0 0 26px;
+  .optin{background:var(--paper-2); border:1px solid var(--line-light); border-top:3px solid var(--orange-500); padding:28px 24px; margin:0 0 26px}
+  .optin h3{font-family:var(--display); font-weight:800; font-size:23px; line-height:1.25; margin:0 0 10px; letter-spacing:-.01em}
+  .optin > p{margin:0 0 20px; color:var(--ink-soft)}
+  .fl{display:block; font-family:var(--display); font-weight:600; font-size:14px; color:var(--ink); margin:18px 0 7px}
+  .opt-tag{font-family:var(--body); font-weight:400; font-size:13px; color:var(--ink-soft); letter-spacing:0}
+  .optin input[type=text], .optin input[type=email], .optin textarea{
+    width:100%; font:inherit; font-size:16px; color:var(--ink);
+    background:var(--cream); border:1px solid var(--line-light); padding:11px 13px;
+    border-radius:0; -webkit-appearance:none;
   }
-  .placeholder code{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:13px; color:var(--orange-soft)}
-  .link{color:var(--orange-soft); text-underline-offset:3px}
-  .foot{margin-top:40px; padding-top:22px; border-top:1px solid var(--navy-3); font-size:14px; color:var(--slate)}
+  .optin textarea{resize:vertical; line-height:1.5}
+  .optin input:focus, .optin textarea:focus{outline:2px solid var(--orange-500); outline-offset:1px; border-color:transparent}
+  .optin input::placeholder, .optin textarea::placeholder{color:var(--ink-soft)}
+  .frow{display:grid; gap:0 16px}
+  @media (min-width:520px){ .frow{grid-template-columns:1fr 1fr} }
+  .fine{font-size:13.5px; line-height:1.5; color:var(--ink-soft); margin:7px 0 0}
+  .cb{display:flex; gap:11px; align-items:flex-start; margin:16px 0 0; font-size:15px; color:var(--ink-soft); cursor:pointer}
+  .cb input{margin:3px 0 0; flex:0 0 auto; width:17px; height:17px; accent-color:var(--orange-500)}
+  .formnote{margin:16px 0 0; font-size:14px; color:var(--orange-600)}
+  .placeholder{
+    border:1px dashed var(--line-light); padding:20px; color:var(--ink-soft); font-size:15px; margin:0 0 26px;
+  }
+  .placeholder code{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:13px; color:var(--orange-600)}
+  .link{color:var(--orange-600); text-underline-offset:3px}
+  .foot{margin-top:40px; padding-top:22px; border-top:1px solid var(--line-light); font-size:14px; color:var(--ink-soft)}
   @media (min-width:560px){ .map{grid-template-columns:1fr 1fr} }
   @media (prefers-reduced-motion:reduce){ *{transition:none!important} }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase-config.js"></script>
+<script src="../Code/dynamics-crm.js"></script>
+</head>
+<body>
+
+<noscript>
+  <div style="max-width:640px;margin:48px auto;padding:0 20px;font-family:sans-serif;color:#1d1a13;background:#f6f0e3">
+    <p>Für diesen Test wird JavaScript benötigt. Bitte aktiviere JavaScript in deinem Browser, um den Mental-Load-Test zu starten.</p>
+  </div>
+</noscript>
 
 <div class="wrap">
 
   <!-- ══════════ INTRO ══════════ -->
   <section id="intro">
-    <p class="eyebrow">Selbsttest · 12 Fragen · 3 Minuten</p>
-    <h1>Wo kommst du noch vor?</h1>
+    <div class="event-eyebrow" id="event-eyebrow">
+      <span id="event-eyebrow-text"></span>
+    </div>
+    <div class="event-picker-row" id="event-picker-row">
+      <span class="event-picker-tag">Dev</span>
+      <select id="event-picker" aria-label="Event auswählen (nur DEV)"></select>
+    </div>
+    <p class="eyebrow">Mental-Load-Selbsttest · 12 Fragen · 3 Minuten</p>
+    <h1>Mental-Load-Test: Wo kommst du noch vor?</h1>
     <hr class="rule">
     <p class="lead">Du funktionierst. Der Haushalt läuft, der Job läuft, alle bekommen, was sie brauchen. Und trotzdem wirst du nicht mehr richtig wach.</p>
     <p>Dieser Test misst nicht, wie gestresst du bist. Er misst etwas Genaueres: in welchen Bereichen deines Lebens du noch als Person vorkommst — und in welchen nur noch als Zuständigkeit.</p>
@@ -162,9 +287,33 @@
     <h2 style="margin-top:40px">Was jetzt</h2>
     <p>Dieses Ergebnis beschreibt einen Zustand, keinen Charakter. Zustände verändern sich, wenn die Last sinkt — und der erste Schritt ist, dass du weißt, wo du stehst. Den hast du gerade gemacht.</p>
 
+    <div class="optin">
+      <p class="eyebrow" style="margin-bottom:12px">Wenn du weitergehen willst</p>
+      <h3>Die ersten Seiten aus dem Buch</h3>
+      <p>Aus dem Kapitel, in dem dieser Zustand beschrieben wird — nicht als Ratgeber, sondern als Beschreibung. Kostenlos, als PDF.</p>
+
+      <form id="optinForm" novalidate>
+        <div class="frow">
+          <div>
+            <label class="fl" for="f_name">Vorname <span class="opt-tag">freiwillig</span></label>
+            <input id="f_name" name="vorname" type="text" autocomplete="given-name">
+          </div>
+          <div>
+            <label class="fl" for="f_mail">E-Mail</label>
+            <input id="f_mail" name="email" type="email" autocomplete="email" required>
+          </div>
+        </div>
+
+        <label class="cb"><input type="checkbox" name="newsletter"> <span>Ja, schick mir ab und zu Impulse per E-Mail. Jederzeit mit einem Klick abbestellbar.</span></label>
+
+        <p style="margin:22px 0 0"><button class="btn" type="submit">Leseprobe schicken</button></p>
+        <p class="fine" style="margin-top:14px">Du bekommst zuerst eine E-Mail mit einem Bestätigungslink. Erst danach geht die Leseprobe raus. Deine Angaben verwende ich nur dafür — <a class="link" href="https://der-architekt-deines-lebens.de/rechtliches.html#datenschutz">Datenschutzerklärung</a>.</p>
+        <p class="formnote" id="formNote" hidden>Prototyp: Hier würde dein Formular absenden. Noch ist kein Versand angeschlossen.</p>
+      </form>
+    </div>
+
     <div class="placeholder">
-      <strong style="color:var(--cream)">Platzhalter für dich, Sorin:</strong> Hier gehört dein Opt-in-Formular hin — Leseprobe aus Kapitel&nbsp;1 gegen E-Mail. Formularcode einsetzen unter <code>&lt;!-- OPTIN --&gt;</code> in der HTML-Datei. Leseproben sind nicht preisgebunden; das ganze Buch gegen E-Mail wäre heikel.
-      <!-- OPTIN -->
+      <strong style="color:var(--ink)">Platzhalter für dich, Sorin:</strong> Der Lead wird jetzt in Dynamics angelegt (wie bei den anderen Formularen). Was noch fehlt: der eigentliche Versand der Leseprobe/PDF inkl. Bestätigungslink — dafür entweder an den bestehenden DOI-Mechanismus (<code>crm-lead-confirm</code> + <code>verify-email.html</code>) anschließen oder ein eigenes E-Mail-Template ergänzen. Diesen Kasten danach löschen.
     </div>
 
     <p><button class="btn-ghost" id="again" type="button">Test noch einmal machen</button></p>
@@ -176,6 +325,54 @@
 <script>
 (function(){
   "use strict";
+
+  // Event-Verknüpfung (Dynamics wht_event, per Name gefunden — wht_event hat
+  // kein Slug-Feld) — wird als Badge über der Überschrift angezeigt, sobald
+  // gefunden, analog zu den lanpag-Freebie-Seiten und umfrage-dynamisch.html.
+  var EVENT_ID_DEFAULT = "5216ca28-d7b5-f111-aaae-002248d89353"; // "selbsttest-wo-kommst-du-noch-vor"
+  // NUR im DEV-Modus (siehe DynamicsCRM.detectEnvironment()): Auswahl-Dropdown
+  // mit allen aktiven Events, um EVENT_ID_DEFAULT beim Testen ohne Code-Änderung
+  // durchprobieren zu können. Die Auswahl wird nur lokal im Browser gemerkt
+  // (localStorage) — sie schreibt nichts in Dynamics und wirkt nur auf das
+  // Badge dieser Seite.
+  var EVENT_STORAGE_KEY = 'selbsttest_event_id';
+
+  function showEventBadge(active) {
+    var badge = document.getElementById('event-eyebrow');
+    if (active) {
+      document.getElementById('event-eyebrow-text').textContent = active.name || '';
+      badge.classList.add('visible');
+    } else {
+      badge.classList.remove('visible');
+    }
+  }
+
+  function readStoredEventId() {
+    try { return localStorage.getItem(EVENT_STORAGE_KEY) || ''; } catch (e) { return ''; }
+  }
+  function writeStoredEventId(id) {
+    try { id ? localStorage.setItem(EVENT_STORAGE_KEY, id) : localStorage.removeItem(EVENT_STORAGE_KEY); } catch (e) {}
+  }
+
+  dynamicsCRM.listEvents().then(function (events) {
+    events = events || [];
+    var storedId  = dynamicsCRM.environment === 'dev' ? readStoredEventId() : '';
+    var initialId = storedId || EVENT_ID_DEFAULT;
+    showEventBadge(events.find(function (e) { return e.id === initialId; }));
+
+    if (dynamicsCRM.environment === 'dev') {
+      var row    = document.getElementById('event-picker-row');
+      var select = document.getElementById('event-picker');
+      select.innerHTML = '<option value="">— kein Event —</option>' + events.map(function (e) {
+        return '<option value="' + e.id + '"' + (e.id === initialId ? ' selected' : '') + '>' + (e.name || e.id) + '</option>';
+      }).join('');
+      row.classList.add('visible');
+      select.addEventListener('change', function () {
+        writeStoredEventId(select.value);
+        showEventBadge(events.find(function (e) { return e.id === select.value; }));
+      });
+    }
+  });
 
   var SIGNS = [
     { t:"Mein Kopf arbeitet auch dann für andere, wenn gerade niemand etwas von mir will.", g:0 },
@@ -322,8 +519,55 @@
   el.back.addEventListener("click", function(){
     if(cur > 0){ cur--; render(); }
   });
+  // Opt-in-Formular → Lead in Dynamics anlegen, genau wie bei den anderen
+  // Formularen auf der Seite (dynamicsCRM.submitLead(), supabase/functions/
+  // crm-submit[-dev]) — kein eigener Mechanismus für dieses Tool.
+  var optinForm   = document.getElementById("optinForm");
+  var optinSubmit = optinForm.querySelector("button[type=submit]");
+  var formNote    = document.getElementById("formNote");
+
+  optinForm.addEventListener("submit", function(e){
+    e.preventDefault();
+
+    var vorname = document.getElementById("f_name").value.trim();
+    var email   = document.getElementById("f_mail").value.trim();
+    var newsletterOptIn = optinForm.querySelector("input[name=newsletter]").checked;
+
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+      formNote.textContent = "Bitte gib eine gültige E-Mail-Adresse an.";
+      formNote.style.color = "var(--orange-600)";
+      formNote.hidden = false;
+      document.getElementById("f_mail").focus();
+      return;
+    }
+
+    optinSubmit.disabled = true;
+    optinSubmit.textContent = "Wird gesendet …";
+    formNote.hidden = true;
+
+    dynamicsCRM.submitLead({
+      firstname: vorname,
+      email: email,
+      newsletterOptIn: newsletterOptIn
+    }).then(function(res){
+      optinSubmit.disabled = false;
+      optinSubmit.textContent = "Leseprobe schicken";
+      if(res && res.success){
+        formNote.textContent = "Danke! Deine Anmeldung ist bei uns eingegangen.";
+        formNote.style.color = "var(--ok)";
+        optinForm.reset();
+      } else {
+        formNote.textContent = "Da ist etwas schiefgelaufen. Bitte versuch es gleich noch einmal.";
+        formNote.style.color = "var(--orange-600)";
+      }
+      formNote.hidden = false;
+    });
+  });
   document.getElementById("again").addEventListener("click", function(){
     answers = new Array(qs.length).fill(null); cur = 0; show("intro");
   });
 })();
 </script>
+
+</body>
+</html>

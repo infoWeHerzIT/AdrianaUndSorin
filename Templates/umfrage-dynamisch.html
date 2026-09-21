@@ -116,6 +116,20 @@
   }
   .event-eyebrow.visible { display: inline-flex; }
 
+  /* ─── "Auf PROD veröffentlichen" (nur im DEV-Modus sichtbar) ─── */
+  .push-prod-row { display: none; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; margin: 0 auto 22px; }
+  .push-prod-row.visible { display: flex; }
+  .btn-push-prod {
+    background: var(--orange); border: none; border-radius: 2px; color: var(--white);
+    font-family: 'DM Sans', sans-serif; font-size: 13.5px; font-weight: 600;
+    padding: 11px 18px; cursor: pointer; transition: opacity .2s; display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-push-prod:hover { opacity: .9; }
+  .btn-push-prod:disabled { opacity: .55; cursor: not-allowed; }
+  .push-prod-status { font-size: 12.5px; color: rgba(255,255,255,0.6); }
+  .push-prod-status.ok { color: #4ade80; }
+  .push-prod-status.err { color: #f87171; }
+
   /* ─── FORM SECTION ─── */
   .fb-form-section {
     background: var(--white);
@@ -288,6 +302,10 @@
     <div class="event-eyebrow" id="event-eyebrow">
       <span id="event-eyebrow-text"></span>
     </div>
+    <div class="push-prod-row" id="push-prod-row">
+      <button type="button" class="btn-push-prod" id="btn-push-prod">🚀 Auf PROD veröffentlichen</button>
+      <span class="push-prod-status" id="push-prod-status"></span>
+    </div>
     <span class="section-label">Umfrage</span>
     <h1 id="survey-title">Wird geladen …</h1>
     <div id="survey-description"></div>
@@ -434,6 +452,14 @@
 
     elLoading.classList.remove('visible');
     elFormState.style.display = '';
+
+    // "Auf PROD veröffentlichen" nur im DEV-Modus zeigen (siehe
+    // DynamicsCRM.detectEnvironment()) — die geladene surveyId ist dann eine
+    // DEV-GUID, genau was dynamics-survey-push-to-prod erwartet. Im PROD-Modus
+    // betrachtet man hier bereits die Live-Version, der Knopf ergibt keinen Sinn.
+    if (dynamicsCRM.environment === 'dev') {
+      document.getElementById('push-prod-row').classList.add('visible');
+    }
 
     // Die Event-Zuordnung liegt direkt auf der Umfrage in Dynamics
     // (wht_survey.wht_eventid) — anders als bei umfrage_zg0826.html gibt es
@@ -588,18 +614,50 @@
     // ab, bevor die eigentliche Anfrage je rausgeht (gleiches Muster wie in
     // register.html).
     var crmDone = dynamicsCRM.submitSurveyResponse({
-      firstname:   vornameVal,
-      lastname:    nachnameVal,
-      email:       emailVal,
-      mobilephone: phoneVal,
-      surveyId:    surveyId,
-      eventId:     eventId,
-      answers:     answers
+      firstname:       vornameVal,
+      lastname:        nachnameVal,
+      email:           emailVal,
+      mobilephone:     phoneVal,
+      surveyId:        surveyId,
+      eventId:         eventId,
+      newsletterOptIn: document.getElementById('c-newsletter').checked,
+      answers:         answers
     });
 
     var thanksPage = (emailVal || phoneVal) ? 'danke-optin.html' : 'danke-umfrage-nooptin.html';
     var thanksUrl  = thanksPage + '?' + new URLSearchParams({ vorname: vornameVal }).toString();
     Promise.resolve(crmDone).then(function () { window.location.href = thanksUrl; });
+  });
+
+  // ── "Auf PROD veröffentlichen" — kopiert/synchronisiert Titel, Intro,
+  // Beschreibung und alle Fragen + Optionen dieser (DEV-)Umfrage nach
+  // Dynamics PROD (dynamics-survey-push-to-prod, per Slug upgesertet, siehe
+  // dortiger Kommentar). Wiederholtes Klicken ist unkritisch: bestehende
+  // PROD-Fragen/-Optionen werden nur aktualisiert (PATCH), nie gelöscht.
+  document.getElementById('btn-push-prod').addEventListener('click', function () {
+    var btnPushProd = this;
+    var elPushStatus = document.getElementById('push-prod-status');
+    var title = document.getElementById('survey-title').textContent || 'diese Umfrage';
+    if (!window.confirm('„' + title + '" inkl. aller Fragen und Optionen jetzt auf PROD veröffentlichen?\n\nBestehende Inhalte in PROD (gleicher Slug) werden dabei aktualisiert.')) return;
+
+    btnPushProd.disabled = true;
+    btnPushProd.textContent = 'Wird übertragen …';
+    elPushStatus.textContent = '';
+    elPushStatus.className = 'push-prod-status';
+
+    dynamicsCRM.pushSurveyToProd(surveyId).then(function (res) {
+      btnPushProd.disabled = false;
+      btnPushProd.textContent = '🚀 Auf PROD veröffentlichen';
+      if (res && res.success) {
+        elPushStatus.className = 'push-prod-status ok';
+        elPushStatus.textContent = '✓ Übertragen — ' + res.questionsCreated + ' Frage(n) neu, ' + res.questionsUpdated + ' aktualisiert, ' +
+          res.optionsCreated + ' Option(en) neu, ' + res.optionsUpdated + ' aktualisiert.' +
+          (res.warnings && res.warnings.length ? ' ⚠ ' + res.warnings.join(' ') : '');
+      } else {
+        elPushStatus.className = 'push-prod-status err';
+        elPushStatus.textContent = '✗ Fehlgeschlagen: ' + ((res && res.error) || 'Unbekannter Fehler');
+      }
+    });
   });
 })();
 </script>

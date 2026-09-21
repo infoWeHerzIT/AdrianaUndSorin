@@ -87,6 +87,7 @@ serve(async (req) => {
     const mobilephone = String(payload.mobilephone ?? "").trim();
     const eventId      = String(payload.eventId ?? "").trim();
     const surveyId      = String(payload.surveyId ?? "").trim();
+    const newsletterOptIn = !!payload.newsletterOptIn;
     const answers: AnswerInput[] = Array.isArray(payload.answers) ? payload.answers : [];
 
     if (!surveyId) return jsonResponse({ error: "surveyId fehlt" }, 400);
@@ -111,6 +112,10 @@ serve(async (req) => {
       if (email)     leadFields.wht_email1  = email;
       if (mobilephone) leadFields.wht_phone1 = mobilephone;
       if (eventId) leadFields["wht_EventId@odata.bind"] = `/wht_events(${eventId})`;
+      // Wie bei crm-submit: Zustimmungsfelder speichern den Zeitpunkt der
+      // Zustimmung als Datum, kein Bool — nur gesetzt, wenn die Checkbox
+      // aktiv war.
+      if (newsletterOptIn) leadFields.wht_interesseannewsletterperemail = new Date().toISOString();
 
       const leadRes = await fetch(`${RESOURCE}/api/data/v9.2/wht_leads`, {
         method: "POST",
