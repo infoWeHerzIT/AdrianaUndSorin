@@ -5,38 +5,38 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Umfrage-Auswertung – Der Architekt deines Lebens</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&family=Fraunces:ital,opsz,wght@0,9..144,600&display=swap" rel="stylesheet">
 <style>
-  :root { --orange:#ff6300; --navy:#00224d; --white:#ffffff; --green:#16a34a; --red:#dc2626; }
+  :root { --orange:#d9682c; --navy:#00224d; --white:#fffaf1; --green:#4c7a5e; --red:#dc2626; }
   *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
-  body { font-family:'DM Sans',sans-serif; font-size:16px; background:#f4f4f2; color:var(--navy); padding-bottom:80px; }
+  body { font-family:'DM Sans',sans-serif; font-size:16px; background:#f6f0e3; color:var(--navy); padding-bottom:80px; }
 
   nav { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:center; padding:16px 5%; background:rgba(0,34,77,0.97); backdrop-filter:blur(8px); }
   .nav-inner { max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; width:100%; }
-  .nav-logo { font-family:'Fredoka',sans-serif; color:var(--white); font-size:18px; font-weight:700; text-decoration:none; display:flex; align-items:center; gap:10px; }
-  .nav-logo span { color:var(--orange); }
-  .nav-admin-badge { font-family:'Orbitron',monospace; font-size:9px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; background:rgba(255,99,0,0.2); border:1px solid rgba(255,99,0,0.4); color:var(--orange); padding:3px 8px; border-radius:2px; }
+  .nav-logo { font-family:"Fraunces",serif; color:var(--white); font-size:1.05rem; font-weight:600; letter-spacing:.01em; text-decoration:none; display:flex; align-items:center; gap:10px; white-space:nowrap; }
+  .nav-logo svg { width:26px; height:26px; flex:none; color:var(--orange); }
+  .nav-admin-badge { font-family:'Orbitron',monospace; font-size:9px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; background:rgba(217,104,44,0.2); border:1px solid rgba(217,104,44,0.4); color:var(--orange); padding:3px 8px; border-radius:2px; }
   .nav-links { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
-  .nav-link { color:rgba(255,255,255,0.6); font-size:13px; text-decoration:none; border:1px solid rgba(255,255,255,0.15); padding:7px 14px; border-radius:2px; background:transparent; cursor:pointer; transition:background .2s,color .2s; font-family:'DM Sans',sans-serif; }
-  .nav-link:hover { background:rgba(255,255,255,0.08); color:var(--white); }
+  .nav-link { color:rgba(255,250,241,0.6); font-size:13px; text-decoration:none; border:1px solid rgba(255,250,241,0.15); padding:7px 14px; border-radius:2px; background:transparent; cursor:pointer; transition:background .2s,color .2s; font-family:'DM Sans',sans-serif; }
+  .nav-link:hover { background:rgba(255,250,241,0.08); color:var(--white); }
 
   .admin-header { background:var(--navy); padding:100px 0 50px; position:relative; overflow:hidden; }
-  .admin-header::before { content:''; position:absolute; inset:0; background-image:repeating-linear-gradient(90deg,rgba(255,99,0,0.04) 0px,rgba(255,99,0,0.04) 1px,transparent 1px,transparent 80px); pointer-events:none; }
+  .admin-header::before { content:''; position:absolute; inset:0; background-image:repeating-linear-gradient(90deg,rgba(217,104,44,0.04) 0px,rgba(217,104,44,0.04) 1px,transparent 1px,transparent 80px); pointer-events:none; }
   .admin-header::after { content:''; position:absolute; left:0; top:0; bottom:0; width:5px; background:var(--orange); }
   .admin-header-inner { max-width:1000px; margin:0 auto; padding:0 32px; position:relative; z-index:1; }
   .admin-page-label { font-family:'Orbitron',monospace; font-size:10px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--orange); margin-bottom:14px; display:block; }
   .event-eyebrow {
     display: none;
     align-items: center; gap: 8px;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.16);
+    background: rgba(255,250,241,0.08);
+    border: 1px solid rgba(255,250,241,0.16);
     padding: 6px 13px; border-radius: 100px;
-    font-size: 12px; letter-spacing: .03em; color: rgba(255,255,255,0.85);
+    font-size: 12px; letter-spacing: .03em; color: rgba(255,250,241,0.85);
     margin-bottom: 14px; width: fit-content;
   }
   .event-eyebrow.visible { display: inline-flex; }
   .admin-header h1 { font-family:'Fredoka',sans-serif; font-size:clamp(24px,3.2vw,38px); color:var(--white); line-height:1.15; margin-bottom:12px; }
-  .admin-header p { font-size:15px; color:rgba(255,255,255,0.55); max-width:680px; line-height:1.7; margin-bottom:18px; }
+  .admin-header p { font-size:15px; color:rgba(255,250,241,0.55); max-width:680px; line-height:1.7; margin-bottom:18px; }
   #survey-description:empty { display:none; margin:0; }
   #survey-description { color:var(--white); max-width:920px; line-height:1.7; margin-bottom:18px; text-align:justify; }
   #survey-description *:not(a):not(a *) { color:var(--white) !important; }
@@ -55,7 +55,7 @@
   .stat-row { display:flex; gap:28px; flex-wrap:wrap; }
   .stat { }
   .stat-num { font-family:'Fredoka',sans-serif; font-size:28px; font-weight:700; color:var(--white); line-height:1; }
-  .stat-label { font-size:12px; color:rgba(255,255,255,0.5); margin-top:4px; }
+  .stat-label { font-size:12px; color:rgba(255,250,241,0.5); margin-top:4px; }
 
   .admin-main { max-width:1000px; margin:0 auto; padding:36px 32px 0; }
 
@@ -75,16 +75,16 @@
     flex:1; min-width:0; display:flex; align-items:center; justify-content:space-between; gap:16px;
     padding:14px 0; color:var(--navy); text-decoration:none; transition:background .15s;
   }
-  .survey-list-item:hover .survey-list-item-main { background:rgba(255,99,0,0.04); }
+  .survey-list-item:hover .survey-list-item-main { background:rgba(217,104,44,0.04); }
   .survey-list-item-title { font-weight:600; font-size:14px; }
   .survey-list-item-arrow { color:rgba(0,34,77,0.3); font-size:14px; flex-shrink:0; }
   .survey-list-item-start {
     flex-shrink:0; display:inline-flex; align-items:center; gap:6px;
     color:var(--orange); text-decoration:none; font-size:13px; font-weight:600;
-    border:1px solid rgba(255,99,0,0.35); border-radius:2px; padding:8px 12px;
+    border:1px solid rgba(217,104,44,0.35); border-radius:2px; padding:8px 12px;
     transition:background .15s, border-color .15s;
   }
-  .survey-list-item-start:hover { background:rgba(255,99,0,0.08); border-color:var(--orange); }
+  .survey-list-item-start:hover { background:rgba(217,104,44,0.08); border-color:var(--orange); }
   .survey-list-empty { padding:24px 20px; color:rgba(0,34,77,0.4); font-size:14px; }
 
   .responses-toggle-row { display:flex; justify-content:center; margin:8px 0 32px; }
@@ -93,7 +93,7 @@
     color:var(--navy); font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500;
     padding:12px 24px; cursor:pointer; transition:border-color .2s, background .2s;
   }
-  .btn-load-responses:hover { border-color:var(--orange); background:rgba(255,99,0,0.04); }
+  .btn-load-responses:hover { border-color:var(--orange); background:rgba(217,104,44,0.04); }
   .btn-load-responses:disabled { opacity:.6; cursor:not-allowed; }
 
   .resp-card { background:var(--white); border:1px solid rgba(0,34,77,0.1); border-radius:8px; margin-bottom:14px; overflow:hidden; }
@@ -133,7 +133,7 @@
 
   /* ── Freitext-Antworten ── */
   .text-list { display:flex; flex-direction:column; gap:8px; max-height:360px; overflow-y:auto; }
-  .text-item { background:#f8f9fc; border-radius:4px; padding:10px 14px; font-size:14px; line-height:1.6; color:var(--navy); white-space:pre-wrap; }
+  .text-item { background:#eee4cf; border-radius:4px; padding:10px 14px; font-size:14px; line-height:1.6; color:var(--navy); white-space:pre-wrap; }
   .text-empty { font-size:13px; color:rgba(0,34,77,0.4); padding:8px 0; }
 
   /* ── Diagramm-Umschalter ── */
@@ -145,8 +145,8 @@
     transition:border-color .15s,color .15s,background .15s;
   }
   .chart-switch-btn svg { width:16px; height:16px; display:block; }
-  .chart-switch-btn:hover { border-color:rgba(255,99,0,0.4); color:var(--orange); }
-  .chart-switch-btn.active { border-color:var(--orange); background:rgba(255,99,0,0.08); color:var(--orange); }
+  .chart-switch-btn:hover { border-color:rgba(217,104,44,0.4); color:var(--orange); }
+  .chart-switch-btn.active { border-color:var(--orange); background:rgba(217,104,44,0.08); color:var(--orange); }
 
   /* ── Säulendiagramm ── */
   .col-chart { display:flex; align-items:flex-end; gap:14px; height:180px; padding-top:20px; }
@@ -191,7 +191,10 @@
 
 <nav>
   <div class="nav-inner">
-    <a href="../startseite.html" class="nav-logo">Der Architekt <span>deines Lebens</span><span class="nav-admin-badge">Admin</span></a>
+    <a href="../startseite.html" class="nav-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 20h18M5 20V9l7-5 7 5v11M9 20v-6h6v6"/></svg>
+      Der Architekt deines Lebens<span class="nav-admin-badge">Admin</span>
+    </a>
     <div class="nav-links">
       <a href="admin-feedback.html" class="nav-link">Feedback</a>
       <a href="umfrage-auswertung.html" class="nav-link active">Umfragen</a>
@@ -268,7 +271,7 @@ var CHART_ICONS = {
 var CHART_TITLES = { bar: 'Balken', column: 'Säulen', pie: 'Kreis', line: 'Linie', list: 'Liste', wordcloud: 'Wortwolke' };
 var CHOICE_CHARTS = ['bar', 'column', 'pie', 'line'];
 var TEXT_CHARTS    = ['list', 'wordcloud'];
-var PIE_COLORS = ['#ff6300','#00224d','#16a34a','#0078b4','#d97706','#7c3aed','#dc2626','#0891b2','#be185d','#65a30d'];
+var PIE_COLORS = ['#d9682c','#00224d','#4c7a5e','#0078b4','#d97706','#7c3aed','#dc2626','#0891b2','#be185d','#65a30d'];
 var STOPWORDS = ['der','die','das','und','ist','ich','du','er','sie','es','wir','ihr','ein','eine','einen','einem',
   'einer','zu','in','im','auf','mit','für','von','dem','den','des','nicht','auch','aber','oder','als','am','an',
   'bin','bist','sind','war','wäre','habe','hast','hat','haben','wird','werden','so','noch','nur','schon','sehr',
@@ -363,14 +366,14 @@ function renderLine(q) {
   });
   var dots = points.map(function (p) {
     var xy = p.split(',');
-    return '<circle cx="' + xy[0] + '" cy="' + xy[1] + '" r="1.8" fill="#ff6300"></circle>';
+    return '<circle cx="' + xy[0] + '" cy="' + xy[1] + '" r="1.8" fill="#d9682c"></circle>';
   }).join('');
   var labels = opts.map(function (o) {
     return '<div><div class="line-label">' + esc(o.label) + '</div><div class="line-count">' + o.count + '</div></div>';
   }).join('');
   return (
     '<svg class="line-svg" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none">' +
-      '<polyline points="' + points.join(' ') + '" fill="none" stroke="#ff6300" stroke-width="1.5" vector-effect="non-scaling-stroke"></polyline>' +
+      '<polyline points="' + points.join(' ') + '" fill="none" stroke="#d9682c" stroke-width="1.5" vector-effect="non-scaling-stroke"></polyline>' +
       dots +
     '</svg>' +
     '<div class="line-labels">' + labels + '</div>'

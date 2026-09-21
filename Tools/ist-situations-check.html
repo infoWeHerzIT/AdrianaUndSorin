@@ -2,15 +2,18 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase-config.js"></script>
+<script src="../Code/dynamics-crm.js"></script>
 <style>
   :root{
     --paper:#f6f0e3;
     --paper-2:#eee4cf;
     --ink:#1d1a13;
     --ink-soft:#5c5645;
-    --navy-900:#0f1b2d;
-    --navy-800:#182a44;
-    --navy-700:#23395c;
+    --navy-900:#00224d;
+    --navy-800:#0b3a6b;
+    --navy-700:#1b4f8f;
     --line-light:#cdbe9c;
     --line-dark:#37486b;
     --orange-500:#d9682c;
@@ -18,6 +21,7 @@
     --orange-100:#f3dcc4;
     --cream:#fffaf1;
     --ok:#4c7a5e;
+    --shadow:0 18px 40px -22px rgba(15,27,45,.35);
   }
   *{box-sizing:border-box;}
   body{
@@ -62,14 +66,15 @@
     gap:12px;
   }
   .brand{
-    display:flex;align-items:center;gap:8px;
+    display:flex;align-items:center;gap:10px;
     color:var(--cream);
     font-family:"Fraunces",serif;
     font-weight:600;
-    font-size:.95rem;
+    font-size:1.05rem;
+    letter-spacing:.01em;
     white-space:nowrap;
   }
-  .brand svg{width:20px;height:20px;color:var(--orange-500);flex:none;}
+  .brand svg{width:26px;height:26px;color:var(--orange-500);flex:none;}
   .step-label{
     font-size:.72rem;
     letter-spacing:.06em;
@@ -113,6 +118,26 @@
     color:var(--orange-600);
   }
   .eyebrow::before{content:"";width:22px;height:1px;background:var(--orange-600);display:inline-block;}
+  /* ── Event-Zuordnung (gleiche Logik + Optik wie Tools/selbsttest-wo-kommst-du-noch-vor.html) ── */
+  .event-eyebrow{
+    display:none; align-items:center; gap:8px;
+    background:var(--paper-2); border:1px solid var(--line-light);
+    padding:7px 14px; border-radius:100px;
+    font-size:12.5px; letter-spacing:.03em; color:var(--ink-soft);
+    margin:0 0 16px; width:fit-content; flex-wrap:wrap;
+  }
+  .event-eyebrow.visible{display:inline-flex}
+  .event-eyebrow-admin-badge{
+    font-size:10px; font-weight:700; letter-spacing:.05em; text-transform:uppercase;
+    background:var(--orange-100); color:var(--orange-600);
+    padding:2px 7px; border-radius:100px; flex-shrink:0;
+  }
+  #event-eyebrow-select{
+    background:transparent; border:none; color:var(--ink-soft);
+    font-family:"Work Sans",sans-serif; font-size:12.5px; letter-spacing:.03em;
+    cursor:pointer; outline:none; max-width:280px;
+  }
+  #event-eyebrow-select option{ color:var(--ink); }
   .intro h1{font-size:clamp(1.7rem,4.6vw,2.3rem);margin-top:14px;}
   .intro .lede{margin-top:16px;color:var(--ink-soft);font-size:1.02rem;max-width:52ch;}
   .area-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px;}
@@ -236,7 +261,7 @@
 <div class="top-bar">
   <div class="top-bar-inner">
     <div class="top-row">
-      <a href="#" class="brand">
+      <a href="../startseite.html" class="brand">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 20h18M5 20V9l7-5 7 5v11M9 20v-6h6v6"/></svg>
         Der Architekt deines Lebens
       </a>
@@ -251,6 +276,11 @@
   <!-- INTRO -->
   <div class="screen" id="screen-intro">
     <div class="intro">
+      <div class="event-eyebrow" id="event-eyebrow">
+        <span id="event-eyebrow-text"></span>
+        <select id="event-eyebrow-select" style="display:none;" aria-label="Event zuordnen (Admin)"></select>
+        <span class="event-eyebrow-admin-badge" id="event-eyebrow-admin-badge" style="display:none;">Admin</span>
+      </div>
       <span class="eyebrow">Kostenlos &amp; unverbindlich</span>
       <h1>Der Ist-Situations-Check</h1>
       <p class="lede">10 kurze Aussagen, fünf Lebensbereiche. Am Ende weißt du, wo der eigentliche Druckpunkt in deinem Leben sitzt – nicht nur, welches Symptom gerade am lautesten ist.</p>
@@ -332,6 +362,78 @@
 </main>
 
 <script>
+  // ── Event-Zuordnung (gleiche Logik wie Tools/selbsttest-wo-kommst-du-noch-vor.html,
+  // die wiederum Templates/umfrage_zg0826.html spiegelt) ─────────────────
+  // Für normale Besucher wird (falls zugeordnet) nur der Event-Name gezeigt;
+  // nur eingeloggte Admins (Supabase-Auth-Session) sehen stattdessen ein
+  // Auswahlfeld mit allen aktiven Events (aus Dynamics DEV oder PROD, je
+  // nachdem wo die Seite gerade läuft), über das sich die Zuordnung ändern
+  // lässt. Die Zuordnung liegt serverseitig in Supabase (Tabelle
+  // survey_event_links, ein Datensatz pro page_key = URL-Pfad) — NICHT in
+  // localStorage, damit ALLE Besucher dieselbe vom Admin gewählte Zuordnung
+  // sehen.
+  (function initEventEyebrow() {
+    var PAGE_KEY = window.location.pathname;
+    var SELECTED_EVENT_ID = '';
+
+    var eyebrow       = document.getElementById('event-eyebrow');
+    var eyebrowText   = document.getElementById('event-eyebrow-text');
+    var eyebrowSelect = document.getElementById('event-eyebrow-select');
+    var eyebrowBadge  = document.getElementById('event-eyebrow-admin-badge');
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+    function dateTimeStamp(ev) {
+      if (ev.year == null || ev.month == null || ev.day == null) return '';
+      var time = (ev.time_from || '00:00').split(':');
+      return '' + ev.year + pad(ev.month + 1) + pad(ev.day) + ' ' + pad(time[0] || '00') + pad(time[1] || '00') + '00';
+    }
+
+    if (typeof dynamicsCRM === 'undefined') return;
+
+    Promise.all([
+      dynamicsCRM.listEvents(),
+      db.from('survey_event_links').select('event_id').eq('page_key', PAGE_KEY).maybeSingle()
+    ]).then(function (results) {
+      var events = results[0] || [];
+      var linkRes = results[1] || {};
+      SELECTED_EVENT_ID = (linkRes.data && linkRes.data.event_id) || '';
+
+      var active = events.find(function (e) { return e.id === SELECTED_EVENT_ID; }) || null;
+
+      if (active) {
+        eyebrowText.textContent = active.name || '';
+        eyebrow.classList.add('visible');
+      }
+
+      // Nur eingeloggte Admins dürfen die Event-Zuordnung ändern.
+      db.auth.getSession().then(function (sessionRes) {
+        if (!sessionRes.data.session || !events.length) return;
+
+        function renderOptions() {
+          eyebrowSelect.innerHTML = '<option value="">— kein Event —</option>' + events.map(function (ev) {
+            var isSelected = ev.id === SELECTED_EVENT_ID;
+            var label = isSelected ? (ev.name || '') : (dateTimeStamp(ev) + ' ' + (ev.name || '')).trim();
+            return '<option value="' + ev.id + '"' + (isSelected ? ' selected' : '') + '>' + label + '</option>';
+          }).join('');
+        }
+        renderOptions();
+
+        eyebrowText.style.display   = 'none';
+        eyebrowSelect.style.display = 'inline-block';
+        eyebrowBadge.style.display  = 'inline-block';
+        eyebrow.classList.add('visible');
+
+        eyebrowSelect.addEventListener('change', function () {
+          SELECTED_EVENT_ID = this.value;
+          renderOptions();
+          db.from('survey_event_links')
+            .upsert({ page_key: PAGE_KEY, event_id: SELECTED_EVENT_ID, updated_at: new Date().toISOString() }, { onConflict: 'page_key' })
+            .then(function (res) { if (res.error) console.error('Survey event link save error:', res.error.message); });
+        });
+      }).catch(function (err) { console.error('Auth session check error:', err); });
+    }).catch(function (err) { console.error('Events load error:', err); });
+  })();
+
   const questions = [
     {area:"Beziehung", areaKey:"beziehung", text:"Ich fühle mich in meiner Partnerschaft oder meinen engen Beziehungen oft allein, auch wenn andere da sind."},
     {area:"Beziehung", areaKey:"beziehung", text:"Ich spreche Dinge, die mich stören, eher nicht an — aus Angst vor Streit oder Enttäuschung."},

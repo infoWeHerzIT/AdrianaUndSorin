@@ -5,17 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Umfrage – Der Architekt deines Lebens</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&family=Fraunces:ital,opsz,wght@0,9..144,600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../supabase-config.js"></script>
 <script src="../Code/dynamics-crm.js"></script>
 <script src="../Code/dynamic-survey-renderer.js"></script>
 <style>
   :root {
-    --orange: #ff6300;
+    --orange: #d9682c;
     --navy: #00224d;
-    --white: #ffffff;
-    --orange-dim: rgba(255,99,0,0.12);
+    --white: #fffaf1;
+    --orange-dim: rgba(217,104,44,0.12);
     --navy-dim: rgba(0,34,77,0.06);
   }
 
@@ -49,11 +49,12 @@
     display: flex; align-items: center; justify-content: space-between;
   }
   .nav-logo {
-    font-family: 'Fredoka', sans-serif;
-    color: var(--white); font-size: 18px; font-weight: 700;
-    letter-spacing: -.01em; text-decoration: none;
+    font-family: "Fraunces", serif;
+    color: var(--white); font-size: 1.05rem; font-weight: 600;
+    letter-spacing: .01em; text-decoration: none;
+    display: flex; align-items: center; gap: 10px; white-space: nowrap;
   }
-  .nav-logo span { color: var(--orange); }
+  .nav-logo svg { width: 26px; height: 26px; flex: none; color: var(--orange); }
 
   /* ─── HERO ─── */
   .fb-hero {
@@ -63,7 +64,7 @@
   }
   .fb-hero-bg {
     position: absolute; inset: 0; pointer-events: none;
-    background-image: repeating-linear-gradient(90deg, rgba(255,99,0,0.04) 0px, rgba(255,99,0,0.04) 1px, transparent 1px, transparent 80px);
+    background-image: repeating-linear-gradient(90deg, rgba(217,104,44,0.04) 0px, rgba(217,104,44,0.04) 1px, transparent 1px, transparent 80px);
   }
   .hero-accent-bar {
     position: absolute; left: 0; top: 0; bottom: 0;
@@ -81,7 +82,7 @@
   }
   .fb-hero p {
     font-size: 16px; font-weight: 300;
-    color: rgba(255,255,255,0.65); line-height: 1.7;
+    color: rgba(255,250,241,0.65); line-height: 1.7;
   }
   #survey-description { font-weight: 300; color: var(--white); line-height: 1.7; text-align: justify; }
   #survey-description:empty { display: none; }
@@ -108,10 +109,10 @@
   .event-eyebrow {
     display: none;
     align-items: center; justify-content: center; gap: 8px;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.16);
+    background: rgba(255,250,241,0.08);
+    border: 1px solid rgba(255,250,241,0.16);
     padding: 7px 14px; border-radius: 100px;
-    font-size: 13px; letter-spacing: .03em; color: rgba(255,255,255,0.85);
+    font-size: 13px; letter-spacing: .03em; color: rgba(255,250,241,0.85);
     margin: 0 auto 22px; width: fit-content;
   }
   .event-eyebrow.visible { display: inline-flex; }
@@ -126,8 +127,8 @@
   }
   .btn-push-prod:hover { opacity: .9; }
   .btn-push-prod:disabled { opacity: .55; cursor: not-allowed; }
-  .push-prod-status { font-size: 12.5px; color: rgba(255,255,255,0.6); }
-  .push-prod-status.ok { color: #4ade80; }
+  .push-prod-status { font-size: 12.5px; color: rgba(255,250,241,0.6); }
+  .push-prod-status.ok { color: #4c7a5e; }
   .push-prod-status.err { color: #f87171; }
 
   /* ─── FORM SECTION ─── */
@@ -173,7 +174,7 @@
   .form-textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
   .form-input:focus, .form-textarea:focus {
     border-color: var(--orange);
-    box-shadow: 0 0 0 3px rgba(255,99,0,0.1);
+    box-shadow: 0 0 0 3px rgba(217,104,44,0.1);
   }
   .field-error { font-size: 12px; color: #e53e3e; display: none; margin-top: -4px; }
   .field-error.visible { display: block; }
@@ -207,11 +208,11 @@
     width: 100%; margin-top: 14px;
     transition: background .2s, transform .15s, opacity .2s;
   }
-  .btn-submit:hover:not(:disabled) { background: #e55700; transform: translateY(-1px); }
+  .btn-submit:hover:not(:disabled) { background: #bd551f; transform: translateY(-1px); }
   .btn-submit:disabled { opacity: .7; cursor: not-allowed; transform: none; }
   .spinner {
     width: 18px; height: 18px; border-radius: 50%;
-    border: 2px solid rgba(255,255,255,0.3);
+    border: 2px solid rgba(255,250,241,0.3);
     border-top-color: #fff;
     animation: spin .7s linear infinite;
     display: none; flex-shrink: 0;
@@ -264,7 +265,7 @@
     text-decoration: none;
     transition: border-color .2s, background .2s;
   }
-  .btn-ghost-link:hover { border-color: var(--orange); background: rgba(255,99,0,0.04); }
+  .btn-ghost-link:hover { border-color: var(--orange); background: rgba(217,104,44,0.04); }
 
   footer {
     background: #000d1f;
@@ -276,9 +277,9 @@
     display: flex; justify-content: space-between; align-items: center;
     flex-wrap: wrap; gap: 16px;
   }
-  footer .f-logo { font-family: 'Fredoka', sans-serif; font-size: 16px; color: rgba(255,255,255,0.5); }
+  footer .f-logo { font-family: 'Fredoka', sans-serif; font-size: 16px; color: rgba(255,250,241,0.5); }
   footer .f-logo span { color: var(--orange); }
-  footer p { font-size: 12px; color: rgba(255,255,255,0.25); letter-spacing: .04em; }
+  footer p { font-size: 12px; color: rgba(255,250,241,0.25); letter-spacing: .04em; }
 
   @media (max-width: 600px) {
     .form-row { grid-template-columns: 1fr; }
@@ -291,7 +292,10 @@
 
 <nav>
   <div class="nav-inner">
-    <a href="../startseite.html" class="nav-logo">Der Architekt <span>deines Lebens</span></a>
+    <a href="../startseite.html" class="nav-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 20h18M5 20V9l7-5 7 5v11M9 20v-6h6v6"/></svg>
+      Der Architekt deines Lebens
+    </a>
   </div>
 </nav>
 

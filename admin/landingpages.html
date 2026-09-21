@@ -5,29 +5,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Landingpages – Der Architekt deines Lebens</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&family=Fraunces:ital,opsz,wght@0,9..144,600&display=swap" rel="stylesheet">
 <style>
-  :root { --orange:#ff6300; --navy:#00224d; --white:#ffffff; --green:#16a34a; --red:#dc2626; --yellow:#d97706; }
+  :root { --orange:#d9682c; --navy:#00224d; --white:#fffaf1; --green:#4c7a5e; --red:#dc2626; --yellow:#d97706; }
   *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
-  body { font-family:'DM Sans',sans-serif; font-size:16px; background:#f4f4f2; color:var(--navy); padding-bottom:80px; }
+  body { font-family:'DM Sans',sans-serif; font-size:16px; background:#f6f0e3; color:var(--navy); padding-bottom:80px; }
 
   nav { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:center; padding:16px 5%; background:rgba(0,34,77,0.97); backdrop-filter:blur(8px); }
   .nav-inner { max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; width:100%; }
-  .nav-logo { font-family:'Fredoka',sans-serif; color:var(--white); font-size:18px; font-weight:700; text-decoration:none; display:flex; align-items:center; gap:10px; }
-  .nav-logo span { color:var(--orange); }
-  .nav-admin-badge { font-family:'Orbitron',monospace; font-size:9px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; background:rgba(255,99,0,0.2); border:1px solid rgba(255,99,0,0.4); color:var(--orange); padding:3px 8px; border-radius:2px; }
+  .nav-logo { font-family:"Fraunces",serif; color:var(--white); font-size:1.05rem; font-weight:600; letter-spacing:.01em; text-decoration:none; display:flex; align-items:center; gap:10px; white-space:nowrap; }
+  .nav-logo svg { width:26px; height:26px; flex:none; color:var(--orange); }
+  .nav-admin-badge { font-family:'Orbitron',monospace; font-size:9px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; background:rgba(217,104,44,0.2); border:1px solid rgba(217,104,44,0.4); color:var(--orange); padding:3px 8px; border-radius:2px; }
   .nav-links { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
-  .nav-link { color:rgba(255,255,255,0.6); font-size:13px; text-decoration:none; border:1px solid rgba(255,255,255,0.15); padding:7px 14px; border-radius:2px; background:transparent; cursor:pointer; transition:background .2s,color .2s; font-family:'DM Sans',sans-serif; }
-  .nav-link:hover { background:rgba(255,255,255,0.08); color:var(--white); }
-  .nav-link.active { border-color:rgba(255,99,0,0.5); color:var(--orange); }
+  .nav-link { color:rgba(255,250,241,0.6); font-size:13px; text-decoration:none; border:1px solid rgba(255,250,241,0.15); padding:7px 14px; border-radius:2px; background:transparent; cursor:pointer; transition:background .2s,color .2s; font-family:'DM Sans',sans-serif; }
+  .nav-link:hover { background:rgba(255,250,241,0.08); color:var(--white); }
+  .nav-link.active { border-color:rgba(217,104,44,0.5); color:var(--orange); }
 
   .admin-header { background:var(--navy); padding:100px 0 60px; position:relative; overflow:hidden; }
-  .admin-header::before { content:''; position:absolute; inset:0; background-image:repeating-linear-gradient(90deg,rgba(255,99,0,0.04) 0px,rgba(255,99,0,0.04) 1px,transparent 1px,transparent 80px); pointer-events:none; }
+  .admin-header::before { content:''; position:absolute; inset:0; background-image:repeating-linear-gradient(90deg,rgba(217,104,44,0.04) 0px,rgba(217,104,44,0.04) 1px,transparent 1px,transparent 80px); pointer-events:none; }
   .admin-header::after { content:''; position:absolute; left:0; top:0; bottom:0; width:5px; background:var(--orange); }
   .admin-header-inner { max-width:1200px; margin:0 auto; padding:0 32px; position:relative; z-index:1; }
   .admin-page-label { font-family:'Orbitron',monospace; font-size:10px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--orange); margin-bottom:14px; display:block; }
   .admin-header h1 { font-family:'Fredoka',sans-serif; font-size:clamp(28px,3.5vw,44px); color:var(--white); line-height:1.1; margin-bottom:12px; }
-  .admin-header p { font-size:15px; color:rgba(255,255,255,0.55); max-width:640px; line-height:1.7; }
+  .admin-header p { font-size:15px; color:rgba(255,250,241,0.55); max-width:640px; line-height:1.7; }
 
   .admin-main { max-width:1200px; margin:0 auto; padding:40px 32px 0; }
   .list-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px; }
@@ -41,8 +41,8 @@
   .lp-card-desc { font-size:13.5px; color:rgba(0,34,77,0.6); line-height:1.6; flex:1; }
   .lp-card-path { font-size:11.5px; color:rgba(0,34,77,0.35); font-family:monospace; word-break:break-all; }
   .lp-badges { display:flex; gap:8px; flex-wrap:wrap; }
-  .badge-ok { display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; padding:3px 10px; border-radius:10px; background:rgba(22,163,74,0.12); color:var(--green); text-decoration:none; cursor:pointer; transition:background .15s; }
-  a.badge-ok:hover { background:rgba(22,163,74,0.22); }
+  .badge-ok { display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; padding:3px 10px; border-radius:10px; background:rgba(76,122,94,0.12); color:var(--green); text-decoration:none; cursor:pointer; transition:background .15s; }
+  a.badge-ok:hover { background:rgba(76,122,94,0.22); }
   .badge-warn { display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; padding:3px 10px; border-radius:10px; background:rgba(217,119,6,0.12); color:var(--yellow); }
   .badge-checking { display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; padding:3px 10px; border-radius:10px; background:rgba(0,34,77,0.06); color:rgba(0,34,77,0.4); }
   .lp-card-actions { display:flex; gap:10px; margin-top:4px; }
@@ -51,9 +51,9 @@
     padding:10px 14px; font-family:'DM Sans',sans-serif; font-size:13.5px; font-weight:500; color:var(--navy);
     text-decoration:none; cursor:pointer; transition:border-color .2s, background .2s;
   }
-  .btn-open:hover { border-color:var(--orange); background:rgba(255,99,0,0.04); }
+  .btn-open:hover { border-color:var(--orange); background:rgba(217,104,44,0.04); }
   .btn-open.primary { background:var(--navy); border-color:var(--navy); color:var(--white); }
-  .btn-open.primary:hover { background:#0b2f61; }
+  .btn-open.primary:hover { background:#0b3a6b; }
 
   #empty-state { display:none; padding:48px; text-align:center; color:rgba(0,34,77,0.4); font-size:14px; background:var(--white); border:1px solid rgba(0,34,77,0.1); border-radius:8px; }
 
@@ -69,7 +69,10 @@
 
 <nav>
   <div class="nav-inner">
-    <a href="../startseite.html" class="nav-logo">Der Architekt <span>deines Lebens</span><span class="nav-admin-badge">Admin</span></a>
+    <a href="../startseite.html" class="nav-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 20h18M5 20V9l7-5 7 5v11M9 20v-6h6v6"/></svg>
+      Der Architekt deines Lebens<span class="nav-admin-badge">Admin</span>
+    </a>
     <div class="nav-links">
       <a href="admin-feedback.html" class="nav-link">Feedback</a>
       <a href="umfrage-auswertung.html" class="nav-link">Umfragen</a>
