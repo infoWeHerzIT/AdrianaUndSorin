@@ -1,0 +1,329 @@
+<title>Wo kommst du noch vor?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+  :root{
+    --navy:#0B2340; --navy-2:#132C4C; --navy-3:#1C3A61;
+    --cream:#F6EFE5; --cream-dim:#CBBFAF;
+    --orange:#FF7828; --orange-soft:#FFA36B;
+    --slate:#8397B0;
+    --ok:#7FB08A;
+    --display:'Archivo',system-ui,sans-serif;
+    --body:'Source Sans 3',system-ui,sans-serif;
+    --maxw:640px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--navy); color:var(--cream);
+    font-family:var(--body); font-size:17px; line-height:1.6;
+    padding-inline:20px; padding-block:0;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:var(--maxw); margin-inline:auto; padding-block:48px 72px}
+  .eyebrow{
+    font-family:var(--display); font-weight:600; font-size:12px;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--orange);
+    margin:0 0 18px;
+  }
+  h1{
+    font-family:var(--display); font-weight:800; font-size:clamp(34px,7.5vw,52px);
+    line-height:1.04; letter-spacing:-.02em; margin:0 0 20px; text-wrap:balance;
+  }
+  h2{
+    font-family:var(--display); font-weight:700; font-size:clamp(22px,4.5vw,28px);
+    line-height:1.15; letter-spacing:-.01em; margin:0 0 14px; text-wrap:balance;
+  }
+  p{margin:0 0 16px; max-width:60ch}
+  .lead{font-size:19px; color:var(--cream)}
+  .muted{color:var(--cream-dim)}
+  .rule{width:56px; height:3px; background:var(--orange); border:0; margin:0 0 28px}
+
+  .note{
+    border-left:3px solid var(--orange); padding:14px 0 14px 18px;
+    margin:28px 0; font-size:16px; color:var(--cream-dim);
+  }
+  .note strong{color:var(--cream)}
+
+  button{font:inherit; cursor:pointer}
+  .btn{
+    display:inline-block; font-family:var(--display); font-weight:700; font-size:17px;
+    letter-spacing:.01em; background:var(--orange); color:#221000; border:0;
+    padding:16px 30px; border-radius:2px; transition:background .15s ease;
+  }
+  .btn:hover{background:var(--orange-soft)}
+  .btn:focus-visible,.opt:focus-visible,.link:focus-visible{outline:3px solid var(--orange-soft); outline-offset:3px}
+  .btn-ghost{
+    background:none; color:var(--cream-dim); border:1px solid var(--navy-3);
+    padding:12px 20px; font-family:var(--display); font-weight:600; font-size:15px; border-radius:2px;
+  }
+  .btn-ghost:hover{color:var(--cream); border-color:var(--slate)}
+
+  /* progress */
+  .prog{display:flex; gap:5px; margin:0 0 34px}
+  .prog span{height:4px; flex:1; background:var(--navy-3); border-radius:2px}
+  .prog span.done{background:var(--orange)}
+  .prog span.now{background:var(--orange-soft)}
+  .step{
+    font-family:var(--display); font-weight:600; font-size:12px; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--slate); margin:0 0 14px;
+  }
+  .qtext{
+    font-family:var(--display); font-weight:700; font-size:clamp(21px,4.4vw,27px);
+    line-height:1.24; letter-spacing:-.01em; margin:0 0 30px; text-wrap:balance;
+  }
+  .opts{display:flex; flex-direction:column; gap:10px; margin-bottom:26px}
+  .opt{
+    text-align:left; width:100%; background:var(--navy-2); color:var(--cream);
+    border:1px solid var(--navy-3); border-radius:2px; padding:15px 18px;
+    font-size:17px; transition:border-color .12s ease, background .12s ease;
+  }
+  .opt:hover{border-color:var(--orange); background:var(--navy-3)}
+  .opt[aria-pressed="true"]{border-color:var(--orange); background:var(--navy-3)}
+  .opt[aria-pressed="true"]::before{content:"→ "; color:var(--orange); font-weight:700}
+
+  /* result map */
+  .map{display:grid; grid-template-columns:1fr; gap:1px; background:var(--navy-3); border:1px solid var(--navy-3); margin:6px 0 30px}
+  .cell{background:var(--navy-2); padding:14px 16px; display:flex; align-items:baseline; justify-content:space-between; gap:14px}
+  .cell b{font-family:var(--display); font-weight:600; font-size:16px; letter-spacing:.01em}
+  .state{font-family:var(--display); font-weight:700; font-size:12px; letter-spacing:.1em; text-transform:uppercase; white-space:nowrap}
+  .s-ja{color:var(--ok)} .s-kaum{color:var(--orange-soft)} .s-nein{color:var(--orange)}
+  .verdict{
+    font-family:var(--display); font-weight:800; font-size:clamp(24px,5vw,34px);
+    line-height:1.12; letter-spacing:-.015em; margin:0 0 18px; text-wrap:balance;
+  }
+  .card{background:var(--navy-2); border:1px solid var(--navy-3); padding:24px 22px; margin:0 0 26px}
+  .card h3{font-family:var(--display); font-weight:700; font-size:19px; margin:0 0 10px; letter-spacing:-.005em}
+  .card p:last-child{margin-bottom:0}
+  .placeholder{
+    border:1px dashed var(--slate); padding:20px; color:var(--cream-dim); font-size:15px; margin:0 0 26px;
+  }
+  .placeholder code{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:13px; color:var(--orange-soft)}
+  .link{color:var(--orange-soft); text-underline-offset:3px}
+  .foot{margin-top:40px; padding-top:22px; border-top:1px solid var(--navy-3); font-size:14px; color:var(--slate)}
+  @media (min-width:560px){ .map{grid-template-columns:1fr 1fr} }
+  @media (prefers-reduced-motion:reduce){ *{transition:none!important} }
+</style>
+
+<div class="wrap">
+
+  <!-- ══════════ INTRO ══════════ -->
+  <section id="intro">
+    <p class="eyebrow">Selbsttest · 12 Fragen · 3 Minuten</p>
+    <h1>Wo kommst du noch vor?</h1>
+    <hr class="rule">
+    <p class="lead">Du funktionierst. Der Haushalt läuft, der Job läuft, alle bekommen, was sie brauchen. Und trotzdem wirst du nicht mehr richtig wach.</p>
+    <p>Dieser Test misst nicht, wie gestresst du bist. Er misst etwas Genaueres: in welchen Bereichen deines Lebens du noch als Person vorkommst — und in welchen nur noch als Zuständigkeit.</p>
+
+    <div class="note">
+      <p><strong>Das ist kein Burnout-Test.</strong> Er stellt keine Diagnose, er vergibt keine Punktzahl und er sagt dir nicht, ob du krank bist. Das kann kein Fragebogen im Internet, und wer etwas anderes behauptet, verkauft dir etwas.</p>
+      <p style="margin-bottom:0">Er zeigt dir eine Landkarte. Was du damit machst, entscheidest du.</p>
+    </div>
+
+    <p class="muted">Antworte schnell. Das Erste, was kommt, ist fast immer das Richtige.</p>
+    <p style="margin-top:26px"><button class="btn" id="start">Test starten</button></p>
+  </section>
+
+  <!-- ══════════ FRAGEN ══════════ -->
+  <section id="quiz" hidden>
+    <div class="prog" id="prog" aria-hidden="true"></div>
+    <p class="step" id="step">Frage 1 von 12</p>
+    <p class="qtext" id="qtext">—</p>
+    <div class="opts" id="opts"></div>
+    <button class="btn-ghost" id="back" type="button">Zurück</button>
+  </section>
+
+  <!-- ══════════ ERGEBNIS ══════════ -->
+  <section id="result" hidden>
+    <p class="eyebrow">Dein Ergebnis</p>
+    <p class="verdict" id="verdict">—</p>
+    <p class="muted" id="verdictSub">—</p>
+
+    <h2 style="margin-top:34px">Deine sechs Bereiche</h2>
+    <p class="muted" style="font-size:16px">Kommst du dort als Person vor — oder nur als Zuständigkeit?</p>
+    <div class="map" id="map"></div>
+
+    <div class="card" id="signCard">
+      <h3 id="signTitle">—</h3>
+      <p id="signText">—</p>
+    </div>
+
+    <div class="card">
+      <h3>Ein Bereich hat mehr wehgetan als die anderen</h3>
+      <p>Merk ihn dir. Nicht den, der am schlimmsten aussieht — den, bei dem du kurz gezögert hast. Das ist die Stelle, an der etwas anfangen kann.</p>
+      <p style="margin-bottom:0" class="muted">Du musst heute nichts damit tun.</p>
+    </div>
+
+    <div class="note">
+      <p><strong>Wenn es mehr ist als das.</strong> Wenn du seit Wochen nicht mehr schläfst, wenn dich morgens nichts mehr aus dem Bett bringt, wenn du daran denkst, dir etwas anzutun oder nicht mehr leben zu wollen: Dann ist das kein Fall für einen Selbsttest. Sprich mit deiner Hausärztin oder einer Psychotherapeutin.</p>
+      <p style="margin-bottom:0">Die TelefonSeelsorge ist kostenfrei und rund um die Uhr erreichbar: <strong>0800 111 0 111</strong> und <strong>0800 111 0 222</strong>.</p>
+    </div>
+
+    <h2 style="margin-top:40px">Was jetzt</h2>
+    <p>Dieses Ergebnis beschreibt einen Zustand, keinen Charakter. Zustände verändern sich, wenn die Last sinkt — und der erste Schritt ist, dass du weißt, wo du stehst. Den hast du gerade gemacht.</p>
+
+    <div class="placeholder">
+      <strong style="color:var(--cream)">Platzhalter für dich, Sorin:</strong> Hier gehört dein Opt-in-Formular hin — Leseprobe aus Kapitel&nbsp;1 gegen E-Mail. Formularcode einsetzen unter <code>&lt;!-- OPTIN --&gt;</code> in der HTML-Datei. Leseproben sind nicht preisgebunden; das ganze Buch gegen E-Mail wäre heikel.
+      <!-- OPTIN -->
+    </div>
+
+    <p><button class="btn-ghost" id="again" type="button">Test noch einmal machen</button></p>
+
+    <p class="foot">Sorin Ratiu · Der Architekt Deines Lebens · Dieser Test ersetzt keine Diagnose und keine Behandlung.</p>
+  </section>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var SIGNS = [
+    { t:"Mein Kopf arbeitet auch dann für andere, wenn gerade niemand etwas von mir will.", g:0 },
+    { t:"Abends fällt mir ein, was ich für andere vergessen habe — nicht, was ich für mich vergessen habe.", g:0 },
+    { t:"Ich werde über Kleinigkeiten laut und weiß hinterher, dass es nicht darum ging.", g:1 },
+    { t:"Am deutlichsten spüre ich mich, wenn etwas in mir dagegen ist.", g:1 },
+    { t:"Auf die Frage, was ich möchte, kommt bei mir zuverlässig eine Gegenfrage.", g:2 },
+    { t:"Wenn ich in mich hineinhöre, um eine Antwort zu finden, kommt nichts.", g:2 }
+  ];
+  var SIGN_OPTS = ["Kenne ich nicht", "Manchmal", "Ständig"];
+
+  var AREAS = [
+    { n:"Arbeit",            t:"Es gibt bei der Arbeit etwas, das ich tue, weil ich es will — nicht nur, weil es erledigt gehört." },
+    { n:"Partnerschaft",     t:"In den letzten vier Wochen haben wir etwas gemacht, das ich vorgeschlagen habe." },
+    { n:"Kinder oder Eltern",t:"In diesen Beziehungen komme ich als Mensch vor, nicht nur als Zuständigkeit." },
+    { n:"Freundschaften",    t:"Es gibt jemanden, der gerade wirklich weiß, wie es mir geht — nicht nur, was ich alles schaffe." },
+    { n:"Dein Körper",       t:"Ich nehme meinen Körper auch dann wahr, wenn er nicht wehtut." },
+    { n:"Zeit nur für dich", t:"Letzte Woche hatte ich mehr als eine Stunde, die niemandem gehört hat außer mir." }
+  ];
+  var AREA_OPTS = ["Ja", "Kaum", "Nein"];
+
+  var SIGN_READ = [
+    { title:"Dein Kopf ist ein Kalender für Leben geworden, die nicht deins sind.",
+      text:"Niemand hat dich gebeten, das alles im Kopf zu behalten. Du machst es, weil du es kannst — und weil es sonst niemand tut. Diese Arbeit taucht in keiner Bilanz auf, sie hat keinen Feierabend, und sie ist der Grund, warum du erschöpft bist, obwohl du abends nicht sagen kannst, was du eigentlich geleistet hast." },
+    { title:"Du spürst dich selbst nur noch am Widerstand.",
+      text:"Der Ausbruch über die offene Schranktür ging nicht um die Schranktür. Wenn alles andere keinen Platz mehr hat, bleibt Reibung als einziger Ort übrig, an dem du noch vorkommst. Das ist kein Temperament und kein Charakterfehler — es ist ein Hinweis darauf, wie schmal es geworden ist." },
+    { title:"Die Antwort auf die Frage, was du willst, ist verstummt.",
+      text:"Du hältst es vielleicht für Bescheidenheit. Am Anfang war es das womöglich auch. Aber du hast diese Antwort so lange nicht gebraucht, dass sie leise geworden ist. Sie ist nicht weg. Sie wurde nur sehr lange nicht abgefragt." }
+  ];
+
+  var qs = [];
+  SIGNS.forEach(function(s,i){ qs.push({kind:"sign", idx:i, text:s.t, opts:SIGN_OPTS, group:s.g}); });
+  AREAS.forEach(function(a,i){ qs.push({kind:"area", idx:i, text:a.t, opts:AREA_OPTS, name:a.n}); });
+
+  var answers = new Array(qs.length).fill(null);
+  var cur = 0;
+
+  var el = {
+    intro:document.getElementById("intro"), quiz:document.getElementById("quiz"),
+    result:document.getElementById("result"), prog:document.getElementById("prog"),
+    step:document.getElementById("step"), qtext:document.getElementById("qtext"),
+    opts:document.getElementById("opts"), back:document.getElementById("back"),
+    map:document.getElementById("map"), verdict:document.getElementById("verdict"),
+    verdictSub:document.getElementById("verdictSub"), signTitle:document.getElementById("signTitle"),
+    signText:document.getElementById("signText")
+  };
+
+  for(var i=0;i<qs.length;i++){ el.prog.appendChild(document.createElement("span")); }
+
+  function paintProgress(){
+    var bars = el.prog.children;
+    for(var i=0;i<bars.length;i++){
+      bars[i].className = i < cur ? "done" : (i === cur ? "now" : "");
+    }
+  }
+
+  function render(){
+    var q = qs[cur];
+    el.step.textContent = "Frage " + (cur+1) + " von " + qs.length;
+    el.qtext.textContent = q.text;
+    el.opts.textContent = "";
+    q.opts.forEach(function(label, v){
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "opt"; b.textContent = label;
+      b.setAttribute("aria-pressed", answers[cur] === v ? "true" : "false");
+      b.addEventListener("click", function(){ choose(v); });
+      el.opts.appendChild(b);
+    });
+    el.back.hidden = cur === 0;
+    paintProgress();
+  }
+
+  function choose(v){
+    answers[cur] = v;
+    if(cur < qs.length - 1){ cur++; render(); }
+    else { show("result"); finish(); }
+  }
+
+  function show(which){
+    el.intro.hidden = which !== "intro";
+    el.quiz.hidden   = which !== "quiz";
+    el.result.hidden = which !== "result";
+    window.scrollTo(0,0);
+  }
+
+  function finish(){
+    // Bereiche: 2 = Ja, 1 = Kaum, 0 = Nein  →  Antwortindex 0/1/2 umdrehen
+    var states = [], gone = 0, thin = 0;
+    AREAS.forEach(function(a, i){
+      var raw = answers[6 + i];
+      var v = raw === null ? 1 : 2 - raw;
+      if(v === 0) gone++; if(v === 1) thin++;
+      states.push(v);
+    });
+
+    el.map.textContent = "";
+    AREAS.forEach(function(a, i){
+      var v = states[i];
+      var cell = document.createElement("div"); cell.className = "cell";
+      var name = document.createElement("b"); name.textContent = a.n;
+      var st = document.createElement("span");
+      st.className = "state " + (v === 2 ? "s-ja" : v === 1 ? "s-kaum" : "s-nein");
+      st.textContent = v === 2 ? "Du kommst vor" : v === 1 ? "Kaum noch" : "Gar nicht";
+      cell.appendChild(name); cell.appendChild(st);
+      el.map.appendChild(cell);
+    });
+
+    var v, sub;
+    if(gone >= 5){
+      v = "In " + gone + " von sechs Bereichen kommst du gar nicht mehr vor.";
+      sub = "Das ist kein Zeichen von Schwäche. Es ist das Ergebnis einer Rolle, die sehr lange sehr gut funktioniert hat — für alle außer für dich.";
+    } else if(gone + thin >= 5){
+      v = "Du kommst noch vor — aber fast nirgends als ganze Person.";
+      sub = "In den meisten Bereichen bist du zuständig. Zuständig sein und vorkommen sind zwei verschiedene Dinge, und der Unterschied ist genau das, was fehlt.";
+    } else if(gone >= 2){
+      v = "In " + gone + " von sechs Bereichen kommst du gar nicht mehr vor.";
+      sub = "Die anderen tragen im Moment alles. Das geht eine Weile gut, und es fällt niemandem auf — dir selbst am längsten nicht.";
+    } else if(gone + thin >= 2){
+      v = "Du kommst an den meisten Stellen noch vor. An einigen wird es dünn.";
+      sub = "Das ist der Moment, in dem sich etwas ändern lässt, ohne dass vorher etwas zusammenbrechen muss. Die meisten Frauen lesen so etwas erst deutlich später.";
+    } else {
+      v = "Du kommst in deinem eigenen Leben noch vor.";
+      sub = "Das ist seltener, als du denkst. Wenn du diesen Test trotzdem gemacht hast, lohnt sich die Frage, was dich dazu gebracht hat.";
+    }
+    el.verdict.textContent = v;
+    el.verdictSub.textContent = sub;
+
+    var g = [0,0,0];
+    SIGNS.forEach(function(s, i){ g[s.g] += (answers[i] === null ? 0 : answers[i]); });
+    var top = 0;
+    for(var k = 1; k < 3; k++){ if(g[k] > g[top]) top = k; }
+    if(g[0] === 0 && g[1] === 0 && g[2] === 0){
+      el.signTitle.textContent = "Keines der drei Anzeichen ist bei dir deutlich.";
+      el.signText.textContent = "Das ist eine gute Nachricht und ein Hinweis: Was dich hierher gebracht hat, liegt vermutlich woanders. Dieser Test deckt nur einen bestimmten Zustand ab, nicht alle.";
+    } else {
+      el.signTitle.textContent = SIGN_READ[top].title;
+      el.signText.textContent = SIGN_READ[top].text;
+    }
+  }
+
+  document.getElementById("start").addEventListener("click", function(){
+    cur = 0; show("quiz"); render();
+  });
+  el.back.addEventListener("click", function(){
+    if(cur > 0){ cur--; render(); }
+  });
+  document.getElementById("again").addEventListener("click", function(){
+    answers = new Array(qs.length).fill(null); cur = 0; show("intro");
+  });
+})();
+</script>
