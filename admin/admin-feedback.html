@@ -82,6 +82,12 @@
   }
   .fl-p-copy:hover { border-color:var(--orange); color:var(--orange); }
   .fl-p-copy.copied { border-color:var(--green); color:var(--green); }
+  .fl-p-open {
+    flex:0 0 auto; background:var(--white); border:1px solid rgba(0,34,77,0.18); color:var(--navy); border-radius:4px;
+    padding:5px 10px; font-family:'DM Sans',sans-serif; font-size:11.5px; font-weight:500; cursor:pointer;
+    transition:border-color .2s, color .2s; white-space:nowrap; text-decoration:none; display:inline-block;
+  }
+  .fl-p-open:hover { border-color:var(--orange); color:var(--orange); }
   .fl-p-empty { font-size:13px; color:rgba(0,34,77,0.4); padding:8px 2px; }
   .controls-row { display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:20px; }
   .controls-row input[type=search] {
@@ -406,6 +412,7 @@ document.getElementById('btn-logout').addEventListener('click', async () => {
         ? '<button type="button" class="fl-p-send" data-idx="' + idx + '" title="Personalisierten Feedback-Link per E-Mail an ' + esc(name) + ' senden">✉️ Senden</button>'
         : '';
       var copyBtnHtml = '<button type="button" class="fl-p-copy" data-idx="' + idx + '" title="Personalisierten Feedback-Link von ' + esc(name) + ' kopieren">📋 Kopieren</button>';
+      var openBtnHtml = '<a href="' + esc(url) + '" class="fl-p-open" target="_blank" rel="noopener" title="Personalisierten Feedback-Link von ' + esc(name) + ' in neuem Tab öffnen">↗ Öffnen</a>';
       return (
         '<div class="fl-p-row">' +
           '<span class="fl-p-name">' + esc(name) + '</span>' +
@@ -413,6 +420,7 @@ document.getElementById('btn-logout').addEventListener('click', async () => {
           linkHtml +
           '<span class="fl-p-status ' + (l.active ? 'active' : 'pending') + '">' + (l.active ? 'aktiv' : 'unbestätigt') + '</span>' +
           copyBtnHtml +
+          openBtnHtml +
           sendBtnHtml +
         '</div>'
       );
