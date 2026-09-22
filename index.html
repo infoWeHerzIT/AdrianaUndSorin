@@ -1,14 +1,16 @@
-?<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="de">
-<title>Der Architekt deines Lebens</title>
-
 <head>
-
-
-
-  <script>window.location.replace('startseite.html');</script>
-
-
+<meta charset="UTF-8">
+<title>Der Architekt deines Lebens</title>
+<!-- Reine Weiterleitung auf startseite.html (der eigentliche Content lebt
+dort) — canonical + noindex, damit Suchmaschinen nicht diese leere Zwischen-
+seite statt startseite.html indexieren/ranken. meta-refresh zusätzlich zum
+JS-Redirect, falls JavaScript deaktiviert ist oder ein Crawler kein JS ausführt. -->
+<link rel="canonical" href="https://der-architekt-deines-lebens.de/startseite.html">
+<meta name="robots" content="noindex, follow">
+<meta http-equiv="refresh" content="0; url=startseite.html">
+<script>window.location.replace('startseite.html');</script>
 </head>
+<body></body>
 </html>
-

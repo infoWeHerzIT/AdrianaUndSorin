@@ -5,17 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title id="page-title">Webinar – Der Architekt deines Lebens</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&family=Archivo:wght@800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&family=Fraunces:ital,opsz,wght@0,9..144,600&family=Archivo:wght@800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 <script src="Code/dynamics-crm.js"></script>
 <script src="Code/add-to-calendar.js"></script>
 <style>
   :root {
-    --orange: #ff6300;
+    --orange: #d9682c;
     --navy:   #00224d;
-    --white:  #ffffff;
-    --orange-dim: rgba(255,99,0,0.12);
+    --white:  #fffaf1;
+    --orange-dim: rgba(217,104,44,0.12);
     --navy-dim:   rgba(0,34,77,0.06);
   }
 
@@ -43,7 +43,7 @@
     font-size: 11px; font-weight: 500;
     letter-spacing: .12em; text-transform: uppercase;
     padding: 5px 14px; border-radius: 2px;
-    box-shadow: 0 0 12px rgba(255,99,0,.35);
+    box-shadow: 0 0 12px rgba(217,104,44,.35);
   }
 
   /* ── NAV ── */
@@ -58,10 +58,11 @@
     display: flex; align-items: center; justify-content: space-between;
   }
   .nav-logo {
-    font-family: 'Fredoka', sans-serif;
-    color: var(--white); font-size: 18px; font-weight: 700;
+    font-family: "Fraunces", serif;
+    color: var(--white); font-size: 1.05rem; font-weight: 600; letter-spacing: .01em;
+    display: flex; align-items: center; gap: 10px; white-space: nowrap;
   }
-  .nav-logo span { color: var(--orange); }
+  .nav-logo svg { width: 26px; height: 26px; flex: none; color: var(--orange); }
   .nav-cta {
     background: var(--orange); color: var(--white);
     border: none; padding: 10px 22px;
@@ -70,10 +71,10 @@
     text-decoration: none; transition: background .2s;
     position: relative; overflow: hidden;
   }
-  .nav-cta:hover { background: #e55700; }
+  .nav-cta:hover { background: #bd551f; }
   .nav-cta::after {
     content: ''; position: absolute; top: -50%; left: -60%;
-    width: 40%; height: 200%; background: rgba(255,255,255,.2);
+    width: 40%; height: 200%; background: rgba(255,250,241,.2);
     transform: skewX(-20deg); transition: left .5s ease;
   }
   .nav-cta:hover::after { left: 120%; }
@@ -89,7 +90,7 @@
   #loading-screen.hidden { opacity: 0; pointer-events: none; }
   .loader-ring {
     width: 52px; height: 52px;
-    border: 3px solid rgba(255,99,0,.2);
+    border: 3px solid rgba(217,104,44,.2);
     border-top-color: var(--orange);
     border-radius: 50%;
     animation: spin 1s linear infinite;
@@ -97,7 +98,7 @@
   @keyframes spin { to { transform: rotate(360deg); } }
   #loading-screen p {
     font-size: 13px; letter-spacing: .1em; text-transform: uppercase;
-    color: rgba(255,255,255,.4);
+    color: rgba(255,250,241,.4);
   }
 
   /* ── ERROR STATE ── */
@@ -108,7 +109,7 @@
     text-align: center; gap: 16px;
   }
   #error-screen h2 { font-family: 'Fredoka', sans-serif; color: var(--white); font-size: 28px; }
-  #error-screen p { color: rgba(255,255,255,.55); font-size: 16px; }
+  #error-screen p { color: rgba(255,250,241,.55); font-size: 16px; }
   #error-screen a { color: var(--orange); text-decoration: underline; }
 
   /* ── HERO ── */
@@ -122,14 +123,14 @@
   }
   .hero-bg-lines {
     position: absolute; inset: 0; pointer-events: none;
-    background-image: repeating-linear-gradient(90deg, rgba(255,99,0,.04) 0px, rgba(255,99,0,.04) 1px, transparent 1px, transparent 80px);
+    background-image: repeating-linear-gradient(90deg, rgba(217,104,44,.04) 0px, rgba(217,104,44,.04) 1px, transparent 1px, transparent 80px);
   }
   #hero::after {
     content: '';
     position: absolute; top: 0; right: 0; bottom: 0; width: 50%;
     background-image:
-      radial-gradient(circle, rgba(255,99,0,.15) 1px, transparent 1px),
-      radial-gradient(circle, rgba(255,255,255,.04) 1px, transparent 1px);
+      radial-gradient(circle, rgba(217,104,44,.15) 1px, transparent 1px),
+      radial-gradient(circle, rgba(255,250,241,.04) 1px, transparent 1px);
     background-size: 40px 40px, 80px 80px;
     background-position: 0 0, 20px 20px;
     pointer-events: none; z-index: 1;
@@ -149,8 +150,8 @@
   /* Webinar live badge */
   .webinar-badge {
     display: inline-flex; align-items: center; gap: 8px;
-    background: rgba(255,99,0,.15);
-    border: 1px solid rgba(255,99,0,.35);
+    background: rgba(217,104,44,.15);
+    border: 1px solid rgba(217,104,44,.35);
     padding: 7px 16px; border-radius: 2px;
     margin-bottom: 28px;
   }
@@ -160,9 +161,9 @@
     animation: ring 2s infinite;
   }
   @keyframes ring {
-    0%   { box-shadow: 0 0 0 0 rgba(255,99,0,.6); }
-    70%  { box-shadow: 0 0 0 10px rgba(255,99,0,0); }
-    100% { box-shadow: 0 0 0 0 rgba(255,99,0,0); }
+    0%   { box-shadow: 0 0 0 0 rgba(217,104,44,.6); }
+    70%  { box-shadow: 0 0 0 10px rgba(217,104,44,0); }
+    100% { box-shadow: 0 0 0 0 rgba(217,104,44,0); }
   }
   .webinar-badge-text {
     font-family: 'Orbitron', monospace;
@@ -181,7 +182,7 @@
 
   .hero-desc {
     font-size: 17px; font-weight: 300; line-height: 1.75;
-    color: rgba(255,255,255,.65);
+    color: rgba(255,250,241,.65);
     max-width: 480px; margin-bottom: 32px;
     display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical;
     overflow: hidden;
@@ -190,7 +191,7 @@
   .hero-meta { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 36px; }
   .hero-meta-item {
     display: flex; align-items: center; gap: 8px;
-    font-size: 13px; color: rgba(255,255,255,.6);
+    font-size: 13px; color: rgba(255,250,241,.6);
   }
   .hero-meta-item svg { color: var(--orange); flex-shrink: 0; }
 
@@ -202,17 +203,17 @@
     display: inline-block; transition: background .2s, transform .15s;
     letter-spacing: .02em; position: relative; overflow: hidden;
   }
-  .btn-primary:hover { background: #e55700; transform: translateY(-1px); }
+  .btn-primary:hover { background: #bd551f; transform: translateY(-1px); }
   .btn-primary::after {
     content: ''; position: absolute; top: -50%; left: -60%;
-    width: 40%; height: 200%; background: rgba(255,255,255,.2);
+    width: 40%; height: 200%; background: rgba(255,250,241,.2);
     transform: skewX(-20deg); transition: left .5s ease;
   }
   .btn-primary:hover::after { left: 120%; }
 
   .hero-limit-note {
     margin-top: 20px; font-size: 12px;
-    color: rgba(255,255,255,.35);
+    color: rgba(255,250,241,.35);
     letter-spacing: .08em; text-transform: uppercase;
   }
   .hero-limit-note span { color: var(--orange); }
@@ -313,10 +314,10 @@
     transition: background .2s, transform .15s;
     letter-spacing: .03em; position: relative; overflow: hidden;
   }
-  .facts-cta:hover { background: #e55700; transform: translateY(-1px); }
+  .facts-cta:hover { background: #bd551f; transform: translateY(-1px); }
   .facts-cta::after {
     content: ''; position: absolute; top: -50%; left: -60%;
-    width: 40%; height: 200%; background: rgba(255,255,255,.2);
+    width: 40%; height: 200%; background: rgba(255,250,241,.2);
     transform: skewX(-20deg); transition: left .5s ease;
   }
   .facts-cta:hover::after { left: 120%; }
@@ -333,8 +334,8 @@
   #vorteile::after {
     content: ''; position: absolute; inset: 0;
     background-image:
-      repeating-linear-gradient(0deg, rgba(255,99,0,.025) 0px, rgba(255,99,0,.025) 1px, transparent 1px, transparent 40px),
-      repeating-linear-gradient(90deg, rgba(255,99,0,.025) 0px, rgba(255,99,0,.025) 1px, transparent 1px, transparent 80px);
+      repeating-linear-gradient(0deg, rgba(217,104,44,.025) 0px, rgba(217,104,44,.025) 1px, transparent 1px, transparent 40px),
+      repeating-linear-gradient(90deg, rgba(217,104,44,.025) 0px, rgba(217,104,44,.025) 1px, transparent 1px, transparent 80px);
     pointer-events: none; z-index: 0;
   }
   #vorteile > * { position: relative; z-index: 2; }
@@ -347,20 +348,20 @@
     color: var(--white); margin-bottom: 14px; line-height: 1.15;
   }
   #vorteile .subtitle {
-    font-size: 17px; color: rgba(255,255,255,.55);
+    font-size: 17px; color: rgba(255,250,241,.55);
     margin-bottom: 56px; max-width: 560px;
   }
   .vorteile-grid {
     display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
   }
   .vorteil {
-    background: rgba(255,255,255,.04);
-    border: 1px solid rgba(255,255,255,.07);
+    background: rgba(255,250,241,.04);
+    border: 1px solid rgba(255,250,241,.07);
     padding: 32px 28px;
     transition: background .2s;
     position: relative; overflow: hidden;
   }
-  .vorteil:hover { background: rgba(255,99,0,.08); }
+  .vorteil:hover { background: rgba(217,104,44,.08); }
   .vorteil::before {
     content: ''; position: absolute; bottom: 0; left: 0;
     width: 0; height: 2px; background: var(--orange);
@@ -372,11 +373,11 @@
     color: var(--orange); line-height: 1; margin-bottom: 16px;
   }
   .vorteil h3 { font-size: 15px; font-weight: 500; color: var(--white); margin-bottom: 8px; }
-  .vorteil p { font-size: 13px; line-height: 1.6; color: rgba(255,255,255,.5); }
+  .vorteil p { font-size: 13px; line-height: 1.6; color: rgba(255,250,241,.5); }
 
   /* ── ÜBER UNS ── */
   #about {
-    background: #f9f8f6;
+    background: #f6f0e3;
     padding: 170px 0 140px; position: relative; z-index: 5;
     margin-top: -75px;
   }
@@ -438,9 +439,9 @@
   .about-body .bio strong { color: var(--navy); }
   .about-pills { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 20px; }
   .about-pills span {
-    background: rgba(255,99,0,.08); color: var(--orange);
+    background: rgba(217,104,44,.08); color: var(--orange);
     font-size: 11px; font-weight: 500; letter-spacing: .06em;
-    padding: 5px 12px; border-radius: 2px; border: 1px solid rgba(255,99,0,.2);
+    padding: 5px 12px; border-radius: 2px; border: 1px solid rgba(217,104,44,.2);
   }
 
   /* ── ANMELDUNG ── */
@@ -451,7 +452,7 @@
   }
   #anmeldung::before {
     content: ''; position: absolute; inset: 0; z-index: 0;
-    background-image: radial-gradient(circle at 50% 30%, rgba(255,99,0,.06) 0%, transparent 65%);
+    background-image: radial-gradient(circle at 50% 30%, rgba(217,104,44,.06) 0%, transparent 65%);
   }
   #anmeldung > * { position: relative; z-index: 2; }
   #anmeldung .content-wrap {
@@ -494,10 +495,10 @@
     transition: background .2s, transform .15s;
     position: relative; overflow: hidden;
   }
-  .btn-cta-big:hover { background: #e55700; transform: translateY(-2px); }
+  .btn-cta-big:hover { background: #bd551f; transform: translateY(-2px); }
   .btn-cta-big::after {
     content: ''; position: absolute; top: -50%; left: -60%;
-    width: 40%; height: 200%; background: rgba(255,255,255,.2);
+    width: 40%; height: 200%; background: rgba(255,250,241,.2);
     transform: skewX(-20deg); transition: left .5s ease;
   }
   .btn-cta-big:hover::after { left: 120%; }
@@ -512,9 +513,9 @@
     display: flex; justify-content: space-between;
     align-items: center; flex-wrap: wrap; gap: 16px;
   }
-  footer .f-logo { font-family: 'Fredoka', sans-serif; font-size: 16px; color: rgba(255,255,255,.5); }
+  footer .f-logo { font-family: 'Fredoka', sans-serif; font-size: 16px; color: rgba(255,250,241,.5); }
   footer .f-logo span { color: var(--orange); }
-  footer p { font-size: 12px; color: rgba(255,255,255,.25); letter-spacing: .04em; }
+  footer p { font-size: 12px; color: rgba(255,250,241,.25); letter-spacing: .04em; }
 
   /* ── STAR CANVAS ── */
   #star-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 99999; }
@@ -552,7 +553,10 @@
 <!-- NAV -->
 <nav>
   <div class="nav-inner">
-    <div class="nav-logo">Der Architekt <span>deines Lebens</span></div>
+    <div class="nav-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 20h18M5 20V9l7-5 7 5v11M9 20v-6h6v6"/></svg>
+      Der Architekt deines Lebens
+    </div>
     <a href="#anmeldung" class="nav-cta" id="nav-cta-btn">Jetzt anmelden →</a>
   </div>
 </nav>
@@ -566,7 +570,7 @@
 <!-- ERROR -->
 <div id="error-screen" style="display:none; min-height:100vh; padding-top:120px; background:var(--navy); flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:16px;">
   <h2 style="font-family:'Fredoka',sans-serif;color:var(--white);font-size:28px;">Webinar nicht gefunden</h2>
-  <p style="color:rgba(255,255,255,.55);font-size:16px;">Es konnte kein passendes Webinar geladen werden.</p>
+  <p style="color:rgba(255,250,241,.55);font-size:16px;">Es konnte kein passendes Webinar geladen werden.</p>
   <a href="kalender.html" style="color:var(--orange);text-decoration:underline;font-size:15px;">← Zum Kalender</a>
 </div>
 
@@ -613,7 +617,7 @@
   </div>
   <div class="wave-bottom" style="bottom:-1px;">
     <svg viewBox="0 0 1440 110" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M0,60 C180,110 320,20 520,75 C680,120 800,30 1000,65 C1160,95 1320,25 1440,55 L1440,110 L0,110 Z" fill="#ffffff"/>
+      <path d="M0,60 C180,110 320,20 520,75 C680,120 800,30 1000,65 C1160,95 1320,25 1440,55 L1440,110 L0,110 Z" fill="#fffaf1"/>
     </svg>
   </div>
 </section>
@@ -708,7 +712,7 @@
   </div>
   <div class="wave-bottom" style="bottom:-1px;">
     <svg viewBox="0 0 1440 90" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M0,50 C200,90 380,10 600,55 C780,90 920,15 1100,50 C1240,75 1360,20 1440,45 L1440,90 L0,90 Z" fill="#f9f8f6"/>
+      <path d="M0,50 C200,90 380,10 600,55 C780,90 920,15 1100,50 C1240,75 1360,20 1440,45 L1440,90 L0,90 Z" fill="#f6f0e3"/>
     </svg>
   </div>
 </section>
@@ -752,7 +756,7 @@
 
   <div class="wave-bottom" style="bottom:-1px;">
     <svg viewBox="0 0 1440 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M0,45 C200,5 380,80 580,40 C740,5 880,70 1080,38 C1240,10 1360,65 1440,30 L1440,100 L0,100 Z" fill="#ffffff"/>
+      <path d="M0,45 C200,5 380,80 580,40 C740,5 880,70 1080,38 C1240,10 1360,65 1440,30 L1440,100 L0,100 Z" fill="#fffaf1"/>
     </svg>
   </div>
 </section>
@@ -822,7 +826,7 @@
         var angle=Math.atan2(s.vy,s.vx);
         var ex=s.x-Math.cos(angle)*s.len,ey=s.y-Math.sin(angle)*s.len;
         var g=ctx.createLinearGradient(ex,ey,s.x,s.y);
-        g.addColorStop(0,'rgba(255,255,255,0)');
+        g.addColorStop(0,'rgba(255,250,241,0)');
         g.addColorStop(0.5,'rgba(255,220,80,'+(s.alpha*.6)+')');
         g.addColorStop(1,'rgba(255,255,200,'+s.alpha+')');
         ctx.beginPath(); ctx.moveTo(ex,ey); ctx.lineTo(s.x,s.y);

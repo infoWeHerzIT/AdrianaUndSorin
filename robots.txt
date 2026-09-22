@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /Payment/
+
+Sitemap: https://der-architekt-deines-lebens.de/sitemap.xml
