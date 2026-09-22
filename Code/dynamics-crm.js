@@ -169,6 +169,13 @@ class DynamicsCRM {
   // leeres Array/Objekt) — "nicht gefunden/Ladefehler" und "Umfrage ohne
   // Fragen" sind unterschiedliche Zustände, die die aufrufende Seite
   // unterschiedlich behandeln muss.
+  // Löst bei "nicht gefunden" (404 — siehe dynamics-survey-get[-dev], kommt
+  // z. B. bei falschem/veraltetem Slug oder deaktivierter Umfrage) bewusst zu
+  // "null" auf statt zu werfen — das ist ein normales, erwartbares Ergebnis.
+  // Jeder ANDERE Fehler (Netzwerkausfall, 502 von Dynamics usw.) wird
+  // weitergereicht (Promise rejected), damit die aufrufende Seite ihn von
+  // "existiert nicht" unterscheiden und z. B. einen Retry anbieten kann,
+  // statt fälschlich "Umfrage nicht verfügbar" zu zeigen.
   getSurvey(slug) {
     var fnName = this._functionName('dynamics-survey-get') + '?slug=' + encodeURIComponent(slug || '');
     return this.client.functions.invoke(fnName, {
@@ -177,14 +184,17 @@ class DynamicsCRM {
       if (res.error) throw res.error;
       return res.data || null;
     }).catch(function (err) {
+      if (err && err.context && err.context.status === 404) return null;
       console.error('CRM get survey error:', err);
-      return null;
+      throw err;
     });
   }
 
   // Wie getSurvey(), aber Lookup per Dynamics-GUID (wht_surveyid) statt per
   // Slug — für Seiten, die per "?id=<guid>" statt "?survey=<slug>" verlinkt
   // werden. Gleiches "null bei Fehler/nicht gefunden"-Verhalten wie getSurvey().
+  // Gleiches "404 → null, alles andere → weiterreichen"-Verhalten wie
+  // getSurvey() oben.
   getSurveyById(id) {
     var fnName = this._functionName('dynamics-survey-get') + '?id=' + encodeURIComponent(id || '');
     return this.client.functions.invoke(fnName, {
@@ -193,8 +203,9 @@ class DynamicsCRM {
       if (res.error) throw res.error;
       return res.data || null;
     }).catch(function (err) {
+      if (err && err.context && err.context.status === 404) return null;
       console.error('CRM get survey by id error:', err);
-      return null;
+      throw err;
     });
   }
 

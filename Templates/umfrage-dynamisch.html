@@ -248,13 +248,14 @@
   }
   .submit-error.visible { display: block; }
 
-  .fb-unavailable, .fb-loading {
+  .fb-unavailable, .fb-loading, .fb-error {
     display: none;
     text-align: center;
     padding: 20px 0 10px;
   }
-  .fb-unavailable.visible, .fb-loading.visible { display: block; }
-  .fb-unavailable p { font-size: 16px; color: rgba(0,34,77,0.6); line-height: 1.7; max-width: 460px; margin: 0 auto 32px; }
+  .fb-unavailable.visible, .fb-loading.visible, .fb-error.visible { display: block; }
+  .fb-unavailable p, .fb-error p { font-size: 16px; color: rgba(0,34,77,0.6); line-height: 1.7; max-width: 460px; margin: 0 auto 32px; }
+  .fb-error .fb-error-retry { font-size: 14px; color: rgba(0,34,77,0.45); }
   .btn-ghost-link {
     display: inline-block;
     padding: 13px 26px;
@@ -311,7 +312,7 @@
       <span class="push-prod-status" id="push-prod-status"></span>
     </div>
     <span class="section-label">Umfrage</span>
-    <h1 id="survey-title">Wird geladen …</h1>
+    <h1 id="survey-title">Einen Moment, wir holen sie …</h1>
     <div id="survey-description"></div>
   </div>
 </div>
@@ -320,13 +321,19 @@
   <div class="fb-form-inner">
 
     <div class="fb-loading visible" id="fb-loading">
-      <p>Umfrage wird geladen …</p>
+      <p>Wir mischen die Fragen gerade frisch für dich. 😉</p>
     </div>
 
     <div class="fb-unavailable" id="fb-unavailable">
       <h2>Diese Umfrage ist gerade nicht verfügbar</h2>
       <p>Entweder existiert sie nicht (mehr) oder ist aktuell nicht aktiv. Bitte prüfe den Link oder versuche es später noch einmal.</p>
       <a href="../startseite.html" class="btn-ghost-link">Zur Startseite</a>
+    </div>
+
+    <div class="fb-error" id="fb-error">
+      <h2>Da ist leider etwas schiefgelaufen</h2>
+      <p>Wir konnten die Umfrage gerade nicht laden. Das liegt meist an einer kurzen Verbindungsstörung — wir versuchen es gleich automatisch noch einmal für dich.</p>
+      <p class="fb-error-retry">Neuer Versuch in <span id="fb-error-countdown">5</span> Sekunden …</p>
     </div>
 
     <div id="form-state" style="display:none;">
@@ -402,12 +409,36 @@
 
   var elLoading     = document.getElementById('fb-loading');
   var elUnavailable = document.getElementById('fb-unavailable');
+  var elError       = document.getElementById('fb-error');
   var elFormState    = document.getElementById('form-state');
 
+  // Wird NUR gezeigt, wenn Dynamics tatsächlich geantwortet hat und die
+  // Umfrage darin nicht (mehr) existiert/aktiv ist — die Titelzeile bleibt
+  // bewusst beim Ladetext (kein Umschalten auf "nicht verfügbar" dort),
+  // die eigentliche Meldung steht im fb-unavailable-Block darunter.
   function showUnavailable() {
     elLoading.classList.remove('visible');
     elUnavailable.classList.add('visible');
-    document.getElementById('survey-title').textContent = 'Umfrage nicht verfügbar';
+  }
+
+  // Wird gezeigt, wenn die Dynamics-Anfrage selbst fehlschlägt (Netzwerk,
+  // 502 usw. — NICHT "nicht gefunden", das läuft über showUnavailable()).
+  // Freundliche, professionelle Meldung + automatischer Retry per Reload
+  // nach 5 Sekunden, mit sichtbarem Countdown.
+  function showError() {
+    elLoading.classList.remove('visible');
+    elError.classList.add('visible');
+    var secondsLeft = 5;
+    var countdownEl = document.getElementById('fb-error-countdown');
+    var timer = setInterval(function () {
+      secondsLeft--;
+      if (secondsLeft <= 0) {
+        clearInterval(timer);
+        window.location.reload();
+        return;
+      }
+      countdownEl.textContent = secondsLeft;
+    }, 1000);
   }
 
   // mailto:-Links sollen die Standard-Mail-App öffnen (Browser-Standardverhalten,
@@ -436,9 +467,11 @@
   var surveyLookup = idParam ? dynamicsCRM.getSurveyById(idParam) : dynamicsCRM.getSurvey(slug);
 
   surveyLookup.then(function (result) {
-    // "null" (Ladefehler ODER nicht gefunden) UND "Umfrage ohne Fragen"
-    // werden beide als "nicht verfügbar" behandelt — ein leeres Formular
-    // mit Absenden-Knopf ohne jede Frage wäre für den Besucher verwirrend.
+    // "null" (nicht gefunden/nicht aktiv — siehe getSurvey()/getSurveyById())
+    // UND "Umfrage ohne Fragen" werden beide als "nicht verfügbar" behandelt —
+    // ein leeres Formular mit Absenden-Knopf ohne jede Frage wäre für den
+    // Besucher verwirrend. Echte Ladefehler laufen NICHT hier durch, sondern
+    // über den catch() unten (showError()).
     if (!result || !result.survey || !Array.isArray(result.questions) || result.questions.length === 0) {
       showUnavailable();
       return;
@@ -479,6 +512,9 @@
         }
       });
     }
+  }).catch(function (err) {
+    console.error('Survey load error:', err);
+    showError();
   });
 
   // ── Kontaktfelder dynamisch pflicht machen ──────────────────────────
