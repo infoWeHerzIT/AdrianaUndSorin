@@ -194,6 +194,8 @@ create policy "feedback_public_insert"
 -- Feedback: nur eingeloggte Admins dürfen lesen/bearbeiten
 create policy "feedback_admin_read" on feedback for select
   using (auth.role() = 'authenticated');
+create policy "feedback_admin_update" on feedback for update
+  using (auth.role() = 'authenticated');
 create policy "feedback_admin_delete" on feedback for delete
   using (auth.role() = 'authenticated');
 

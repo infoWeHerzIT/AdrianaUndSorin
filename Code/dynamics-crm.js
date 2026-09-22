@@ -162,6 +162,29 @@ class DynamicsCRM {
     });
   }
 
+  // Liest einen einzelnen Lead (wht_lead) anhand seiner GUID (read-only) —
+  // supabase/functions/dynamics-lead-get[-dev]. Dient Templates/feedback.html:
+  // personalisierte Feedback-Links ("?event_id=<GUID>&lead_id=<GUID>") tragen
+  // Name/E-Mail/Telefon automatisch ein, analog zum alten (seit der
+  // Dynamics-Migration toten) presetParticipantId-Pfad, aber aus Dynamics
+  // statt der ungenutzten Supabase-"participants"-Tabelle.
+  // Gibt bei Fehlern ODER wenn kein Lead mit dieser ID existiert bewusst
+  // "null" zurück (kein Wurf) — ein falscher/abgelaufener Link darf die
+  // Feedback-Seite nie blockieren, sie zeigt dann einfach die normalen
+  // (leeren) Kontaktfelder an.
+  getLeadById(leadId) {
+    var fnName = this._functionName('dynamics-lead-get') + '?leadId=' + encodeURIComponent(leadId || '');
+    return this.client.functions.invoke(fnName, {
+      method: 'GET'
+    }).then(function (res) {
+      if (res.error) throw res.error;
+      return res.data || null;
+    }).catch(function (err) {
+      console.error('CRM get lead by id error:', err);
+      return null;
+    });
+  }
+
   // Liest eine dynamische Umfrage-Definition (wht_survey + wht_surveyquestion
   // + wht_surveyquestionoption, read-only) anhand ihres Slugs —
   // supabase/functions/dynamics-survey-get[-dev]. Gibt bei Fehlern ODER wenn

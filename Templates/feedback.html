@@ -483,6 +483,7 @@
   var params              = new URLSearchParams(window.location.search);
   var presetEventId       = params.get('event_id')       || '';
   var presetParticipantId = params.get('participant_id') || '';
+  var presetLeadId        = params.get('lead_id')        || '';
 
   var select = document.getElementById('event');
   var events = [];
@@ -520,8 +521,8 @@
       }
     });
 
-  // ── Felder einblenden wenn kein Participant preset ──
-  if (!presetParticipantId) {
+  // ── Felder einblenden wenn weder Participant noch Lead preset ──
+  if (!presetParticipantId && !presetLeadId) {
     document.getElementById('fg-vorname').style.display = '';
     document.getElementById('fg-contact').style.display = '';
   }
@@ -552,6 +553,41 @@
         document.getElementById('fg-vorname').style.display = 'none';
         document.getElementById('fg-contact').style.display = 'none';
       });
+  }
+
+  // ── Lead laden (wenn lead_id in URL, z. B. aus dem admin-feedback.html-
+  // Teilnehmer-Link) — trägt Name/E-Mail/Telefon automatisch aus Dynamics
+  // ein, analog zum presetParticipantId-Pfad oben, nur eben aus Dynamics
+  // statt der ungenutzten Supabase-"participants"-Tabelle. ──
+  if (presetLeadId) {
+    dynamicsCRM.getLeadById(presetLeadId).then(function (lead) {
+      if (!lead) {
+        // Ungültiger/abgelaufener Link — Felder wieder einblenden, damit die
+        // Person ihre Daten trotzdem selbst eintragen kann statt festzuhängen.
+        console.warn('[feedback] Kein Lead gefunden für lead_id:', presetLeadId);
+        document.getElementById('fg-vorname').style.display = '';
+        document.getElementById('fg-contact').style.display = '';
+        return;
+      }
+      var name = (lead.firstname && lead.lastname)
+        ? (lead.firstname + ' ' + lead.lastname).trim()
+        : (lead.name || lead.firstname || '');
+
+      // Badge anzeigen
+      document.getElementById('participant-readonly').style.display = 'block';
+      document.getElementById('pr-name').textContent  = name;
+      document.getElementById('pr-email').textContent = lead.email || '';
+
+      // Felder für Payload befüllen
+      document.getElementById('vorname').value  = lead.firstname || '';
+      document.getElementById('nachname').value = lead.lastname || '';
+      document.getElementById('email').value    = lead.email || '';
+      document.getElementById('handy').value    = lead.phone || '';
+
+      // Felder sofort ausblenden – Lead ist bekannt
+      document.getElementById('fg-vorname').style.display = 'none';
+      document.getElementById('fg-contact').style.display = 'none';
+    });
   }
 
   // ── Clear errors on interaction ──
