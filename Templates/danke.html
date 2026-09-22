@@ -5,13 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Danke für deine Anmeldung – Der Architekt deines Lebens</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&family=Fraunces:ital,opsz,wght@0,9..144,600&display=swap" rel="stylesheet">
 <style>
-  :root { --orange: #ff6300; --navy: #00224d; --white: #ffffff; }
+  :root { --orange: #d9682c; --navy: #00224d; --white: #fffaf1; }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: 'DM Sans', sans-serif;
-    background: #f0f2f5;
+    background: #f6f0e3;
     min-height: 100vh;
     padding: 40px 16px 80px;
   }
@@ -38,11 +38,12 @@
     width: 5px; background: var(--orange);
   }
   .hdr-logo {
-    font-family: 'Fredoka', sans-serif;
-    font-size: 22px; font-weight: 700; color: var(--white);
+    font-family: "Fraunces", serif;
+    font-size: 1.05rem; font-weight: 600; letter-spacing: .01em; color: var(--white);
+    display: flex; align-items: center; gap: 10px;
   }
-  .hdr-logo span { color: var(--orange); }
-  .hdr-sub { color: rgba(255,255,255,0.5); font-size: 13px; margin-top: 6px; }
+  .hdr-logo svg { width: 26px; height: 26px; flex: none; color: var(--orange); }
+  .hdr-sub { color: rgba(255,250,241,0.5); font-size: 13px; margin-top: 6px; }
   .hdr-top {
     display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
   }
@@ -50,8 +51,8 @@
     flex-shrink: 0;
     display: inline-block;
     padding: 9px 18px;
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.25);
+    background: rgba(255,250,241,0.1);
+    border: 1px solid rgba(255,250,241,0.25);
     color: var(--white);
     font-family: 'DM Sans', sans-serif;
     font-size: 14px; font-weight: 500;
@@ -59,13 +60,14 @@
     transition: background .2s;
     white-space: nowrap;
   }
-  .btn-kalender:hover { background: rgba(255,255,255,0.18); }
+  .btn-kalender:hover { background: rgba(255,250,241,0.18); }
   .hdr-badge {
-    display: inline-block;
+    display: inline-flex; align-items: center; gap: 7px;
     margin-top: 18px;
-    background: rgba(34,197,94,0.18);
-    border: 1px solid rgba(34,197,94,0.4);
-    color: #22c55e;
+    background: #2f9e5b;
+    border: 1px solid #4dc47a;
+    color: var(--white);
+    box-shadow: 0 0 18px rgba(47,158,91,0.5);
     font-family: 'Fredoka', sans-serif;
     font-size: 17px; font-weight: 700;
     padding: 6px 16px; border-radius: 3px;
@@ -87,7 +89,7 @@
 
   /* ── Ticket strip ── */
   .ticket-strip {
-    background: #f8f9fc;
+    background: #eee4cf;
     border-left: 5px solid var(--orange);
     padding: 22px 44px;
     display: flex; align-items: center; justify-content: space-between; gap: 16px;
@@ -145,17 +147,17 @@
   }
   .btn-pay  { background: var(--orange); color: var(--white); }
   .btn-meet { background: #0078b4; color: var(--white); }
-  .btn-pay:hover  { background: #e55700; }
+  .btn-pay:hover  { background: #bd551f; }
   .btn-meet:hover { background: #005f8e; }
   .btn-pay.highlight { animation: btn-pulse 1s ease-in-out 3; }
   @keyframes btn-pulse {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(255,99,0,0.6); }
-    50%      { box-shadow: 0 0 0 10px rgba(255,99,0,0); }
+    0%, 100% { box-shadow: 0 0 0 0 rgba(217,104,44,0.6); }
+    50%      { box-shadow: 0 0 0 10px rgba(217,104,44,0); }
   }
 
   /* ── Summary ── */
   .summary-box {
-    background: #f8f9fc; border-radius: 4px;
+    background: #eee4cf; border-radius: 4px;
     padding: 20px 24px; margin: 28px 0 0;
   }
   .summary-title {
@@ -194,9 +196,9 @@
 
   /* ── Footer ── */
   .ftr { background: var(--navy); padding: 22px 44px; }
-  .ftr p { color: rgba(255,255,255,0.55); font-size: 12px; margin: 0; line-height: 1.7; }
+  .ftr p { color: rgba(255,250,241,0.55); font-size: 12px; margin: 0; line-height: 1.7; }
   .ftr strong { color: var(--orange); }
-  .ftr a { color: rgba(255,255,255,0.55); text-decoration: none; }
+  .ftr a { color: rgba(255,250,241,0.55); text-decoration: none; }
   .ftr a:hover { color: var(--white); }
 
   /* ── Redirect overlay ── */
@@ -212,7 +214,7 @@
   .redirect-overlay.visible { display: flex; }
   .redirect-spinner {
     width: 44px; height: 44px; border-radius: 50%;
-    border: 4px solid rgba(255,255,255,0.25);
+    border: 4px solid rgba(255,250,241,0.25);
     border-top-color: var(--orange);
     animation: redirect-spin .8s linear infinite;
   }
@@ -247,7 +249,10 @@
   <div class="hdr">
     <div class="hdr-top">
       <div>
-        <div class="hdr-logo">Der Architekt <span>deines Lebens</span></div>
+        <div class="hdr-logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 20h18M5 20V9l7-5 7 5v11M9 20v-6h6v6"/></svg>
+          Der Architekt deines Lebens
+        </div>
         <div class="hdr-sub" id="hdr-sub">Deep Coaching Workshop</div>
       </div>
       <a href="../kalender.html" class="btn-kalender">Kalender →</a>
