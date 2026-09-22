@@ -371,6 +371,7 @@ document.getElementById('btn-logout').addEventListener('click', async () => {
       body: {
         action: 'feedback',
         params: {
+          title:        'Wie war\'s bei "' + eventName + '"? Wir freuen uns auf dein Feedback 💛',
           to_name:      leadName(l),
           to_email:     l.email,
           vorname:      l.firstname || leadName(l),

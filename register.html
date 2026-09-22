@@ -919,6 +919,7 @@
           body: {
             action: 'registration',
             params: {
+              title:             'Deine Anmeldebestätigung – ' + ((ev && ev.name) || ort),
               to_name:           vorname + ' ' + nachname,
               to_email:          email,
               cc:                CC_NOTIFICATION_EMAILS,
