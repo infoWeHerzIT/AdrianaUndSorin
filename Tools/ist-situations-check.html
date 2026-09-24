@@ -1,124 +1,102 @@
-<title>Ist-Situations-Check</title>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="index, follow">
+
+<title>Der Ist-Situations-Check | Selbsttest: Dein größter Druckpunkt</title>
+<meta name="description" content="Kostenloser Selbsttest in 5 Minuten: 10 Aussagen zu 5 Lebensbereichen zeigen dir, wo dein größter Druckpunkt gerade liegt – Beziehung, Beruf, Energie, Finanzen oder Selbstbild.">
+<link rel="canonical" href="https://der-architekt-deines-lebens.de/Tools/ist-situations-check.html">
+
+<!-- Open Graph / Social Sharing -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="de_DE">
+<meta property="og:site_name" content="Der Architekt Deines Lebens">
+<meta property="og:title" content="Der Ist-Situations-Check">
+<meta property="og:description" content="10 Aussagen, 5 Lebensbereiche – finde heraus, wo dein größter Druckpunkt gerade liegt: Beziehung, Beruf, Energie, Finanzen oder Selbstbild.">
+<meta property="og:url" content="https://der-architekt-deines-lebens.de/Tools/ist-situations-check.html">
+<meta property="og:image" content="https://der-architekt-deines-lebens.de/images/ist-situations-check-og.jpg"><!-- TODO: echtes Vorschaubild (1200×630px) hochladen und Pfad anpassen -->
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Der Ist-Situations-Check – Selbsttest für Frauen">
+
+<meta name="author" content="Sorin Ratiu">
+<meta name="theme-color" content="#F6F0E3">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="alternate icon" href="/favicon.ico">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Der Ist-Situations-Check">
+<meta name="twitter:description" content="10 Aussagen, 5 Lebensbereiche – finde heraus, wo dein größter Druckpunkt gerade liegt.">
+<meta name="twitter:image" content="https://der-architekt-deines-lebens.de/images/ist-situations-check-og.jpg">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Der Ist-Situations-Check",
+  "headline": "Wo liegt gerade dein größter Druckpunkt?",
+  "description": "Kostenloser Selbsttest in 5 Minuten: 10 Aussagen zu 5 Lebensbereichen zeigen dir, wo dein größter Druckpunkt gerade liegt – Beziehung, Beruf, Energie, Finanzen oder Selbstbild.",
+  "url": "https://der-architekt-deines-lebens.de/Tools/ist-situations-check.html",
+  "inLanguage": "de-DE",
+  "datePublished": "2026-09-24",
+  "dateModified": "2026-09-24",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "Der Architekt Deines Lebens",
+    "url": "https://der-architekt-deines-lebens.de"
+  },
+  "author": {
+    "@type": "Person",
+    "name": "Sorin Ratiu",
+    "url": "https://der-architekt-deines-lebens.de/ueber-mich"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Der Architekt Deines Lebens",
+    "url": "https://der-architekt-deines-lebens.de"
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Startseite", "item": "https://der-architekt-deines-lebens.de/" },
+      { "@type": "ListItem", "position": 2, "name": "Der Ist-Situations-Check", "item": "https://der-architekt-deines-lebens.de/Tools/ist-situations-check.html" }
+    ]
+  }
+}
+</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600;700&family=Archivo:wght@800&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../supabase-config.js"></script>
-<script src="../Code/dynamics-crm.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=Fraunces:ital,opsz,wght@0,9..144,600&display=swap">
 <style>
   :root{
-    --paper:#f6f0e3;
-    --paper-2:#eee4cf;
-    --ink:#1d1a13;
-    --ink-soft:#5c5645;
-    --navy-900:#00224d;
-    --navy-800:#0b3a6b;
-    --navy-700:#1b4f8f;
-    --line-light:#cdbe9c;
-    --line-dark:#37486b;
-    --orange-500:#d9682c;
-    --orange-600:#bd551f;
-    --orange-100:#f3dcc4;
+    --paper:#f6f0e3; --paper-2:#eee4cf;
+    --ink:#1d1a13; --ink-soft:#5c5645;
+    --navy-900:#00224d; --navy-800:#0b3a6b; --navy-700:#1b4f8f;
+    --line-light:#cdbe9c; --line-dark:#37486b;
     --cream:#fffaf1;
+    --orange-500:#d9682c; --orange-600:#bd551f; --orange-100:#f3dcc4;
     --ok:#4c7a5e;
     --shadow:0 18px 40px -22px rgba(15,27,45,.35);
+    --display:'Archivo',system-ui,sans-serif;
+    --body:'Source Sans 3',system-ui,sans-serif;
+    --maxw:640px;
   }
-  *{box-sizing:border-box;}
+  *{box-sizing:border-box}
   body{
-    margin:0;
-    background:var(--navy-900);
-    color:var(--ink);
-    font-family:"Work Sans",system-ui,-apple-system,sans-serif;
-    line-height:1.55;
-    min-height:100%;
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--body); font-size:17px; line-height:1.6;
+    padding-inline:20px; padding-block:0;
+    -webkit-font-smoothing:antialiased;
   }
-  h1,h2,h3,.display{
-    font-family:"Fraunces",Georgia,serif;
-    font-weight:600;
-    line-height:1.12;
-    text-wrap:balance;
-    margin:0;
-  }
-  p{margin:0;}
-  button{font-family:inherit;}
-  [hidden]{display:none !important;}
-
-  .top-bar{
-    position:sticky;
-    top:env(safe-area-inset-top,0px);
-    z-index:20;
-    background:var(--navy-900);
-    border-bottom:1px solid var(--line-dark);
-    padding-block:14px;
-  }
-  .top-bar-inner{
-    max-width:640px;
-    margin:0 auto;
-    padding-inline:20px;
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-  }
-  .top-row{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:12px;
-  }
-  .brand{
-    display:flex;align-items:center;gap:10px;
-    color:var(--cream);
-    font-family:"Fraunces",serif;
-    font-weight:600;
-    font-size:1.05rem;
-    letter-spacing:.01em;
-    white-space:nowrap;
-  }
-  .brand svg{width:26px;height:26px;color:var(--orange-500);flex:none;}
-  .step-label{
-    font-size:.72rem;
-    letter-spacing:.06em;
-    text-transform:uppercase;
-    color:#a9b6cb;
-    white-space:nowrap;
-  }
-  .progress-track{
-    height:5px;
-    background:var(--line-dark);
-    border-radius:4px;
-    overflow:hidden;
-  }
-  .progress-fill{
-    height:100%;
-    background:var(--orange-500);
-    width:0%;
-    transition:width .35s ease;
-  }
-
-  main{
-    max-width:640px;
-    margin:0 auto;
-    padding:40px 20px 60px;
-    min-height:calc(100dvh - 70px);
-    display:flex;
-    align-items:center;
-  }
-  .screen{width:100%;}
-
-  /* ---- intro ---- */
-  .intro{
-    background:var(--paper);
-    border-radius:6px;
-    padding:38px 30px;
-    color:var(--ink);
-  }
+  .wrap{max-width:var(--maxw); margin-inline:auto; padding-block:48px 72px}
   .eyebrow{
-    display:inline-flex;align-items:center;gap:10px;
-    font-weight:600;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;
-    color:var(--orange-600);
+    font-family:var(--display); font-weight:600; font-size:12px;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--orange-600);
+    margin:0 0 18px;
   }
-  .eyebrow::before{content:"";width:22px;height:1px;background:var(--orange-600);display:inline-block;}
-  /* ── Event-Zuordnung (gleiche Logik + Optik wie Tools/selbsttest-wo-kommst-du-noch-vor.html) ── */
   .event-eyebrow{
     display:none; align-items:center; gap:8px;
     background:var(--paper-2); border:1px solid var(--line-light);
@@ -134,251 +112,248 @@
   }
   #event-eyebrow-select{
     background:transparent; border:none; color:var(--ink-soft);
-    font-family:"Work Sans",sans-serif; font-size:12.5px; letter-spacing:.03em;
-    cursor:pointer; outline:none; max-width:280px;
+    font-family:var(--body); font-size:12.5px; letter-spacing:.03em;
+    cursor:pointer; outline:none; max-width:320px;
   }
   #event-eyebrow-select option{ color:var(--ink); }
-  .intro h1{
-    font-family:'Archivo',system-ui,sans-serif; font-weight:800; letter-spacing:-.01em;
-    font-size:clamp(1.7rem,4.6vw,2.3rem);margin-top:14px;
-  }
-  .intro .lede{margin-top:16px;color:var(--ink-soft);font-size:1.02rem;max-width:52ch;}
-  .area-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px;}
-  .area-chips span{
-    font-size:.75rem;padding:7px 12px;border:1px solid var(--line-light);border-radius:20px;color:var(--ink-soft);
-  }
-  .intro-meta{
-    display:flex;gap:22px;margin-top:26px;padding-top:22px;border-top:1px solid var(--line-light);
-    font-size:.82rem;color:var(--ink-soft);flex-wrap:wrap;
-  }
-  .intro-meta b{display:block;color:var(--ink);font-family:"Fraunces",serif;font-size:1.1rem;font-weight:600;}
 
-  /* ---- question ---- */
-  .q-card{
-    background:var(--paper);
-    border-radius:6px;
-    padding:36px 30px;
-    color:var(--ink);
+  .site-brand{
+    display:flex; align-items:center; gap:10px;
+    color:var(--ink); text-decoration:none;
+    font-family:"Fraunces",serif; font-weight:600; font-size:1.05rem; letter-spacing:.01em;
+    padding:18px 0 0; max-width:var(--maxw); margin:0 auto;
   }
-  .q-area{
-    font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--orange-600);
+  .site-brand svg{ width:26px; height:26px; flex:none; color:var(--orange-500); }
+  h1{
+    font-family:var(--display); font-weight:800; font-size:clamp(34px,7.5vw,52px);
+    line-height:1.04; letter-spacing:-.02em; margin:0 0 20px; text-wrap:balance;
   }
-  .q-text{font-size:clamp(1.3rem,3.4vw,1.65rem);margin-top:12px;}
-  .answers{
-    margin-top:26px;
-    display:flex;
-    flex-direction:column;
-    gap:10px;
+  h2{
+    font-family:var(--display); font-weight:700; font-size:clamp(22px,4.5vw,28px);
+    line-height:1.15; letter-spacing:-.01em; margin:0 0 14px; text-wrap:balance;
   }
-  .answer-btn{
-    display:flex;align-items:center;justify-content:space-between;gap:12px;
-    text-align:left;
-    background:var(--cream);
-    border:1.5px solid var(--line-light);
-    border-radius:4px;
-    padding:15px 18px;
-    font-size:.96rem;
-    color:var(--ink);
-    cursor:pointer;
-    transition:border-color .12s ease, background .12s ease;
-  }
-  .answer-btn:hover{border-color:var(--orange-500);}
-  .answer-btn.selected{
-    border-color:var(--orange-500);
-    background:var(--orange-100);
-  }
-  .answer-btn .dot{
-    width:16px;height:16px;border-radius:50%;border:1.5px solid var(--line-light);flex:none;
-  }
-  .answer-btn.selected .dot{border-color:var(--orange-500);background:var(--orange-500);}
+  p{margin:0 0 16px; max-width:60ch}
+  .lead{font-size:19px; color:var(--ink)}
+  .muted{color:var(--ink-soft)}
+  .rule{width:56px; height:3px; background:var(--orange-500); border:0; margin:0 0 28px}
 
-  .q-nav{display:flex;justify-content:space-between;align-items:center;margin-top:28px;}
+  .note{
+    border-left:3px solid var(--orange-500); padding:14px 0 14px 18px;
+    margin:28px 0; font-size:16px; color:var(--ink-soft);
+  }
+  .note strong{color:var(--ink)}
 
-  /* ---- buttons ---- */
+  button{font:inherit; cursor:pointer}
   .btn{
-    display:inline-flex;align-items:center;justify-content:center;gap:8px;
-    padding:14px 26px;border-radius:2px;font-weight:600;font-size:.95rem;
-    cursor:pointer;border:1px solid transparent;
-    transition:transform .15s ease, background .15s ease, opacity .15s ease;
+    display:inline-block; font-family:var(--display); font-weight:700; font-size:17px;
+    letter-spacing:.01em; background:var(--orange-500); color:var(--cream); border:0;
+    padding:16px 30px; border-radius:2px; transition:background .15s ease;
   }
-  .btn:disabled{opacity:.4;cursor:not-allowed;}
-  .btn:not(:disabled):hover{transform:translateY(-1px);}
-  .btn-primary{background:var(--orange-500);color:var(--cream);}
-  .btn-primary:not(:disabled):hover{background:var(--orange-600);}
-  .btn-text{background:none;border:none;color:var(--ink-soft);font-size:.85rem;padding:8px 4px;}
-  .btn-text:hover{color:var(--ink);}
+  .btn:hover{background:var(--orange-600)}
+  .btn:focus-visible,.opt:focus-visible,.link:focus-visible{outline:3px solid var(--orange-500); outline-offset:3px}
+  .btn-ghost{
+    background:none; color:var(--ink-soft); border:1px solid var(--line-light);
+    padding:12px 20px; font-family:var(--display); font-weight:600; font-size:15px; border-radius:2px;
+  }
+  .btn-ghost:hover{color:var(--ink); border-color:var(--orange-500)}
 
-  /* ---- lead form ---- */
-  .lead-card{
-    background:var(--paper);
-    border-radius:6px;
-    padding:36px 30px;
-    color:var(--ink);
+  /* progress */
+  .prog{display:flex; gap:5px; margin:0 0 34px}
+  .prog span{height:4px; flex:1; background:var(--line-light); border-radius:2px}
+  .prog span.done{background:var(--orange-500)}
+  .prog span.now{background:var(--orange-600)}
+  .step{
+    font-family:var(--display); font-weight:600; font-size:12px; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--ink-soft); margin:0 0 14px;
   }
-  .lead-card h2{font-size:clamp(1.5rem,3.6vw,1.9rem);margin-top:12px;}
-  .lead-card .lede{margin-top:12px;color:var(--ink-soft);}
-  .field{margin-top:18px;display:flex;flex-direction:column;gap:6px;}
-  .field label{font-size:.78rem;font-weight:600;letter-spacing:.03em;color:var(--ink-soft);text-transform:uppercase;}
-  .field input{
-    padding:13px 14px;border:1.5px solid var(--line-light);border-radius:4px;
-    font-family:"Work Sans",sans-serif;font-size:.98rem;background:var(--cream);color:var(--ink);
+  .qtext{
+    font-family:var(--display); font-weight:700; font-size:clamp(21px,4.4vw,27px);
+    line-height:1.24; letter-spacing:-.01em; margin:0 0 30px; text-wrap:balance;
   }
-  .field input:focus{outline:2px solid var(--orange-500);outline-offset:1px;}
-  .consent{
-    margin-top:16px;display:flex;gap:10px;align-items:flex-start;font-size:.8rem;color:var(--ink-soft);
+  .opts{display:flex; flex-direction:column; gap:10px; margin-bottom:26px}
+  .opt{
+    text-align:left; width:100%; background:var(--cream); color:var(--ink);
+    border:1.5px solid var(--line-light); border-radius:2px; padding:15px 18px;
+    font-size:17px; transition:border-color .12s ease, background .12s ease;
   }
-  .consent input{margin-top:3px;}
-  .lead-note{margin-top:18px;font-size:.76rem;color:var(--ink-soft);font-style:italic;}
+  .opt:hover{border-color:var(--orange-500); background:var(--orange-100)}
+  .opt[aria-pressed="true"]{border-color:var(--orange-500); background:var(--orange-100)}
+  .opt[aria-pressed="true"]::before{content:"→ "; color:var(--orange-600); font-weight:700}
 
-  /* ---- result ---- */
-  .result-card{
-    background:var(--paper);
-    border-radius:6px;
-    padding:38px 30px;
-    color:var(--ink);
+  /* result map */
+  .map{display:grid; grid-template-columns:1fr; gap:1px; background:var(--line-light); border:1px solid var(--line-light); margin:6px 0 30px}
+  .cell{background:var(--cream); padding:14px 16px; display:flex; align-items:baseline; justify-content:space-between; gap:14px}
+  .cell b{font-family:var(--display); font-weight:600; font-size:16px; letter-spacing:.01em}
+  .state{font-family:var(--display); font-weight:700; font-size:12px; letter-spacing:.1em; text-transform:uppercase; white-space:nowrap}
+  .s-ja{color:var(--ok)} .s-kaum{color:var(--orange-500)} .s-nein{color:var(--orange-600)}
+  .verdict{
+    font-family:var(--display); font-weight:800; font-size:clamp(24px,5vw,34px);
+    line-height:1.12; letter-spacing:-.015em; margin:0 0 18px; text-wrap:balance;
   }
-  .result-tag{
-    font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--orange-600);
+  .card{background:var(--paper-2); border:1px solid var(--line-light); padding:24px 22px; margin:0 0 26px}
+  .card h3{font-family:var(--display); font-weight:700; font-size:19px; margin:0 0 10px; letter-spacing:-.005em}
+  .card p:last-child{margin-bottom:0}
+  .optin{background:var(--paper-2); border:1px solid var(--line-light); border-top:3px solid var(--orange-500); padding:28px 24px; margin:0 0 26px}
+  .optin h3{font-family:var(--display); font-weight:800; font-size:23px; line-height:1.25; margin:0 0 10px; letter-spacing:-.01em}
+  .optin > p{margin:0 0 20px; color:var(--ink-soft)}
+  .fl{display:block; font-family:var(--display); font-weight:600; font-size:14px; color:var(--ink); margin:18px 0 7px}
+  .opt-tag{font-family:var(--body); font-weight:400; font-size:13px; color:var(--ink-soft); letter-spacing:0}
+  .req-tag{font-family:var(--body); font-weight:600; font-size:13px; color:var(--orange-600); letter-spacing:0}
+  .optin input[type=text], .optin input[type=email], .optin textarea{
+    width:100%; font:inherit; font-size:16px; color:var(--ink);
+    background:var(--cream); border:1px solid var(--line-light); padding:11px 13px;
+    border-radius:0; -webkit-appearance:none;
   }
-  .result-title{font-size:clamp(1.8rem,4.6vw,2.4rem);margin-top:12px;}
-  .result-lede{margin-top:16px;color:var(--ink-soft);font-size:1.02rem;}
-  .bars{margin-top:30px;display:flex;flex-direction:column;gap:14px;}
-  .bar-row{display:grid;grid-template-columns:120px 1fr 34px;gap:12px;align-items:center;}
-  .bar-row .label{font-size:.82rem;color:var(--ink-soft);}
-  .bar-track{height:9px;background:var(--paper-2);border-radius:8px;overflow:hidden;}
-  .bar-fill{height:100%;background:var(--line-light);}
-  .bar-row.top .bar-fill{background:var(--orange-500);}
-  .bar-row.top .label{color:var(--ink);font-weight:600;}
-  .bar-val{font-size:.78rem;color:var(--ink-soft);text-align:right;font-variant-numeric:tabular-nums;}
-  .result-cta{
-    margin-top:32px;padding-top:26px;border-top:1px solid var(--line-light);
-    display:flex;flex-direction:column;gap:14px;
+  .optin textarea{resize:vertical; line-height:1.5}
+  .optin input:focus, .optin textarea:focus{outline:2px solid var(--orange-500); outline-offset:1px; border-color:transparent}
+  .optin input::placeholder, .optin textarea::placeholder{color:var(--ink-soft)}
+  .frow{display:grid; gap:0 16px}
+  @media (min-width:520px){ .frow{grid-template-columns:1fr 1fr} }
+  .fine{font-size:13.5px; line-height:1.5; color:var(--ink-soft); margin:7px 0 0}
+  .cb{display:flex; gap:11px; align-items:flex-start; margin:16px 0 0; font-size:15px; color:var(--ink-soft); cursor:pointer}
+  .cb input{margin:3px 0 0; flex:0 0 auto; width:17px; height:17px; accent-color:var(--orange-500)}
+  .formnote{margin:16px 0 0; font-size:14px; color:var(--orange-600)}
+  .placeholder{
+    border:1px dashed var(--line-light); padding:20px; color:var(--ink-soft); font-size:15px; margin:0 0 26px;
   }
-  .result-cta .ctas{display:flex;flex-wrap:wrap;gap:12px;}
-  .draft-note{
-    margin-top:34px;padding:16px 18px;background:var(--paper-2);border-left:3px solid var(--orange-500);
-    font-size:.8rem;color:var(--ink-soft);border-radius:2px;
-  }
+  .placeholder code{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:13px; color:var(--orange-600)}
+  .link{color:var(--orange-600); text-underline-offset:3px}
+  .foot{margin-top:40px; padding-top:22px; border-top:1px solid var(--line-light); font-size:14px; color:var(--ink-soft)}
+  @media (min-width:560px){ .map{grid-template-columns:1fr 1fr} }
+  @media (prefers-reduced-motion:reduce){ *{transition:none!important} }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase-config.js"></script>
+<script src="../Code/dynamics-crm.js"></script>
+</head>
+<body>
 
-<div class="top-bar">
-  <div class="top-bar-inner">
-    <div class="top-row">
-      <a href="../startseite.html" class="brand">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 20h18M5 20V9l7-5 7 5v11M9 20v-6h6v6"/></svg>
-        Der Architekt deines Lebens
-      </a>
-      <span class="step-label" id="stepLabel">Start</span>
-    </div>
-    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+<a href="../startseite.html" class="site-brand">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 20h18M5 20V9l7-5 7 5v11M9 20v-6h6v6"/></svg>
+  Der Architekt deines Lebens
+</a>
+
+<noscript>
+  <div style="max-width:640px;margin:48px auto;padding:0 20px;font-family:sans-serif;color:#1d1a13;background:#f6f0e3">
+    <p>Für diesen Check wird JavaScript benötigt. Bitte aktiviere JavaScript in deinem Browser, um den Ist-Situations-Check zu starten.</p>
   </div>
+</noscript>
+
+<div class="wrap">
+
+  <!-- ══════════ INTRO ══════════ -->
+  <section id="intro">
+    <div class="event-eyebrow" id="event-eyebrow">
+      <span id="event-eyebrow-text"></span>
+      <select id="event-eyebrow-select" style="display:none;" aria-label="Event zuordnen (Admin)"></select>
+      <span class="event-eyebrow-admin-badge" id="event-eyebrow-admin-badge" style="display:none;">Admin</span>
+    </div>
+    <p class="eyebrow">Ist-Situations-Check · 10 Aussagen · 5 Minuten</p>
+    <h1>Der Ist-Situations-Check</h1>
+    <hr class="rule">
+    <p class="lead">Du hast das Gefühl, an mehreren Stellen gleichzeitig zu kämpfen — Beziehung, Job, Energie, Geld, du selbst. Aber wo genau sitzt gerade der größte Druck?</p>
+    <p>Dieser Check misst nicht, wie gestresst du insgesamt bist. Er zeigt dir, welcher von fünf Lebensbereichen — Beziehung, Beruf &amp; Zeit, Energie &amp; Körper, Finanzen, Selbstbild — gerade am meisten Gewicht trägt, damit du weißt, wo ein erster Schritt am meisten bringt.</p>
+
+    <div class="note">
+      <p><strong>Das ist kein diagnostisches Verfahren.</strong> Er stellt keine Diagnose und ersetzt keine Beratung. Was hier herauskommt, ist eine Tendenz, keine Wahrheit über dich.</p>
+      <p style="margin-bottom:0">Er zeigt dir eine Richtung. Was du damit machst, entscheidest du.</p>
+    </div>
+
+    <p class="muted">Antworte spontan. Es gibt kein richtig oder falsch.</p>
+    <p style="margin-top:26px"><button class="btn" id="start">Check starten</button></p>
+  </section>
+
+  <!-- ══════════ FRAGEN ══════════ -->
+  <section id="quiz" hidden>
+    <div class="prog" id="prog" aria-hidden="true"></div>
+    <p class="step" id="step">Frage 1 von 10</p>
+    <p class="qtext" id="qtext">—</p>
+    <div class="opts" id="opts"></div>
+    <button class="btn-ghost" id="back" type="button">← Zurück</button>
+  </section>
+
+  <!-- ══════════ ERGEBNIS ══════════ -->
+  <section id="result" hidden>
+    <p class="eyebrow">Dein Ergebnis</p>
+    <p class="verdict" id="verdict">—</p>
+    <p class="muted" id="verdictSub">—</p>
+
+    <h2 style="margin-top:34px">Deine fünf Bereiche</h2>
+    <p class="muted" style="font-size:16px">Wo liegt der Druck gerade am höchsten?</p>
+    <div class="map" id="map"></div>
+
+    <div class="card" id="signCard">
+      <h3 id="signTitle">—</h3>
+      <p id="signText">—</p>
+      <p id="signCta">—</p>
+    </div>
+
+    <div class="card">
+      <h3>Ein Bereich wiegt gerade mehr als die anderen</h3>
+      <p>Merk ihn dir. Nicht den, der objektiv am schlimmsten aussieht — den, bei dem du beim Antworten am längsten gezögert hast. Das ist die Stelle, an der sich zuerst etwas bewegen lässt.</p>
+      <p style="margin-bottom:0" class="muted">Du musst heute nichts damit tun.</p>
+    </div>
+
+    <div class="note">
+      <p><strong>Wenn der Druck gerade an eine Grenze geht.</strong> Bei akuten Geldsorgen ist eine unabhängige Schuldner- oder Finanzberatung der richtige erste Ansprechpartner — kein Coaching ersetzt das. Und wenn es nicht nur um Stress geht, sondern du seit Wochen nicht mehr schläfst oder morgens kaum aus dem Bett kommst: Sprich mit deiner Hausärztin oder einer Psychotherapeutin.</p>
+      <p style="margin-bottom:0">Die TelefonSeelsorge ist kostenfrei und rund um die Uhr erreichbar: <strong>0800 111 0 111</strong> und <strong>0800 111 0 222</strong>.</p>
+    </div>
+
+    <h2 style="margin-top:40px">Was jetzt</h2>
+    <p>Dieses Ergebnis zeigt dir einen Druckpunkt, keinen Persönlichkeitsbefund. Er verschiebt sich, sobald sich an genau dieser Stelle etwas löst — und der erste Schritt ist zu wissen, wo er gerade liegt. Den hast du gerade gemacht.</p>
+
+    <div class="optin">
+      <p class="eyebrow" style="margin-bottom:12px">Wenn du weitergehen willst</p>
+      <h3 style="color:var(--orange-600)">Die ersten Seiten aus dem Buch</h3>
+      <p>Aus dem Kapitel, in dem dieser Zustand beschrieben wird — nicht als Ratgeber, sondern als Beschreibung. Kostenlos, als PDF.</p>
+
+      <form id="optinForm" novalidate>
+        <div class="frow">
+          <div>
+            <label class="fl" for="f_name">Vorname <span class="opt-tag">freiwillig</span></label>
+            <input id="f_name" name="vorname" type="text" autocomplete="given-name">
+          </div>
+          <div>
+            <label class="fl" for="f_mail">E-Mail <span class="req-tag">*Pflichtfeld</span></label>
+            <input id="f_mail" name="email" type="email" autocomplete="email" required>
+          </div>
+        </div>
+
+        <label class="cb"><input type="checkbox" name="newsletter"> <span>Ja, schick mir ab und zu Impulse per E-Mail. Jederzeit mit einem Klick abbestellbar.</span></label>
+
+        <p style="margin:22px 0 0"><button class="btn" type="submit">Ergebnis zusenden</button></p>
+        <p class="fine" style="margin-top:14px">Deine Angaben verwende ich nur, um dir dein Ergebnis zu schicken und dich bei Interesse zu einem Erstgespräch einzuladen — <a class="link" href="https://der-architekt-deines-lebens.de/rechtliches.html#datenschutz">Datenschutzerklärung</a>.</p>
+        <p class="formnote" id="formNote" hidden></p>
+      </form>
+    </div>
+
+    <p>
+      <button class="btn-ghost" id="resultBack" type="button">← Zurück zur letzten Frage</button>
+      <button class="btn-ghost" id="again" type="button">Check noch einmal machen</button>
+    </p>
+
+    <p class="foot">Sorin Ratiu · Der Architekt Deines Lebens · Dieser Check ersetzt keine Beratung und keine Diagnose.</p>
+  </section>
 </div>
 
-<main>
-
-  <!-- INTRO -->
-  <div class="screen" id="screen-intro">
-    <div class="intro">
-      <div class="event-eyebrow" id="event-eyebrow">
-        <span id="event-eyebrow-text"></span>
-        <select id="event-eyebrow-select" style="display:none;" aria-label="Event zuordnen (Admin)"></select>
-        <span class="event-eyebrow-admin-badge" id="event-eyebrow-admin-badge" style="display:none;">Admin</span>
-      </div>
-      <span class="eyebrow">Kostenlos &amp; unverbindlich</span>
-      <h1>Der Ist-Situations-Check</h1>
-      <p class="lede">10 kurze Aussagen, fünf Lebensbereiche. Am Ende weißt du, wo der eigentliche Druckpunkt in deinem Leben sitzt – nicht nur, welches Symptom gerade am lautesten ist.</p>
-      <div class="area-chips">
-        <span>Beziehung</span><span>Beruf &amp; Zeit</span><span>Energie &amp; Körper</span><span>Finanzen</span><span>Selbstbild</span>
-      </div>
-      <div class="intro-meta">
-        <div><b>~5 Min.</b>Dauer</div>
-        <div><b>10</b>Aussagen</div>
-        <div><b>1</b>Ergebnis</div>
-      </div>
-      <div style="margin-top:30px;">
-        <button class="btn btn-primary" onclick="startCheck()">Check starten</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- QUESTIONS -->
-  <div class="screen" id="screen-question" hidden>
-    <div class="q-card">
-      <span class="q-area" id="qArea">Bereich</span>
-      <h2 class="q-text" id="qText">Frage</h2>
-      <div class="answers" id="qAnswers"></div>
-      <div class="q-nav">
-        <button class="btn-text" onclick="goBack()" id="backBtn">← Zurück</button>
-        <button class="btn btn-primary" onclick="goNext()" id="nextBtn" disabled>Weiter</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- LEAD -->
-  <div class="screen" id="screen-lead" hidden>
-    <div class="lead-card">
-      <span class="eyebrow">Fast geschafft</span>
-      <h2>Wohin darf dein Ergebnis?</h2>
-      <p class="lede">Trag dich ein und du bekommst deinen persönlichen Druckpunkt direkt auf dieser Seite – und als Zusammenfassung per E-Mail.</p>
-      <div class="field">
-        <label for="leadName">Vorname</label>
-        <input id="leadName" type="text" placeholder="Dein Vorname" autocomplete="given-name">
-      </div>
-      <div class="field">
-        <label for="leadMail">E-Mail</label>
-        <input id="leadMail" type="email" placeholder="deine@email.de" autocomplete="email">
-      </div>
-      <label class="consent">
-        <input type="checkbox" id="leadConsent">
-        <span>Ich möchte mein Ergebnis + gelegentlich passende Impulse von Der Architekt deines Lebens per E-Mail erhalten. Abmeldung jederzeit möglich.</span>
-      </label>
-      <div style="margin-top:22px;">
-        <button class="btn btn-primary" onclick="showResult()" id="leadSubmitBtn" disabled>Ergebnis anzeigen</button>
-      </div>
-      <p class="lead-note">Platzhalter-Formular im Entwurf — für den Live-Betrieb an die bestehende Power-Automate/Dynamics-365-Anbindung koppeln.</p>
-    </div>
-  </div>
-
-  <!-- RESULT -->
-  <div class="screen" id="screen-result" hidden>
-    <div class="result-card">
-      <span class="result-tag">Dein Ergebnis</span>
-      <h2 class="result-title" id="resultTitle">Dein Druckpunkt: —</h2>
-      <p class="result-lede" id="resultLede"></p>
-
-      <div class="bars" id="resultBars"></div>
-
-      <div class="result-cta">
-        <p id="resultCtaText" style="color:var(--ink-soft);font-size:.95rem;"></p>
-        <div class="ctas">
-          <a href="#" class="btn btn-primary" id="resultCtaBtn">Kostenloses Erstgespräch vereinbaren</a>
-          <a href="#" class="btn-text" style="border:1px solid var(--line-light);border-radius:2px;padding:13px 22px;" onclick="restart();return false;">Check erneut starten</a>
-        </div>
-      </div>
-
-      <div class="draft-note">
-        <strong>Hinweis (nur im Entwurf sichtbar):</strong> Fragen, Auswertungslogik und Ergebnistexte sind ein erster Vorschlag zur Prüfung — vor Launch mit echten Klientinnen-Situationen gegenchecken, insbesondere Bereich „Finanzen" (Grenze zur Finanzberatung sauber halten).
-      </div>
-    </div>
-  </div>
-
-</main>
-
 <script>
-  // ── Event-Zuordnung (gleiche Logik wie Tools/selbsttest-wo-kommst-du-noch-vor.html,
-  // die wiederum Templates/umfrage_zg0826.html spiegelt) ─────────────────
+(function(){
+  "use strict";
+
+  // ── Event-Zuordnung (identisch zu Tools/wo-kommst-du-noch-vor.html,
+  // dort bewusst 1:1-kopierbar gehalten) ─────────────────────────────────
   // Für normale Besucher wird (falls zugeordnet) nur der Event-Name gezeigt;
   // nur eingeloggte Admins (Supabase-Auth-Session) sehen stattdessen ein
   // Auswahlfeld mit allen aktiven Events (aus Dynamics DEV oder PROD, je
   // nachdem wo die Seite gerade läuft), über das sich die Zuordnung ändern
   // lässt. Die Zuordnung liegt serverseitig in Supabase (Tabelle
   // survey_event_links, ein Datensatz pro page_key = URL-Pfad) — NICHT in
-  // localStorage, damit ALLE Besucher dieselbe vom Admin gewählte Zuordnung
-  // sehen.
-  (function initEventEyebrow() {
-    var PAGE_KEY = window.location.pathname;
-    var SELECTED_EVENT_ID = '';
+  // localStorage, damit ALLE Besucher (jeder Browser, jedes Gerät) dieselbe
+  // vom Admin gewählte Zuordnung sehen.
+  var PAGE_KEY = window.location.pathname;
+  var SELECTED_EVENT_ID = '';
 
+  (function initEventEyebrow() {
     var eyebrow       = document.getElementById('event-eyebrow');
     var eyebrowText   = document.getElementById('event-eyebrow-text');
     var eyebrowSelect = document.getElementById('event-eyebrow-select');
@@ -437,27 +412,23 @@
     }).catch(function (err) { console.error('Events load error:', err); });
   })();
 
-  const questions = [
-    {area:"Beziehung", areaKey:"beziehung", text:"Ich fühle mich in meiner Partnerschaft oder meinen engen Beziehungen oft allein, auch wenn andere da sind."},
-    {area:"Beziehung", areaKey:"beziehung", text:"Ich spreche Dinge, die mich stören, eher nicht an — aus Angst vor Streit oder Enttäuschung."},
-    {area:"Beruf & Zeit", areaKey:"beruf", text:"Mein Kalender ist voll, aber am Ende des Tages weiß ich nicht genau, was ich eigentlich geschafft habe."},
-    {area:"Beruf & Zeit", areaKey:"beruf", text:"Ich sage bei Anfragen fast automatisch „ja”, auch wenn ich eigentlich keine Kapazität mehr habe."},
-    {area:"Energie & Körper", areaKey:"energie", text:"Ich bin auch nach einer Nacht Schlaf morgens schon erschöpft."},
-    {area:"Energie & Körper", areaKey:"energie", text:"Ich ignoriere körperliche Warnsignale, bis es nicht mehr anders geht."},
-    {area:"Finanzen", areaKey:"finanzen", text:"Ich habe keinen klaren Überblick, wo ich finanziell wirklich stehe."},
-    {area:"Finanzen", areaKey:"finanzen", text:"Finanzielle Entscheidungen treffen eher andere für mich, oder ich schiebe sie auf."},
-    {area:"Selbstbild", areaKey:"selbstbild", text:"Ich weiß eigentlich nicht mehr genau, was ich selbst will — nur, was von mir erwartet wird."},
-    {area:"Selbstbild", areaKey:"selbstbild", text:"Ich vergleiche mich häufig mit anderen und komme dabei selten gut weg."}
+  var QUESTIONS = [
+    { area:"Beziehung",        areaKey:"beziehung", text:"Ich fühle mich in meiner Partnerschaft oder meinen engen Beziehungen oft allein, auch wenn andere da sind." },
+    { area:"Beziehung",        areaKey:"beziehung", text:"Ich spreche Dinge, die mich stören, eher nicht an — aus Angst vor Streit oder Enttäuschung." },
+    { area:"Beruf & Zeit",     areaKey:"beruf",      text:"Mein Kalender ist voll, aber am Ende des Tages weiß ich nicht genau, was ich eigentlich geschafft habe." },
+    { area:"Beruf & Zeit",     areaKey:"beruf",      text:"Ich sage bei Anfragen fast automatisch „ja“, auch wenn ich eigentlich keine Kapazität mehr habe." },
+    { area:"Energie & Körper", areaKey:"energie",    text:"Ich bin auch nach einer Nacht Schlaf morgens schon erschöpft." },
+    { area:"Energie & Körper", areaKey:"energie",    text:"Ich ignoriere körperliche Warnsignale, bis es nicht mehr anders geht." },
+    { area:"Finanzen",         areaKey:"finanzen",   text:"Ich habe keinen klaren Überblick, wo ich finanziell wirklich stehe." },
+    { area:"Finanzen",         areaKey:"finanzen",   text:"Finanzielle Entscheidungen treffen eher andere für mich, oder ich schiebe sie auf." },
+    { area:"Selbstbild",       areaKey:"selbstbild", text:"Ich weiß eigentlich nicht mehr genau, was ich selbst will — nur, was von mir erwartet wird." },
+    { area:"Selbstbild",       areaKey:"selbstbild", text:"Ich vergleiche mich häufig mit anderen und komme dabei selten gut weg." }
   ];
+  var ANSWER_OPTS = ["Trifft nicht zu", "Trifft eher nicht zu", "Trifft eher zu", "Trifft voll zu"];
 
-  const answerOptions = [
-    {label:"Trifft nicht zu", val:0},
-    {label:"Trifft eher nicht zu", val:1},
-    {label:"Trifft eher zu", val:2},
-    {label:"Trifft voll zu", val:3}
-  ];
+  var AREA_LABELS = { beziehung:"Beziehung", beruf:"Beruf & Zeit", energie:"Energie & Körper", finanzen:"Finanzen", selbstbild:"Selbstbild" };
 
-  const resultCopy = {
+  var RESULT_COPY = {
     beziehung:{
       title:"Verbindung",
       lede:"Dein größter Druckpunkt liegt gerade nicht in deinem Terminkalender, sondern in deinen Beziehungen: Du bist präsent für alle — aber fühlst dich selten wirklich gesehen.",
@@ -466,7 +437,7 @@
     beruf:{
       title:"Grenzen",
       lede:"Dein größter Druckpunkt ist ein fehlendes Nein: Du bist ständig verfügbar, sagst automatisch zu — und dein eigener Fokus geht dabei unter.",
-      cta:"Der erste Schritt ist nicht „noch mehr organisieren”, sondern zu lernen, wieder bewusst Grenzen zu setzen."
+      cta:"Der erste Schritt ist nicht „noch mehr organisieren“, sondern zu lernen, wieder bewusst Grenzen zu setzen."
     },
     energie:{
       title:"Erschöpfung",
@@ -481,130 +452,154 @@
     selbstbild:{
       title:"Klarheit",
       lede:"Dein größter Druckpunkt ist fehlende Klarheit darüber, was du selbst willst — du funktionierst nach den Erwartungen anderer, statt nach deiner eigenen Richtung.",
-      cta:"Genau hier setzt „Endlich Klarheit – Endlich wieder du” an: dein eigenes Bild wiederfinden, bevor der nächste Schritt geplant wird."
+      cta:"Genau hier setzt „Endlich Klarheit – Endlich wieder du“ an: dein eigenes Bild wiederfinden, bevor der nächste Schritt geplant wird."
     }
   };
 
-  let current = 0;
-  const responses = new Array(questions.length).fill(null);
+  var responses = new Array(QUESTIONS.length).fill(null);
+  var cur = 0;
 
-  function updateProgress(stepText, pct){
-    document.getElementById('stepLabel').textContent = stepText;
-    document.getElementById('progressFill').style.width = pct + '%';
-  }
+  var el = {
+    intro:document.getElementById("intro"), quiz:document.getElementById("quiz"),
+    result:document.getElementById("result"), prog:document.getElementById("prog"),
+    step:document.getElementById("step"), qtext:document.getElementById("qtext"),
+    opts:document.getElementById("opts"), back:document.getElementById("back"),
+    map:document.getElementById("map"), verdict:document.getElementById("verdict"),
+    verdictSub:document.getElementById("verdictSub"), signTitle:document.getElementById("signTitle"),
+    signText:document.getElementById("signText"), signCta:document.getElementById("signCta")
+  };
 
-  function showScreen(id){
-    document.querySelectorAll('.screen').forEach(s => s.hidden = true);
-    document.getElementById(id).hidden = false;
-  }
+  for(var i=0;i<QUESTIONS.length;i++){ el.prog.appendChild(document.createElement("span")); }
 
-  function startCheck(){
-    current = 0;
-    renderQuestion();
-    showScreen('screen-question');
-  }
-
-  function renderQuestion(){
-    const q = questions[current];
-    document.getElementById('qArea').textContent = 'Bereich: ' + q.area;
-    document.getElementById('qText').textContent = q.text;
-    const wrap = document.getElementById('qAnswers');
-    wrap.innerHTML = '';
-    answerOptions.forEach(opt => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'answer-btn' + (responses[current] === opt.val ? ' selected' : '');
-      btn.innerHTML = '<span>' + opt.label + '</span><span class="dot"></span>';
-      btn.onclick = () => selectAnswer(opt.val);
-      wrap.appendChild(btn);
-    });
-    document.getElementById('backBtn').style.visibility = current === 0 ? 'hidden' : 'visible';
-    document.getElementById('nextBtn').disabled = responses[current] === null;
-    document.getElementById('nextBtn').textContent = current === questions.length - 1 ? 'Zum Ergebnis' : 'Weiter';
-    updateProgress('Frage ' + (current+1) + ' von ' + questions.length, ((current) / questions.length) * 100);
-  }
-
-  function selectAnswer(val){
-    responses[current] = val;
-    renderQuestion();
-  }
-
-  function goNext(){
-    if(responses[current] === null) return;
-    if(current < questions.length - 1){
-      current++;
-      renderQuestion();
-    } else {
-      updateProgress('Deine Kontaktdaten', 92);
-      showScreen('screen-lead');
-      checkLeadForm();
+  function paintProgress(){
+    var bars = el.prog.children;
+    for(var i=0;i<bars.length;i++){
+      bars[i].className = i < cur ? "done" : (i === cur ? "now" : "");
     }
   }
 
-  function goBack(){
-    if(current === 0) return;
-    current--;
-    renderQuestion();
+  function render(){
+    var q = QUESTIONS[cur];
+    el.step.textContent = "Frage " + (cur+1) + " von " + QUESTIONS.length;
+    el.qtext.textContent = q.text;
+    el.opts.textContent = "";
+    ANSWER_OPTS.forEach(function(label, v){
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "opt"; b.textContent = label;
+      b.setAttribute("aria-pressed", responses[cur] === v ? "true" : "false");
+      b.addEventListener("click", function(){ choose(v); });
+      el.opts.appendChild(b);
+    });
+    paintProgress();
   }
 
-  function checkLeadForm(){
-    const name = document.getElementById('leadName').value.trim();
-    const mail = document.getElementById('leadMail').value.trim();
-    const consent = document.getElementById('leadConsent').checked;
-    document.getElementById('leadSubmitBtn').disabled = !(name && mail.includes('@') && consent);
+  function choose(v){
+    responses[cur] = v;
+    if(cur < QUESTIONS.length - 1){ cur++; render(); }
+    else { show("result"); finish(); }
   }
-  ['leadName','leadMail','leadConsent'].forEach(id => {
-    document.addEventListener('DOMContentLoaded', () => {
-      const el = document.getElementById(id);
-      if(el) el.addEventListener('input', checkLeadForm);
-      if(el) el.addEventListener('change', checkLeadForm);
-    });
-  });
+
+  function show(which){
+    el.intro.hidden = which !== "intro";
+    el.quiz.hidden   = which !== "quiz";
+    el.result.hidden = which !== "result";
+    window.scrollTo(0,0);
+  }
 
   function computeScores(){
-    const scores = {beziehung:0, beruf:0, energie:0, finanzen:0, selbstbild:0};
-    questions.forEach((q, i) => { scores[q.areaKey] += (responses[i] || 0); });
+    var scores = { beziehung:0, beruf:0, energie:0, finanzen:0, selbstbild:0 };
+    QUESTIONS.forEach(function(q, i){ scores[q.areaKey] += (responses[i] || 0); });
     return scores;
   }
 
-  function showResult(){
-    const scores = computeScores();
-    const maxKey = Object.keys(scores).reduce((a,b) => scores[b] > scores[a] ? b : a);
-    const copy = resultCopy[maxKey];
+  function finish(){
+    var scores = computeScores();
+    var maxKey = Object.keys(scores).reduce(function(a,b){ return scores[b] > scores[a] ? b : a; });
+    var copy = RESULT_COPY[maxKey];
 
-    document.getElementById('resultTitle').textContent = 'Dein Druckpunkt: ' + copy.title;
-    document.getElementById('resultLede').textContent = copy.lede;
-    document.getElementById('resultCtaText').textContent = copy.cta;
-
-    const areaLabels = {beziehung:'Beziehung', beruf:'Beruf & Zeit', energie:'Energie & Körper', finanzen:'Finanzen', selbstbild:'Selbstbild'};
-    const barsWrap = document.getElementById('resultBars');
-    barsWrap.innerHTML = '';
-    Object.keys(scores).forEach(key => {
-      const pct = (scores[key] / 6) * 100;
-      const row = document.createElement('div');
-      row.className = 'bar-row' + (key === maxKey ? ' top' : '');
-      row.innerHTML = '<span class="label">' + areaLabels[key] + '</span>' +
-        '<span class="bar-track"><span class="bar-fill" style="width:' + pct + '%"></span></span>' +
-        '<span class="bar-val">' + scores[key] + '/6</span>';
-      barsWrap.appendChild(row);
+    el.map.textContent = "";
+    Object.keys(scores).forEach(function(key){
+      var s = scores[key];
+      var stateClass = s <= 2 ? "s-ja" : (s <= 4 ? "s-kaum" : "s-nein");
+      var stateLabel = s <= 2 ? "Entspannt" : (s <= 4 ? "Angespannt" : "Kritisch");
+      var cell = document.createElement("div"); cell.className = "cell";
+      var name = document.createElement("b"); name.textContent = AREA_LABELS[key];
+      var st = document.createElement("span");
+      st.className = "state " + stateClass;
+      st.textContent = stateLabel;
+      cell.appendChild(name); cell.appendChild(st);
+      el.map.appendChild(cell);
     });
 
-    updateProgress('Ergebnis', 100);
-    showScreen('screen-result');
+    el.verdict.textContent = "Dein größter Druckpunkt: " + copy.title;
+    el.verdictSub.textContent = "Von deinen fünf Lebensbereichen wiegt „" + AREA_LABELS[maxKey] + "“ aktuell am meisten — mit " + scores[maxKey] + " von 6 möglichen Punkten.";
+
+    el.signTitle.textContent = "Was das für dich bedeutet";
+    el.signText.textContent = copy.lede;
+    el.signCta.textContent = copy.cta;
   }
 
-  function restart(){
-    current = 0;
-    responses.fill(null);
-    document.getElementById('leadName').value = '';
-    document.getElementById('leadMail').value = '';
-    document.getElementById('leadConsent').checked = false;
-    showScreen('screen-intro');
-    updateProgress('Start', 0);
-  }
+  document.getElementById("start").addEventListener("click", function(){
+    cur = 0; show("quiz"); render();
+  });
+  el.back.addEventListener("click", function(){
+    if(cur > 0){ cur--; render(); }
+    else { show("intro"); }
+  });
 
-  // init
-  document.getElementById('leadName').addEventListener('input', checkLeadForm);
-  document.getElementById('leadMail').addEventListener('input', checkLeadForm);
-  document.getElementById('leadConsent').addEventListener('change', checkLeadForm);
+  // Opt-in-Formular → Lead in Dynamics anlegen, genau wie bei den anderen
+  // Formularen auf der Seite (dynamicsCRM.submitLead(), supabase/functions/
+  // crm-submit[-dev]) — kein eigener Mechanismus für dieses Tool.
+  var optinForm   = document.getElementById("optinForm");
+  var optinSubmit = optinForm.querySelector("button[type=submit]");
+  var formNote    = document.getElementById("formNote");
+
+  optinForm.addEventListener("submit", function(e){
+    e.preventDefault();
+
+    var vorname = document.getElementById("f_name").value.trim();
+    var email   = document.getElementById("f_mail").value.trim();
+    var newsletterOptIn = optinForm.querySelector("input[name=newsletter]").checked;
+
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+      formNote.textContent = "Bitte gib eine gültige E-Mail-Adresse an.";
+      formNote.style.color = "var(--orange-600)";
+      formNote.hidden = false;
+      document.getElementById("f_mail").focus();
+      return;
+    }
+
+    optinSubmit.disabled = true;
+    optinSubmit.textContent = "Wird gesendet …";
+    formNote.hidden = true;
+
+    dynamicsCRM.submitLead({
+      firstname: vorname,
+      email: email,
+      newsletterOptIn: newsletterOptIn
+    }).then(function(res){
+      optinSubmit.disabled = false;
+      optinSubmit.textContent = "Ergebnis zusenden";
+      if(res && res.success){
+        formNote.textContent = "Danke! Deine Anmeldung ist bei uns eingegangen.";
+        formNote.style.color = "var(--ok)";
+        optinForm.reset();
+      } else {
+        formNote.textContent = "Da ist etwas schiefgelaufen. Bitte versuch es gleich noch einmal.";
+        formNote.style.color = "var(--orange-600)";
+      }
+      formNote.hidden = false;
+    });
+  });
+
+  document.getElementById("resultBack").addEventListener("click", function(){
+    cur = QUESTIONS.length - 1; show("quiz"); render();
+  });
+  document.getElementById("again").addEventListener("click", function(){
+    responses = new Array(QUESTIONS.length).fill(null); cur = 0; show("intro");
+  });
+})();
 </script>
+
+</body>
+</html>

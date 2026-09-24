@@ -7,7 +7,7 @@
 
 <title>Selbsttest: Wo kommst du noch vor? | Mental-Load-Test</title>
 <meta name="description" content="Kommst du in deinem eigenen Leben noch vor? Kostenloser Selbsttest in 3 Minuten: 12 Fragen zu 6 Lebensbereichen zeigen dir, wo du nur noch Zuständigkeit bist.">
-<link rel="canonical" href="https://der-architekt-deines-lebens.de/selbsttest-wo-kommst-du-noch-vor/">
+<link rel="canonical" href="https://der-architekt-deines-lebens.de/Tools/wo-kommst-du-noch-vor.html">
 
 <!-- Open Graph / Social Sharing -->
 <meta property="og:type" content="website">
@@ -15,7 +15,7 @@
 <meta property="og:site_name" content="Der Architekt Deines Lebens">
 <meta property="og:title" content="Selbsttest: Wo kommst du noch vor?">
 <meta property="og:description" content="12 Fragen, 3 Minuten, 6 Lebensbereiche – finde heraus, wo du in deinem eigenen Leben noch als Person vorkommst und wo nur noch als Zuständigkeit.">
-<meta property="og:url" content="https://der-architekt-deines-lebens.de/selbsttest-wo-kommst-du-noch-vor/">
+<meta property="og:url" content="https://der-architekt-deines-lebens.de/Tools/wo-kommst-du-noch-vor.html">
 <meta property="og:image" content="https://der-architekt-deines-lebens.de/images/mental-load-test-og.jpg"><!-- TODO: echtes Vorschaubild (1200×630px) hochladen und Pfad anpassen -->
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -38,7 +38,7 @@
   "name": "Selbsttest: Wo kommst du noch vor?",
   "headline": "Wo kommst du in deinem eigenen Leben noch vor?",
   "description": "Kommst du in deinem eigenen Leben noch vor? Kostenloser Selbsttest in 3 Minuten: 12 Fragen zu 6 Lebensbereichen zeigen dir, wo du nur noch Zuständigkeit bist.",
-  "url": "https://der-architekt-deines-lebens.de/selbsttest-wo-kommst-du-noch-vor/",
+  "url": "https://der-architekt-deines-lebens.de/Tools/wo-kommst-du-noch-vor.html",
   "inLanguage": "de-DE",
   "datePublished": "2026-09-21",
   "dateModified": "2026-09-21",
@@ -61,7 +61,7 @@
     "@type": "BreadcrumbList",
     "itemListElement": [
       { "@type": "ListItem", "position": 1, "name": "Startseite", "item": "https://der-architekt-deines-lebens.de/" },
-      { "@type": "ListItem", "position": 2, "name": "Selbsttest: Wo kommst du noch vor?", "item": "https://der-architekt-deines-lebens.de/selbsttest-wo-kommst-du-noch-vor/" }
+      { "@type": "ListItem", "position": 2, "name": "Selbsttest: Wo kommst du noch vor?", "item": "https://der-architekt-deines-lebens.de/Tools/wo-kommst-du-noch-vor.html" }
     ]
   }
 }
@@ -198,6 +198,7 @@
   .optin > p{margin:0 0 20px; color:var(--ink-soft)}
   .fl{display:block; font-family:var(--display); font-weight:600; font-size:14px; color:var(--ink); margin:18px 0 7px}
   .opt-tag{font-family:var(--body); font-weight:400; font-size:13px; color:var(--ink-soft); letter-spacing:0}
+  .req-tag{font-family:var(--body); font-weight:600; font-size:13px; color:var(--orange-600); letter-spacing:0}
   .optin input[type=text], .optin input[type=email], .optin textarea{
     width:100%; font:inherit; font-size:16px; color:var(--ink);
     background:var(--cream); border:1px solid var(--line-light); padding:11px 13px;
@@ -268,7 +269,7 @@
     <p class="step" id="step">Frage 1 von 12</p>
     <p class="qtext" id="qtext">—</p>
     <div class="opts" id="opts"></div>
-    <button class="btn-ghost" id="back" type="button">Zurück</button>
+    <button class="btn-ghost" id="back" type="button">← Zurück</button>
   </section>
 
   <!-- ══════════ ERGEBNIS ══════════ -->
@@ -302,7 +303,7 @@
 
     <div class="optin">
       <p class="eyebrow" style="margin-bottom:12px">Wenn du weitergehen willst</p>
-      <h3>Die ersten Seiten aus dem Buch</h3>
+      <h3 style="color:var(--orange-600)">Die ersten Seiten aus dem Buch</h3>
       <p>Aus dem Kapitel, in dem dieser Zustand beschrieben wird — nicht als Ratgeber, sondern als Beschreibung. Kostenlos, als PDF.</p>
 
       <form id="optinForm" novalidate>
@@ -312,7 +313,7 @@
             <input id="f_name" name="vorname" type="text" autocomplete="given-name">
           </div>
           <div>
-            <label class="fl" for="f_mail">E-Mail</label>
+            <label class="fl" for="f_mail">E-Mail <span class="req-tag">*Pflichtfeld</span></label>
             <input id="f_mail" name="email" type="email" autocomplete="email" required>
           </div>
         </div>
@@ -325,11 +326,10 @@
       </form>
     </div>
 
-    <div class="placeholder">
-      <strong style="color:var(--ink)">Platzhalter für dich, Sorin:</strong> Der Lead wird jetzt in Dynamics angelegt (wie bei den anderen Formularen). Was noch fehlt: der eigentliche Versand der Leseprobe/PDF inkl. Bestätigungslink — dafür entweder an den bestehenden DOI-Mechanismus (<code>crm-lead-confirm</code> + <code>verify-email.html</code>) anschließen oder ein eigenes E-Mail-Template ergänzen. Diesen Kasten danach löschen.
-    </div>
-
-    <p><button class="btn-ghost" id="again" type="button">Test noch einmal machen</button></p>
+    <p>
+      <button class="btn-ghost" id="resultBack" type="button">← Zurück zur letzten Frage</button>
+      <button class="btn-ghost" id="again" type="button">Test noch einmal machen</button>
+    </p>
 
     <p class="foot">Sorin Ratiu · Der Architekt Deines Lebens · Dieser Test ersetzt keine Diagnose und keine Behandlung.</p>
   </section>
@@ -478,7 +478,6 @@
       b.addEventListener("click", function(){ choose(v); });
       el.opts.appendChild(b);
     });
-    el.back.hidden = cur === 0;
     paintProgress();
   }
 
@@ -555,6 +554,7 @@
   });
   el.back.addEventListener("click", function(){
     if(cur > 0){ cur--; render(); }
+    else { show("intro"); }
   });
   // Opt-in-Formular → Lead in Dynamics anlegen, genau wie bei den anderen
   // Formularen auf der Seite (dynamicsCRM.submitLead(), supabase/functions/
@@ -599,6 +599,9 @@
       }
       formNote.hidden = false;
     });
+  });
+  document.getElementById("resultBack").addEventListener("click", function(){
+    cur = qs.length - 1; show("quiz"); render();
   });
   document.getElementById("again").addEventListener("click", function(){
     answers = new Array(qs.length).fill(null); cur = 0; show("intro");
