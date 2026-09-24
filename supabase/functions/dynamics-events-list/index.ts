@@ -79,6 +79,7 @@ function statusLabel(n: unknown): string {
 function typeLabel(n: unknown): string {
   const num = typeof n === "number" ? n : Number(n);
   if (num === 959230001) return "Webinar";
+  if (num === 959230003) return "Tool";
   return "Workshop"; // 959230000
 }
 

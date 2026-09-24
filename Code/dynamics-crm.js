@@ -144,6 +144,22 @@ class DynamicsCRM {
     });
   }
 
+  // Liest alle aktiven Produkte aus Dynamics (Entität "wht_product",
+  // read-only) — supabase/functions/dynamics-products-list[-dev]. Jedes
+  // Produkt liefert { id, name, url }. Gibt bei Fehlern ein leeres Array
+  // zurück statt zu werfen, analog zu listEvents().
+  listProducts() {
+    return this.client.functions.invoke(this._functionName('dynamics-products-list'), {
+      method: 'GET'
+    }).then(function (res) {
+      if (res.error) throw res.error;
+      return res.data || [];
+    }).catch(function (err) {
+      console.error('CRM list products error:', err);
+      return [];
+    });
+  }
+
   // Liest alle Leads (wht_lead), die einem Event zugeordnet sind (read-only)
   // — supabase/functions/dynamics-leads-by-event[-dev]. Jeder Lead trägt
   // "active" (true = per Double-Opt-In bestätigt, siehe confirmLead()).

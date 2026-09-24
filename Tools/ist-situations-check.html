@@ -248,6 +248,12 @@
       <select id="event-eyebrow-select" style="display:none;" aria-label="Event zuordnen (Admin)"></select>
       <span class="event-eyebrow-admin-badge" id="event-eyebrow-admin-badge" style="display:none;">Admin</span>
     </div>
+    <div class="event-eyebrow" id="product-eyebrow">
+      <span id="product-eyebrow-text"></span>
+      <a class="link" id="product-eyebrow-link" href="#" target="_blank" rel="noopener" style="display:none;">Ansehen</a>
+      <select id="product-eyebrow-select" style="display:none;" aria-label="Produkt zuordnen (Admin)"></select>
+      <span class="event-eyebrow-admin-badge" id="product-eyebrow-admin-badge" style="display:none;">Admin</span>
+    </div>
     <p class="eyebrow">Ist-Situations-Check · 10 Aussagen · 5 Minuten</p>
     <h1>Der Ist-Situations-Check</h1>
     <hr class="rule">
@@ -321,7 +327,7 @@
 
         <label class="cb"><input type="checkbox" name="newsletter"> <span>Ja, schick mir ab und zu Impulse per E-Mail. Jederzeit mit einem Klick abbestellbar.</span></label>
 
-        <p style="margin:22px 0 0"><button class="btn" type="submit">Ergebnis zusenden</button></p>
+        <p style="margin:22px 0 0"><button class="btn" type="submit">Leseprobe schicken</button></p>
         <p class="fine" style="margin-top:14px">Deine Angaben verwende ich nur, um dir dein Ergebnis zu schicken und dich bei Interesse zu einem Erstgespräch einzuladen — <a class="link" href="https://der-architekt-deines-lebens.de/rechtliches.html#datenschutz">Datenschutzerklärung</a>.</p>
         <p class="formnote" id="formNote" hidden></p>
       </form>
@@ -372,7 +378,7 @@
       dynamicsCRM.listEvents(),
       db.from('survey_event_links').select('event_id').eq('page_key', PAGE_KEY).maybeSingle()
     ]).then(function (results) {
-      var events = results[0] || [];
+      var events = (results[0] || []).filter(function (e) { return e.type === 'Tool'; });
       var linkRes = results[1] || {};
       SELECTED_EVENT_ID = (linkRes.data && linkRes.data.event_id) || '';
 
@@ -410,6 +416,79 @@
         });
       }).catch(function (err) { console.error('Auth session check error:', err); });
     }).catch(function (err) { console.error('Events load error:', err); });
+  })();
+
+  // ── Produkt-Zuordnung (gleiches Muster wie die Event-Zuordnung oben,
+  // aber gegen die Dynamics-Tabelle "wht_product" und die Supabase-Tabelle
+  // "tool_product_links") ─────────────────────────────────────────────────
+  // Für normale Besucher wird (falls zugeordnet) nur Produktname + Link
+  // gezeigt; nur eingeloggte Admins sehen zusätzlich ein Auswahlfeld mit
+  // allen aktiven Produkten, über das sich die Zuordnung ändern lässt.
+  (function initProductEyebrow() {
+    var SELECTED_PRODUCT_ID = '';
+
+    var eyebrow       = document.getElementById('product-eyebrow');
+    var eyebrowText   = document.getElementById('product-eyebrow-text');
+    var eyebrowLink   = document.getElementById('product-eyebrow-link');
+    var eyebrowSelect = document.getElementById('product-eyebrow-select');
+    var eyebrowBadge  = document.getElementById('product-eyebrow-admin-badge');
+
+    if (typeof dynamicsCRM === 'undefined') return;
+
+    Promise.all([
+      dynamicsCRM.listProducts(),
+      db.from('tool_product_links').select('product_id').eq('page_key', PAGE_KEY).maybeSingle()
+    ]).then(function (results) {
+      var products = results[0] || [];
+      var linkRes = results[1] || {};
+      SELECTED_PRODUCT_ID = (linkRes.data && linkRes.data.product_id) || '';
+
+      var active = products.find(function (p) { return p.id === SELECTED_PRODUCT_ID; }) || null;
+
+      function showActiveProduct() {
+        eyebrowText.textContent = (active && active.name) || '';
+        if (active && active.url) {
+          eyebrowLink.href = active.url;
+          eyebrowLink.style.display = 'inline';
+        } else {
+          eyebrowLink.style.display = 'none';
+        }
+      }
+
+      if (active) {
+        showActiveProduct();
+        eyebrow.classList.add('visible');
+      }
+
+      // Nur eingeloggte Admins dürfen die Produkt-Zuordnung ändern.
+      db.auth.getSession().then(function (sessionRes) {
+        if (!sessionRes.data.session || !products.length) return;
+
+        function renderOptions() {
+          eyebrowSelect.innerHTML = '<option value="">— kein Produkt —</option>' + products.map(function (p) {
+            var isSelected = p.id === SELECTED_PRODUCT_ID;
+            return '<option value="' + p.id + '"' + (isSelected ? ' selected' : '') + '>' + (p.name || '') + '</option>';
+          }).join('');
+        }
+        renderOptions();
+
+        eyebrowText.style.display   = 'none';
+        eyebrowSelect.style.display = 'inline-block';
+        eyebrowBadge.style.display  = 'inline-block';
+        eyebrow.classList.add('visible');
+
+        eyebrowSelect.addEventListener('change', function () {
+          SELECTED_PRODUCT_ID = this.value;
+          active = products.find(function (p) { return p.id === SELECTED_PRODUCT_ID; }) || null;
+          renderOptions();
+          eyebrowLink.style.display = (active && active.url) ? 'inline' : 'none';
+          if (active && active.url) eyebrowLink.href = active.url;
+          db.from('tool_product_links')
+            .upsert({ page_key: PAGE_KEY, product_id: SELECTED_PRODUCT_ID, updated_at: new Date().toISOString() }, { onConflict: 'page_key' })
+            .then(function (res) { if (res.error) console.error('Tool product link save error:', res.error.message); });
+        });
+      }).catch(function (err) { console.error('Auth session check error:', err); });
+    }).catch(function (err) { console.error('Products load error:', err); });
   })();
 
   var QUESTIONS = [
@@ -576,7 +655,8 @@
     dynamicsCRM.submitLead({
       firstname: vorname,
       email: email,
-      newsletterOptIn: newsletterOptIn
+      newsletterOptIn: newsletterOptIn,
+      eventId: SELECTED_EVENT_ID
     }).then(function(res){
       optinSubmit.disabled = false;
       optinSubmit.textContent = "Ergebnis zusenden";
