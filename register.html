@@ -9,6 +9,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 <script src="Code/dynamics-crm.js"></script>
+<script src="Code/send-overlay.js"></script>
 <script src="Code/constants.js"></script>
 <script src="Code/add-to-calendar.js"></script>
 <script src="Code/captcha.js"></script>
@@ -863,6 +864,7 @@
     var handy    = document.getElementById('handy').value.trim();
 
     setLoading(true);
+    sendOverlay.show('Bitte warten. E-Mail wird verschickt');
 
     // Kontaktdaten werden ausschließlich in Dynamics gespeichert (siehe
     // dynamicsCRM.submitLead weiter unten) — kein Supabase-Write mehr hier.
@@ -893,7 +895,16 @@
     if (isTestTicket) thankyouParams.set('is_test', '1');
     var thankyouUrl = 'Templates/danke-optin.html?' + thankyouParams.toString();
 
-    function goToDanke() { window.location.href = thankyouUrl; }
+    // Bei Newsletter-Opt-in erst auf die Double-Opt-In-Mail hinweisen,
+    // Weiterleitung zur Danke-Seite dann per "Weiter".
+    var newsletterOptIn = document.getElementById('c-newsletter').checked;
+    function goToDanke() {
+      if (newsletterOptIn) {
+        sendOverlay.showDoi(email, { onContinue: function () { window.location.href = thankyouUrl; } });
+      } else {
+        window.location.href = thankyouUrl;
+      }
+    }
 
     // Dynamics CRM: Fehler blockieren die Weiterleitung nicht — die Weiterleitung
     // muss aber warten, bis der Request wirklich abgeschlossen ist (nicht nur
@@ -909,7 +920,7 @@
       // oben) — ohne diese Zustimmung dürfen wir keine E-Mails zur Anmeldung schicken,
       // daher hier immer true, unabhängig vom (nicht änderbaren) Checkbox-Status.
       einwilligungDatenverarbeitungOptIn: true,
-      newsletterOptIn: document.getElementById('c-newsletter').checked
+      newsletterOptIn: newsletterOptIn
     });
 
     if (!isTestTicket) {

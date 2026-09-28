@@ -54,7 +54,11 @@
       "Bash(node --check Code/send-overlay.js)",
       "Bash(node -e \"const h=require\\('fs'\\).readFileSync\\('lanpag/buch-du-hast-kein-stressproblem.html','utf8'\\);[...h.matchAll\\(/<script>\\([\\\\s\\\\S]*?\\)<\\\\/script>/g\\)].forEach\\(\\(m,i\\)=>{try{new Function\\(m[1]\\);console.log\\('script',i,'OK'\\)}catch\\(e\\){console.log\\('script',i,'FEHLER',e.message\\)}}\\)\")",
       "Bash(curl -s https://vtdekigorlwlarvlshpp.supabase.co/functions/v1/dynamics-events-list-dev -H 'Authorization: Bearer __TRACKED_VAR__' -H 'apikey: __TRACKED_VAR__')",
-      "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\).on\\('end',\\(\\)=>{JSON.parse\\(d\\).forEach\\(e=>console.log\\(e.type.padEnd\\(10\\),'|',e.name\\)\\)}\\)\")"
+      "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\).on\\('end',\\(\\)=>{JSON.parse\\(d\\).forEach\\(e=>console.log\\(e.type.padEnd\\(10\\),'|',e.name\\)\\)}\\)\")",
+      "Bash(node -e \"const h=require\\('fs'\\).readFileSync\\('register.html','utf8'\\);[...h.matchAll\\(/<script>\\([\\\\s\\\\S]*?\\)<\\\\/script>/g\\)].forEach\\(\\(m,i\\)=>{try{new Function\\(m[1]\\);console.log\\('script',i,'OK'\\)}catch\\(e\\){console.log\\('script',i,'FEHLER',e.message\\)}}\\)\")",
+      "Bash(node -e \"const h=require\\('fs'\\).readFileSync\\('startseite.html','utf8'\\);[...h.matchAll\\(/<script>\\([\\\\s\\\\S]*?\\)<\\\\/script>/g\\)].forEach\\(\\(m,i\\)=>{try{new Function\\(m[1]\\);console.log\\('script',i,'OK'\\)}catch\\(e\\){console.log\\('script',i,'FEHLER',e.message\\)}}\\)\")",
+      "Bash([ -f \"$f\" ])",
+      "Bash(echo \"- [Opt-in-Checkboxen un-checked]\\(optin-checkboxes-unchecked.md\\) — Newsletter-Häkchen nie vorab setzen \\(DSGVO/Planet49\\)\")"
     ]
   }
 }

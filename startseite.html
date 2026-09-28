@@ -590,6 +590,8 @@
     font-size:.95rem;
   }
   .form-ph input::placeholder{color:#7f8ea6;}
+  .form-ph .form-cb{display:flex;gap:10px;align-items:flex-start;font-size:.85rem;line-height:1.5;color:#c3cddc;text-transform:none;letter-spacing:0;cursor:pointer;margin-top:4px;}
+  .form-ph .form-cb input{width:16px;height:16px;flex:none;margin:3px 0 0;padding:0;accent-color:var(--orange-500);}
   .form-note{font-size:.72rem;color:#8394ad;margin-top:2px;}
 
   /* ---------- social grid ---------- */
@@ -948,9 +950,10 @@
           <input id="ph-name" name="vorname" type="text" placeholder="Dein Vorname" autocomplete="given-name" required>
           <label for="ph-mail">E-Mail</label>
           <input id="ph-mail" name="email" type="email" placeholder="deine@email.de" autocomplete="email" required>
+          <label class="form-cb"><input type="checkbox" id="ph-newsletter" name="newsletter"> <span>Ja, schick mir ab und zu Impulse per E-Mail (Newsletter). Jederzeit mit einem Klick abbestellbar.</span></label>
           <button type="submit" class="btn btn-primary" id="checkSubmitBtn" style="margin-top:6px;justify-content:center;">Jetzt kostenlos starten</button>
           <p class="form-note" id="checkErrorMsg" style="display:none;color:var(--orange-500);">Da ist etwas schiefgelaufen. Bitte versuch es gleich noch einmal.</p>
-          <p class="form-note">Kein Spam. Deine Daten werden ausschließlich für deinen Check und gelegentliche Impulse von Der Architekt deines Lebens genutzt. Abmeldung jederzeit möglich.</p>
+          <p class="form-note">Kein Spam. Deine Daten werden ausschließlich für deinen Check genutzt – und für gelegentliche Impulse von Der Architekt deines Lebens nur, wenn du das oben angehakt hast. Abmeldung jederzeit möglich.</p>
         </form>
       </div>
     </div>
@@ -1088,6 +1091,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 <script src="Code/dynamics-crm.js"></script>
+<script src="Code/send-overlay.js"></script>
 <script>
   (function(){
     var form = document.getElementById('checkLeadForm');
@@ -1100,18 +1104,28 @@
       errorMsg.style.display = 'none';
       var vorname = document.getElementById('ph-name').value.trim();
       var email = document.getElementById('ph-mail').value.trim();
+      var newsletterOptIn = document.getElementById('ph-newsletter').checked;
       if(!vorname || !email) return;
 
       submitBtn.disabled = true;
       submitBtn.textContent = 'Einen Moment …';
+      sendOverlay.show('Bitte warten. E-Mail wird verschickt');
 
       try {
         // Legt den Lead in Dynamics 365 an (supabase/functions/crm-submit[-dev])
         // — fire-and-forget: ein CRM-Fehler blockiert nie die Weiterleitung zum Check.
-        await dynamicsCRM.submitLead({ firstname: vorname, email: email });
-        window.location.href = 'Tools/ist-situations-check.html?vorname=' + encodeURIComponent(vorname) + '&email=' + encodeURIComponent(email);
+        await dynamicsCRM.submitLead({ firstname: vorname, email: email, newsletterOptIn: newsletterOptIn });
+        var checkUrl = 'Tools/ist-situations-check.html?vorname=' + encodeURIComponent(vorname) + '&email=' + encodeURIComponent(email);
+        // Bei Newsletter-Opt-in erst auf die Double-Opt-In-Mail hinweisen,
+        // Weiterleitung zum Check dann per "Weiter".
+        if (newsletterOptIn) {
+          sendOverlay.showDoi(email, { continueLabel: 'Weiter zum Check', onContinue: function(){ window.location.href = checkUrl; } });
+        } else {
+          window.location.href = checkUrl;
+        }
       } catch (err) {
         console.error(err);
+        sendOverlay.hide();
         errorMsg.style.display = 'block';
         submitBtn.disabled = false;
         submitBtn.textContent = 'Jetzt kostenlos starten';
