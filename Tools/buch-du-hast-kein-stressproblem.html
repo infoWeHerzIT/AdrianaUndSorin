@@ -85,18 +85,21 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600;700&family=Archivo:wght@800&display=swap">
 <style>
   :root{
     --paper:#f6f0e3; --paper-2:#eee4cf;
     --ink:#1d1a13; --ink-soft:#5c5645;
     --line-light:#cdbe9c;
-    --navy:#22304a; --navy-2:#37486b;
+    --navy:#00224d; --navy-2:#0b3a6b;
     --cream:#fffaf1;
     --orange-500:#d9682c; --orange-600:#bd551f; --orange-100:#f3dcc4;
     --ok:#4c7a5e;
-    --display:'Archivo',system-ui,sans-serif;
-    --body:'Source Sans 3',system-ui,sans-serif;
+    /* Fonts wie startseite.html: Fraunces für Überschriften, Work Sans für Text/UI, Archivo nur für H1 */
+    --display:'Work Sans',system-ui,sans-serif;
+    --serif:'Fraunces',Georgia,serif;
+    --hero:'Archivo',system-ui,sans-serif;
+    --body:'Work Sans',system-ui,sans-serif;
     --maxw:680px;
   }
   *{box-sizing:border-box}
@@ -118,7 +121,7 @@
     background:var(--navy); padding:6px 12px; border-radius:2px; margin:0 0 20px;
   }
   h1{
-    font-family:var(--display); font-weight:800; font-size:clamp(32px,7vw,48px);
+    font-family:var(--hero); font-weight:800; font-size:clamp(32px,7vw,48px);
     line-height:1.06; letter-spacing:-.02em; margin:0 0 10px; text-wrap:balance;
   }
   .subtitle{
@@ -126,10 +129,10 @@
     color:var(--ink-soft); line-height:1.35; margin:0 0 22px; text-wrap:balance;
   }
   h2{
-    font-family:var(--display); font-weight:700; font-size:clamp(22px,4.5vw,27px);
+    font-family:var(--serif); font-weight:600; font-size:clamp(22px,4.5vw,27px);
     line-height:1.18; letter-spacing:-.01em; margin:0 0 16px; text-wrap:balance;
   }
-  h3{font-family:var(--display); font-weight:700; font-size:18px; margin:0 0 8px}
+  h3{font-family:var(--serif); font-weight:600; font-size:18px; margin:0 0 8px}
   p{margin:0 0 16px; max-width:64ch}
   .lead{font-size:19px}
   .muted{color:var(--ink-soft)}
@@ -201,7 +204,7 @@
   }
   .price-card.highlight{border-color:var(--orange-500); border-width:1.5px}
   .price-tag{font-family:var(--display); font-weight:600; font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); margin:0 0 6px}
-  .price-amount{font-family:var(--display); font-weight:800; font-size:26px; margin:0 0 4px}
+  .price-amount{font-family:var(--serif); font-weight:600; font-size:26px; margin:0 0 4px}
   .price-desc{font-size:14px; color:var(--ink-soft); margin:0}
   .price-fine{font-size:12.5px; color:var(--ink-soft); margin:18px 0 0}
 
@@ -212,7 +215,7 @@
 
   /* Optin */
   .optin{background:var(--paper-2); border:1px solid var(--line-light); border-top:3px solid var(--orange-500); padding:28px 24px; margin:0 0 18px}
-  .optin h3{font-family:var(--display); font-weight:800; font-size:22px; line-height:1.25; margin:0 0 10px; letter-spacing:-.01em}
+  .optin h3{font-family:var(--serif); font-weight:600; font-size:22px; line-height:1.25; margin:0 0 10px; letter-spacing:-.01em}
   .optin > p{margin:0 0 20px; color:var(--ink-soft)}
   .fl{display:block; font-family:var(--display); font-weight:600; font-size:14px; color:var(--ink); margin:16px 0 7px}
   .opt-tag{font-family:var(--body); font-weight:400; font-size:13px; color:var(--ink-soft); letter-spacing:0}
@@ -243,6 +246,7 @@
 <script src="../supabase-config.js"></script>
 <script src="../Code/dynamics-crm.js"></script>
 <script src="../Code/send-overlay.js"></script>
+<script src="../Code/leseprobe-optin.js"></script>
 </head>
 <body>
 
@@ -373,31 +377,7 @@
 
   <!-- ══════════ OPT-IN ══════════ -->
   <section id="benachrichtigung">
-    <div class="optin">
-      <p class="eyebrow" style="margin-bottom:12px">Jetzt schon sichern</p>
-      <h3>Kapitel 1 gratis lesen – und Bescheid bekommen, wenn das Buch erscheint</h3>
-      <p>Du bekommst die vollständige Leseprobe aus Kapitel 1 als PDF, inklusive der drei Übungsfragen. Wenn du magst, sagen wir dir zusätzlich Bescheid, sobald das Buch bestellbar ist.</p>
-
-      <form id="optinForm" novalidate>
-        <div class="frow">
-          <div>
-            <label class="fl" for="f_name">Vorname <span class="opt-tag">freiwillig</span></label>
-            <input id="f_name" name="vorname" type="text" autocomplete="given-name">
-          </div>
-          <div>
-            <label class="fl" for="f_mail">E-Mail <span class="req-tag">*Pflichtfeld</span></label>
-            <input id="f_mail" name="email" type="email" autocomplete="email" required>
-          </div>
-        </div>
-
-        <label class="cb"><input type="checkbox" name="buchbenachrichtigung" checked> <span>Ja, sag mir Bescheid, sobald das Buch erscheint.</span></label>
-        <label class="cb"><input type="checkbox" name="newsletter"> <span>Ja, schick mir ab und zu Impulse per E-Mail (Newsletter). Jederzeit mit einem Klick abbestellbar.</span></label>
-
-        <p style="margin:22px 0 0"><button class="btn" type="submit">Leseprobe schicken</button></p>
-        <p class="fine" style="margin-top:14px">Du bekommst zuerst eine E-Mail mit einem Bestätigungslink. Erst danach geht die Leseprobe raus. Deine Angaben verwende ich nur dafür – <a class="link" href="https://der-architekt-deines-lebens.de/rechtliches.html#datenschutz">Datenschutzerklärung</a>.</p>
-        <p class="formnote" id="formNote" hidden></p>
-      </form>
-    </div>
+    <div data-leseprobe-optin></div>
   </section>
 
   <div class="note">
@@ -410,62 +390,6 @@
   <p class="foot">Sorin Ratiu · <a class="link" href="https://der-architekt-deines-lebens.de/">Der Architekt Deines Lebens</a> · Erscheint im Verlag der weHerzIT GmbH · Dieses Buch ersetzt keine Diagnose und keine Behandlung.</p>
 </div>
 
-<script>
-(function(){
-  "use strict";
-  // Opt-in-Formular → Lead in Dynamics anlegen, genau wie in
-  // Tools/ist-situations-check.html (dynamicsCRM.submitLead(),
-  // supabase/functions/crm-submit[-dev]).
-  var optinForm   = document.getElementById("optinForm");
-  var optinSubmit = optinForm.querySelector("button[type=submit]");
-  var formNote    = document.getElementById("formNote");
-
-  optinForm.addEventListener("submit", function(e){
-    e.preventDefault();
-
-    var vorname = document.getElementById("f_name").value.trim();
-    var email   = document.getElementById("f_mail").value.trim();
-    var emailOptIn      = optinForm.querySelector("input[name=buchbenachrichtigung]").checked;
-    var newsletterOptIn = optinForm.querySelector("input[name=newsletter]").checked;
-
-    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
-      formNote.textContent = "Bitte gib eine gültige E-Mail-Adresse an.";
-      formNote.style.color = "var(--orange-600)";
-      formNote.hidden = false;
-      document.getElementById("f_mail").focus();
-      return;
-    }
-
-    optinSubmit.disabled = true;
-    optinSubmit.textContent = "Wird gesendet …";
-    formNote.hidden = true;
-    sendOverlay.show("Bitte warten. E-Mail wird verschickt");
-
-    dynamicsCRM.submitLead({
-      firstname: vorname,
-      email: email,
-      emailOptIn: emailOptIn,
-      newsletterOptIn: newsletterOptIn
-    }).then(function(res){
-      optinSubmit.disabled = false;
-      optinSubmit.textContent = "Leseprobe schicken";
-      if(res && res.success){
-        formNote.textContent = "Danke! Deine Anmeldung ist bei uns eingegangen.";
-        formNote.style.color = "var(--ok)";
-        optinForm.reset();
-        // Bei Newsletter-Opt-in auf die Double-Opt-In-Mail hinweisen.
-        if(newsletterOptIn) sendOverlay.showDoi(email, { continueLabel: "Schließen" });
-        else sendOverlay.hide();
-      } else {
-        formNote.textContent = "Da ist etwas schiefgelaufen. Bitte versuch es gleich noch einmal.";
-        formNote.style.color = "var(--orange-600)";
-        sendOverlay.hide();
-      }
-      formNote.hidden = false;
-    });
-  });
-})();
-</script>
 
 </body>
 </html>

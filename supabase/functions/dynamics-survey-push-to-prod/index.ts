@@ -82,6 +82,7 @@ type DevOption = {
   wht_makesurnamerequired: boolean;
   wht_makeemailrequired: boolean;
   wht_makephonerequired: boolean;
+  wht_addmoreinformation: boolean;
 };
 type DevQuestion = {
   wht_surveyquestionid: string;
@@ -140,6 +141,7 @@ serve(async (req) => {
           wht_makesurnamerequired: !!opt.wht_makesurnamerequired,
           wht_makeemailrequired: !!opt.wht_makeemailrequired,
           wht_makephonerequired: !!opt.wht_makephonerequired,
+          wht_addmoreinformation: !!opt.wht_addmoreinformation,
         });
       }
     }
@@ -298,6 +300,7 @@ serve(async (req) => {
           wht_makesurnamerequired: opt.wht_makesurnamerequired,
           wht_makeemailrequired: opt.wht_makeemailrequired,
           wht_makephonerequired: opt.wht_makephonerequired,
+          wht_addmoreinformation: opt.wht_addmoreinformation,
         };
         if (prodOptionId) {
           optionsUpdated++;

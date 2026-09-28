@@ -6,23 +6,31 @@
 <title>Der 4-Schritte-Fahrplan: Vom Funktionieren zum Gestalten</title>
 <meta name="description" content="Kostenloser Fahrplan von Der Architekt deines Lebens: In 4 Schritten vom Funktionieren zum bewussten Gestalten deines Lebens.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600;700&family=Archivo:wght@800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --navy: #00224D;
-    --navy-light: #0b2f61;
-    --orange: #FF6300;
-    --cream: #fff4ec;
-    --grey: #555;
+    /* Farben wie startseite.html */
+    --navy: #00224d;
+    --navy-light: #0b3a6b;
+    --orange: #d9682c;
+    --orange-600: #bd551f;
+    --orange-100: #f3dcc4;
+    --cream: #fffaf1;
+    --paper: #f6f0e3;
+    --paper-2: #eee4cf;
+    --ink: #1d1a13;
+    --grey: #5c5645;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    font-family: Arial, Helvetica, sans-serif;
-    color: #1a1a1a;
-    background: #ffffff;
+    font-family: "Work Sans", system-ui, -apple-system, sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+    -webkit-font-smoothing: antialiased;
     line-height: 1.6;
   }
-  .serif { font-family: Georgia, 'Times New Roman', serif; }
+  .serif { font-family: "Fraunces", Georgia, serif; font-weight: 600; }
   .wrap { max-width: 760px; margin: 0 auto; padding: 0 24px; }
 
   /* ---------- HERO ---------- */
@@ -38,33 +46,35 @@
     margin-bottom: 16px; width: fit-content;
   }
   .event-eyebrow.visible { display: inline-flex; }
-  .hero h1 { font-family: 'Archivo', system-ui, sans-serif; font-size: 40px; line-height: 1.2; font-weight: 800; margin-bottom: 10px; }
-  .hero .subtitle { color: var(--orange); font-weight: bold; font-size: 19px; margin-bottom: 22px; }
+  .hero h1 { font-family: 'Archivo', system-ui, sans-serif; font-size: 40px; line-height: 1.15; font-weight: 800; letter-spacing: -.02em; margin-bottom: 10px; }
+  .hero .subtitle { color: var(--orange-100); font-weight: 600; font-size: 19px; margin-bottom: 22px; }
   .hero p.body { color: #cfd9ea; font-size: 16px; max-width: 560px; margin-bottom: 30px; }
   .cta-btn {
     display: inline-block;
     background: var(--orange);
-    color: var(--navy);
-    font-weight: bold;
+    color: var(--cream);
+    font-family: "Work Sans", sans-serif;
+    font-weight: 600;
     font-size: 16px;
+    letter-spacing: .01em;
     padding: 15px 30px;
-    border-radius: 4px;
+    border-radius: 2px;
     text-decoration: none;
     border: none;
     cursor: pointer;
   }
-  .cta-btn:hover { opacity: 0.92; }
+  .cta-btn:hover { background: var(--orange-600); }
 
   /* ---------- WHAT'S INSIDE ---------- */
   .inside { padding: 56px 0; }
   .inside .eyebrow { color: var(--orange); font-weight: bold; letter-spacing: 2px; font-size: 12px; margin-bottom: 10px; }
-  .inside h2 { font-family: Georgia, 'Times New Roman', serif; color: var(--navy); font-size: 28px; font-weight: normal; margin-bottom: 26px; }
+  .inside h2 { font-family: "Fraunces", Georgia, serif; color: var(--navy); font-size: 28px; font-weight: 600; margin-bottom: 26px; }
   .bullets { list-style: none; }
   .bullets li {
     display: flex;
     gap: 14px;
     padding: 16px 0;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #cdbe9c;
     font-size: 15.5px;
   }
   .bullets .num {
@@ -81,19 +91,19 @@
   .meta-line { margin-top: 22px; color: var(--grey); font-size: 14.5px; font-style: italic; }
 
   /* ---------- CREDIBILITY ---------- */
-  .credibility { background: #f4f6fa; padding: 40px 0; }
+  .credibility { background: var(--paper-2); padding: 40px 0; }
   .credibility .wrap { display: flex; align-items: center; gap: 20px; }
   .avatar-badge {
     flex: 0 0 auto; width: 56px; height: 56px; border-radius: 50%;
     background: var(--navy); color: var(--orange); font-weight: bold;
     display: flex; align-items: center; justify-content: center; font-size: 15px;
   }
-  .credibility p { font-size: 14.5px; color: #333; }
+  .credibility p { font-size: 14.5px; color: var(--ink); }
   .credibility strong { color: var(--navy); }
 
   /* ---------- FORM ---------- */
   .formsection { background: var(--navy); padding: 56px 0 64px 0; color: #fff; }
-  .formsection h2 { font-family: Georgia, 'Times New Roman', serif; font-size: 26px; font-weight: normal; margin-bottom: 10px; }
+  .formsection h2 { font-family: "Fraunces", Georgia, serif; font-size: 26px; font-weight: 600; margin-bottom: 10px; }
   .formsection .sub { color: #cfd9ea; font-size: 15px; margin-bottom: 26px; }
   form { max-width: 420px; }
   .field { margin-bottom: 14px; }
@@ -101,12 +111,14 @@
   .field input {
     width: 100%;
     padding: 13px 14px;
-    border-radius: 4px;
+    border-radius: 2px;
     border: none;
     font-size: 15px;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: "Work Sans", sans-serif;
   }
   .privacy { font-size: 12.5px; color: #9fb0cc; margin-top: 12px; }
+  .cb { display: flex; gap: 10px; align-items: flex-start; margin-top: 16px; font-size: 14px; line-height: 1.5; color: #cfd9ea; cursor: pointer; }
+  .cb input { width: 17px; height: 17px; flex: none; margin: 2px 0 0; accent-color: var(--orange); }
   .submit-row { margin-top: 20px; }
   .error-msg { color: #ffb199; font-size: 13.5px; margin-top: 10px; display: none; }
 
@@ -143,13 +155,13 @@
     100% { transform: translateY(170px) rotate(360deg); opacity: 0; }
   }
   #thankyou .box {
-    background: linear-gradient(160deg, var(--cream) 0%, #ffe4cc 100%);
+    background: linear-gradient(160deg, var(--cream) 0%, var(--orange-100) 100%);
     border: 1.5px solid var(--orange);
     border-radius: 10px;
     padding: 34px 28px;
-    color: #3a2a1a;
+    color: var(--ink);
     text-align: center;
-    box-shadow: 0 10px 32px rgba(255,99,0,0.2);
+    box-shadow: 0 10px 32px rgba(217,104,44,0.2);
     animation: popIn .5s cubic-bezier(.34,1.56,.64,1);
   }
   @keyframes popIn {
@@ -162,24 +174,24 @@
     60% { transform: scale(1.15); opacity: 1; }
     100% { transform: scale(1); }
   }
-  #thankyou h3 { color: var(--navy); font-family: Georgia, 'Times New Roman', serif; font-size: 24px; margin-bottom: 10px; font-weight: normal; }
+  #thankyou h3 { color: var(--navy); font-family: "Fraunces", Georgia, serif; font-size: 24px; margin-bottom: 10px; font-weight: 600; }
   #thankyou p { font-size: 15px; margin-bottom: 18px; }
   .download-btn {
     display: inline-block;
     background: var(--orange);
-    color: var(--navy);
-    font-weight: bold;
+    color: var(--cream);
+    font-weight: 600;
     padding: 14px 26px;
-    border-radius: 6px;
+    border-radius: 2px;
     text-decoration: none;
     font-size: 15px;
-    box-shadow: 0 4px 16px rgba(255,99,0,0.35);
+    box-shadow: 0 4px 16px rgba(217,104,44,0.35);
     transition: transform .15s, box-shadow .15s;
   }
-  .download-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,99,0,0.45); }
+  .download-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(217,104,44,0.45); }
 
   /* ---------- FOOTER ---------- */
-  footer { padding: 28px 0; text-align: center; color: #9aa3b2; font-size: 13px; }
+  footer { padding: 28px 0; text-align: center; color: var(--grey); font-size: 13px; }
   footer .handle { color: var(--orange); }
 
   @media (max-width: 600px) {
@@ -242,10 +254,11 @@
         <label for="email">E-Mail-Adresse</label>
         <input type="email" id="email" name="email" autocomplete="email" required>
       </div>
+      <label class="cb"><input type="checkbox" id="newsletter" name="newsletter"> <span>Ja, schick mir ab und zu Impulse per E-Mail (Newsletter). Jederzeit mit einem Klick abbestellbar.</span></label>
       <div class="submit-row">
         <button type="submit" class="cta-btn" id="submitBtn">Jetzt kostenlos herunterladen</button>
       </div>
-      <div class="privacy">Kein Spam. Deine Daten werden ausschließlich zum Versand dieses Freebies und gelegentlicher Updates von Der Architekt deines Lebens genutzt. Abmeldung jederzeit möglich.</div>
+      <div class="privacy">Kein Spam. Deine Daten werden ausschließlich zum Versand dieses Freebies genutzt – und für gelegentliche Impulse von Der Architekt deines Lebens nur, wenn du das oben angehakt hast. Abmeldung jederzeit möglich.</div>
       <div class="error-msg" id="errorMsg">Da ist etwas schiefgelaufen. Bitte versuch es gleich noch einmal oder schreib uns direkt auf Instagram @der_architekt_deines_lebens.</div>
     </form>
 
@@ -273,6 +286,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../supabase-config.js"></script>
 <script src="../Code/dynamics-crm.js"></script>
+<script src="../Code/send-overlay.js"></script>
 <script>
   // ============================================================
   // KONFIGURATION — VOR VERÖFFENTLICHUNG AUSFÜLLEN
@@ -316,22 +330,29 @@
     errorMsg.style.display = "none";
     const vorname = document.getElementById("vorname").value.trim();
     const email = document.getElementById("email").value.trim();
+    const newsletterOptIn = document.getElementById("newsletter").checked;
     if (!vorname || !email) return;
 
     submitBtn.disabled = true;
     submitBtn.textContent = "Einen Moment …";
+    sendOverlay.show("Bitte warten. E-Mail wird verschickt");
 
     try {
       // Legt den Lead in Dynamics 365 an (supabase/functions/crm-submit[-dev])
       // — fire-and-forget: ein CRM-Fehler blockiert nie den Download.
-      await dynamicsCRM.submitLead({ firstname: vorname, email: email });
+      await dynamicsCRM.submitLead({ firstname: vorname, email: email, newsletterOptIn: newsletterOptIn });
 
       const heading = thankyou.querySelector("h3");
       heading.textContent = "Fast geschafft, " + vorname + " 🎉";
       form.style.display = "none";
       thankyou.style.display = "block";
+      // Download-Box kommt immer; bei Newsletter-Opt-in liegt davor noch der
+      // Hinweis auf die Double-Opt-In-Mail.
+      if (newsletterOptIn) sendOverlay.showDoi(email, { continueLabel: "Zum Download" });
+      else sendOverlay.hide();
     } catch (err) {
       console.error(err);
+      sendOverlay.hide();
       errorMsg.style.display = "block";
       submitBtn.disabled = false;
       submitBtn.textContent = "Jetzt kostenlos herunterladen";

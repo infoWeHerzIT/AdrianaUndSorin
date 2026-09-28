@@ -169,15 +169,21 @@ serve(async (req) => {
             id: o.wht_surveyquestionoptionid,
             label: o.wht_labeltext ?? "",
             order: o.wht_order ?? 0,
+            allowsAdditionalInfo: !!o.wht_addmoreinformation,
           }));
         const qAnswers = answersByQuestion[qId] || [];
 
         if (isChoice) {
           const countByOption: Record<string, number> = {};
+          const additionalInfoByOption: Record<string, string[]> = {};
           const respondentIds = new Set<string>();
           for (const a of qAnswers) {
             const optId = a["_wht_surveyquestionoptionid_value"];
-            if (optId) countByOption[String(optId)] = (countByOption[String(optId)] || 0) + 1;
+            if (optId) {
+              countByOption[String(optId)] = (countByOption[String(optId)] || 0) + 1;
+              const info = String(a.wht_moreinformation ?? "").trim();
+              if (info) (additionalInfoByOption[String(optId)] ||= []).push(info);
+            }
             const respId = a["_wht_surveyresponseid_value"];
             if (respId) respondentIds.add(String(respId));
           }
@@ -186,6 +192,10 @@ serve(async (req) => {
             label: o.label,
             order: o.order,
             count: countByOption[String(o.id)] || 0,
+            allowsAdditionalInfo: o.allowsAdditionalInfo,
+            // Freitexte, die Teilnehmer:innen bei dieser Option zusätzlich
+            // eingetragen haben (nur relevant, wenn o.allowsAdditionalInfo).
+            additionalInfo: additionalInfoByOption[String(o.id)] || [],
           }));
           return {
             id: qId,

@@ -87,7 +87,7 @@
   <div class="admin-header-inner">
     <span class="admin-page-label">Tools</span>
     <h1>Selbsttests &amp; <em style="font-style:normal;color:var(--orange);">Tools</em></h1>
-    <p>Alle interaktiven Selbsttests aus /Tools im Überblick. Formulare, die an Dynamics angeschlossen sind, legen bei Absenden direkt einen Lead in Dynamics 365 an (supabase/functions/crm-submit).</p>
+    <p>Alle Seiten aus /Tools im Überblick. Der Leseprobe-Opt-in (Code/leseprobe-optin.js) legt bei Absenden mit E-Mail einen Lead in Dynamics 365 an (supabase/functions/crm-submit); ohne E-Mail geht es direkt zum PDF-Download.</p>
   </div>
 </div>
 
@@ -123,14 +123,20 @@ var TOOLS = [
   {
     file: 'wo-kommst-du-noch-vor.html',
     title: 'Mental-Load-Test: Wo kommst du noch vor?',
-    desc: '12 Fragen, 6 Lebensbereiche — zeigt, wo man im eigenen Leben noch als Person vorkommt und wo nur noch als Zuständigkeit. Endet mit Opt-in (Leseprobe).',
+    desc: '12 Fragen, 6 Lebensbereiche — zeigt, wo man im eigenen Leben noch als Person vorkommt und wo nur noch als Zuständigkeit. Endet mit dem Leseprobe-Opt-in (PDF-Download, Newsletter optional).',
     pageKey: '/Tools/wo-kommst-du-noch-vor.html'
   },
   {
     file: 'ist-situations-check.html',
     title: 'Der Ist-Situations-Check',
-    desc: '10 Aussagen, fünf Lebensbereiche — findet den größten aktuellen Druckpunkt (Beziehung, Beruf, Energie, Finanzen, Selbstbild). Endet mit Opt-in (Ergebnis + Erstgespräch).',
+    desc: '10 Aussagen, fünf Lebensbereiche — findet den größten aktuellen Druckpunkt (Beziehung, Beruf, Energie, Finanzen, Selbstbild). Endet mit dem Leseprobe-Opt-in (PDF-Download, Newsletter optional).',
     pageKey: '/Tools/ist-situations-check.html'
+  },
+  {
+    file: 'buch-du-hast-kein-stressproblem.html',
+    title: 'Buch: Du hast kein Stressproblem',
+    desc: 'Buch-Landingpage mit Leseprobe aus Kapitel 1, Inhaltsverzeichnis, Autor und Preisen. Endet mit dem Leseprobe-Opt-in (PDF-Download, Newsletter optional).',
+    pageKey: ''
   }
 ];
 
@@ -174,10 +180,15 @@ if (TOOLS.length === 0) {
       .then(function (res) { return res.text(); })
       .then(function (html) {
         var elBadges = document.getElementById('lp-badges-' + idx);
-        var connected = html.indexOf('dynamicsCRM.submitLead') !== -1;
-        elBadges.innerHTML = connected
+        // Der Leseprobe-Opt-in-Baustein (Code/leseprobe-optin.js) ruft
+        // dynamicsCRM.submitLead() selbst auf — eine Seite, die ihn einbindet,
+        // gilt deshalb ebenfalls als verbunden.
+        var usesOptinBlock = html.indexOf('data-leseprobe-optin') !== -1 && html.indexOf('leseprobe-optin.js') !== -1;
+        var connected = usesOptinBlock || html.indexOf('dynamicsCRM.submitLead') !== -1;
+        elBadges.innerHTML = (connected
           ? '<span class="badge-ok">✓ Dynamics verbunden</span>'
-          : '<span class="badge-warn">⚠ Dynamics nicht verbunden (Prototyp)</span>';
+          : '<span class="badge-warn">⚠ Dynamics nicht verbunden (Prototyp)</span>') +
+          (usesOptinBlock ? '<span class="badge-ok">✓ Leseprobe-Opt-in</span>' : '');
       })
       .catch(function (err) {
         console.error('Tool-Check fehlgeschlagen:', t.file, err);

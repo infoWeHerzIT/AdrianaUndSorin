@@ -182,6 +182,7 @@
 
   .option-list { display: flex; flex-direction: column; gap: 13px; padding: 2px; border-radius: 8px; transition: box-shadow .2s; }
   .option-list.error { box-shadow: 0 0 0 3px rgba(229,62,62,0.12); padding: 10px; }
+  .option-item-wrap { display: flex; flex-direction: column; gap: 8px; }
   .option-item {
     display: flex; align-items: flex-start; gap: 12px;
     font-size: 15px; color: var(--navy); line-height: 1.55;
@@ -193,6 +194,11 @@
     width: 18px; height: 18px;
     cursor: pointer;
   }
+  /* Freitextfeld unter dem Options-Label (wht_addmoreinformation=ja) —
+     eingerückt auf Höhe des Labeltexts (Checkbox/Radio-Breite + Gap), nur
+     sichtbar, solange die zugehörige Option ausgewählt ist. */
+  .option-more-info { display: none; margin-left: 30px; width: calc(100% - 30px); padding: 10px 14px; font-size: 14px; }
+  .option-more-info.visible { display: block; }
 
   .form-group.error .question-label { color: #e53e3e; }
 

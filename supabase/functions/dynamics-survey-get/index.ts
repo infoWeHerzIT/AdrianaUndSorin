@@ -163,6 +163,10 @@ serve(async (req) => {
             requiresSurname: !!o.wht_makesurnamerequired,
             requiresEmail: !!o.wht_makeemailrequired,
             requiresPhone: !!o.wht_makephonerequired,
+            // wht_addmoreinformation: bei dieser Option zeigt das Formular
+            // zusätzlich ein Freitextfeld unter dem Options-Label an (z. B.
+            // "Sonstiges, und zwar: ___"), siehe DynamicSurveyRenderer.
+            allowsAdditionalInfo: !!o.wht_addmoreinformation,
           }));
         return {
           id: qId,

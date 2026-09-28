@@ -59,7 +59,22 @@
       "Bash(node -e \"const h=require\\('fs'\\).readFileSync\\('startseite.html','utf8'\\);[...h.matchAll\\(/<script>\\([\\\\s\\\\S]*?\\)<\\\\/script>/g\\)].forEach\\(\\(m,i\\)=>{try{new Function\\(m[1]\\);console.log\\('script',i,'OK'\\)}catch\\(e\\){console.log\\('script',i,'FEHLER',e.message\\)}}\\)\")",
       "Bash([ -f \"$f\" ])",
       "Bash(echo \"- [Opt-in-Checkboxen un-checked]\\(optin-checkboxes-unchecked.md\\) — Newsletter-Häkchen nie vorab setzen \\(DSGVO/Planet49\\)\")",
-      "Bash(git diff *)"
+      "Bash(git diff *)",
+      "Bash(node \"C:/Users/sorin/AppData/Local/Temp/claude/d--GitHub-DADL-AdrianaUndSorin/afd75b1a-5433-4b61-b115-3f95b5ab2268/scratchpad/tools-thankyou.js\")",
+      "Bash(node \"C:/Users/sorin/AppData/Local/Temp/claude/d--GitHub-DADL-AdrianaUndSorin/afd75b1a-5433-4b61-b115-3f95b5ab2268/scratchpad/lanpag-newsletter.js\")",
+      "Bash(ls \"/c/Program Files/Google/Chrome/Application/chrome.exe\" \"/c/Program Files \\(x86\\)/Microsoft/Edge/Application/msedge.exe\" 2>&1; npm ls -g --depth=0 2>/dev/null | grep -i -E \"playwright|puppeteer\"; ls node_modules 2>/dev/null | grep -i -E \"playwright|puppeteer\")",
+      "Read(//c/Program Files/Google/Chrome/Application/**)",
+      "Bash(npm init *)",
+      "Bash(npm i *)",
+      "Bash(node test-check.js)",
+      "Bash(curl -s -L -o /dev/null -w \"HTTP %{http_code} | %{content_type} | %{size_download} bytes\\\\n\" \"https://weherzit-my.sharepoint.com/:b:/g/personal/sorin_ratiu_weherzit_de1/IQBnT2KgGvAmT590eli9sMEDARJ4uVQ42auVEAEOuDe-hmk?e=QbAGY7&download=1\")",
+      "Bash(sed -e 's#Tools/ist-situations-check.html#Tools/wo-kommst-du-noch-vor.html#' -e \"s#await run\\('ohne-vorname', '', false\\);##\" test-check.js)",
+      "Bash(node test-wo.js)",
+      "Bash(node \"C:/Users/sorin/AppData/Local/Temp/claude/d--GitHub-DADL-AdrianaUndSorin/afd75b1a-5433-4b61-b115-3f95b5ab2268/scratchpad/use-component.js\")",
+      "Bash(node --check Code/leseprobe-optin.js)",
+      "Bash(timeout 170 node test-tools.js)",
+      "Bash(grep -n \"//\")",
+      "Bash(node -e \"const h=require\\('fs'\\).readFileSync\\('admin/tools.html','utf8'\\);[...h.matchAll\\(/<script>\\([\\\\s\\\\S]*?\\)<\\\\/script>/g\\)].forEach\\(\\(m,i\\)=>{try{new Function\\(m[1]\\);console.log\\('Syntax OK'\\)}catch\\(e\\){console.log\\('FEHLER',e.message\\)}}\\)\")"
     ]
   }
 }

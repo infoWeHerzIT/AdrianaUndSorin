@@ -6,10 +6,12 @@
 // Absenden die Antworten in der Form, die
 // dynamicsCRM.submitSurveyResponse({ answers: [...] }) erwartet:
 //   { questionId, value }              — bei text/email/telefon/nummer
-//   { questionId, options: [{id,label}] } — bei einmal-/mehrfachauswahl
-//     (einmalauswahl: options mit genau einem Eintrag). Das Label wird
-//     mitgeschickt, damit wht_surveyanswer.wht_value (Primary-Name-Feld
-//     in Dynamics) auch bei Auswahl-Antworten befüllt werden kann.
+//   { questionId, options: [{id,label,additionalInfo?}] } — bei einmal-/
+//     mehrfachauswahl (einmalauswahl: options mit genau einem Eintrag). Das
+//     Label wird mitgeschickt, damit wht_surveyanswer.wht_value (Primary-
+//     Name-Feld in Dynamics) auch bei Auswahl-Antworten befüllt werden kann.
+//     additionalInfo ist nur gesetzt, wenn die Option
+//     wht_addmoreinformation=ja hat UND der User dort etwas eingetragen hat.
 //
 // Nutzung:
 //   var renderer = new DynamicSurveyRenderer(document.getElementById('root'));
@@ -29,6 +31,24 @@ class DynamicSurveyRenderer {
     return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
+  // Baut ein einzelnes Options-Item (Checkbox/Radio + Label). Optionen mit
+  // wht_addmoreinformation=ja (o.allowsAdditionalInfo) bekommen zusätzlich
+  // ein Freitextfeld unter dem Label (z. B. "Sonstiges, und zwar: ___") —
+  // ist die Option ausgewählt, wird dieses Feld pflicht (siehe validate()).
+  static _optionItemHtml(fieldId, inputType, o) {
+    var esc = DynamicSurveyRenderer.esc;
+    var extraHtml = o.allowsAdditionalInfo
+      ? '<input class="form-input option-more-info" type="text" id="dq-optinfo-' + esc(o.id) + '" placeholder="Bitte gib hier mehr Details an">' +
+        '<span class="field-error" id="err-optinfo-' + esc(o.id) + '">Bitte gib hier weitere Informationen an.</span>'
+      : '';
+    return (
+      '<div class="option-item-wrap">' +
+        '<label class="option-item"><input type="' + inputType + '" name="' + fieldId + '" value="' + esc(o.id) + '"> ' + esc(o.label) + '</label>' +
+        extraHtml +
+      '</div>'
+    );
+  }
+
   // onAnyChange: optionaler Callback, der bei jeder Interaktion mit einer
   // Frage aufgerufen wird (change/input) — z. B. um Kontaktfelder abhängig
   // von der Antwort dynamisch pflicht zu machen (siehe requiresContact()).
@@ -45,14 +65,14 @@ class DynamicSurveyRenderer {
         body =
           '<div class="option-list" id="' + fieldId + '">' +
           (q.options || []).map(function (o) {
-            return '<label class="option-item"><input type="checkbox" name="' + fieldId + '" value="' + esc(o.id) + '"> ' + esc(o.label) + '</label>';
+            return DynamicSurveyRenderer._optionItemHtml(fieldId, 'checkbox', o);
           }).join('') +
           '</div>';
       } else if (q.type === 'einmalauswahl') {
         body =
           '<div class="option-list" id="' + fieldId + '">' +
           (q.options || []).map(function (o) {
-            return '<label class="option-item"><input type="radio" name="' + fieldId + '" value="' + esc(o.id) + '"> ' + esc(o.label) + '</label>';
+            return DynamicSurveyRenderer._optionItemHtml(fieldId, 'radio', o);
           }).join('') +
           '</div>';
       } else if (q.type === 'text') {
@@ -84,15 +104,50 @@ class DynamicSurveyRenderer {
 
     this.container.innerHTML = html;
 
-    // Fehler beim Interagieren wieder entfernen
+    // Fehler beim Interagieren wieder entfernen + Freitextfelder (wht_add-
+    // moreinformation) ein-/ausblenden, je nachdem ob ihre Option gerade
+    // ausgewählt ist.
     var self = this;
     this.questions.forEach(function (q) {
       var fieldId = 'dq-' + q.id;
       var group = self.container.querySelector('[data-question-id="' + q.id.replace(/"/g, '') + '"]');
       if (!group) return;
-      group.addEventListener('change', function () { self._clearError(q.id); if (onAnyChange) onAnyChange(); });
-      group.addEventListener('input', function () { self._clearError(q.id); if (onAnyChange) onAnyChange(); });
+      self._syncOptionInfoVisibility(group);
+      group.addEventListener('change', function () {
+        self._syncOptionInfoVisibility(group);
+        self._clearError(q.id);
+        if (onAnyChange) onAnyChange();
+      });
+      group.addEventListener('input', function (e) {
+        self._clearError(q.id);
+        if (e.target.classList.contains('option-more-info')) self._clearOptionInfoError(e.target);
+        if (onAnyChange) onAnyChange();
+      });
     });
+  }
+
+  // Blendet die Freitextfelder (.option-more-info) innerhalb einer Frage
+  // ein/aus, je nachdem ob die zugehörige Checkbox/Radio gerade ausgewählt
+  // ist — läuft bei jeder Änderung der Auswahl erneut (auch bei Radios
+  // relevant: Auswählen einer anderen Option blendet das Feld der zuvor
+  // gewählten Option wieder aus).
+  _syncOptionInfoVisibility(group) {
+    var self = this;
+    group.querySelectorAll('.option-item-wrap').forEach(function (wrap) {
+      var input = wrap.querySelector('input[type="checkbox"], input[type="radio"]');
+      var info = wrap.querySelector('.option-more-info');
+      if (!input || !info) return;
+      info.classList.toggle('visible', input.checked);
+      // Wird das Feld durch Ab-/Umwählen wieder ausgeblendet, macht eine
+      // stehengebliebene Fehlermarkierung keinen Sinn mehr.
+      if (!input.checked) self._clearOptionInfoError(info);
+    });
+  }
+
+  _clearOptionInfoError(infoEl) {
+    infoEl.classList.remove('error');
+    var err = document.getElementById('err-' + infoEl.id.replace(/^dq-/, ''));
+    if (err) err.classList.remove('visible');
   }
 
   // Prüft für die aktuell gewählten Auswahl-Optionen, welche Kontaktfelder
@@ -132,27 +187,55 @@ class DynamicSurveyRenderer {
     if (optList) optList.classList.remove('error');
   }
 
-  // Prüft alle Pflichtfragen, markiert Fehler visuell, fokussiert die erste
-  // ungültige Frage. Gibt true zurück, wenn alles gültig ist.
+  // Prüft alle Pflichtfragen sowie die Freitextfelder ausgewählter
+  // "wht_addmoreinformation"-Optionen (die sind pflicht, sobald ihre Option
+  // gewählt ist — unabhängig davon, ob die Frage selbst pflicht ist),
+  // markiert Fehler visuell, fokussiert das erste ungültige Feld. Gibt true
+  // zurück, wenn alles gültig ist.
   validate() {
+    var self = this;
     var valid = true;
     var firstInvalid = null;
 
     this.questions.forEach((q) => {
-      if (!q.required) return;
-      var ok = this._isAnswered(q);
       var group = this.container.querySelector('[data-question-id="' + q.id + '"]');
-      var err = document.getElementById('err-dq-' + q.id);
-      if (!ok) {
-        valid = false;
-        if (group) group.classList.add('error');
-        var optList = group ? group.querySelector('.option-list') : null;
-        if (optList) optList.classList.add('error');
-        if (err) err.classList.add('visible');
-        if (!firstInvalid) firstInvalid = group;
-      } else {
-        if (group) group.classList.remove('error');
-        if (err) err.classList.remove('visible');
+
+      if (q.required) {
+        var ok = this._isAnswered(q);
+        var err = document.getElementById('err-dq-' + q.id);
+        if (!ok) {
+          valid = false;
+          if (group) group.classList.add('error');
+          var optList = group ? group.querySelector('.option-list') : null;
+          if (optList) optList.classList.add('error');
+          if (err) err.classList.add('visible');
+          if (!firstInvalid) firstInvalid = group;
+        } else {
+          if (group) group.classList.remove('error');
+          if (err) err.classList.remove('visible');
+        }
+      }
+
+      if (q.type === 'mehrfachauswahl' || q.type === 'einmalauswahl') {
+        var checkedIds = group
+          ? Array.prototype.slice.call(group.querySelectorAll('input[name="dq-' + q.id + '"]:checked')).map(function (inp) { return inp.value; })
+          : [];
+        checkedIds.forEach(function (id) {
+          var opt = (q.options || []).find(function (o) { return o.id === id; });
+          if (!opt || !opt.allowsAdditionalInfo) return;
+          var infoEl = document.getElementById('dq-optinfo-' + id);
+          if (!infoEl) return;
+          var infoOk = !!(infoEl.value && infoEl.value.trim());
+          if (!infoOk) {
+            valid = false;
+            infoEl.classList.add('error');
+            var infoErr = document.getElementById('err-optinfo-' + id);
+            if (infoErr) infoErr.classList.add('visible');
+            if (!firstInvalid) firstInvalid = infoEl;
+          } else {
+            self._clearOptionInfoError(infoEl);
+          }
+        });
       }
     });
 
@@ -186,7 +269,13 @@ class DynamicSurveyRenderer {
           // und würde sonst bei Auswahl-Antworten leer bleiben.
           var options = checkedIds.map(function (id) {
             var opt = (q.options || []).find(function (o) { return o.id === id; });
-            return { id: id, label: opt ? opt.label : '' };
+            var option = { id: id, label: opt ? opt.label : '' };
+            if (opt && opt.allowsAdditionalInfo) {
+              var infoEl = document.getElementById('dq-optinfo-' + id);
+              var infoVal = infoEl ? infoEl.value.trim() : '';
+              if (infoVal) option.additionalInfo = infoVal;
+            }
+            return option;
           });
           answers.push({ questionId: q.id, options: options });
         }

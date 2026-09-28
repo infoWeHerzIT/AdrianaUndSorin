@@ -113,6 +113,8 @@
   .resp-answer:last-child { margin-bottom:0; }
   .resp-answer-q { font-size:12.5px; font-weight:600; color:rgba(0,34,77,0.55); margin-bottom:3px; }
   .resp-answer-a { font-size:14.5px; color:var(--navy); line-height:1.55; }
+  .resp-answer-info { font-size:13px; color:rgba(0,34,77,0.55); line-height:1.5; margin-top:4px; padding-left:10px; border-left:2px solid rgba(217,104,44,0.35); font-style:italic; }
+  .resp-answer-info-label { font-weight:600; font-style:normal; color:rgba(0,34,77,0.7); }
   .resp-empty { padding:24px 20px; color:rgba(0,34,77,0.4); font-size:14px; text-align:center; }
 
   .q-card { background:var(--white); border:1px solid rgba(0,34,77,0.1); border-radius:8px; padding:26px 28px; margin-bottom:18px; }
@@ -135,6 +137,11 @@
   .text-list { display:flex; flex-direction:column; gap:8px; max-height:360px; overflow-y:auto; }
   .text-item { background:#eee4cf; border-radius:4px; padding:10px 14px; font-size:14px; line-height:1.6; color:var(--navy); white-space:pre-wrap; }
   .text-empty { font-size:13px; color:rgba(0,34,77,0.4); padding:8px 0; }
+
+  /* ── Zusatzinfo je Option (wht_addmoreinformation) — Freitexte, die bei
+     einzelnen Auswahl-Optionen zusätzlich eingetragen wurden ── */
+  .opt-info-section { margin-top:18px; padding-top:16px; border-top:1px dashed rgba(0,34,77,0.12); display:flex; flex-direction:column; gap:14px; }
+  .opt-info-label { font-size:13px; font-weight:600; color:rgba(0,34,77,0.6); margin-bottom:6px; }
 
   /* ── Diagramm-Umschalter ── */
   .chart-switcher { display:flex; gap:6px; margin-bottom:18px; }
@@ -413,6 +420,28 @@ function renderWordCloud(q) {
 
 var CHART_RENDERERS = { bar: renderBar, column: renderColumn, pie: renderPie, line: renderLine, list: renderTextList, wordcloud: renderWordCloud };
 
+// Zeigt je Option mit wht_addmoreinformation=ja (o.allowsAdditionalInfo) die
+// dabei eingetragenen Freitexte unter dem Options-Label — unabhängig vom
+// aktuell gewählten Diagrammtyp, damit die Werte immer sichtbar bleiben.
+function renderAdditionalInfo(q) {
+  var isChoice = q.type === 'mehrfachauswahl' || q.type === 'einmalauswahl';
+  if (!isChoice) return '';
+  var withInfo = (q.options || []).filter(function (o) {
+    return o.allowsAdditionalInfo && o.additionalInfo && o.additionalInfo.length > 0;
+  });
+  if (withInfo.length === 0) return '';
+  return '<div class="opt-info-section">' + withInfo.map(function (o) {
+    return (
+      '<div class="opt-info-block">' +
+        '<div class="opt-info-label">' + esc(o.label) + '</div>' +
+        '<div class="text-list">' + o.additionalInfo.map(function (t) {
+          return '<div class="text-item">' + esc(t) + '</div>';
+        }).join('') + '</div>' +
+      '</div>'
+    );
+  }).join('') + '</div>';
+}
+
 function renderQuestionBody(q) {
   var type = currentChart[q.id];
   var isChoice = q.type === 'mehrfachauswahl' || q.type === 'einmalauswahl';
@@ -575,6 +604,7 @@ document.getElementById('questions-root').addEventListener('click', function (e)
           '</div>' +
           renderSwitcher(q) +
           '<div id="qbody-' + esc(q.id) + '">' + renderQuestionBody(q) + '</div>' +
+          renderAdditionalInfo(q) +
         '</div>'
       );
     }).join('');
@@ -610,10 +640,14 @@ document.getElementById('questions-root').addEventListener('click', function (e)
         : '';
 
       var answersHtml = (r.answers || []).map(function (a) {
+        var infoHtml = (a.additionalInfo && a.additionalInfo.length)
+          ? '<div class="resp-answer-info"><span class="resp-answer-info-label">Zusatzinfo:</span> ' + a.additionalInfo.map(esc).join(' · ') + '</div>'
+          : '';
         return (
           '<div class="resp-answer">' +
             '<div class="resp-answer-q">' + esc(a.questionLabel) + '</div>' +
             '<div class="resp-answer-a">' + esc(a.value) + '</div>' +
+            infoHtml +
           '</div>'
         );
       }).join('') || '<div class="resp-empty">Keine Antworten.</div>';

@@ -87,10 +87,11 @@ serve(async (req) => {
     const firmenname            = String(payload.firmenname ?? "").trim();
     const extra                 = (payload.extra && typeof payload.extra === "object") ? payload.extra as Record<string, unknown> : null;
 
-    // Nachname ist NICHT (mehr) zwingend — manche Formulare (z. B. die
-    // Lead-Magnet-Landingpages in /lanpag) fragen bewusst nur Vorname +
-    // E-Mail ab, um die Hürde zur Anmeldung niedrig zu halten.
-    if (!(firstname || lastname) || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    // Vor- und Nachname sind NICHT zwingend — manche Formulare (z. B. die
+    // Tools) fragen den Vornamen nur freiwillig ab. Pflicht ist nur eine
+    // gültige E-Mail; fehlt jeder Name, dient die E-Mail als Lead-Name
+    // (wie in crm-survey-response-submit).
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return jsonResponse({ error: "Pflichtfelder fehlen oder ungültig" }, 400);
     }
 
@@ -102,8 +103,8 @@ serve(async (req) => {
     // (wht_Vorname → wht_vorname usw.).
     const leadFields: Record<string, unknown> = {
       wht_vorname:  firstname,
-      wht_name:     lastname,
-      wht_leadname: (firstname + " " + lastname).trim(),
+      wht_name:     lastname || (firstname ? "" : email),
+      wht_leadname: (firstname + " " + lastname).trim() || email,
       wht_email1:   email,
     };
     if (firmenname) leadFields.wht_accountname = firmenname;

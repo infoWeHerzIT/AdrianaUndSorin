@@ -74,7 +74,7 @@ function extractIdFromEntityIdHeader(res: Response): string | null {
   return m ? m[1] : null;
 }
 
-type AnswerOption = { id?: string; label?: string };
+type AnswerOption = { id?: string; label?: string; additionalInfo?: string };
 type AnswerInput = { questionId?: string; value?: string; options?: AnswerOption[] };
 
 serve(async (req) => {
@@ -184,11 +184,30 @@ serve(async (req) => {
             "wht_SurveyQuestionOptionID@odata.bind": `/wht_surveyquestionoptions(${opt.id})`,
             wht_value: opt.label || "",
           };
-          const res = await fetch(`${RESOURCE}/api/data/v9.2/wht_surveyanswers`, {
+          // Freitext aus dem "wht_addmoreinformation"-Feld der Option (falls
+          // vorhanden und vom User befüllt) — landet auf der Antwort-Zeile,
+          // nicht auf der Option selbst (die ist geteilte Konfiguration).
+          const additionalInfo = typeof opt.additionalInfo === "string" ? opt.additionalInfo.trim() : "";
+          if (additionalInfo) answerFields.wht_moreinformation = additionalInfo;
+
+          let res = await fetch(`${RESOURCE}/api/data/v9.2/wht_surveyanswers`, {
             method: "POST",
             headers: dataverseHeaders(token),
             body: JSON.stringify(answerFields),
           });
+          // Fallback: existiert wht_moreinformation (noch) nicht in
+          // Dataverse (nicht angelegt/veröffentlicht), lehnt Dataverse den
+          // GESAMTEN POST ab — dann lieber die Kernantwort (Optionsauswahl)
+          // ohne den Zusatztext speichern, statt die ganze Frage zu verlieren.
+          if (!res.ok && additionalInfo) {
+            console.error("Dataverse error (answer/option, mit additionalInfo) — retry ohne Zusatzfeld:", res.status, await res.text(), "questionId:", questionId, "optionId:", opt.id, "responseId:", responseId);
+            delete answerFields.wht_moreinformation;
+            res = await fetch(`${RESOURCE}/api/data/v9.2/wht_surveyanswers`, {
+              method: "POST",
+              headers: dataverseHeaders(token),
+              body: JSON.stringify(answerFields),
+            });
+          }
           if (!res.ok) {
             console.error("Dataverse error (answer/option):", res.status, await res.text(), "questionId:", questionId, "optionId:", opt.id, "responseId:", responseId);
             errors.push(`q=${questionId} opt=${opt.id}`);

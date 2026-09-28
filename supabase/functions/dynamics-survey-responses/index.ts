@@ -95,10 +95,15 @@ serve(async (req) => {
     // ── Alle Antworten zu den Fragen dieser Umfrage laden, nach Response
     // gruppieren (wht_value ist bereits der anzeigbare Text — bei
     // Auswahl-Fragen das Options-Label, siehe crm-survey-response-submit) ──
+    // Bewusst KEIN $select (analog zum Muster in dynamics-survey-results):
+    // ein $select auf ein (noch) nicht existierendes/veröffentlichtes Feld
+    // wie wht_moreinformation lässt Dataverse die GESAMTE Anfrage mit
+    // 400 ablehnen, statt das Feld nur wegzulassen — dann blieben ALLE
+    // Antworten leer, nicht nur die neuen Freitexte.
     let answersByResponse: Record<string, Record<string, unknown>[]> = {};
     if (questionIds.length > 0) {
       const orFilter = questionIds.map((id) => `_wht_surveyquestionid_value eq ${id}`).join(" or ");
-      const answersUrl = `${RESOURCE}/api/data/v9.2/wht_surveyanswers?$select=wht_value,_wht_surveyquestionid_value,_wht_surveyresponseid_value&$filter=(${orFilter})`;
+      const answersUrl = `${RESOURCE}/api/data/v9.2/wht_surveyanswers?$filter=(${orFilter})`;
       const answersRes = await fetch(answersUrl, { headers });
       if (!answersRes.ok) {
         console.error("Dataverse error (answers):", answersRes.status, await answersRes.text());
@@ -118,14 +123,24 @@ serve(async (req) => {
 
       // Antworten dieser Response nach Frage gruppieren — bei Mehrfach-
       // auswahl gibt es mehrere Zeilen je Frage, deren Labels zusammen-
-      // gefasst werden.
+      // gefasst werden. Freitexte aus wht_moreinformation (befüllt,
+      // wenn die gewählte Option wht_addmoreinformation=ja hat) werden
+      // separat gesammelt, statt in den Wert eingemischt — die aufrufende
+      // Seite zeigt sie als eigene Zeile unter der Antwort an.
       const valuesByQuestion: Record<string, string[]> = {};
+      const infoByQuestion: Record<string, string[]> = {};
       for (const a of answersByResponse[respId] || []) {
         const qId = String(a["_wht_surveyquestionid_value"]);
         const val = String(a.wht_value ?? "").trim();
         if (!val) continue;
         if (!valuesByQuestion[qId]) valuesByQuestion[qId] = [];
         valuesByQuestion[qId].push(val);
+
+        const additionalInfo = String(a.wht_moreinformation ?? "").trim();
+        if (additionalInfo) {
+          if (!infoByQuestion[qId]) infoByQuestion[qId] = [];
+          infoByQuestion[qId].push(additionalInfo);
+        }
       }
 
       const answers = Object.keys(valuesByQuestion)
@@ -134,6 +149,7 @@ serve(async (req) => {
           order: questionsById[qId]?.order ?? 0,
           questionLabel: questionsById[qId]?.label ?? "",
           value: valuesByQuestion[qId].join(", "),
+          additionalInfo: infoByQuestion[qId] || [],
         }))
         .sort((a, b) => a.order - b.order);
 
