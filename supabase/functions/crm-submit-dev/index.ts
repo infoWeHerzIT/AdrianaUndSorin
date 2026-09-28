@@ -83,6 +83,7 @@ serve(async (req) => {
     const newsletterOptIn                    = !!payload.newsletterOptIn;
     const testimonialOptIn                   = !!payload.testimonialOptIn;
     const widerrufsverzichtOptIn             = !!payload.widerrufsverzichtOptIn;
+    const emailOptIn                         = !!payload.emailOptIn;
     const leadTypeRaw           = String(payload.leadType ?? "").trim().toLowerCase();
     const leadConnectionId      = String(payload.leadConnectionId ?? "").trim();
     const firmenname            = String(payload.firmenname ?? "").trim();
@@ -111,11 +112,12 @@ serve(async (req) => {
       const quelleNum = Number(quelleRaw);
       if (!Number.isNaN(quelleNum)) leadFields.wht_quelle = quelleNum;
     }
-    if (interesseAnCoachingOptIn)           leadFields.wht_interesseancoaching = nowIso;
-    if (einwilligungDatenverarbeitungOptIn) leadFields.wht_einwilligungzurdatenverarbeitung = nowIso;
-    if (newsletterOptIn)                    leadFields.wht_interesseannewsletterperemail = nowIso;
-    if (testimonialOptIn)                   leadFields.wht_zustimmungfurtestimonials = nowIso;
-    if (widerrufsverzichtOptIn)              leadFields.wht_verzichtaufwiederrufsrecht = nowIso;
+    if (interesseAnCoachingOptIn)           leadFields.wht_optincoachingdatetime = nowIso;
+    if (einwilligungDatenverarbeitungOptIn) leadFields.wht_optindatenverarbeitungdatetime = nowIso;
+    if (newsletterOptIn)                    leadFields.wht_optinnewsletterdatetime = nowIso;
+    if (testimonialOptIn)                   leadFields.wht_optintestimonialsdatetime = nowIso;
+    if (widerrufsverzichtOptIn)              leadFields.wht_optinrightofwithdrawaldatetime = nowIso;
+    if (emailOptIn)                         leadFields.wht_optinemaildatetime = nowIso;
 
     if (leadTypeRaw === "account") leadFields.wht_leadtype = 959230000;
     else if (leadTypeRaw === "contact") leadFields.wht_leadtype = 959230001;

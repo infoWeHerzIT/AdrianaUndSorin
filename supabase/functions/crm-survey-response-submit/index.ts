@@ -115,7 +115,7 @@ serve(async (req) => {
       // Wie bei crm-submit: Zustimmungsfelder speichern den Zeitpunkt der
       // Zustimmung als Datum, kein Bool — nur gesetzt, wenn die Checkbox
       // aktiv war.
-      if (newsletterOptIn) leadFields.wht_interesseannewsletterperemail = new Date().toISOString();
+      if (newsletterOptIn) leadFields.wht_optinnewsletterdatetime = new Date().toISOString();
 
       const leadRes = await fetch(`${RESOURCE}/api/data/v9.2/wht_leads`, {
         method: "POST",

@@ -64,8 +64,10 @@ class DynamicsCRM {
   // firmenname: bei leadType='account' (optional) — landet in wht_accountname.
   // widerrufsverzichtOptIn: true, wenn die Widerrufsverzicht-Checkbox beim
   // Absenden gesetzt war (nur bei Privatperson relevant) — landet wie die
-  // anderen OptIn-Felder als Zeitstempel in wht_verzichtaufwiederrufsrecht.
+  // anderen OptIn-Felder als Zeitstempel in wht_optinrightofwithdrawaldatetime.
   // Existiert aktuell nur in Dynamics DEV, noch nicht in PROD.
+  // emailOptIn: true, wenn "Sag mir Bescheid, sobald das Buch
+  // erscheint" gesetzt war — landet als Zeitstempel in wht_optinemaildatetime.
   // leadConnectionId: GUID eines anderen, vorher angelegten Leads (optional)
   // — verknüpft diesen Lead per wht_leadconnection damit (z. B. Empfänger-
   // Lead → Besteller-Lead beim Verschenken-Fall). Existiert aktuell nur in
@@ -94,6 +96,7 @@ class DynamicsCRM {
         newsletterOptIn:                    !!fields.newsletterOptIn,
         testimonialOptIn:                   !!fields.testimonialOptIn,
         widerrufsverzichtOptIn:             !!fields.widerrufsverzichtOptIn,
+        emailOptIn:                         !!fields.emailOptIn,
         leadType:                           fields.leadType         || '',
         leadConnectionId:                   fields.leadConnectionId || '',
         firmenname:                         fields.firmenname       || '',
@@ -257,7 +260,7 @@ class DynamicsCRM {
   // Nummer) ODER { questionId, optionIds: [...] } (Einmal-/Mehrfachauswahl).
   // fields.newsletterOptIn: true, wenn die Newsletter-Checkbox beim Absenden
   // gesetzt war — landet wie bei submitLead() als Zeitstempel in
-  // wht_interesseannewsletterperemail (nur wenn dabei auch ein Lead entsteht,
+  // wht_optinnewsletterdatetime (nur wenn dabei auch ein Lead entsteht,
   // also E-Mail oder Telefon angegeben wurde).
   submitSurveyResponse(fields) {
     fields = fields || {};

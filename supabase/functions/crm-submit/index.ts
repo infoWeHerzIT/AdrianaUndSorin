@@ -19,7 +19,7 @@ import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 //
 // ACHTUNG (Stand 2026-08-21 laut Dataverse-Metadaten-Check): wht_leadconnection, die
 // sieben Adress-/Firmenfelder (inkl. wht_accountname/wht_city) UND
-// wht_verzichtaufwiederrufsrecht existieren bisher NUR in Dynamics DEV, noch NICHT in
+// wht_optinrightofwithdrawaldatetime existieren bisher NUR in Dynamics DEV, noch NICHT in
 // PROD (wht_vorname/wht_leadtype existieren dagegen bereits in beiden Umgebungen).
 // Dieser Code geht davon aus, dass die Felder inzwischen auch in PROD angelegt +
 // publiziert wurden — falls nicht, schlägt jede Lead-Anlage mit 400 fehl. Vor dem
@@ -81,6 +81,7 @@ serve(async (req) => {
     const newsletterOptIn                    = !!payload.newsletterOptIn;
     const testimonialOptIn                   = !!payload.testimonialOptIn;
     const widerrufsverzichtOptIn             = !!payload.widerrufsverzichtOptIn;
+    const emailOptIn                         = !!payload.emailOptIn;
     const leadTypeRaw           = String(payload.leadType ?? "").trim().toLowerCase();
     const leadConnectionId      = String(payload.leadConnectionId ?? "").trim();
     const firmenname            = String(payload.firmenname ?? "").trim();
@@ -119,11 +120,12 @@ serve(async (req) => {
     }
     // Zustimmungs-/Interessefelder speichern den Zeitpunkt der Anmeldung als
     // Datum, nicht true/false — nur gesetzt, wenn die Checkbox aktiv war.
-    if (interesseAnCoachingOptIn)           leadFields.wht_interesseancoaching = nowIso;
-    if (einwilligungDatenverarbeitungOptIn) leadFields.wht_einwilligungzurdatenverarbeitung = nowIso;
-    if (newsletterOptIn)                    leadFields.wht_interesseannewsletterperemail = nowIso;
-    if (testimonialOptIn)                   leadFields.wht_zustimmungfurtestimonials = nowIso;
-    if (widerrufsverzichtOptIn)              leadFields.wht_verzichtaufwiederrufsrecht = nowIso;
+    if (interesseAnCoachingOptIn)           leadFields.wht_optincoachingdatetime = nowIso;
+    if (einwilligungDatenverarbeitungOptIn) leadFields.wht_optindatenverarbeitungdatetime = nowIso;
+    if (newsletterOptIn)                    leadFields.wht_optinnewsletterdatetime = nowIso;
+    if (testimonialOptIn)                   leadFields.wht_optintestimonialsdatetime = nowIso;
+    if (widerrufsverzichtOptIn)              leadFields.wht_optinrightofwithdrawaldatetime = nowIso;
+    if (emailOptIn)                         leadFields.wht_optinemaildatetime = nowIso;
 
     if (leadTypeRaw === "account") leadFields.wht_leadtype = 959230000;
     else if (leadTypeRaw === "contact") leadFields.wht_leadtype = 959230001;
