@@ -985,10 +985,14 @@ const MONTH_SHORT = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt
 const DAY_NAMES   = ['So','Mo','Di','Mi','Do','Fr','Sa'];
 const TODAY = new Date();
 
+// Im Kalender erscheinen nur buchbare Veranstaltungen — Events anderer Typen
+// (z. B. "Tool" für die Tool-Seiten) bleiben ausgeblendet.
+const CALENDAR_EVENT_TYPES = ['Workshop', 'Webinar'];
+
 async function loadEvents() {
   const data = await dynamicsCRM.listEvents();
   if (!data || data.length === 0) return [];
-  return data.map(r => normalizeEvent({
+  return data.filter(r => CALENDAR_EVENT_TYPES.includes(r.type)).map(r => normalizeEvent({
     id: r.id, name: r.name, type: r.type,
     year: r.year, month: r.month, day: r.day,
     timeFrom: r.time_from, timeTo: r.time_to,

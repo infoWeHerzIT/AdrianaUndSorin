@@ -225,6 +225,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../supabase-config.js"></script>
 <script src="../Code/dynamics-crm.js"></script>
+<script src="../Code/send-overlay.js"></script>
 </head>
 <body>
 
@@ -660,6 +661,7 @@
     optinSubmit.disabled = true;
     optinSubmit.textContent = "Wird gesendet …";
     formNote.hidden = true;
+    sendOverlay.show("Bitte warten. E-Mail wird verschickt");
 
     dynamicsCRM.submitLead({
       firstname: vorname,
@@ -673,9 +675,13 @@
         formNote.textContent = "Danke! Deine Anmeldung ist bei uns eingegangen.";
         formNote.style.color = "var(--ok)";
         optinForm.reset();
+        // Bei Newsletter-Opt-in auf die Double-Opt-In-Mail hinweisen.
+        if(newsletterOptIn) sendOverlay.showDoi(email, { continueLabel: "Schließen" });
+        else sendOverlay.hide();
       } else {
         formNote.textContent = "Da ist etwas schiefgelaufen. Bitte versuch es gleich noch einmal.";
         formNote.style.color = "var(--orange-600)";
+        sendOverlay.hide();
       }
       formNote.hidden = false;
     });

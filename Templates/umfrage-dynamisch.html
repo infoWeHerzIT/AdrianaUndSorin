@@ -9,6 +9,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../supabase-config.js"></script>
 <script src="../Code/dynamics-crm.js"></script>
+<script src="../Code/send-overlay.js"></script>
 <script src="../Code/dynamic-survey-renderer.js"></script>
 <style>
   :root {
@@ -220,60 +221,6 @@
   @keyframes spin { to { transform: rotate(360deg); } }
   .btn-submit.loading .spinner { display: block; }
 
-  /* ─── SENDE-OVERLAY (blockiert die ganze Seite bis zur Weiterleitung) ─── */
-  .send-overlay {
-    position: fixed; inset: 0; z-index: 9999;
-    display: none; flex-direction: column; align-items: center; justify-content: center; gap: 22px;
-    background: rgba(255,250,241,0.88);
-    -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
-    padding: 24px; text-align: center; cursor: wait;
-  }
-  .send-overlay.visible { display: flex; }
-  .send-overlay .big-spinner {
-    width: 54px; height: 54px; border-radius: 50%;
-    border: 4px solid rgba(217,104,44,0.2);
-    border-top-color: var(--orange);
-    animation: spin .8s linear infinite;
-  }
-  .send-overlay p {
-    font-family: 'DM Sans', sans-serif; font-size: 18px; font-weight: 500;
-    color: var(--navy); margin: 0;
-  }
-  .send-overlay .dots span {
-    display: inline-block; animation: dot-blink 1.4s infinite both;
-  }
-  .send-overlay .dots span:nth-child(2) { animation-delay: .2s; }
-  .send-overlay .dots span:nth-child(3) { animation-delay: .4s; }
-  @keyframes dot-blink { 0%, 80%, 100% { opacity: 0; } 40% { opacity: 1; } }
-  /* ─── DOUBLE-OPT-IN-DIALOG (nach dem Senden, nur bei Newsletter-Opt-in) ─── */
-  .doi-modal { cursor: default; background: rgba(0,34,77,0.55); }
-  .doi-card {
-    max-width: 480px; width: 100%; background: var(--white); border-radius: 4px;
-    box-shadow: 0 12px 48px rgba(0,0,0,0.25); overflow: hidden; text-align: left;
-  }
-  .doi-card .doi-hdr { background: var(--navy); border-left: 5px solid var(--orange); padding: 22px 28px; display: flex; align-items: center; gap: 14px; }
-  .doi-card .doi-hdr svg { width: 30px; height: 30px; flex: none; color: var(--orange); }
-  .doi-card .doi-hdr h2 { font-family: 'Fredoka', sans-serif; font-size: 20px; font-weight: 600; color: var(--white); margin: 0; line-height: 1.3; }
-  .doi-card .doi-body { padding: 24px 28px 28px; }
-  .send-overlay .doi-card p { font-size: 15.5px; font-weight: 400; line-height: 1.65; color: #2d3748; margin: 0 0 14px; }
-  .send-overlay .doi-card p.doi-hint { font-size: 13.5px; color: rgba(0,34,77,0.6); }
-  .doi-card .doi-mail { font-weight: 600; color: var(--navy); word-break: break-all; }
-  .doi-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; }
-  .doi-actions a, .doi-actions button {
-    font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500; letter-spacing: .02em;
-    padding: 13px 22px; border-radius: 2px; cursor: pointer; text-decoration: none; text-align: center;
-  }
-  .doi-open { background: var(--orange); color: var(--white); border: none; flex: 1 1 auto; }
-  .doi-open:hover { background: #bd551f; }
-  .doi-continue { background: none; color: var(--navy); border: 1px solid rgba(0,34,77,0.2); flex: 1 1 auto; }
-  .doi-continue:hover { border-color: var(--orange); }
-  .doi-actions a:focus-visible, .doi-actions button:focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; }
-
-  @media (prefers-reduced-motion: reduce) {
-    .send-overlay .big-spinner { animation-duration: 2.4s; }
-    .send-overlay .dots span { animation: none; opacity: 1; }
-  }
-
   .form-divider { border: none; border-top: 1px solid rgba(0,34,77,0.08); margin: 32px 0; }
 
   /* ─── CHECKBOX ─── */
@@ -454,29 +401,6 @@
     <p>© 2026 · Alle Rechte vorbehalten</p>
   </div>
 </footer>
-
-<div class="send-overlay" id="send-overlay" role="alertdialog" aria-modal="true" aria-live="assertive" aria-labelledby="send-overlay-text">
-  <div class="big-spinner" aria-hidden="true"></div>
-  <p id="send-overlay-text"><span id="send-overlay-label">Bitte warten. E-Mail wird verschickt</span><span class="dots" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span></p>
-</div>
-
-<div class="send-overlay doi-modal" id="doi-modal" role="dialog" aria-modal="true" aria-labelledby="doi-title">
-  <div class="doi-card">
-    <div class="doi-hdr">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="M3.5 6l8.5 7 8.5-7"/></svg>
-      <h2 id="doi-title">Nur noch ein Klick zur Bestätigung</h2>
-    </div>
-    <div class="doi-body">
-      <p>Vielen Dank für dein Interesse an unseren Impulsen! Wir haben dir soeben eine E-Mail an <span class="doi-mail" id="doi-mail"></span> gesendet.</p>
-      <p>Bitte öffne diese Nachricht und bestätige deine Anmeldung über den enthaltenen Link. Erst danach nehmen wir dich in unseren Newsletter auf – so stellen wir sicher, dass niemand ohne sein Einverständnis E-Mails von uns erhält.</p>
-      <p class="doi-hint">Keine E-Mail erhalten? Bitte wirf auch einen Blick in deinen Spam- oder Werbe-Ordner. Die Zustellung kann einige Minuten dauern.</p>
-      <div class="doi-actions">
-        <a class="doi-open" id="doi-open" href="#" target="_blank" rel="noopener" hidden>Zum Postfach</a>
-        <button type="button" class="doi-continue" id="doi-continue">Weiter</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 <script>
 (function () {
@@ -672,54 +596,6 @@
     btnLabel.textContent  = on ? 'Wird gesendet …' : 'Umfrage absenden →';
   }
 
-  // Blockiert die ganze Seite (Overlay + inert), bis weitergeleitet wird —
-  // verhindert Doppel-Absenden und Ändern der Antworten während des Sendens.
-  var sendOverlay = document.getElementById('send-overlay');
-  function showSendOverlay(label) {
-    document.getElementById('send-overlay-label').textContent = label;
-    sendOverlay.classList.add('visible');
-    Array.prototype.forEach.call(document.body.children, function (el) {
-      if (!el.classList.contains('send-overlay') && el.tagName !== 'SCRIPT') el.inert = true;
-    });
-    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
-  }
-
-  // Webmail-Postfach anhand der Domain der E-Mail-Adresse — ein Browser kann
-  // das Standard-Mailprogramm nur zum Verfassen (mailto:) öffnen, nicht den
-  // Posteingang. Unbekannte Domains (z. B. Firmen-Adressen) bekommen keinen
-  // Button, nur den Hinweistext.
-  var WEBMAIL = [
-    { re: /^(gmail|googlemail)\.com$/,                       name: 'Gmail',      url: 'https://mail.google.com/' },
-    { re: /^(outlook|hotmail|live|msn)\.[a-z.]+$/,           name: 'Outlook',    url: 'https://outlook.live.com/mail/' },
-    { re: /^gmx\.[a-z.]+$/,                                  name: 'GMX',        url: 'https://www.gmx.net/' },
-    { re: /^web\.de$/,                                       name: 'WEB.DE',     url: 'https://web.de/' },
-    { re: /^t-online\.de$/,                                  name: 't-online',   url: 'https://email.t-online.de/' },
-    { re: /^(yahoo|ymail)\.[a-z.]+$/,                        name: 'Yahoo Mail', url: 'https://mail.yahoo.com/' },
-    { re: /^(icloud|me|mac)\.com$/,                          name: 'iCloud Mail',url: 'https://www.icloud.com/mail' },
-    { re: /^freenet\.de$/,                                   name: 'freenet Mail', url: 'https://webmail.freenet.de/' },
-    { re: /^mail\.de$/,                                      name: 'mail.de',    url: 'https://mail.de/' },
-    { re: /^(posteo\.de|posteo\.net)$/,                      name: 'Posteo',     url: 'https://posteo.de/webmail/' },
-    { re: /^(proton\.me|protonmail\.com|pm\.me)$/,           name: 'Proton Mail',url: 'https://mail.proton.me/' }
-  ];
-
-  function showDoiModal(email, onContinue) {
-    var domain = (email.split('@')[1] || '').toLowerCase();
-    var hit = WEBMAIL.find(function (w) { return w.re.test(domain); });
-    var openLink = document.getElementById('doi-open');
-    document.getElementById('doi-mail').textContent = email;
-    if (hit) {
-      openLink.href = hit.url;
-      openLink.textContent = hit.name + ' öffnen';
-      openLink.hidden = false;
-    }
-    sendOverlay.classList.remove('visible');
-    var modal = document.getElementById('doi-modal');
-    modal.classList.add('visible');
-    var cont = document.getElementById('doi-continue');
-    cont.addEventListener('click', onContinue);
-    (hit ? openLink : cont).focus();
-  }
-
   form.addEventListener('submit', async function (e) {
     e.preventDefault();
     submitErr.classList.remove('visible');
@@ -749,7 +625,7 @@
     }
 
     setLoading(true);
-    showSendOverlay(emailVal ? 'Bitte warten. E-Mail wird verschickt' : 'Bitte warten. Umfrage wird gesendet');
+    sendOverlay.show(emailVal ? 'Bitte warten. E-Mail wird verschickt' : 'Bitte warten. Umfrage wird gesendet');
 
     // Sicherheitsnetz: roher Antwort-Payload zuerst nach Supabase, BEVOR die
     // mehrstufige Dynamics-Kette (Lead -> Response -> N Antworten) läuft —
@@ -795,7 +671,7 @@
       // Bei Newsletter-Opt-in erst auf die Double-Opt-In-Mail hinweisen,
       // Weiterleitung zur Danke-Seite dann per "Weiter".
       if (newsletterOptIn && emailVal) {
-        showDoiModal(emailVal, function () { window.location.href = thanksUrl; });
+        sendOverlay.showDoi(emailVal, { onContinue: function () { window.location.href = thanksUrl; } });
       } else {
         window.location.href = thanksUrl;
       }

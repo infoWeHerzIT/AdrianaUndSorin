@@ -80,11 +80,18 @@ function statusLabel(n: unknown): string {
   return "Draft";
 }
 
-function typeLabel(n: unknown): string {
+// Bekannte Werte bekommen feste Namen (Seiten filtern darauf, z. B. Kalender
+// auf "Workshop"/"Webinar", Tool-Seiten auf "Tool"). Jeder andere Typ (z. B.
+// "Buch") wird mit seinem Anzeigenamen aus Dynamics ausgeliefert — früher
+// landete er fälschlich als "Workshop" im Kalender. Leerer Typ bleibt aus
+// Kompatibilitätsgründen "Workshop".
+function typeLabel(n: unknown, formatted?: unknown): string {
+  if (n === null || n === undefined || n === "") return "Workshop";
   const num = typeof n === "number" ? n : Number(n);
+  if (num === 959230000) return "Workshop";
   if (num === 959230001) return "Webinar";
   if (num === 959230003) return "Tool";
-  return "Workshop"; // 959230000
+  return typeof formatted === "string" && formatted ? formatted : "Sonstiges";
 }
 
 function formatLabel(n: unknown): string {
@@ -132,6 +139,8 @@ serve(async (req) => {
       Accept: "application/json",
       "OData-MaxVersion": "4.0",
       "OData-Version": "4.0",
+      // Liefert zu Auswahlfeldern zusätzlich den Anzeigenamen (für typeLabel).
+      Prefer: 'odata.include-annotations="OData.Community.Display.V1.FormattedValue"',
     };
 
     const select = [
@@ -200,7 +209,7 @@ serve(async (req) => {
       return {
         id:                r.wht_eventid ?? null,
         name:              r.wht_name ?? "",
-        type:              typeLabel(r.wht_type),
+        type:              typeLabel(r.wht_type, r["wht_type@OData.Community.Display.V1.FormattedValue"]),
         year:              from.year,
         month:             from.month,
         day:               from.day,
