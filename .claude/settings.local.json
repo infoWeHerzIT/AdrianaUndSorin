@@ -41,7 +41,8 @@
       "Bash(curl -s -X POST https://vtdekigorlwlarvlshpp.supabase.co/functions/v1/crm-submit-dev -H 'apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ0ZGVraWdvcmx3bGFydmxzaHBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5Njg1MTUsImV4cCI6MjA5NTU0NDUxNX0.79Iq7Py-KyCunT015cfC-y7bAHwQaYVzync2nC_LyJ4' -H 'Content-Type: application/json' -d '{\"firstname\":\"TestWidget6\",\"lastname\":\"Business\",\"email\":\"testwidget6@example.com\",\"leadType\":\"account\",\"firmenname\":\"Neue GmbH\",\"extra\":{\"strasse\":\"Teststr.\",\"hausnr\":\"9\",\"plz\":\"11111\",\"stadt\":\"Teststadt\",\"land\":\"Deutschland\"}}')",
       "Bash(curl -s \"https://vtdekigorlwlarvlshpp.supabase.co/functions/v1/tmp-diag8-dev?id=94f35b2e-689d-f111-b8dd-002248d8784e\" -H \"apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ0ZGVraWdvcmx3bGFydmxzaHBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5Njg1MTUsImV4cCI6MjA5NTU0NDUxNX0.79Iq7Py-KyCunT015cfC-y7bAHwQaYVzync2nC_LyJ4\")",
       "Bash(rm -rf \"supabase/functions/tmp-diag8-dev\")",
-      "Bash(git -C \"d:/GitHub/DADL/AdrianaUndSorin\" remote -v)"
+      "Bash(git -C \"d:/GitHub/DADL/AdrianaUndSorin\" remote -v)",
+      "PowerShell(foreach \\($u in \"https://der-architekt-deines-lebens.de/images/buch-du-hast-kein-stressproblem-og.jpg\",\"https://der-architekt-deines-lebens.de/lanpag/buch-du-hast-kein-stressproblem.html\"\\) { try { $r = Invoke-WebRequest -Uri $u -Method Head -UseBasicParsing -ErrorAction Stop; \"$u -> $\\($r.StatusCode\\)\" } catch { \"$u -> $\\($_.Exception.Message\\)\" } })"
     ]
   }
 }
