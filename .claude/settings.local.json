@@ -58,7 +58,8 @@
       "Bash(node -e \"const h=require\\('fs'\\).readFileSync\\('register.html','utf8'\\);[...h.matchAll\\(/<script>\\([\\\\s\\\\S]*?\\)<\\\\/script>/g\\)].forEach\\(\\(m,i\\)=>{try{new Function\\(m[1]\\);console.log\\('script',i,'OK'\\)}catch\\(e\\){console.log\\('script',i,'FEHLER',e.message\\)}}\\)\")",
       "Bash(node -e \"const h=require\\('fs'\\).readFileSync\\('startseite.html','utf8'\\);[...h.matchAll\\(/<script>\\([\\\\s\\\\S]*?\\)<\\\\/script>/g\\)].forEach\\(\\(m,i\\)=>{try{new Function\\(m[1]\\);console.log\\('script',i,'OK'\\)}catch\\(e\\){console.log\\('script',i,'FEHLER',e.message\\)}}\\)\")",
       "Bash([ -f \"$f\" ])",
-      "Bash(echo \"- [Opt-in-Checkboxen un-checked]\\(optin-checkboxes-unchecked.md\\) — Newsletter-Häkchen nie vorab setzen \\(DSGVO/Planet49\\)\")"
+      "Bash(echo \"- [Opt-in-Checkboxen un-checked]\\(optin-checkboxes-unchecked.md\\) — Newsletter-Häkchen nie vorab setzen \\(DSGVO/Planet49\\)\")",
+      "Bash(git diff *)"
     ]
   }
 }

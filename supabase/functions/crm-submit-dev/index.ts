@@ -113,7 +113,12 @@ serve(async (req) => {
       if (!Number.isNaN(quelleNum)) leadFields.wht_quelle = quelleNum;
     }
     if (interesseAnCoachingOptIn)           leadFields.wht_optincoachingdatetime = nowIso;
-    if (einwilligungDatenverarbeitungOptIn) leadFields.wht_optindatenverarbeitungdatetime = nowIso;
+    // Jede andere Zustimmung setzt die Einwilligung zur Datenverarbeitung
+    // automatisch mit — ohne sie dürfen wir die Daten für keinen dieser
+    // Zwecke verarbeiten.
+    const datenverarbeitungOptIn = einwilligungDatenverarbeitungOptIn || interesseAnCoachingOptIn || emailOptIn
+      || newsletterOptIn || testimonialOptIn || widerrufsverzichtOptIn;
+    if (datenverarbeitungOptIn)             leadFields.wht_optindatenverarbeitungdatetime = nowIso;
     if (newsletterOptIn)                    leadFields.wht_optinnewsletterdatetime = nowIso;
     if (testimonialOptIn)                   leadFields.wht_optintestimonialsdatetime = nowIso;
     if (widerrufsverzichtOptIn)              leadFields.wht_optinrightofwithdrawaldatetime = nowIso;
