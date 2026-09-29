@@ -19,6 +19,13 @@
 // Optionale Konfiguration durch die Seite:
 //   LeseprobeOptin.configure({ getEventId: function(){ return '...'; } })
 //     → Dynamics-Event-GUID, die mit dem Lead gespeichert wird.
+//   LeseprobeOptin.configure({ notifyCheckboxLabel: '...' })
+//     → zeigt eine zusätzliche Checkbox ("Sag mir Bescheid, wenn ...") an.
+//       Landet bei Zustimmung + E-Mail als Zeitstempel in
+//       wht_optinemaildatetime (submitLead's emailOptIn-Feld — bisher nur
+//       vorbereitet, von keiner Seite genutzt). Muss VOR dem Laden von
+//       DOMContentLoaded aufgerufen werden (reicht: irgendwo synchron im
+//       Seiten-<script>, siehe andere configure()-Aufrufe).
 //   LeseprobeOptin.reset()
 //     → zeigt wieder das leere Formular (z. B. bei "Check noch einmal machen").
 //
@@ -78,36 +85,46 @@
     '@media (prefers-reduced-motion:reduce){.lpo .lpo-confetti{display:none}.lpo .lpo-box,.lpo .lpo-emojis{animation:none}.lpo .lpo-btn{transition:none}}'
   ].join('\n');
 
-  var HTML =
-    '<p class="lpo-eyebrow">Wenn du weitergehen willst</p>' +
-    '<h3>Die ersten Seiten aus dem Buch</h3>' +
-    '<p class="lpo-lead">Aus dem Kapitel, in dem dieser Zustand beschrieben wird — nicht als Ratgeber, sondern als Beschreibung. Kostenlos, als PDF.</p>' +
-    '<form class="lpo-form" novalidate>' +
-      '<div class="lpo-row">' +
-        '<div><label class="lpo-fl" for="lpo-name-{n}">Vorname <span class="lpo-opt">freiwillig</span></label>' +
-          '<input id="lpo-name-{n}" name="vorname" type="text" autocomplete="given-name"></div>' +
-        '<div><label class="lpo-fl" for="lpo-mail-{n}">E-Mail <span class="lpo-opt">freiwillig</span></label>' +
-          '<input id="lpo-mail-{n}" name="email" type="email" autocomplete="email"></div>' +
-      '</div>' +
-      '<label class="lpo-cb"><input type="checkbox" name="newsletter"> <span>Ja, schick mir ab und zu Impulse per E-Mail (Newsletter). Jederzeit mit einem Klick abbestellbar.</span></label>' +
-      '<p style="margin:22px 0 0"><button class="lpo-btn" type="submit">Leseprobe schicken</button></p>' +
-      '<p class="lpo-fine">Deine Angaben verwende ich nur, um dir dein Ergebnis zu schicken und dich bei Interesse zu einem Erstgespräch einzuladen — <a href="' + DATENSCHUTZ_URL + '">Datenschutzerklärung</a>.</p>' +
-      '<p class="lpo-note" hidden></p>' +
-    '</form>' +
-    '<div class="lpo-ty" hidden>' +
-      '<div class="lpo-confetti" aria-hidden="true"></div>' +
-      '<div class="lpo-box" role="status">' +
-        '<div class="lpo-emojis" aria-hidden="true">🎉 🎊 ✨</div>' +
-        '<h4>Fast geschafft 🎉</h4>' +
-        '<p>Deine Leseprobe „Die ersten Seiten aus dem Buch" ist bereit. Klick unten, um sie direkt herunterzuladen.</p>' +
-        '<a class="lpo-btn lpo-dl" href="#" target="_blank" rel="noopener">PDF jetzt herunterladen</a>' +
-      '</div>' +
-    '</div>';
+  // Baut das Markup für eine Instanz — als Funktion statt fixer Konstante,
+  // damit die optionale Benachrichtigungs-Checkbox (options.notifyCheckboxLabel)
+  // je nach Seiten-Konfiguration mit reinkommt oder wegbleibt.
+  function buildHtml(n) {
+    var notifyCb = options.notifyCheckboxLabel
+      ? '<label class="lpo-cb"><input type="checkbox" name="notify"> <span>' + options.notifyCheckboxLabel + '</span></label>'
+      : '';
+    return (
+      '<p class="lpo-eyebrow">Wenn du weitergehen willst</p>' +
+      '<h3>Die ersten Seiten aus dem Buch</h3>' +
+      '<p class="lpo-lead">Aus dem Kapitel, in dem dieser Zustand beschrieben wird — nicht als Ratgeber, sondern als Beschreibung. Kostenlos, als PDF.</p>' +
+      '<form class="lpo-form" novalidate>' +
+        '<div class="lpo-row">' +
+          '<div><label class="lpo-fl" for="lpo-name-' + n + '">Vorname </label>' +
+            '<input id="lpo-name-' + n + '" name="vorname" type="text" autocomplete="given-name"></div>' +
+          '<div><label class="lpo-fl" for="lpo-mail-' + n + '">E-Mail </label>' +
+            '<input id="lpo-mail-' + n + '" name="email" type="email" autocomplete="email"></div>' +
+        '</div>' +
+        '<label class="lpo-cb"><input type="checkbox" name="newsletter"> <span>Ja, schick mir ab und zu Impulse per E-Mail (Newsletter). Jederzeit mit einem Klick abbestellbar.</span></label>' +
+        notifyCb +
+        '<p style="margin:22px 0 0"><button class="lpo-btn" type="submit">Leseprobe schicken</button></p>' +
+        '<p class="lpo-fine">Deine Angaben verwende ich nur, um dir dein Ergebnis zu schicken und dich bei Interesse zu einem Erstgespräch einzuladen — <a href="' + DATENSCHUTZ_URL + '">Datenschutzerklärung</a>.</p>' +
+        '<p class="lpo-note" hidden></p>' +
+      '</form>' +
+      '<div class="lpo-ty" hidden>' +
+        '<div class="lpo-confetti" aria-hidden="true"></div>' +
+        '<div class="lpo-box" role="status">' +
+          '<div class="lpo-emojis" aria-hidden="true">🎉 🎊 ✨</div>' +
+          '<h4>Fast geschafft 🎉</h4>' +
+          '<p>Deine Leseprobe „Die ersten Seiten aus dem Buch" ist bereit. Klick unten, um sie direkt herunterzuladen.</p>' +
+          '<a class="lpo-btn lpo-dl" href="#" target="_blank" rel="noopener">PDF jetzt herunterladen</a>' +
+        '</div>' +
+      '</div>'
+    );
+  }
 
   var MAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   var CONFETTI_COLORS = ['#d9682c', '#00224d', '#ffb199', '#d9682c', '#00224d', '#ffd580'];
 
-  var options = { getEventId: function () { return ''; } };
+  var options = { getEventId: function () { return ''; }, notifyCheckboxLabel: '' };
   var instances = [];
   var styleAdded = false;
 
@@ -131,12 +148,13 @@
     addStyle();
     var n = instances.length + 1;
     root.classList.add('lpo');
-    root.innerHTML = HTML.replace(/\{n\}/g, n);
+    root.innerHTML = buildHtml(n);
 
-    var form    = root.querySelector('.lpo-form');
-    var nameIn  = form.querySelector('input[name=vorname]');
-    var mailIn  = form.querySelector('input[name=email]');
-    var nlIn    = form.querySelector('input[name=newsletter]');
+    var form     = root.querySelector('.lpo-form');
+    var nameIn   = form.querySelector('input[name=vorname]');
+    var mailIn   = form.querySelector('input[name=email]');
+    var nlIn     = form.querySelector('input[name=newsletter]');
+    var notifyIn = form.querySelector('input[name=notify]');
     var submit  = form.querySelector('button[type=submit]');
     var note    = form.querySelector('.lpo-note');
     var ty      = root.querySelector('.lpo-ty');
@@ -180,11 +198,13 @@
       var vorname = nameIn.value.trim();
       var email   = mailIn.value.trim();
       var newsletterOptIn = nlIn.checked;
+      var notifyOptIn = notifyIn ? notifyIn.checked : false;
 
       // E-Mail ist freiwillig — nur prüfen, wenn etwas eingetragen ist. Für
-      // den Newsletter wird sie aber gebraucht.
+      // Newsletter und Benachrichtigung wird sie aber gebraucht.
       var mailError = email && !MAIL_RE.test(email) ? 'Bitte gib eine gültige E-Mail-Adresse an.'
                     : !email && newsletterOptIn ? 'Für den Newsletter brauchen wir deine E-Mail-Adresse.'
+                    : !email && notifyOptIn ? 'Für die Benachrichtigung brauchen wir deine E-Mail-Adresse.'
                     : '';
       if (mailError) { showNote(mailError); mailIn.focus(); return; }
       note.hidden = true;
@@ -200,6 +220,7 @@
         firstname: vorname,
         email: email,
         newsletterOptIn: newsletterOptIn,
+        emailOptIn: notifyOptIn,
         eventId: options.getEventId() || ''
       }).then(function (res) {
         submit.disabled = false;
@@ -236,6 +257,7 @@
   window.LeseprobeOptin = {
     configure: function (opts) {
       if (opts && typeof opts.getEventId === 'function') options.getEventId = opts.getEventId;
+      if (opts && typeof opts.notifyCheckboxLabel === 'string') options.notifyCheckboxLabel = opts.notifyCheckboxLabel;
     },
     reset: function () { instances.forEach(function (i) { i.reset(); }); },
     mount: mount

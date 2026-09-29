@@ -115,11 +115,6 @@
     letter-spacing:.14em; text-transform:uppercase; color:var(--orange-600);
     margin:0 0 16px;
   }
-  .badge{
-    display:inline-block; font-family:var(--display); font-weight:700; font-size:12px;
-    letter-spacing:.08em; text-transform:uppercase; color:var(--cream);
-    background:var(--navy); padding:6px 12px; border-radius:2px; margin:0 0 20px;
-  }
   .event-eyebrow{
     display:none; align-items:center; gap:8px;
     background:var(--paper-2); border:1px solid var(--line-light);
@@ -139,6 +134,18 @@
     cursor:pointer; outline:none; max-width:320px;
   }
   #event-eyebrow-select option{ color:var(--ink); }
+  .shortcuts{
+    display:flex; flex-wrap:wrap; gap:8px;
+    margin:0 0 40px; padding:16px;
+    background:var(--paper-2); border:1px solid var(--line-light); border-radius:2px;
+  }
+  .shortcuts a{
+    display:inline-block; font-family:var(--display); font-weight:600; font-size:12.5px;
+    color:var(--ink-soft); text-decoration:none;
+    background:var(--cream); border:1px solid var(--line-light); border-radius:100px;
+    padding:6px 13px; transition:border-color .15s ease, color .15s ease;
+  }
+  .shortcuts a:hover{border-color:var(--orange-500); color:var(--orange-600)}
   h1{
     font-family:var(--hero); font-weight:800; font-size:clamp(32px,7vw,48px);
     line-height:1.06; letter-spacing:-.02em; margin:0 0 10px; text-wrap:balance;
@@ -312,9 +319,17 @@
       <span class="event-eyebrow-admin-badge" id="event-eyebrow-admin-badge" style="display:none;">Admin</span>
     </div>
     <p class="eyebrow">Sachbuch von Sorin Ratiu · Der Architekt Deines Lebens</p>
-    <span class="badge">Erscheint in Kürze</span>
     <h1>Du hast kein Stressproblem</h1>
     <p class="subtitle">Warum du erschöpft bist, obwohl du alles richtig machst</p>
+    <nav class="shortcuts" aria-label="Kurzübersicht">
+      <a href="#leseprobe">Blick ins Buch</a>
+      <a href="#formate-preise">Formate &amp; Preise</a>
+      <a href="#fuenf-saetze-test">Der Fünf-Sätze-Test</a>
+      <a href="#warum-ich-das-schreibe">Warum ich das schreibe</a>
+      <a href="#warum-stress">Warum „Stress" das falsche Wort ist</a>
+      <a href="#fuer-wen">Für wen dieses Buch ist</a>
+      <a href="#was-dich-erwartet">Was dich erwartet</a>
+    </nav>
     <hr class="rule">
 
     <div class="coverwrap">
@@ -324,7 +339,7 @@
     <p class="lead">Du funktionierst. Seit Jahren. Der Haushalt läuft, der Job läuft, alle bekommen, was sie brauchen. Und trotzdem findest du abends keine einzige Minute, die dir gehört hat.</p>
     <p>Dieses Buch nennt das nicht Stress. Es zeigt dir, warum deine eigenen hohen Ansprüche der eigentliche Auslöser sind – und was passiert, wenn du zum ersten Mal eine Grenze ziehst und die Reaktion darauf aushältst.</p>
 
-    <p style="margin-top:8px"><a class="btn" href="#leseprobe">Kapitel 1 kostenlos lesen</a> <a class="btn-ghost" href="#benachrichtigung" style="margin-left:10px">Bescheid sagen, wenn's da ist</a></p>
+    <p style="margin-top:8px"><a class="btn" href="#leseprobe">Kapitel 1 kostenlos lesen</a> <a class="btn-ghost" id="btn-jump-notify" href="#benachrichtigung" style="margin-left:10px">Bescheid sagen, wenn's da ist</a></p>
   </header>
 
   <!-- ══════════ BLICK INS BUCH ══════════ -->
@@ -342,7 +357,7 @@
   </section>
 
   <!-- ══════════ FÜNF-SÄTZE-TEST ══════════ -->
-  <section>
+  <section id="fuenf-saetze-test">
     <p class="eyebrow">Der Fünf-Sätze-Test aus Kapitel 1</p>
     <h2>Lies die folgenden fünf Sätze langsam</h2>
     <p class="muted" style="font-size:16px">Es geht nicht darum, ob sie schön klingen, sondern ob sie stimmen.</p>
@@ -357,7 +372,7 @@
   </section>
 
   <!-- ══════════ WARUM STRESS DAS FALSCHE WORT IST ══════════ -->
-  <section>
+  <section id="warum-stress">
     <p class="eyebrow">Warum „Stress" das falsche Wort ist</p>
     <h2>Der Grund ist banal und schwer zu schlucken</h2>
     <blockquote>
@@ -368,7 +383,7 @@
   </section>
 
   <!-- ══════════ FÜR WEN ══════════ -->
-  <section>
+  <section id="fuer-wen">
     <p class="eyebrow">Für wen dieses Buch ist</p>
     <h2>Für dich, wenn das bekannt vorkommt</h2>
     <ul class="forlist">
@@ -383,7 +398,7 @@
   </section>
 
   <!-- ══════════ INHALT ══════════ -->
-  <section>
+  <section id="was-dich-erwartet">
     <p class="eyebrow">Was dich erwartet</p>
     <h2>14 Kapitel, drei Teile</h2>
     <p class="muted" style="font-size:16px">Verstehen, Werkzeuge, Integration: der Weg zurück in dein eigenes Leben.</p>
@@ -436,7 +451,7 @@
   </section>
 
   <!-- ══════════ AUTOR ══════════ -->
-  <section>
+  <section id="warum-ich-das-schreibe">
     <p class="eyebrow">Warum ich das schreibe</p>
     <h2>Sorin Ratiu</h2>
     <div class="placeholder">
@@ -451,7 +466,7 @@
   </section>
 
   <!-- ══════════ FORMATE & PREISE ══════════ -->
-  <section>
+  <section id="formate-preise">
     <p class="eyebrow">Formate &amp; Preise</p>
     <h2>Transparent von Anfang an</h2>
     <p class="muted" style="font-size:16px">Die Preise stehen bereits fest. Verkaufsstart und genaues Erscheinungsdatum folgen hier, sobald das Manuskript fertig ist.</p>
@@ -516,6 +531,37 @@
 <script>
 (function () {
   "use strict";
+
+  // ── Leseprobe-Opt-in: zusätzliche Checkbox nur auf dieser Seite, damit
+  // Interessentinnen sich für alle drei Formate benachrichtigen lassen
+  // können. Landet bei Zustimmung + E-Mail als Zeitstempel in
+  // wht_optinemaildatetime (submitLead's emailOptIn — siehe Code/leseprobe-optin.js).
+  if (typeof LeseprobeOptin !== 'undefined') {
+    LeseprobeOptin.configure({ notifyCheckboxLabel: 'Ich will informiert werden, wenn das Buch, E-Book oder Hörbuch da ist' });
+  }
+
+  // Der Hero-Button "Bescheid sagen, wenn's da ist" springt per href="#benachrichtigung"
+  // schon zum Opt-in-Kasten — zusätzlich hakt er dort die Benachrichtigen-
+  // Checkbox automatisch an, damit man sie nicht noch einmal manuell
+  // anklicken muss. Das Formular ist zu diesem Zeitpunkt garantiert schon
+  // gemountet (mount() läuft bei DOMContentLoaded, also lange vor jedem
+  // möglichen Klick).
+  var jumpNotifyBtn = document.getElementById('btn-jump-notify');
+  if (jumpNotifyBtn) {
+    jumpNotifyBtn.addEventListener('click', function () {
+      var notifyCb = document.querySelector('#benachrichtigung input[name="notify"]');
+      if (notifyCb) notifyCb.checked = true;
+      // setTimeout nötig: Der native Anchor-Sprung (href="#benachrichtigung")
+      // legt den Fokus nach dem Klick selbst auf den Zielabschnitt und würde
+      // einen sofortigen focus() hier sonst gleich wieder überschreiben.
+      // preventScroll, weil der Anchor-Sprung selbst schon zum Abschnitt
+      // scrollt — Fokus soll den Cursor nur setzen, nicht zusätzlich scrollen.
+      var emailField = document.querySelector('#benachrichtigung input[name="email"]');
+      if (emailField) {
+        setTimeout(function () { emailField.focus({ preventScroll: true }); }, 50);
+      }
+    });
+  }
 
   // ── Event-Zuordnung (identisch zum Muster in Tools/ist-situations-check.html
   // bzw. Tools/wo-kommst-du-noch-vor.html, bewusst 1:1-kopierbar gehalten) ──
@@ -651,15 +697,12 @@
 
         var active = events.find(function (e) { return e.id === SELECTED_EVENT_ID; }) || null;
         CURRENT_ACTIVE_EVENT = active;
-
-        if (active) {
-          eyebrowText.textContent = active.name || '';
-          eyebrow.classList.add('visible');
-        }
         applyPaymentLinks();
 
-        // Nur eingeloggte Admins dürfen die Event-Zuordnung ändern bzw. je
-        // Kachel einen abweichenden Zahlungslink wählen.
+        // Der Event-Badge (Name bzw. Auswahlfeld) wird bewusst NUR im
+        // Admin-Modus angezeigt — normale Besucher sehen davon nichts, die
+        // Zuordnung ist reine Redaktions-Info. Die Preiskacheln selbst
+        // (applyPaymentLinks oben) funktionieren unabhängig davon für alle.
         db.auth.getSession().then(function (sessionRes) {
           if (!sessionRes.data.session) return;
           renderPriceLinkAdmin();
