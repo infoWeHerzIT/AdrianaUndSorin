@@ -34,12 +34,17 @@ class DynamicSurveyRenderer {
   // Baut ein einzelnes Options-Item (Checkbox/Radio + Label). Optionen mit
   // wht_addmoreinformation=ja (o.allowsAdditionalInfo) bekommen zusätzlich
   // ein Freitextfeld unter dem Label (z. B. "Sonstiges, und zwar: ___") —
-  // ist die Option ausgewählt, wird dieses Feld pflicht (siehe validate()).
+  // ist die Option ausgewählt, ist dieses Feld pflicht (siehe validate()),
+  // erkennbar am "*" im kleinen Label darüber (gleiche Konvention wie bei
+  // den übrigen Pflichtfeldern auf der Seite).
   static _optionItemHtml(fieldId, inputType, o) {
     var esc = DynamicSurveyRenderer.esc;
     var extraHtml = o.allowsAdditionalInfo
-      ? '<input class="form-input option-more-info" type="text" id="dq-optinfo-' + esc(o.id) + '" placeholder="Bitte gib hier mehr Details an">' +
-        '<span class="field-error" id="err-optinfo-' + esc(o.id) + '">Bitte gib hier weitere Informationen an.</span>'
+      ? '<div class="option-more-info-group">' +
+          '<label class="option-more-info-label" for="dq-optinfo-' + esc(o.id) + '">Bitte gib hier mehr Details an <span class="req">*</span></label>' +
+          '<input class="form-input option-more-info" type="text" id="dq-optinfo-' + esc(o.id) + '" placeholder="Details eingeben …">' +
+          '<span class="field-error" id="err-optinfo-' + esc(o.id) + '">Bitte gib hier weitere Informationen an.</span>' +
+        '</div>'
       : '';
     return (
       '<div class="option-item-wrap">' +
@@ -135,12 +140,12 @@ class DynamicSurveyRenderer {
     var self = this;
     group.querySelectorAll('.option-item-wrap').forEach(function (wrap) {
       var input = wrap.querySelector('input[type="checkbox"], input[type="radio"]');
-      var info = wrap.querySelector('.option-more-info');
-      if (!input || !info) return;
-      info.classList.toggle('visible', input.checked);
+      var infoGroup = wrap.querySelector('.option-more-info-group');
+      if (!input || !infoGroup) return;
+      infoGroup.classList.toggle('visible', input.checked);
       // Wird das Feld durch Ab-/Umwählen wieder ausgeblendet, macht eine
       // stehengebliebene Fehlermarkierung keinen Sinn mehr.
-      if (!input.checked) self._clearOptionInfoError(info);
+      if (!input.checked) self._clearOptionInfoError(infoGroup.querySelector('.option-more-info'));
     });
   }
 

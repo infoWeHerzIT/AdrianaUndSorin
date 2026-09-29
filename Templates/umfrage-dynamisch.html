@@ -196,9 +196,17 @@
   }
   /* Freitextfeld unter dem Options-Label (wht_addmoreinformation=ja) —
      eingerückt auf Höhe des Labeltexts (Checkbox/Radio-Breite + Gap), nur
-     sichtbar, solange die zugehörige Option ausgewählt ist. */
-  .option-more-info { display: none; margin-left: 30px; width: calc(100% - 30px); padding: 10px 14px; font-size: 14px; }
-  .option-more-info.visible { display: block; }
+     sichtbar, solange die zugehörige Option ausgewählt ist. Kleines Label
+     mit "*" markiert es dann als pflicht (gleiche Konvention wie bei den
+     übrigen Pflichtfeldern auf der Seite, siehe .form-label .req). */
+  .option-more-info-group { display: none; flex-direction: column; gap: 5px; margin-left: 30px; width: calc(100% - 30px); }
+  .option-more-info-group.visible { display: flex; }
+  .option-more-info-label {
+    font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
+    color: rgba(0,34,77,0.55); line-height: 1.5;
+  }
+  .option-more-info-label .req { color: #e53e3e; font-size: 13px; text-transform: none; letter-spacing: normal; }
+  .option-more-info { padding: 10px 14px; font-size: 14px; }
 
   .form-group.error .question-label { color: #e53e3e; }
 
