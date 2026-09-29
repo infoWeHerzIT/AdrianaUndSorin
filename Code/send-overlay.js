@@ -9,9 +9,10 @@
 //   es erneut versuchen kann).
 // sendOverlay.showDoi(email, { continueLabel, onContinue })
 //   Ersetzt den Spinner durch ein Fenster mit der Bitte, die Double-Opt-In-
-//   Mail zu bestätigen, inkl. Button zum Webmail-Postfach des Anbieters
-//   (anhand der Domain erkannt). Nach Klick auf den Weiter-Button wird die
-//   Blockade aufgehoben und onContinue() aufgerufen.
+//   Mail zu bestätigen, inkl. Button zum Öffnen der E-Mail: bei bekannter
+//   Domain zum Webmail-Postfach des Anbieters, sonst per mailto: zum lokal
+//   eingerichteten Standard-E-Mail-Programm. Nach Klick auf den
+//   Weiter-Button wird die Blockade aufgehoben und onContinue() aufgerufen.
 //
 // Bringt eigenes CSS mit (Farben der Marke, Schrift wird von der Seite
 // geerbt) und hängt sein Markup selbst an <body> — die einbindende Seite
@@ -76,10 +77,12 @@
       '</div>' +
     '</div>';
 
-  // Webmail-Postfach anhand der Domain der E-Mail-Adresse — ein Browser kann
-  // das Standard-Mailprogramm nur zum Verfassen (mailto:) öffnen, nicht den
-  // Posteingang. Unbekannte Domains (z. B. Firmen-Adressen) bekommen keinen
-  // Button, nur den Hinweistext.
+  // Webmail-Postfach anhand der Domain der E-Mail-Adresse — bei bekannter
+  // Domain führt der Button direkt zum passenden Webmail-Login. Unbekannte
+  // Domains (z. B. Firmen-Adressen) bekommen stattdessen einen mailto:-Link,
+  // der das lokal als Standard eingerichtete E-Mail-Programm öffnet (mehr
+  // ist einem Browser aus nicht möglich — kein Zugriff auf den Posteingang,
+  // nur das Verfassen-Fenster, aber besser als gar kein Link).
   var WEBMAIL = [
     { re: /^(gmail|googlemail)\.com$/,             name: 'Gmail',        url: 'https://mail.google.com/' },
     { re: /^(outlook|hotmail|live|msn)\.[a-z.]+$/, name: 'Outlook',      url: 'https://outlook.live.com/mail/' },
@@ -148,10 +151,13 @@
     var cont     = document.getElementById('so-doi-continue');
 
     document.getElementById('so-doi-mail').textContent = email;
-    openLink.hidden = !hit;
+    openLink.hidden = false;
     if (hit) {
       openLink.href = hit.url;
       openLink.textContent = hit.name + ' öffnen';
+    } else {
+      openLink.href = 'mailto:';
+      openLink.textContent = 'E-Mail-Programm öffnen';
     }
     cont.textContent = opts.continueLabel || 'Weiter';
     cont.onclick = function () {

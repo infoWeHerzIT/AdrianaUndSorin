@@ -1180,7 +1180,7 @@ function renderCalendar() {
 }
 
 function buildGoToEventUrl(ev) {
-  const page = ev.type === 'Webinar' ? 'event-webinar.html' : ev.type === 'Workshop' ? 'event-workshop.html' : 'register.html';
+  const page = ev.type === 'Webinar' ? 'Webinar/event-webinar.html' : ev.type === 'Workshop' ? 'workshop/event-workshop.html' : 'register.html';
   return page + '?event_id=' + encodeURIComponent(ev.id);
 }
 

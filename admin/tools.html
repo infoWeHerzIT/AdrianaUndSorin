@@ -115,28 +115,31 @@ function esc(s) {
   return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-// Statische Liste — /Tools enthält reine HTML-Dateien ohne eigenes Backend,
-// es gibt also keine Quelle, aus der sich diese Liste automatisch ableiten
-// ließe (gleiches Muster wie LANDING_PAGES in landingpages.html). Bei einem
+// Statische Liste — reine HTML-Dateien ohne eigenes Backend, meist unter
+// /Tools, es gibt also keine Quelle, aus der sich diese Liste automatisch
+// ableiten ließe (gleiches Muster wie LANDING_PAGES in landingpages.html).
+// "folder" ist optional und fällt sonst auf "Tools" zurück — nur nötig,
+// wenn ein Eintrag (wie das Buch) in einem anderen Ordner liegt. Bei einem
 // neuen Tool hier einen Eintrag ergänzen.
 var TOOLS = [
   {
     file: 'wo-kommst-du-noch-vor.html',
-    title: 'Mental-Load-Test: Wo kommst du noch vor?',
+    title: 'Tool: Mental-Load-Test: Wo kommst du noch vor?',
     desc: '12 Fragen, 6 Lebensbereiche — zeigt, wo man im eigenen Leben noch als Person vorkommt und wo nur noch als Zuständigkeit. Endet mit dem Leseprobe-Opt-in (PDF-Download, Newsletter optional).',
     pageKey: '/Tools/wo-kommst-du-noch-vor.html'
   },
   {
     file: 'ist-situations-check.html',
-    title: 'Der Ist-Situations-Check',
+    title: 'Tool: Der Ist-Situations-Check',
     desc: '10 Aussagen, fünf Lebensbereiche — findet den größten aktuellen Druckpunkt (Beziehung, Beruf, Energie, Finanzen, Selbstbild). Endet mit dem Leseprobe-Opt-in (PDF-Download, Newsletter optional).',
     pageKey: '/Tools/ist-situations-check.html'
   },
   {
-    file: 'buch-du-hast-kein-stressproblem.html',
+    file: 'du-hast-kein-stressproblem.html',
+    folder: 'books',
     title: 'Buch: Du hast kein Stressproblem',
     desc: 'Buch-Landingpage mit Leseprobe aus Kapitel 1, Inhaltsverzeichnis, Autor und Preisen. Endet mit dem Leseprobe-Opt-in (PDF-Download, Newsletter optional).',
-    pageKey: '/Tools/buch-du-hast-kein-stressproblem.html'
+    pageKey: '/books/du-hast-kein-stressproblem.html'
   }
 ];
 
@@ -150,13 +153,14 @@ if (TOOLS.length === 0) {
   elCount.textContent = TOOLS.length + (TOOLS.length === 1 ? ' Tool' : ' Tools');
 
   elGrid.innerHTML = TOOLS.map(function (t, idx) {
-    var href = '../Tools/' + encodeURIComponent(t.file);
+    var folder = t.folder || 'Tools';
+    var href = '../' + folder + '/' + encodeURIComponent(t.file);
     return (
       '<div class="lp-card" data-idx="' + idx + '">' +
         '<div class="lp-card-title">' + esc(t.title) + '</div>' +
         '<div class="lp-card-event" id="lp-event-' + idx + '"></div>' +
         '<div class="lp-card-desc">' + esc(t.desc) + '</div>' +
-        '<div class="lp-card-path">Tools/' + esc(t.file) + '</div>' +
+        '<div class="lp-card-path">' + esc(folder) + '/' + esc(t.file) + '</div>' +
         '<div class="lp-badges" id="lp-badges-' + idx + '"><span class="badge-checking">wird geprüft …</span></div>' +
         '<div class="lp-card-actions">' +
           '<a class="btn-open primary" href="' + href + '" target="_blank" rel="noopener">Seite öffnen</a>' +
@@ -176,7 +180,7 @@ if (TOOLS.length === 0) {
   // survey_event_links (Supabase, siehe Tools/selbsttest-...html) verknüpfte
   // Event (falls vorhanden) auf der Kachel angezeigt.
   TOOLS.forEach(function (t, idx) {
-    fetch('../Tools/' + encodeURIComponent(t.file))
+    fetch('../' + (t.folder || 'Tools') + '/' + encodeURIComponent(t.file))
       .then(function (res) { return res.text(); })
       .then(function (html) {
         var elBadges = document.getElementById('lp-badges-' + idx);

@@ -7,9 +7,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@400;700&family=Fraunces:ital,opsz,wght@0,9..144,600&family=Archivo:wght@800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js"></script>
-<script src="Code/dynamics-crm.js"></script>
-<script src="Code/add-to-calendar.js"></script>
+<script src="../supabase-config.js"></script>
+<script src="../Code/dynamics-crm.js"></script>
+<script src="../Code/add-to-calendar.js"></script>
 <style>
   :root {
     --orange: #d9682c;
@@ -571,7 +571,7 @@
 <div id="error-screen" style="display:none; min-height:100vh; padding-top:120px; background:var(--navy); flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:16px;">
   <h2 style="font-family:'Fredoka',sans-serif;color:var(--white);font-size:28px;">Webinar nicht gefunden</h2>
   <p style="color:rgba(255,250,241,.55);font-size:16px;">Es konnte kein passendes Webinar geladen werden.</p>
-  <a href="kalender.html" style="color:var(--orange);text-decoration:underline;font-size:15px;">← Zum Kalender</a>
+  <a href="../kalender.html" style="color:var(--orange);text-decoration:underline;font-size:15px;">← Zum Kalender</a>
 </div>
 
 <!-- MAIN (wird nach Laden sichtbar) -->
@@ -605,7 +605,7 @@
 
     <div class="hero-right">
       <div class="hero-photo-frame">
-        <img src="Workshops/Bilder/Adriana%20und%20Sorin_hoch.png" alt="Der Architekt deines Lebens">
+        <img src="../Workshops/Bilder/Adriana%20und%20Sorin_hoch.png" alt="Der Architekt deines Lebens">
         <div class="hero-corner-decor"></div>
         <div class="hero-name-badge">
           <div class="name">Adriana Vukin &amp; Sorin Ratiu</div>
@@ -727,7 +727,7 @@
 
   <div class="about-split">
     <div class="about-photo">
-      <img src="Workshops/Bilder/Adriana%20und%20Sorin_hoch.png" alt="Adriana Vukin und Sorin Ratiu">
+      <img src="../Workshops/Bilder/Adriana%20und%20Sorin_hoch.png" alt="Adriana Vukin und Sorin Ratiu">
       <div class="about-photo-overlay">
         <div class="csn">Der Architekt deines Lebens</div>
         <div class="csr">Mental Coach · NLP Master · Deep Coaching</div>
@@ -990,7 +990,7 @@ document.getElementById('footer-year').textContent = new Date().getFullYear();
       price:           event.price           || '',
       spots:           event.spots           || '',
       description:     event.description     || '',
-      url:             event.url             || 'register.html',
+      url:             event.url             || '../register.html',
       videoMeetingUrl: event.video_meeting_url || ''
     };
 

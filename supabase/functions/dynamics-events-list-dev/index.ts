@@ -103,11 +103,17 @@ function formatLabel(n: unknown): string {
 
 // wht_paymentlinktype (laut Dynamics-Konfiguration):
 // 0=Primary, 1=Duo, 2=Ressourcen, 3=Video Meeting, 4=Unternehmen, 5=Early Bird, 6=Early Bird Duo
+// 959230001=Buch Hardcover, 959230002=Hörbuch, 959230003=E-Book — eigene
+// Werte für Buch-Zahlungslinks (siehe books/du-hast-kein-stressproblem.html,
+// dort per Typ statt per Name gematcht).
 const LINK_TYPE_PRIMARY       = 0;
 const LINK_TYPE_DUO           = 1;
 const LINK_TYPE_BUSINESS      = 4;
 const LINK_TYPE_EARLY_BIRD    = 5;
 const LINK_TYPE_EARLY_BIRD_DUO = 6;
+const LINK_TYPE_BOOK_HARDCOVER = 959230001;
+const LINK_TYPE_BOOK_AUDIOBOOK = 959230002;
+const LINK_TYPE_BOOK_EBOOK     = 959230003;
 
 function paymentLinkTypeLabel(n: unknown): string {
   const num = typeof n === "number" ? n : Number(n);
@@ -118,6 +124,9 @@ function paymentLinkTypeLabel(n: unknown): string {
   if (num === 4) return "Unternehmen";
   if (num === 5) return "Early Bird";
   if (num === 6) return "Early Bird Duo";
+  if (num === LINK_TYPE_BOOK_HARDCOVER) return "Buch Hardcover";
+  if (num === LINK_TYPE_BOOK_AUDIOBOOK) return "Hörbuch";
+  if (num === LINK_TYPE_BOOK_EBOOK) return "E-Book";
   return "Unbekannt (" + num + ")";
 }
 
@@ -126,7 +135,10 @@ type EventLinks = {
   primaryPrice?: number | null; duoPrice?: number | null; businessPrice?: number | null;
   earlyBirdPrice?: number | null; earlyBirdDuoPrice?: number | null;
 };
-type RawPaymentLink = { name: string; url: string; type: number | null; typeLabel: string };
+// price und live zusätzlich zu name/url/type/typeLabel — werden von der
+// Buch-Landingpage gebraucht: live gate für Besucher:innen (nur aktiv, wenn
+// url gesetzt UND live=true), price für die dynamische Preisanzeige je Kachel.
+type RawPaymentLink = { name: string; url: string; type: number | null; typeLabel: string; price: number | null; live: boolean };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -187,9 +199,15 @@ serve(async (req) => {
         const linkUrl = typeof link.wht_url === "string" ? link.wht_url : "";
         const linkName = typeof link.wht_name === "string" ? link.wht_name : "";
         const price = typeof link.wht_price === "number" ? link.wht_price : null;
+        // wht_live: Freigabeschalter für Besucher:innen (siehe
+        // books/du-hast-kein-stressproblem.html) — ein Link mit URL, aber
+        // live=false, bleibt für normale Besucher:innen inaktiv (z. B. zum
+        // Testen/Vorbereiten). Fehlt das Feld (noch nicht angelegt/älterer
+        // Datensatz), gilt es als nicht live, nicht als true.
+        const live = link.wht_live === true;
 
         if (!allLinksByEvent[eventGuid]) allLinksByEvent[eventGuid] = [];
-        allLinksByEvent[eventGuid].push({ name: linkName, url: linkUrl, type, typeLabel: paymentLinkTypeLabel(type) });
+        allLinksByEvent[eventGuid].push({ name: linkName, url: linkUrl, type, typeLabel: paymentLinkTypeLabel(type), price, live });
 
         if (!linkUrl) continue;
         if (!linksByEvent[eventGuid]) linksByEvent[eventGuid] = {};

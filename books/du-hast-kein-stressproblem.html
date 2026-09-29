@@ -167,8 +167,24 @@
   section{margin:0 0 52px}
   section:last-of-type{margin-bottom:0}
 
+  /* "Formate & Preise" soll beim Scrollen sofort als eigener Block auffallen,
+     nicht wie die übrigen (unauffälligen) Textabschnitte wirken. */
+  #formate-preise{
+    background:var(--paper-2); border:1px solid var(--line-light);
+    border-top:4px solid var(--orange-500); border-radius:6px;
+    padding:32px 28px; box-shadow:0 14px 34px -18px rgba(29,26,19,.3);
+  }
+  @media (max-width:600px){ #formate-preise{padding:24px 18px} }
+
+  /* Bild + Einleitungstext nebeneinander, Bild links und kleiner (feste
+     Höhe statt volle Breite) */
+  .hero-row{display:flex; gap:28px; align-items:flex-start; margin:8px 0 30px}
+  .hero-text{flex:1 1 auto; min-width:0}
+  .hero-text p:last-child{margin-bottom:0}
+  @media (max-width:640px){ .hero-row{flex-direction:column; align-items:center} }
+
   /* cover mock */
-  .coverwrap{display:flex; justify-content:center; margin:8px 0 30px}
+  .coverwrap{display:flex; justify-content:center; flex:0 0 auto; margin:0}
   .cover{
     width:100%; max-width:280px; aspect-ratio:5/7.4; background:var(--navy);
     background-image:linear-gradient(160deg,var(--navy) 0%,#2b3c5c 100%);
@@ -237,7 +253,7 @@
   .price-card[href]:hover{border-width:5px; border-color:var(--orange-500); box-shadow:0 10px 22px -10px rgba(29,26,19,.3); transform:translateY(-2px)}
   .price-card.highlight{border-color:var(--orange-500); border-width:1.5px}
   .price-card.highlight[href]:hover{border-color:var(--orange-600)}
-  .price-card.soon{background:var(--paper-2); color:var(--ink-soft)}
+  .price-card.soon{background:var(--cream); color:var(--ink-soft)}
   .price-card.soon .price-amount{color:var(--ink-soft)}
   .price-tag{font-family:var(--display); font-weight:600; font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); margin:0 0 6px}
   .price-amount{font-family:var(--serif); font-weight:600; font-size:26px; margin:0 0 4px}
@@ -265,6 +281,8 @@
     padding:7px 9px; border-radius:2px; cursor:pointer;
   }
   .price-admin-select option{color:var(--ink)}
+  .price-admin-select.required-missing{border-style:solid; border-color:var(--orange-500); color:var(--orange-600)}
+  .price-amount:empty{display:none}
   .price-fine{font-size:12.5px; color:var(--ink-soft); margin:18px 0 0}
 
   /* Für wen */
@@ -332,14 +350,17 @@
     </nav>
     <hr class="rule">
 
-    <div class="coverwrap">
-      <img src="https://der-architekt-deines-lebens.de/lanpag/images/buch-du-hast-kein-stressproblem-og.jpg" alt="Buchcover 'Du hast kein Stressproblem' von Sorin Ratiu" width="1200" height="630" style="width:100%; height:auto; border-radius:2px; box-shadow:0 18px 34px -12px rgba(29,26,19,.35)">
+    <div class="hero-row">
+      <div class="coverwrap">
+        <img src="https://der-architekt-deines-lebens.de/lanpag/images/buch-du-hast-kein-stressproblem-og.jpg" alt="Buchcover 'Du hast kein Stressproblem' von Sorin Ratiu" width="1200" height="630" style="height:333px; width:auto; border-radius:2px; box-shadow:0 18px 34px -12px rgba(29,26,19,.35)">
+      </div>
+      <div class="hero-text">
+        <p class="muted" style="font-size:16px">Du funktionierst. Seit Jahren. Der Haushalt läuft, der Job läuft, alle bekommen, was sie brauchen. Du hast Listen geführt, Apps installiert, früher aufstehen probiert. Und trotzdem findest du abends keine einzige Minute, die dir gehört hat.</p>
+        <p class="muted" style="font-size:16px">Dieses Buch nennt das nicht Stress – ein Zuviel ließe sich reduzieren, aber das hast du längst probiert, und es hat nicht gereicht. Es zeigt dir, warum deine eigenen hohen Ansprüche der eigentliche Auslöser sind – und was passiert, wenn du zum ersten Mal eine Grenze ziehst und die Reaktion darauf aushältst.</p>
+      </div>
     </div>
 
-    <p class="lead">Du funktionierst. Seit Jahren. Der Haushalt läuft, der Job läuft, alle bekommen, was sie brauchen. Und trotzdem findest du abends keine einzige Minute, die dir gehört hat.</p>
-    <p>Dieses Buch nennt das nicht Stress. Es zeigt dir, warum deine eigenen hohen Ansprüche der eigentliche Auslöser sind – und was passiert, wenn du zum ersten Mal eine Grenze ziehst und die Reaktion darauf aushältst.</p>
-
-    <p style="margin-top:8px"><a class="btn" href="#leseprobe">Kapitel 1 kostenlos lesen</a> <a class="btn-ghost" id="btn-jump-notify" href="#benachrichtigung" style="margin-left:10px">Bescheid sagen, wenn's da ist</a></p>
+    <p style="margin-top:8px"><a class="btn" id="btn-jump-leseprobe" href="#benachrichtigung">Kapitel 1 kostenlos lesen</a> <a class="btn-ghost" id="btn-jump-notify" href="#benachrichtigung" style="margin-left:10px">Bescheid sagen, wenn's da ist</a></p>
   </header>
 
   <!-- ══════════ BLICK INS BUCH ══════════ -->
@@ -454,10 +475,7 @@
   <section id="warum-ich-das-schreibe">
     <p class="eyebrow">Warum ich das schreibe</p>
     <h2>Sorin Ratiu</h2>
-    <div class="placeholder">
-      Platzhalter: Porträtfoto von Sorin Ratiu – ungestellt, warmes Licht, passend zum ruhigen, ehrlichen Ton des Buchs. Kein Business-Headshot, eher im Gespräch oder beim Schreiben.<br>
-      <code>Bild folgt</code>
-    </div>
+    <img src="../Trainer/SorinRatiu/images/sorin-profil-flat.jpg" alt="Sorin Ratiu" style="width:100%; max-width:280px; height:auto; border-radius:4px; margin:0 0 20px; display:block;">
     <p>„Ich habe ein Jahr lang gewusst, dass es schiefgeht. Nicht geahnt. Gewusst."</p>
     <p>Im September 2012 war es vorbei, von einer Minute auf die andere. Ich hatte mich geweigert, die Schulden meiner Firma weiter mitzutragen. Danach stand ich mit einem Laptop und ein paar persönlichen Sachen auf der Straße – und das meine ich nicht im übertragenen Sinn: keine Wohnung mehr, kein Firmenauto. Meine Familie war 1.500&nbsp;Kilometer entfernt, in Rumänien. Meine Kinder waren damals sieben und vier.</p>
     <p>Das Harte daran war nicht dieser eine Abend. Es war das Jahr davor, in dem ich genau wusste, dass es so nicht weitergeht, und trotzdem weitergemacht habe – weil Hoffen weniger kostet als Handeln. Bis nichts anderes mehr übrig war.</p>
@@ -473,9 +491,9 @@
 
     <div class="prices">
       <div class="price-card-shell">
-        <a class="price-card highlight" data-linkname="Buch 01 - Hardcover" data-tilekey="hardcover" target="_blank" rel="noopener">
+        <a class="price-card highlight" data-linktype="959230001" data-tilekey="hardcover" target="_blank" rel="noopener">
           <p class="price-tag">Hardcover</p>
-          <p class="price-amount">26,90 €</p>
+          <p class="price-amount"></p>
           <p class="price-desc">gebunden, zum Signieren</p>
           <p class="price-soon-note">Erscheint bald</p>
         </a>
@@ -483,9 +501,9 @@
         <select class="price-admin-select" data-tilekey="hardcover" style="display:none;" aria-label="Zahlungslink für Hardcover (Admin)"></select>
       </div>
       <div class="price-card-shell">
-        <a class="price-card" data-linkname="Buch 01 - E-Book" data-tilekey="ebook" target="_blank" rel="noopener">
+        <a class="price-card" data-linktype="959230003" data-tilekey="ebook" target="_blank" rel="noopener">
           <p class="price-tag">E-Book</p>
-          <p class="price-amount">16,99 €</p>
+          <p class="price-amount"></p>
           <p class="price-desc">EPUB &amp; PDF · der Einstieg</p>
           <p class="price-soon-note">Erscheint bald</p>
         </a>
@@ -493,9 +511,9 @@
         <select class="price-admin-select" data-tilekey="ebook" style="display:none;" aria-label="Zahlungslink für E-Book (Admin)"></select>
       </div>
       <div class="price-card-shell">
-        <a class="price-card" data-linkname="Buch 01 - Hörbuch" data-tilekey="hoerbuch" target="_blank" rel="noopener">
+        <a class="price-card" data-linktype="959230002" data-tilekey="hoerbuch" target="_blank" rel="noopener">
           <p class="price-tag">Hörbuch</p>
-          <p class="price-amount">19,90 €</p>
+          <p class="price-amount"></p>
           <p class="price-desc">selbst eingesprochen, ca. 6,5 Std.</p>
           <p class="price-soon-note">Erscheint bald</p>
         </a>
@@ -503,7 +521,7 @@
         <select class="price-admin-select" data-tilekey="hoerbuch" style="display:none;" aria-label="Zahlungslink für Hörbuch (Admin)"></select>
       </div>
     </div>
-    <p class="price-fine">E-Book und Hardcover unterliegen der Buchpreisbindung – ein Preis, überall, jederzeit, ohne Rabattcodes. Alle Preise inkl. 7 % USt. Endgültige Verfügbarkeit, ISBN und Bestell-Link folgen zum Verkaufsstart.</p>
+    <p class="price-fine">E-Book und Hardcover unterliegen der Buchpreisbindung – ein Preis, überall, jederzeit, ohne Rabattcodes. Preise inkl. 7 % USt. Endgültige Verfügbarkeit und Bestell-Link folgen zum Verkaufsstart.</p>
   </section>
 
   <!-- ══════════ VERSPRECHEN ══════════ -->
@@ -540,26 +558,37 @@
     LeseprobeOptin.configure({ notifyCheckboxLabel: 'Ich will informiert werden, wenn das Buch, E-Book oder Hörbuch da ist' });
   }
 
-  // Der Hero-Button "Bescheid sagen, wenn's da ist" springt per href="#benachrichtigung"
-  // schon zum Opt-in-Kasten — zusätzlich hakt er dort die Benachrichtigen-
+  // Beide Hero-Buttons springen per href="#benachrichtigung" schon zum
+  // Opt-in-Kasten ("Wenn du weitergehen willst / Die ersten Seiten aus dem
+  // Buch") — zusätzlich setzen sie den Cursor direkt ins E-Mail-Feld. Das
+  // Formular ist zu diesem Zeitpunkt garantiert schon gemountet (mount()
+  // läuft bei DOMContentLoaded, also lange vor jedem möglichen Klick).
+  function focusNotifyEmailField() {
+    // setTimeout nötig: Der native Anchor-Sprung (href="#benachrichtigung")
+    // legt den Fokus nach dem Klick selbst auf den Zielabschnitt und würde
+    // einen sofortigen focus() hier sonst gleich wieder überschreiben.
+    // preventScroll, weil der Anchor-Sprung selbst schon zum Abschnitt
+    // scrollt — Fokus soll den Cursor nur setzen, nicht zusätzlich scrollen.
+    var emailField = document.querySelector('#benachrichtigung input[name="email"]');
+    if (emailField) {
+      setTimeout(function () { emailField.focus({ preventScroll: true }); }, 50);
+    }
+  }
+
+  var jumpLeseprobeBtn = document.getElementById('btn-jump-leseprobe');
+  if (jumpLeseprobeBtn) {
+    jumpLeseprobeBtn.addEventListener('click', focusNotifyEmailField);
+  }
+
+  // "Bescheid sagen, wenn's da ist" hakt dort zusätzlich die Benachrichtigen-
   // Checkbox automatisch an, damit man sie nicht noch einmal manuell
-  // anklicken muss. Das Formular ist zu diesem Zeitpunkt garantiert schon
-  // gemountet (mount() läuft bei DOMContentLoaded, also lange vor jedem
-  // möglichen Klick).
+  // anklicken muss.
   var jumpNotifyBtn = document.getElementById('btn-jump-notify');
   if (jumpNotifyBtn) {
     jumpNotifyBtn.addEventListener('click', function () {
       var notifyCb = document.querySelector('#benachrichtigung input[name="notify"]');
       if (notifyCb) notifyCb.checked = true;
-      // setTimeout nötig: Der native Anchor-Sprung (href="#benachrichtigung")
-      // legt den Fokus nach dem Klick selbst auf den Zielabschnitt und würde
-      // einen sofortigen focus() hier sonst gleich wieder überschreiben.
-      // preventScroll, weil der Anchor-Sprung selbst schon zum Abschnitt
-      // scrollt — Fokus soll den Cursor nur setzen, nicht zusätzlich scrollen.
-      var emailField = document.querySelector('#benachrichtigung input[name="email"]');
-      if (emailField) {
-        setTimeout(function () { emailField.focus({ preventScroll: true }); }, 50);
-      }
+      focusNotifyEmailField();
     });
   }
 
@@ -570,12 +599,17 @@
   // Auswahlfeld mit allen aktiven Events (Typ "Tool", aus Dynamics DEV oder
   // PROD, je nachdem wo die Seite läuft), über das sich die Zuordnung ändern
   // lässt. Die Zuordnung liegt serverseitig in Supabase (Tabelle
-  // survey_event_links, ein Datensatz pro page_key = URL-Pfad).
-  var PAGE_KEY = window.location.pathname;
+  // survey_event_links, ein Datensatz pro page_key).
+  // Bewusst FEST verdrahtet statt window.location.pathname: Ein aus dem
+  // tatsächlichen Aufrufpfad abgeleiteter page_key würde bei jedem Testen
+  // über einen anderen Pfad (z. B. lokal per file://, siehe die
+  // "/D:/GitHub/..."-Einträge in Supabase) wie eine neue, unkonfigurierte
+  // Seite aussehen. Stimmt mit dem pageKey in admin/tools.html überein.
+  var PAGE_KEY = '/books/du-hast-kein-stressproblem.html';
   var SELECTED_EVENT_ID = '';
   // tile_key -> überschriebener Link-Name (aus Supabase-Tabelle
-  // tool_price_links geladen) — überstimmt data-linkname auf der Kachel,
-  // solange ein Eintrag vorhanden ist.
+  // tool_price_links geladen) — überstimmt die automatische Typ-Zuordnung
+  // (data-linktype auf der Kachel), solange ein Eintrag vorhanden ist.
   var TILE_LINK_OVERRIDES = {};
   // Das aktuell zugeordnete Event (oder null) — als gemeinsamer Zustand
   // statt als Funktionsparameter, damit der change-Listener der
@@ -585,36 +619,55 @@
   // referenzieren).
   var CURRENT_ACTIVE_EVENT = null;
 
+  function formatPrice(price) {
+    if (typeof price !== 'number' || !isFinite(price)) return '';
+    return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(price);
+  }
+
   // ── Preiskacheln: verknüpfen sich mit den Zahlungslinks (wht_paymentlinkses)
-  // des zugeordneten Events, gematcht über den Link-Namen — entweder den von
-  // einem Admin explizit gewählten (TILE_LINK_OVERRIDES) oder, falls keiner
-  // gewählt wurde, den festen Standardnamen (data-linkname auf der Kachel).
-  // "Erscheint bald" + ausgegraut/deaktiviert gilt NUR, solange für die
-  // Kachel kein passender Zahlungslink existiert — unabhängig vom Format
-  // (auch das Hardcover zeigt das, solange sein Link noch fehlt/nicht
-  // gefunden wird). Sobald ein Link gefunden wird, wird die Kachel normal
-  // aktiv, egal welches Format.
-  function applyPaymentLinks() {
+  // des zugeordneten Events. Standardmäßig wird der Link über den Typ
+  // (data-linktype auf der Kachel <-> wht_paymentlinktype) automatisch
+  // gefunden; ein Admin kann das pro Kachel überschreiben (TILE_LINK_OVERRIDES,
+  // nach Name gematcht — siehe renderPriceLinkAdmin). Eine Kachel gilt nur als
+  // aktiv (klickbar, mit Preis), wenn der gefundene Link eine URL hat UND
+  // wht_live = true ist — sonst "Erscheint bald" + ausgegraut, unabhängig
+  // vom Format.
+  function findLinkForTile(card) {
+    var tileKey = card.getAttribute('data-tilekey');
+    var wantedType = Number(card.getAttribute('data-linktype'));
     var links = (CURRENT_ACTIVE_EVENT && CURRENT_ACTIVE_EVENT.payment_links) || [];
+    var overrideName = TILE_LINK_OVERRIDES[tileKey];
+    if (overrideName) {
+      var overridden = links.find(function (l) { return l.name === overrideName; });
+      if (overridden) return overridden;
+    }
+    return links.find(function (l) { return l.type === wantedType; }) || null;
+  }
+
+  function applyPaymentLinks() {
     document.querySelectorAll('.price-card[data-tilekey]').forEach(function (card) {
-      var tileKey = card.getAttribute('data-tilekey');
-      var wantedName = TILE_LINK_OVERRIDES[tileKey] || card.getAttribute('data-linkname');
-      var match = links.find(function (l) { return l.name === wantedName; });
-      if (match && match.url) {
+      var amountEl = card.querySelector('.price-amount');
+      var match = findLinkForTile(card);
+      var isActive = !!(match && match.url && match.live === true);
+      if (isActive) {
         card.href = match.url;
         card.classList.remove('soon');
+        if (amountEl) amountEl.textContent = formatPrice(match.price);
       } else {
         card.removeAttribute('href');
         card.classList.add('soon');
+        if (amountEl) amountEl.textContent = '';
       }
     });
   }
 
   // ── Admin-Auswahl je Kachel: zeigt ALLE Zahlungslinks des aktuell
-  // zugeordneten Events zur Auswahl an (nicht nur den per Namenskonvention
-  // erwarteten) und speichert die Wahl pro Kachel in Supabase (Tabelle
+  // zugeordneten Events zur Auswahl an (nicht nur den per Typ automatisch
+  // gematchten) und speichert die Wahl pro Kachel in Supabase (Tabelle
   // tool_price_links, page_key + tile_key), damit sie für alle Besucher
-  // gültig bleibt — nicht nur für die aktuelle Admin-Session.
+  // gültig bleibt — nicht nur für die aktuelle Admin-Session. Optionsbeschriftung
+  // bewusst nur "PaymentLinkType - Name": kein "Unbekannt (95923000x)" und keine
+  // rohen Zahlencodes im UI.
   function renderPriceLinkAdmin() {
     var links = (CURRENT_ACTIVE_EVENT && CURRENT_ACTIVE_EVENT.payment_links) || [];
     document.querySelectorAll('.price-admin-select[data-tilekey]').forEach(function (select) {
@@ -622,17 +675,19 @@
       var label = document.querySelector('.price-admin-label[data-tilekey="' + tileKey + '"]');
       var current = TILE_LINK_OVERRIDES[tileKey] || '';
 
-      var defaultCard = document.querySelector('.price-card[data-tilekey="' + tileKey + '"]');
-      var defaultName = defaultCard ? defaultCard.getAttribute('data-linkname') : '';
-
-      select.innerHTML = '<option value="">— Standard (' + defaultName + ') —</option>' + links.map(function (l) {
-        var optLabel = l.name + (l.typeLabel ? ' · ' + l.typeLabel : '') + (l.url ? '' : ' (ohne URL)');
+      select.innerHTML = '<option value="">— Automatisch (nach Typ) —</option>' + links.map(function (l) {
+        var typeLabel = (l.typeLabel && l.typeLabel.indexOf('Unbekannt') !== 0) ? l.typeLabel : '';
+        var optLabel = (typeLabel ? typeLabel + ' - ' : '') + l.name;
+        if (!l.live) optLabel += ' (nicht live)';
+        if (!l.url) optLabel += ' (ohne URL)';
         var isSelected = l.name === current;
         return '<option value="' + l.name.replace(/"/g, '&quot;') + '"' + (isSelected ? ' selected' : '') + '>' + optLabel + '</option>';
       }).join('');
 
       if (label) label.style.display = 'block';
       select.style.display = 'block';
+      select.required = true;
+      select.classList.toggle('required-missing', !current);
 
       // Bestehenden Listener nicht mehrfach anhängen (renderPriceLinkAdmin
       // läuft erneut, wenn der Admin das zugeordnete Event wechselt) — der
@@ -643,6 +698,7 @@
       select.addEventListener('change', function () {
         var chosen = this.value;
         if (chosen) { TILE_LINK_OVERRIDES[tileKey] = chosen; } else { delete TILE_LINK_OVERRIDES[tileKey]; }
+        select.classList.toggle('required-missing', !chosen);
         applyPaymentLinks();
         db.from('tool_price_links')
           .upsert({ page_key: PAGE_KEY, tile_key: tileKey, link_name: chosen || null, updated_at: new Date().toISOString() }, { onConflict: 'page_key,tile_key' })
@@ -728,10 +784,26 @@
             CURRENT_ACTIVE_EVENT = newActive;
             renderOptions();
             applyPaymentLinks();
+
+            // Event gewechselt: die alten Zahlungslink-Zuordnungen gehörten
+            // zum vorigen Event und könnten beim neuen Event zufällig einen
+            // gleichnamigen, aber falschen Link treffen — deshalb löschen und
+            // den Admin per Sprung+Fokus zur erneuten (Pflicht-)Auswahl
+            // bringen, statt stumm auf die automatische Typ-Zuordnung zu
+            // vertrauen.
+            TILE_LINK_OVERRIDES = {};
             renderPriceLinkAdmin();
+
+            var priceSection = document.getElementById('formate-preise');
+            var firstSelect  = document.querySelector('.price-admin-select[data-tilekey]');
+            if (priceSection) priceSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            if (firstSelect) firstSelect.focus({ preventScroll: true });
+
             db.from('survey_event_links')
               .upsert({ page_key: PAGE_KEY, event_id: SELECTED_EVENT_ID, updated_at: new Date().toISOString() }, { onConflict: 'page_key' })
               .then(function (res) { if (res.error) console.error('Survey event link save error:', res.error.message); });
+            db.from('tool_price_links').delete().eq('page_key', PAGE_KEY)
+              .then(function (res) { if (res.error) console.error('Tool price link clear error:', res.error.message); });
           });
         }).catch(function (err) { console.error('Auth session check error:', err); });
       });
