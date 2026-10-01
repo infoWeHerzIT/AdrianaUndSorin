@@ -393,6 +393,11 @@
           <span>Ja, schick mir gerne ab und zu Impulse per E-Mail (Newsletter) – kurze Gedanken zu Stress, Grenzen und dem eigenen Weg. Jederzeit mit einem Klick abbestellbar.</span>
         </label>
 
+        <label class="form-checkbox" style="margin-top: 12px; padding: 14px 16px; border: 1px solid rgba(217,104,44,0.28); border-radius: 8px; background: rgba(217,104,44,0.04); box-shadow: 0 0 0 1px rgba(217,104,44,0.06);">
+          <input type="checkbox" id="c-results-optin">
+          <span><strong>Möchtest du die Ergebnisse dieser Umfrage bekommen?</strong> Wir werten alle Antworten aus und schicken dir eine Zusammenfassung: Was Frauen zwischen 35 und 55 gerade am meisten belastet, was sie schon versucht haben – und was tatsächlich etwas verändert hat. Du wirst wahrscheinlich überrascht sein, wie viele es genauso erleben wie du.</span>
+        </label>
+
         <hr class="form-divider">
 
         <p class="privacy-note">Deine Angaben behandeln wir vertraulich und verwenden sie ausschließlich für das, wofür du dich gerade entschieden hast. Mit dem Absenden stimmst du unserer <a href="https://der-architekt-deines-lebens.de/rechtliches.html#datenschutz" target="_blank" rel="noopener">Datenschutzerklärung</a> zu.</p>
@@ -542,20 +547,22 @@
   var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   // Neben den antwortabhängigen Pflichten (siehe oben) macht auch die
-  // Newsletter-Zustimmung die E-Mail-Adresse pflicht — wir können sonst
-  // keine Impulse verschicken, die wir gerade zugesagt bekommen haben.
+  // Newsletter-Zustimmung sowie die Zusendung der Umfrage-Ergebnisse die
+  // E-Mail-Adresse pflicht — wir brauchen sie für die zugesagte Zusendung.
   function getEffectiveRequiredContactFields() {
     var req = renderer.getRequiredContactFields();
     var newsletterChecked = document.getElementById('c-newsletter').checked;
+    var resultsOptInChecked = document.getElementById('c-results-optin').checked;
     return {
-      name:    req.name,
+      name:    req.name || resultsOptInChecked,
       surname: req.surname,
-      email:   req.email || newsletterChecked,
+      email:   req.email || newsletterChecked || resultsOptInChecked,
       phone:   req.phone
     };
   }
 
   document.getElementById('c-newsletter').addEventListener('change', updateContactRequiredUI);
+  document.getElementById('c-results-optin').addEventListener('change', updateContactRequiredUI);
 
   function updateContactRequiredUI() {
     var req = getEffectiveRequiredContactFields();
@@ -650,6 +657,7 @@
         payload: {
           vorname: vornameVal, nachname: nachnameVal, email: emailVal, telefon: phoneVal,
           newsletter_opt_in: document.getElementById('c-newsletter').checked,
+          results_opt_in: document.getElementById('c-results-optin').checked,
           answers: answers
         }
       });
@@ -675,6 +683,7 @@
       surveyId:        surveyId,
       eventId:         eventId,
       newsletterOptIn: document.getElementById('c-newsletter').checked,
+      emailOptIn:      document.getElementById('c-results-optin').checked,
       answers:         answers
     });
 

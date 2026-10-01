@@ -262,6 +262,10 @@ class DynamicsCRM {
   // gesetzt war — landet wie bei submitLead() als Zeitstempel in
   // wht_optinnewsletterdatetime (nur wenn dabei auch ein Lead entsteht,
   // also E-Mail oder Telefon angegeben wurde).
+  // fields.emailOptIn: true, wenn die Checkbox "Ergebnisse dieser Umfrage
+  // bekommen" aktiviert war — landet als Zeitstempel in
+  // wht_optinemaildatetime und setzt damit den Lead als per E-Mail
+  // zugestimmt für weitere Benachrichtigungen.
   submitSurveyResponse(fields) {
     fields = fields || {};
     return this.client.functions.invoke(this._functionName('crm-survey-response-submit'), {
@@ -273,6 +277,7 @@ class DynamicsCRM {
         eventId:          fields.eventId     || '',
         surveyId:         fields.surveyId    || '',
         newsletterOptIn:  !!fields.newsletterOptIn,
+        emailOptIn:       !!fields.emailOptIn,
         answers:          fields.answers     || []
       }
     }).catch(function (err) {

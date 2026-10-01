@@ -91,6 +91,7 @@ serve(async (req) => {
     const eventId      = String(payload.eventId ?? "").trim();
     const surveyId      = String(payload.surveyId ?? "").trim();
     const newsletterOptIn = !!payload.newsletterOptIn;
+    const emailOptIn = !!payload.emailOptIn;
     const answers: AnswerInput[] = Array.isArray(payload.answers) ? payload.answers : [];
 
     if (!surveyId) return jsonResponse({ error: "surveyId fehlt" }, 400);
@@ -118,10 +119,11 @@ serve(async (req) => {
       // Wie bei crm-submit: Zustimmungsfelder speichern den Zeitpunkt der
       // Zustimmung als Datum, kein Bool — nur gesetzt, wenn die Checkbox
       // aktiv war.
-      if (newsletterOptIn) {
+      if (newsletterOptIn || emailOptIn) {
         const optInIso = new Date().toISOString();
-        leadFields.wht_optinnewsletterdatetime = optInIso;
-        // Newsletter-Zustimmung setzt die Einwilligung zur Datenverarbeitung
+        if (newsletterOptIn) leadFields.wht_optinnewsletterdatetime = optInIso;
+        if (emailOptIn) leadFields.wht_optinemaildatetime = optInIso;
+        // Jede andere Zustimmung setzt die Einwilligung zur Datenverarbeitung
         // automatisch mit (wie in crm-submit).
         leadFields.wht_optindatenverarbeitungdatetime = optInIso;
       }
